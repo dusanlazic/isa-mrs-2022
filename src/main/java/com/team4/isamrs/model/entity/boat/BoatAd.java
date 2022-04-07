@@ -3,7 +3,6 @@ package com.team4.isamrs.model.entity.boat;
 import com.team4.isamrs.model.entity.adventure.FishingEquipment;
 import com.team4.isamrs.model.entity.advertisement.Advertisement;
 import com.team4.isamrs.model.entity.advertisement.DailyPrice;
-import com.team4.isamrs.model.entity.advertisement.Tags;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

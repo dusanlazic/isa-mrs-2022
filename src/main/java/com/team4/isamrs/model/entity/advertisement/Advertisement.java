@@ -49,7 +49,7 @@ public class Advertisement {
     e.g. WIFI, Pet friendly, TV
      */
     @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY)
-    private Set<Tags> tags = new HashSet<>();
+    private Set<Tag> tags = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Photo> photos = new HashSet<>();

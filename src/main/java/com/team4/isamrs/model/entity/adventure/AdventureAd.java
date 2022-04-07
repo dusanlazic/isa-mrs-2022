@@ -2,7 +2,6 @@ package com.team4.isamrs.model.entity.adventure;
 
 import com.team4.isamrs.model.entity.advertisement.Advertisement;
 import com.team4.isamrs.model.entity.advertisement.HourlyPrice;
-import com.team4.isamrs.model.entity.advertisement.Tags;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

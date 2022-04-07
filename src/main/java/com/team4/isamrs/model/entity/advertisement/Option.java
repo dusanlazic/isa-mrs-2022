@@ -1,7 +1,6 @@
-package com.team4.isamrs.model.entity;
+package com.team4.isamrs.model.entity.advertisement;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 public class Option {
@@ -21,7 +20,4 @@ public class Option {
 
     @Column
     private Integer maxCount;
-
-    @Column
-    private BigDecimal price;
 }

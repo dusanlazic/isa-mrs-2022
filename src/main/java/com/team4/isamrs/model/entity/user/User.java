@@ -1,4 +1,4 @@
-package com.team4.isamrs.model.entity;
+package com.team4.isamrs.model.entity.user;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -14,6 +14,9 @@ public class User {
     @SequenceGenerator(name = "mySeqGenV1", sequenceName = "mySeqV1", initialValue = 1, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenV1")
     private Long id;
+
+    @Column
+    private String avatarPath;
 
     @Column
     private String firstName;

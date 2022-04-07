@@ -1,7 +1,10 @@
-package com.team4.isamrs.model.entity;
+package com.team4.isamrs.model.entity.advertisement;
+
+import com.team4.isamrs.model.entity.review.ServiceReview;
+import com.team4.isamrs.model.entity.user.Advertiser;
+import com.team4.isamrs.model.entity.user.Customer;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,35 +34,32 @@ public class Advertisement {
     private String pricingDescription;
 
     @Column
-    private BigDecimal basePrice;
-
-    @Column
-    private String currency;
-
-    @Column
     private LocalDateTime availableAfter;
 
     @Column
     private LocalDateTime availableUntil;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Photo> photos = new HashSet<Photo>();
-
-    @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Option> options = new HashSet<Option>();
-
-    @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Action> actions = new HashSet<Action>();
-
     @Column
     private String rules;
 
-    @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY)
-    private Set<Reservation> reservations = new HashSet<Reservation>();
+    @Column
+    private String currency;
 
-    @ManyToMany(mappedBy = "followedAdvertisements")
-    private Set<Customer> followers = new HashSet<Customer>();
+    /*
+    e.g. WIFI, Pet friendly, TV
+     */
+    @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY)
+    private Set<Tags> tags = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Photo> photos = new HashSet<>();
+
+    @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Option> options = new HashSet<>();
+
+    @ManyToMany(mappedBy = "subscriptions", fetch = FetchType.LAZY)
+    private Set<Customer> subscribers = new HashSet<>();
 
     @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY)
-    private Set<ServiceReview> reviews = new HashSet<ServiceReview>();
+    private Set<ServiceReview> reviews = new HashSet<>();
 }

@@ -1,4 +1,4 @@
-package com.team4.isamrs.model.entity;
+package com.team4.isamrs.model.entity.loyalty;
 
 import javax.persistence.*;
 
@@ -9,8 +9,8 @@ public class LoyaltyProgramConfiguration {
     private Long id;
 
     @Column
-    private Integer pointsEarnedPerReservationForCustomers;
+    private Integer customersPointsPerReservation;
 
     @Column
-    private Integer pointsEarnedPerReservationForAdvertisers;
+    private Integer advertisersPointsPerReservation;
 }

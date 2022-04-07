@@ -1,9 +1,9 @@
 package com.team4.isamrs.model.enumeration;
 
 public enum AccountType {
-    Administrator,
-    Customer,
-    ResortOwner,
-    BoatOwner,
-    FishingInstructor
+    ADMINISTRATOR,
+    CUSTOMER,
+    RESORT_OWNER,
+    BOAT_OWNER,
+    FISHING_INSTRUCTOR
 }

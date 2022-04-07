@@ -1,5 +1,7 @@
-package com.team4.isamrs.model.entity;
+package com.team4.isamrs.model.entity.review;
 
+import com.team4.isamrs.model.entity.user.Customer;
+import com.team4.isamrs.model.entity.advertisement.Advertisement;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 
 import javax.persistence.*;

@@ -1,4 +1,7 @@
-package com.team4.isamrs.model.entity;
+package com.team4.isamrs.model.entity.reservation;
+
+import com.team4.isamrs.model.entity.user.Customer;
+import com.team4.isamrs.model.entity.advertisement.Option;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -7,27 +10,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public class Reservation {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "mySeqGenV3", sequenceName = "mySeqV3", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenV3")
     private Long id;
 
     @Column
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "advertisement_id")
-    private Advertisement advertisement;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;
-
-    @Column
-    private LocalDateTime reservationStartTime;
-
-    @Column
-    private LocalDateTime reservationEndTime;
 
     @ManyToMany
     @JoinTable(

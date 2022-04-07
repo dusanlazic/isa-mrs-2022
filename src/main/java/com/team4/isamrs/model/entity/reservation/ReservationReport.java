@@ -1,5 +1,6 @@
-package com.team4.isamrs.model.entity;
+package com.team4.isamrs.model.entity.reservation;
 
+import com.team4.isamrs.model.entity.reservation.Reservation;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 
 import javax.persistence.*;

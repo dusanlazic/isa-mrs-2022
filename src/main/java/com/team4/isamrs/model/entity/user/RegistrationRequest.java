@@ -1,4 +1,4 @@
-package com.team4.isamrs.model.entity;
+package com.team4.isamrs.model.entity.user;
 
 import com.team4.isamrs.model.enumeration.AccountType;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;

@@ -1,4 +1,8 @@
-package com.team4.isamrs.model.entity;
+package com.team4.isamrs.model.entity.user;
+
+import com.team4.isamrs.model.entity.advertisement.Advertisement;
+import com.team4.isamrs.model.entity.reservation.Reservation;
+import com.team4.isamrs.model.entity.review.ServiceReview;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -17,7 +21,7 @@ public class Customer extends User {
             name = "subscriptions",
             joinColumns = @JoinColumn(name = "customer_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "advertisement_id", referencedColumnName = "id"))
-    private Set<Advertisement> followedAdvertisements = new HashSet<Advertisement>();
+    private Set<Advertisement> subscriptions = new HashSet<Advertisement>();
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private Set<ServiceReview> reviews = new HashSet<ServiceReview>();

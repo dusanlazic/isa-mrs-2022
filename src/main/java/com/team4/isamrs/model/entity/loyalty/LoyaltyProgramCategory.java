@@ -1,4 +1,4 @@
-package com.team4.isamrs.model.entity;
+package com.team4.isamrs.model.entity.loyalty;
 
 import com.team4.isamrs.model.enumeration.CategoryType;
 

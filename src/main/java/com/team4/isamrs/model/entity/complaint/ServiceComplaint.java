@@ -1,12 +1,14 @@
-package com.team4.isamrs.model.entity;
+package com.team4.isamrs.model.entity.complaint;
 
+import com.team4.isamrs.model.entity.user.Customer;
+import com.team4.isamrs.model.entity.advertisement.Advertisement;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class ServiceProviderReview {
+public class ServiceComplaint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,15 +17,12 @@ public class ServiceProviderReview {
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "advertiser_id")
-    private Advertiser advertiser;
+    @JoinColumn(name = "advertisement_id")
+    private Advertisement advertisement;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;
-
-    @Column
-    private Double rating;
 
     @Column
     private String comment;

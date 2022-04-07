@@ -1,31 +1,30 @@
-package com.team4.isamrs.model.entity;
+package com.team4.isamrs.model.entity.user;
 
+import com.team4.isamrs.model.entity.user.User;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class ServiceProviderComplaint {
+public class RemovalRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
     @Column
     private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "advertiser_id")
-    private Advertiser advertiser;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
-
     @Column
-    private String comment;
+    private String explanation;
 
     @Column
     @Enumerated(EnumType.ORDINAL)
     private ApprovalStatus approvalStatus;
+
+    @Column
+    private String response;
 }

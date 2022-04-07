@@ -1,4 +1,4 @@
-package com.team4.isamrs.model.entity;
+package com.team4.isamrs.model.entity.advertisement;
 
 import javax.persistence.*;
 
@@ -12,5 +12,5 @@ public class Photo {
     private String name;
 
     @Column
-    private String uri;
+    private String path;
 }

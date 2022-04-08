@@ -1,6 +1,6 @@
 package com.team4.isamrs.model.entity.reservation;
 
-import com.team4.isamrs.model.entity.advertisement.Option;
+import com.team4.isamrs.model.entity.advertisement.SelectedOption;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -21,10 +21,10 @@ public class QuickReservation {
 
     @ManyToMany
     @JoinTable(
-        name = "reservation_option",
-        joinColumns = @JoinColumn(name = "reservation_id"),
-        inverseJoinColumns = @JoinColumn(name = "option_id"))
-    private Set<Option> selectedOptions = new HashSet<Option>();
+        name = "quick_reservation_selected_option",
+        joinColumns = @JoinColumn(name = "quick_reservation_id"),
+        inverseJoinColumns = @JoinColumn(name = "selected_option_id"))
+    private Set<SelectedOption> selectedOptions = new HashSet<>();
 
     @Column(name = "valid_after", nullable = false)
     private LocalDateTime validAfter;

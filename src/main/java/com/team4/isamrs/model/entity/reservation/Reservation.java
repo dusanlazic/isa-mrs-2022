@@ -1,7 +1,7 @@
 package com.team4.isamrs.model.entity.reservation;
 
+import com.team4.isamrs.model.entity.advertisement.SelectedOption;
 import com.team4.isamrs.model.entity.user.Customer;
-import com.team4.isamrs.model.entity.advertisement.Option;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -26,10 +26,10 @@ public class Reservation {
 
     @ManyToMany
     @JoinTable(
-        name = "reservation_option",
+        name = "reservation_selected_option",
         joinColumns = @JoinColumn(name = "reservation_id"),
-        inverseJoinColumns = @JoinColumn(name = "option_id"))
-    private Set<Option> selectedOptions = new HashSet<Option>();
+        inverseJoinColumns = @JoinColumn(name = "selected_option_id"))
+    private Set<SelectedOption> selectedOptions = new HashSet<>();
 
     @Column(name = "calculated_price", nullable = false)
     private BigDecimal calculatedPrice;

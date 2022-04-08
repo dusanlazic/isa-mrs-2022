@@ -5,15 +5,20 @@ import com.team4.isamrs.repository.AdventureAdRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Optional;
 
 @Service
-public class AdvertisementService {
+public class AdventureAdService {
 
     @Autowired
     private AdventureAdRepository adventureAdRepository;
 
-    public List<AdventureAd> findAll() {
+    public Collection<AdventureAd> findAll() {
         return adventureAdRepository.findAll();
+    }
+
+    public Optional<AdventureAd> findById(Long id) {
+        return adventureAdRepository.findById(id);
     }
 }

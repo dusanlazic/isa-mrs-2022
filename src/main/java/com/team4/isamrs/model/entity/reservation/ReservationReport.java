@@ -12,22 +12,22 @@ public class ReservationReport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @OneToOne
     private Reservation reservation;
 
-    @Column
+    @Column(name = "comment", nullable = false)
     private String comment;
 
-    @Column
+    @Column(name = "penaltyRequested", nullable = false)
     private Boolean penaltyRequested;
 
-    @Column
+    @Column(name = "customer_was_late", nullable = false)
     private Boolean customerWasLate;
 
-    @Column
+    @Column(name = "approval_status", nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private ApprovalStatus approvalStatus;
 }

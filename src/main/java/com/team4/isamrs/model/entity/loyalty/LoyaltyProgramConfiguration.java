@@ -8,9 +8,9 @@ public class LoyaltyProgramConfiguration {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "customers_points_per_reservation", nullable = false)
     private Integer customersPointsPerReservation;
 
-    @Column
+    @Column(name = "advertisers_points_per_reservation", nullable = false)
     private Integer advertisersPointsPerReservation;
 }

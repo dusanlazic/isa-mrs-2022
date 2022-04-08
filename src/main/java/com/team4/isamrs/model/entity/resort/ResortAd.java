@@ -14,13 +14,13 @@ public class ResortAd extends Advertisement {
     Number of beds for each room separated by commas.
     e.g. 3,1,0,1 => 4 rooms, 5 beds total: three in the first, one in the second, etc.
      */
-    @Column
+    @Column(name = "number_of_beds", nullable = false)
     private String numberOfBeds;
 
-    @Column
+    @Column(name = "check_out_time", nullable = false)
     private LocalTime CheckOutTime; // e.g. 10:00
 
-    @Column
+    @Column(name = "check_in_time", nullable = false)
     private LocalTime CheckInTime; // e.g. 13:00
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

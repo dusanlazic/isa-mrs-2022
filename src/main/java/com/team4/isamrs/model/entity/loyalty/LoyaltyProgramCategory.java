@@ -11,19 +11,19 @@ public class LoyaltyProgramCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column
+    @Column(name = "type", nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private CategoryType type;
 
-    @Column
+    @Column(name = "points_required", nullable = false)
     private Integer pointsRequired;
 
-    @Column
+    @Column(name = "discount", nullable = false)
     private BigDecimal discount;
 
-    @Column
+    @Column(name = "bonus", nullable = false)
     private BigDecimal bonus;
 }

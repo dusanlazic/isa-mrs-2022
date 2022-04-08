@@ -9,10 +9,10 @@ public class DailyPrice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "value", nullable = false)
     private BigDecimal value;
 
-    @Column
+    @Column(name = "min_days", nullable = false)
     /*
     Price is applied when reservation length exceeds defined number of days.
     e.g. days < 5 => $100/d,

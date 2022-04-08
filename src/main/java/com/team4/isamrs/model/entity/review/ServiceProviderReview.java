@@ -24,13 +24,13 @@ public class ServiceProviderReview {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column
+    @Column(name = "rating", nullable = false)
     private Double rating;
 
-    @Column
+    @Column(name = "comment")
     private String comment;
 
-    @Column
+    @Column(name = "approval_status", nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private ApprovalStatus approvalStatus;
 }

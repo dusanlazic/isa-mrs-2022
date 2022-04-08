@@ -13,7 +13,7 @@ public class ServiceProviderComplaint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,10 +24,10 @@ public class ServiceProviderComplaint {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column
+    @Column(name = "comment", nullable = false)
     private String comment;
 
-    @Column
+    @Column(name = "approval_status", nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private ApprovalStatus approvalStatus;
 }

@@ -15,16 +15,16 @@ public class RemovalRequest {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @Column
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column
+    @Column(name = "explanation", nullable = false)
     private String explanation;
 
-    @Column
+    @Column(name = "approval_status", nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private ApprovalStatus approvalStatus;
 
-    @Column
+    @Column(name = "response", nullable = false)
     private String response;
 }

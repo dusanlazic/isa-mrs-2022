@@ -12,12 +12,12 @@ public class Option {
     @JoinColumn(name = "advertisement_id")
     private Advertisement advertisement;
 
-    @Column
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column
+    @Column(name = "max_count", nullable = false)
     private Integer maxCount;
 }

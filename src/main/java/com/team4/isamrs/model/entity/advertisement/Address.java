@@ -8,24 +8,24 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "address", nullable = false)
     private String address;
 
-    @Column
+    @Column(name = "city", nullable = false)
     private String city;
 
-    @Column
+    @Column(name = "state", nullable = false)
     private String state;
 
-    @Column
+    @Column(name = "country_code", nullable = false)
     private String countryCode;
 
-    @Column
+    @Column(name = "postalCode", nullable = false)
     private String postalCode;
 
-    @Column
+    @Column(name = "latitude", nullable = false)
     private String latitude;
 
-    @Column
+    @Column(name = "longitude", nullable = false)
     private String longitude;
 }

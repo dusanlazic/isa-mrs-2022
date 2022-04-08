@@ -17,11 +17,11 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenV3")
     private Long id;
 
-    @Column
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
     @ManyToMany
@@ -31,9 +31,9 @@ public class Reservation {
         inverseJoinColumns = @JoinColumn(name = "option_id"))
     private Set<Option> selectedOptions = new HashSet<Option>();
 
-    @Column
+    @Column(name = "calculated_price", nullable = false)
     private BigDecimal calculatedPrice;
 
-    @Column
+    @Column(name = "cancelled", nullable = false)
     private Boolean cancelled;
 }

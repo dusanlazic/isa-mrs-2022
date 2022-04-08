@@ -11,9 +11,9 @@ public class BoatReservation extends Reservation {
     @JoinColumn(name = "resort_ad_id")
     private BoatAd advertisement;
 
-    @Column
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 }

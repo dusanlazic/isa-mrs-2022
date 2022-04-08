@@ -11,15 +11,15 @@ public class BoatQuickReservation extends QuickReservation {
     @JoinColumn(name = "resort_ad_id")
     private BoatAd advertisement;
 
-    @OneToOne
-    private BoatReservation associatedReservation;
-
-    @Column
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
-    @Column
+    @Column(name = "capacity", nullable = false)
     private Integer capacity;
+
+    @Column(name = "taken", nullable = false)
+    private Boolean taken;
 }

@@ -16,7 +16,7 @@ public class QuickReservation {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenV4")
     private Long id;
 
-    @Column
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @ManyToMany
@@ -26,15 +26,15 @@ public class QuickReservation {
         inverseJoinColumns = @JoinColumn(name = "option_id"))
     private Set<Option> selectedOptions = new HashSet<Option>();
 
-    @Column
+    @Column(name = "valid_after", nullable = false)
     private LocalDateTime validAfter;
 
-    @Column
+    @Column(name = "valid_until", nullable = false)
     private LocalDateTime validUntil;
 
-    @Column
+    @Column(name = "calculated_old_price", nullable = false)
     private BigDecimal calculatedOldPrice;
 
-    @Column
+    @Column(name = "new_price", nullable = false)
     private BigDecimal newPrice;
 }

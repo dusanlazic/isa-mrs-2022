@@ -12,18 +12,18 @@ public class AdventureQuickReservation extends QuickReservation {
     @JoinColumn(name = "resort_ad_id")
     private AdventureAd advertisement;
 
-    @OneToOne
-    private AdventureReservation associatedReservation;
-
-    @Column
+    @Column(name = "start_date_time", nullable = false)
     private LocalDateTime startDateTime;
 
-    @Column
+    @Column(name = "end_date_time", nullable = false)
     private LocalDateTime endDateTime;
 
-    @Column
+    @Column(name = "capacity", nullable = false)
     private Integer capacity;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
+
+    @Column(name = "taken", nullable = false)
+    private Boolean taken;
 }

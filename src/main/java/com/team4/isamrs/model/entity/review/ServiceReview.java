@@ -13,7 +13,7 @@ public class ServiceReview {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,13 +24,13 @@ public class ServiceReview {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column
+    @Column(name = "rating", nullable = false)
     private Double rating;
 
-    @Column
+    @Column(name = "comment")
     private String comment;
 
-    @Column
+    @Column(name = "approvalStatus", nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private ApprovalStatus approvalStatus;
 }

@@ -12,25 +12,25 @@ import java.util.Set;
 
 @Entity
 public class BoatAd extends Advertisement {
-    @Column
+    @Column(name = "check_out_time", nullable = false)
     private LocalTime CheckOutTime; // e.g. 10:00
 
-    @Column
+    @Column(name = "check_in_time", nullable = false)
     private LocalTime CheckInTime; // e.g. 13:00
 
-    @Column
+    @Column(name = "boat_type")
     private String boatType;
 
-    @Column
+    @Column(name = "boat_length")
     private String boatLength;
 
-    @Column
+    @Column(name = "engine_number")
     private String engineNumber;
 
-    @Column
+    @Column(name = "engine_power")
     private String enginePower;
 
-    @Column
+    @Column(name = "boat_speed")
     private String boatSpeed;
 
     /*
@@ -45,10 +45,10 @@ public class BoatAd extends Advertisement {
     @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY)
     private Set<NavigationalEquipment> navigationalEquipment = new HashSet<>();
 
-    @Column
+    @Column(name = "capacity", nullable = false)
     private Integer capacity;
 
-    @Column
+    @Column(name = "cancellation_fee", nullable = false)
     private BigDecimal cancellationFee;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

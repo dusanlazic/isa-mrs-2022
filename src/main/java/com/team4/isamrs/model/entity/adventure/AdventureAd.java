@@ -10,10 +10,10 @@ import java.util.Set;
 
 @Entity
 public class AdventureAd extends Advertisement {
-    @Column
+    @Column(name = "instructor_bio", nullable = false)
     private String instructorBio;
 
-    @Column
+    @Column(name = "capacity", nullable = false)
     private Integer capacity;
 
     /*
@@ -22,7 +22,7 @@ public class AdventureAd extends Advertisement {
     @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY)
     private Set<FishingEquipment> fishingEquipment = new HashSet<>();
 
-    @Column
+    @Column(name = "cancellation_fee", nullable = false)
     private BigDecimal cancellationFee;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

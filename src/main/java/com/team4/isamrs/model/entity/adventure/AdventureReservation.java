@@ -11,9 +11,9 @@ public class AdventureReservation extends Reservation {
     @JoinColumn(name = "resort_ad_id")
     private AdventureAd advertisement;
 
-    @Column
+    @Column(name = "start_date_time", nullable = false)
     private LocalDateTime startDateTime;
 
-    @Column
+    @Column(name = "end_date_time", nullable = false)
     private LocalDateTime endDateTime;
 }

@@ -5,6 +5,6 @@ import javax.persistence.Entity;
 
 @Entity
 public class Administrator extends User {
-    @Column
+    @Column(name = "password_changed", nullable = false)
     boolean passwordChanged;
 }

@@ -12,44 +12,44 @@ public class RegistrationRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column
+    @Column(name = "account_type", nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private AccountType accountType;
 
-    @Column
+    @Column(name = "explanation", nullable = false)
     private String explanation;
 
-    @Column
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column
+    @Column(name = "email_address", nullable = false)
     private String emailAddress;
 
-    @Column
+    @Column(name = "address", nullable = false)
     private String address;
 
-    @Column
+    @Column(name = "city", nullable = false)
     private String city;
 
-    @Column
+    @Column(name = "country", nullable = false)
     private String country;
 
-    @Column
+    @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @Column
+    @Column(name = "approval_status", nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private ApprovalStatus approvalStatus;
 
-    @Column
+    @Column(name = "rejection_reason", nullable = false)
     private String rejectionReason;
 }

@@ -15,33 +15,33 @@ public class User {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenV1")
     private Long id;
 
-    @Column
+    @Column(name = "avatar_path")
     private String avatarPath;
 
-    @Column
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column
+    @Column(name = "email_address", unique = true, nullable = false)
     private String emailAddress;
 
-    @Column
+    @Column(name = "address", nullable = false)
     private String address;
 
-    @Column
+    @Column(name = "city", nullable = false)
     private String city;
 
-    @Column
+    @Column(name = "country_code", nullable = false)
     private String countryCode;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "phone_number", unique = true, nullable = false)
     private String phoneNumber;
 
-    @Column
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @Column
+    @Column(name = "active", nullable = false)
     private Boolean active;
 }

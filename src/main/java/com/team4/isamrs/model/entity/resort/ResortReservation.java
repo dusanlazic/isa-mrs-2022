@@ -11,9 +11,9 @@ public class ResortReservation extends Reservation {
     @JoinColumn(name = "resort_ad_id")
     private ResortAd advertisement;
 
-    @Column
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 }

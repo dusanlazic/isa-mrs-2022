@@ -21,34 +21,34 @@ public class Advertisement {
     @JoinColumn(name = "advertiser_id")
     private Advertiser advertiser;
 
-    @Column
+    @Column(name = "title", nullable = false)
     private String title;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    @Column
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column
+    @Column(name = "pricing_description", nullable = false)
     private String pricingDescription;
 
-    @Column
+    @Column(name = "available_after", nullable = false)
     private LocalDateTime availableAfter;
 
-    @Column
+    @Column(name = "available_until", nullable = false)
     private LocalDateTime availableUntil;
 
-    @Column
+    @Column(name = "rules", nullable = false)
     private String rules;
 
-    @Column
+    @Column(name = "currency", nullable = false)
     private String currency;
 
     /*
     e.g. WIFI, Pet friendly, TV
      */
-    @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     private Set<Tag> tags = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

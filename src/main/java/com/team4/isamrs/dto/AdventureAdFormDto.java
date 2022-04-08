@@ -12,8 +12,11 @@ import java.util.Set;
 
 @Data
 public class AdventureAdFormDto {
+    @NotNull
     private String title;
+    @NotNull
     private String description;
+    @NotNull
     private String pricingDescription;
     private LocalDateTime availableAfter;
     private LocalDateTime availableUntil;

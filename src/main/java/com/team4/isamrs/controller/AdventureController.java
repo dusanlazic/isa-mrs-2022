@@ -24,4 +24,14 @@ public class AdventureController {
         Collection<AdventureAd> adventureAds = adventureAdService.findAll();
         return new ResponseEntity<Collection<AdventureAd>>(adventureAds, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AdventureAd> findAdventureAdById(@PathVariable Long id) {
+        Optional<AdventureAd> adventureAd = adventureAdService.findById(id);
+
+        if (adventureAd.isEmpty())
+            return new ResponseEntity<AdventureAd>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<AdventureAd>(adventureAd.get(), HttpStatus.FOUND);
+    }
 }

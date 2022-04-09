@@ -76,4 +76,12 @@ public class Advertisement {
         tags.remove(tag);
         tag.getAdvertisements().remove(this);
     }
+
+    public void addPhoto(Photo photo) {
+        photos.add(photo);
+    }
+
+    public void removePhoto(Photo photo) {
+        photos.remove(photo);
+    }
 }

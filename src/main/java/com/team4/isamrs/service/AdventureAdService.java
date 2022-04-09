@@ -23,6 +23,10 @@ public class AdventureAdService {
     }
 
     public Long createAdventureAd(AdventureAd adventureAd) {
+        /* Note:
+        Every photo in adventureAd.photos should be checked if
+        it's uploaded by the current logged-in user.
+         */
         try {
             adventureAdRepository.save(adventureAd);
         } catch (Exception e) {

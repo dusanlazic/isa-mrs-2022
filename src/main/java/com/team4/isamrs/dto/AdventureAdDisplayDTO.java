@@ -1,7 +1,7 @@
 package com.team4.isamrs.dto;
 
 import com.team4.isamrs.model.entity.advertisement.Address;
-import com.team4.isamrs.model.entity.advertisement.Option;
+import com.team4.isamrs.model.entity.advertisement.HourlyPrice;
 import com.team4.isamrs.model.entity.user.Advertiser;
 import lombok.Data;
 
@@ -21,6 +21,7 @@ public class AdventureAdDisplayDTO {
     private String rules;
     private String currency;
     private Set<String> tags;
-    private Set<String> photos;
+    private Set<PhotoDisplayDTO> photos;
     private Set<OptionDisplayDTO> options;
+    private Set<HourlyPrice> prices;
 }

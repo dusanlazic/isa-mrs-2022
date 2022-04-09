@@ -8,6 +8,7 @@ import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 public class AdventureAdCreationDTO {
@@ -69,7 +70,7 @@ public class AdventureAdCreationDTO {
 
     @NotNull
     @Size(min=3, max=10)
-    private Set<Long> photoIds;
+    private Set<UUID> photoIds;
 
     private Set<Long> fishingEquipmentIds;
 

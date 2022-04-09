@@ -2,12 +2,16 @@ package com.team4.isamrs.model.entity.adventure;
 
 import com.team4.isamrs.model.entity.advertisement.Advertisement;
 import com.team4.isamrs.model.entity.advertisement.HourlyPrice;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
 public class AdventureAd extends Advertisement {
     @Column(name = "instructor_bio", nullable = false)

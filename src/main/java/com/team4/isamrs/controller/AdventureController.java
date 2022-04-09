@@ -12,6 +12,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,9 +44,14 @@ public class AdventureController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<?> addAdventureAd(@Valid @RequestBody AdventureAdCreationDTO dto) {
-        // save user
-        return ResponseEntity.ok("Validation checks passed.");
+    public ResponseEntity<?> addAdventureAd(@Valid @RequestBody AdventureAdCreationDTO dto) throws URISyntaxException {
+        AdventureAd adventureAd = adventureAdService.createAdventureAd(dto);
+
+        if (adventureAd == null)
+            return ResponseEntity.internalServerError().build();
+
+        String uri = "/ads/adventures/" + adventureAd.getId();
+        return ResponseEntity.created(new URI(uri)).body("New adventure ad created at: " + uri);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

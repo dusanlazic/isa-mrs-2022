@@ -64,9 +64,6 @@ public class AdventureAdCreationDTO {
     private BigDecimal cancellationFee;
 
     @NotNull
-    private Long advertiserId;
-
-    @NotNull
     @Size(min=3, max=10)
     private Set<Long> tagIds;
 
@@ -82,7 +79,7 @@ public class AdventureAdCreationDTO {
 
     @NotEmpty
     @Valid
-    private Set<OptionFormCreationDTO> options;
+    private Set<OptionCreationDTO> options;
 
     @NotEmpty
     @Valid

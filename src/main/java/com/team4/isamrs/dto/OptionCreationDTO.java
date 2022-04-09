@@ -8,7 +8,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 @Data
-public class OptionFormCreationDTO {
+public class OptionCreationDTO {
     @NotBlank
     @Size(max=60)
     private String name;

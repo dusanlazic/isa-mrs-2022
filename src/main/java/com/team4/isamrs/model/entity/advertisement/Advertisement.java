@@ -3,12 +3,16 @@ package com.team4.isamrs.model.entity.advertisement;
 import com.team4.isamrs.model.entity.review.ServiceReview;
 import com.team4.isamrs.model.entity.user.Advertiser;
 import com.team4.isamrs.model.entity.user.Customer;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public class Advertisement {
@@ -30,13 +34,13 @@ public class Advertisement {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "pricing_description", nullable = false)
+    @Column(name = "pricing_description")
     private String pricingDescription;
 
-    @Column(name = "available_after", nullable = false)
+    @Column(name = "available_after")
     private LocalDateTime availableAfter;
 
-    @Column(name = "available_until", nullable = false)
+    @Column(name = "available_until")
     private LocalDateTime availableUntil;
 
     @Column(name = "rules", nullable = false)

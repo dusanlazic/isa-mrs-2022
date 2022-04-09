@@ -57,7 +57,6 @@ public class AdventureController {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        System.out.println("OK");
         return errors;
     }
 }

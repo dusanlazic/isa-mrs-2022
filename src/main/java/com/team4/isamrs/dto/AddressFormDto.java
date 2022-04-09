@@ -1,5 +1,6 @@
 package com.team4.isamrs.dto;
 
+import com.team4.isamrs.validation.CountryCode;
 import lombok.Data;
 
 import javax.validation.constraints.*;
@@ -18,11 +19,8 @@ public class AddressFormDto {
     @Size(max=60)
     private String state;
 
-    /*
-    Check ISO code using custom annotation and Locale.getISOCountries
-     */
     @NotBlank
-    @Size(min=2, max=2)
+    @CountryCode
     private String countryCode;
 
     @NotBlank

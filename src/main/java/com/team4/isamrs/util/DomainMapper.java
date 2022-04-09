@@ -45,6 +45,7 @@ public class DomainMapper {
             AdventureAd destination = context.getDestination();
 
             source.getTagIds().forEach(id -> destination.addTag(tagRepository.findById(id).get()));
+            destination.getOptions().forEach(e -> e.setAdvertisement(destination));
 
             return destination;
         };

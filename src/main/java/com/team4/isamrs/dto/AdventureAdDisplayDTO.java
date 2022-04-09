@@ -22,5 +22,5 @@ public class AdventureAdDisplayDTO {
     private String currency;
     private Set<String> tags;
     private Set<String> photos;
-    private Set<Option> options;
+    private Set<OptionDisplayDTO> options;
 }

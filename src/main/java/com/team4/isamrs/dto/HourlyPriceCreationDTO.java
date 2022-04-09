@@ -8,7 +8,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 @Data
-public class HourlyPriceFormDto {
+public class HourlyPriceCreationDTO {
     @NotNull
     @Positive
     private BigDecimal value;

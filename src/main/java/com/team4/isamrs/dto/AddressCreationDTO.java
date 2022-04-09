@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.*;
 
 @Data
-public class AddressFormDto {
+public class AddressCreationDTO {
     @NotBlank
     @Size(max=60)
     private String address;

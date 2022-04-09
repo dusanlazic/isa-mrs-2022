@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-public class AdventureAdFormDto {
+public class AdventureAdCreationDTO {
     /*
     TODO: Perform whitespace checks using custom annotations or regex.
 
@@ -78,13 +78,13 @@ public class AdventureAdFormDto {
 
     @NotNull
     @Valid
-    private AddressFormDto address;
+    private AddressCreationDTO address;
 
     @NotEmpty
     @Valid
-    private Set<OptionFormDto> options;
+    private Set<OptionFormCreationDTO> options;
 
     @NotEmpty
     @Valid
-    private Set<HourlyPriceFormDto> prices;
+    private Set<HourlyPriceCreationDTO> prices;
 }

@@ -1,13 +1,12 @@
 package com.team4.isamrs.controller;
 
-import com.team4.isamrs.dto.AdventureAdFormDto;
+import com.team4.isamrs.dto.AdventureAdCreationDTO;
 import com.team4.isamrs.model.entity.adventure.AdventureAd;
 import com.team4.isamrs.service.AdventureAdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +42,7 @@ public class AdventureController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<?> addAdventureAd(@Valid @RequestBody AdventureAdFormDto dto) {
+    public ResponseEntity<?> addAdventureAd(@Valid @RequestBody AdventureAdCreationDTO dto) {
         // save user
         return ResponseEntity.ok("Validation checks passed.");
     }

@@ -58,7 +58,7 @@ public class Advertisement {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Photo> photos = new HashSet<>();
 
-    @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Option> options = new HashSet<>();
 
     @ManyToMany(mappedBy = "subscriptions", fetch = FetchType.LAZY)

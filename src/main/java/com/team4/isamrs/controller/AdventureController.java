@@ -1,8 +1,10 @@
 package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.AdventureAdCreationDTO;
+import com.team4.isamrs.dto.AdventureAdDisplayDTO;
 import com.team4.isamrs.model.entity.adventure.AdventureAd;
 import com.team4.isamrs.service.AdventureAdService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/ads/adventures")
@@ -25,33 +28,42 @@ import java.util.Optional;
 public class AdventureController {
 
     @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
     private AdventureAdService adventureAdService;
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<AdventureAd>> findAllAdventureAds() {
+    public ResponseEntity<Collection<AdventureAdDisplayDTO>> findAllAdventureAds() {
         Collection<AdventureAd> adventureAds = adventureAdService.findAll();
-        return new ResponseEntity<Collection<AdventureAd>>(adventureAds, HttpStatus.OK);
+
+        Collection<AdventureAdDisplayDTO> dto = adventureAds.stream()
+                .map(e -> modelMapper.map(e, AdventureAdDisplayDTO.class))
+                .collect(Collectors.toSet());
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdventureAd> findAdventureAdById(@PathVariable Long id) {
+    public ResponseEntity<AdventureAdDisplayDTO> findAdventureAdById(@PathVariable Long id) {
         Optional<AdventureAd> adventureAd = adventureAdService.findById(id);
 
         if (adventureAd.isEmpty())
-            return new ResponseEntity<AdventureAd>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        return new ResponseEntity<AdventureAd>(adventureAd.get(), HttpStatus.FOUND);
+        AdventureAdDisplayDTO dto = modelMapper.map(adventureAd.get(), AdventureAdDisplayDTO.class);
+        return new ResponseEntity<>(dto, HttpStatus.FOUND);
     }
 
     @PostMapping(value = "")
     public ResponseEntity<?> addAdventureAd(@Valid @RequestBody AdventureAdCreationDTO dto) throws URISyntaxException {
-        AdventureAd adventureAd = adventureAdService.createAdventureAd(dto);
+        AdventureAd adventureAd = modelMapper.map(dto, AdventureAd.class);
 
-        if (adventureAd == null)
+        Long id = adventureAdService.createAdventureAd(adventureAd);
+        if (id == null)
             return ResponseEntity.internalServerError().build();
-
-        String uri = "/ads/adventures/" + adventureAd.getId();
-        return ResponseEntity.created(new URI(uri)).body("New adventure ad created at: " + uri);
+        String uri = "/ads/adventures/" + id;
+        return ResponseEntity.created(new URI(uri)).body("New AdventureAd created at: " + uri);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

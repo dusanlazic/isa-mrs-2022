@@ -1,9 +1,7 @@
 package com.team4.isamrs.service;
 
-import com.team4.isamrs.dto.AdventureAdCreationDTO;
 import com.team4.isamrs.model.entity.adventure.AdventureAd;
 import com.team4.isamrs.repository.AdventureAdRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +10,6 @@ import java.util.Optional;
 
 @Service
 public class AdventureAdService {
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Autowired
     private AdventureAdRepository adventureAdRepository;
@@ -27,15 +22,13 @@ public class AdventureAdService {
         return adventureAdRepository.findById(id);
     }
 
-    public AdventureAd createAdventureAd(AdventureAdCreationDTO dto) {
-        AdventureAd adventureAd = modelMapper.map(dto, AdventureAd.class);
-
+    public Long createAdventureAd(AdventureAd adventureAd) {
         try {
             adventureAdRepository.save(adventureAd);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        return adventureAd;
+        return adventureAd.getId();
     }
 }

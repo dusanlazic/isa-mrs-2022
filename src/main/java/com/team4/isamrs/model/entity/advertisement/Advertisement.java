@@ -66,4 +66,14 @@ public class Advertisement {
 
     @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY)
     private Set<ServiceReview> reviews = new HashSet<>();
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
+        tag.getAdvertisements().add(this);
+    }
+
+    public void removeTag(Tag tag) {
+        tags.remove(tag);
+        tag.getAdvertisements().remove(this);
+    }
 }

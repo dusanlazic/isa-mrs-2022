@@ -15,9 +15,6 @@ import java.util.Optional;
 public class TagService {
 
     @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
     private TagRepository tagRepository;
 
     public Collection<Tag> findAll() {
@@ -32,15 +29,13 @@ public class TagService {
         return tagRepository.findByName(name);
     }
 
-    public Tag createTag(TagCreationDTO dto) {
-        Tag tag = modelMapper.map(dto, Tag.class);
-
+    public Long createTag(Tag tag) {
         try {
             tagRepository.save(tag);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        return tag;
+        return tag.getId();
     }
 }

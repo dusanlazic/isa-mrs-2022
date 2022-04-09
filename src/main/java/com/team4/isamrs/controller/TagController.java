@@ -1,8 +1,10 @@
 package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.TagCreationDTO;
+import com.team4.isamrs.dto.TagDisplayDTO;
 import com.team4.isamrs.model.entity.advertisement.Tag;
 import com.team4.isamrs.service.TagService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tags")
@@ -25,32 +28,42 @@ import java.util.Optional;
 public class TagController {
 
     @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
     private TagService tagService;
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Tag>> findAllTags() {
+    public ResponseEntity<Collection<TagDisplayDTO>> findAllTags() {
         Collection<Tag> tags = tagService.findAll();
-        return new ResponseEntity<Collection<Tag>>(tags, HttpStatus.OK);
+
+        Collection<TagDisplayDTO> dto = tags.stream()
+                .map(e -> modelMapper.map(e, TagDisplayDTO.class))
+                .collect(Collectors.toSet());
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Tag> findTagById(@PathVariable Long id) {
+    public ResponseEntity<TagDisplayDTO> findTagById(@PathVariable Long id) {
         Optional<Tag> tag = tagService.findById(id);
 
         if (tag.isEmpty())
-            return new ResponseEntity<Tag>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        return new ResponseEntity<Tag>(tag.get(), HttpStatus.FOUND);
+        TagDisplayDTO dto = modelMapper.map(tag.get(), TagDisplayDTO.class);
+        return new ResponseEntity<>(dto, HttpStatus.FOUND);
     }
 
     @PostMapping(value = "")
     public ResponseEntity<?> addTag(@Valid @RequestBody TagCreationDTO dto) throws URISyntaxException {
-        Tag tag = tagService.createTag(dto);
+        Tag tag = modelMapper.map(dto, Tag.class);
 
+        Long id = tagService.createTag(tag);
         if (tag == null)
             return ResponseEntity.internalServerError().build();
 
-        String uri = "/tags/" + tag.getId();
+        String uri = "/tags/" + id;
         return ResponseEntity.created(new URI(uri)).body("New Tag created at: " + uri);
     }
 

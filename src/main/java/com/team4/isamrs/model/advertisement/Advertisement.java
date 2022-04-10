@@ -84,4 +84,14 @@ public class Advertisement {
     public void removePhoto(Photo photo) {
         photos.remove(photo);
     }
+
+    public void addOption(Option option) {
+        options.add(option);
+        option.setAdvertisement(this);
+    }
+
+    public void removeOption(Option option) {
+        options.remove(option);
+        option.setAdvertisement(null);
+    }
 }

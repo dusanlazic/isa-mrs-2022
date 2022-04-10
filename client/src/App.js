@@ -1,6 +1,8 @@
 import './App.css';
 import HomePage from './pages/HomePage'
 import ProfilePage from './pages/ProfilePage';
+import ProfileEditorPage from './pages/ProfileEditorPage';
+
 import NotFound from './pages/NotFound'
 
 import { BrowserRouter as Router, Route, Routes, Head } from 'react-router-dom'
@@ -13,6 +15,7 @@ function App() {
         <div className="h-full">
             <Routes>
               <Route path="/" exact element={<ProfilePage/>}/>
+              <Route path="/edit" exact element={<ProfileEditorPage/>}/>
 
               <Route path="*" element={<NotFound/>}/>
             </Routes>

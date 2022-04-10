@@ -10,6 +10,14 @@ import javax.validation.constraints.Size;
 
 @Data
 public class AddressUpdationDTO {
+    /* Note:
+    No different from AddressCreationDTO.
+
+    Data changes can be restricted by removing fields from this class.
+    If no restrictions should be applied, reusing AddressCreationDTO
+    class and removing this one is fine.
+     */
+
     @NotBlank
     @Size(max=60)
     private String address;

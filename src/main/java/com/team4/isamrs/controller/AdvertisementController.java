@@ -33,7 +33,7 @@ public class AdvertisementController {
     private OptionService optionService;
 
     @GetMapping(value = "/{id}/options", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<OptionDisplayDTO>> getAllOptionsForAdvertisement(@PathVariable Long id) {
+    public ResponseEntity<Collection<OptionDisplayDTO>> getOptions(@PathVariable Long id) {
         Optional<Advertisement> advertisement = advertisementService.findById(id);
         if (advertisement.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

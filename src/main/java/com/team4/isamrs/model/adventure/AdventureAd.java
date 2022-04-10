@@ -44,4 +44,12 @@ public class AdventureAd extends Advertisement {
         fishingEquipment.remove(singleFishingEquipment);
         singleFishingEquipment.getAdvertisements().remove(this);
     }
+
+    public void addHourlyPrice(HourlyPrice hourlyPrice) {
+        prices.add(hourlyPrice);
+    }
+
+    public void removeHourlyPrice(HourlyPrice hourlyPrice) {
+        prices.remove(hourlyPrice);
+    }
 }

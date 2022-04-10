@@ -5,6 +5,7 @@ import com.team4.isamrs.dto.display.OptionDisplayDTO;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.Option;
 import com.team4.isamrs.service.AdvertisementService;
+import com.team4.isamrs.service.OptionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,9 @@ public class AdvertisementController {
 
     @Autowired
     private AdvertisementService advertisementService;
+
+    @Autowired
+    private OptionService optionService;
 
     @GetMapping(value = "/{id}/options", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<OptionDisplayDTO>> getAllOptionsForAdvertisement(@PathVariable Long id) {
@@ -53,5 +57,33 @@ public class AdvertisementController {
             return ResponseEntity.internalServerError().build();
 
         return ResponseEntity.ok().body("Option created.");
+    }
+
+    @DeleteMapping(value = "/{advertisementId}/options/{optionId}")
+    public ResponseEntity<?> removeOption(@PathVariable Long advertisementId, @PathVariable Long optionId) {
+        Optional<Advertisement> advertisement = advertisementService.findById(advertisementId);
+        Optional<Option> option = optionService.findById(optionId);
+
+        if (advertisement.isEmpty() || option.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!advertisementService.removeOption(option.get(), advertisement.get()))
+            return ResponseEntity.internalServerError().build();
+
+        return ResponseEntity.ok().body("Option deleted.");
+    }
+
+    @PutMapping(value = "/{advertisementId}/options/{optionId}")
+    public ResponseEntity<?> updateOption(@PathVariable Long advertisementId, @PathVariable Long optionId, @Valid @RequestBody OptionCreationDTO dto) {
+        Optional<Advertisement> advertisement = advertisementService.findById(advertisementId);
+        Optional<Option> option = optionService.findById(optionId);
+
+        if (advertisement.isEmpty() || option.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!advertisementService.updateOption(option.get(), advertisement.get(), dto))
+            return ResponseEntity.internalServerError().build();
+
+        return ResponseEntity.ok().body("Option updated.");
     }
 }

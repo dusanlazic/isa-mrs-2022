@@ -1,6 +1,6 @@
 package com.team4.isamrs.controller;
 
-import com.team4.isamrs.model.entity.advertisement.Photo;
+import com.team4.isamrs.model.advertisement.Photo;
 import com.team4.isamrs.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

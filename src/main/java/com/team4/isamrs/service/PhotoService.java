@@ -1,6 +1,6 @@
 package com.team4.isamrs.service;
 
-import com.team4.isamrs.model.entity.advertisement.Photo;
+import com.team4.isamrs.model.advertisement.Photo;
 import com.team4.isamrs.repository.PhotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

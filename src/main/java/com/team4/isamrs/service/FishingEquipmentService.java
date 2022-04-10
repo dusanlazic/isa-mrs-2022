@@ -1,6 +1,6 @@
 package com.team4.isamrs.service;
 
-import com.team4.isamrs.model.entity.adventure.FishingEquipment;
+import com.team4.isamrs.model.adventure.FishingEquipment;
 import com.team4.isamrs.repository.FishingEquipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

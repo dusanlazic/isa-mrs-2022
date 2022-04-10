@@ -1,8 +1,8 @@
 package com.team4.isamrs.controller;
 
-import com.team4.isamrs.dto.TagCreationDTO;
-import com.team4.isamrs.dto.TagDisplayDTO;
-import com.team4.isamrs.model.entity.advertisement.Tag;
+import com.team4.isamrs.dto.creation.TagCreationDTO;
+import com.team4.isamrs.dto.display.TagDisplayDTO;
+import com.team4.isamrs.model.advertisement.Tag;
 import com.team4.isamrs.service.TagService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

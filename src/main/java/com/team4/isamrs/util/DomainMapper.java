@@ -1,11 +1,11 @@
 package com.team4.isamrs.util;
 
-import com.team4.isamrs.dto.AdventureAdCreationDTO;
-import com.team4.isamrs.dto.AdventureAdDisplayDTO;
-import com.team4.isamrs.dto.PhotoDisplayDTO;
-import com.team4.isamrs.model.entity.adventure.AdventureAd;
-import com.team4.isamrs.model.entity.advertisement.Photo;
-import com.team4.isamrs.model.entity.advertisement.Tag;
+import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
+import com.team4.isamrs.dto.display.AdventureAdDisplayDTO;
+import com.team4.isamrs.dto.display.PhotoDisplayDTO;
+import com.team4.isamrs.model.adventure.AdventureAd;
+import com.team4.isamrs.model.advertisement.Photo;
+import com.team4.isamrs.model.advertisement.Tag;
 import com.team4.isamrs.repository.AdventureAdRepository;
 import com.team4.isamrs.repository.FishingEquipmentRepository;
 import com.team4.isamrs.repository.PhotoRepository;

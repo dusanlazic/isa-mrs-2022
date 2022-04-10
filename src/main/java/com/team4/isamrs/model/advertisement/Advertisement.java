@@ -52,10 +52,10 @@ public class Advertisement {
     /*
     e.g. WIFI, Pet friendly, TV
      */
-    @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY)
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY)
     private Set<Photo> photos = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -83,5 +83,15 @@ public class Advertisement {
 
     public void removePhoto(Photo photo) {
         photos.remove(photo);
+    }
+
+    public void addOption(Option option) {
+        options.add(option);
+        option.setAdvertisement(this);
+    }
+
+    public void removeOption(Option option) {
+        options.remove(option);
+        option.setAdvertisement(null);
     }
 }

@@ -2,6 +2,7 @@ package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.display.AdventureAdDisplayDTO;
+import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
 import com.team4.isamrs.model.adventure.AdventureAd;
 import com.team4.isamrs.service.AdventureAdService;
 import org.modelmapper.ModelMapper;
@@ -60,5 +61,18 @@ public class AdventureController {
             return ResponseEntity.internalServerError().build();
         String uri = "/ads/adventures/" + id;
         return ResponseEntity.created(new URI(uri)).body("New AdventureAd created at: " + uri);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<?> updateAdventureAd(@PathVariable Long id, @Valid @RequestBody AdventureAdUpdationDTO dto) {
+        Optional<AdventureAd> adventureAd = adventureAdService.findById(id);
+
+        if (adventureAd.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!adventureAdService.updateAdventureAd(adventureAd.get(), dto))
+            return ResponseEntity.internalServerError().build();
+
+        return ResponseEntity.ok("AdventureAd updated.");
     }
 }

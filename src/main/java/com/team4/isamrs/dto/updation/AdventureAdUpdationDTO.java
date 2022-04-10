@@ -1,4 +1,4 @@
-package com.team4.isamrs.dto.creation;
+package com.team4.isamrs.dto.updation;
 
 
 import lombok.Data;
@@ -11,25 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
-public class AdventureAdCreationDTO {
-    /*
-    TODO: Perform whitespace checks using custom annotations or regex.
-
-    It's important to understand that there are three types of fields when creating a new entity.
-    1. Data fields:
-       Strings, integers, decimals and other similar types that are serializable by default.
-       e.g. title, description, capacity
-
-    2. "New Entity" fields:
-       Those contain their own set of fields. These fields are used for creating entities related
-       to the main entity we are creating.
-       e.g. address, options, prices
-
-    3. "Existing Entity" fields:
-       Represents an ID of an already existing entity.
-       e.g. advertiserId, tagIds
-     */
-
+public class AdventureAdUpdationDTO {
     @NotBlank
     @Size(max=40)
     private String title;
@@ -77,13 +59,5 @@ public class AdventureAdCreationDTO {
 
     @NotNull
     @Valid
-    private AddressCreationDTO address;
-
-    @NotEmpty
-    @Valid
-    private Set<OptionCreationDTO> options;
-
-    @NotEmpty
-    @Valid
-    private Set<HourlyPriceCreationDTO> prices;
+    private AddressUpdationDTO address;
 }

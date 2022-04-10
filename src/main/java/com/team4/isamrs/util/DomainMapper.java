@@ -7,6 +7,7 @@ import com.team4.isamrs.model.entity.adventure.AdventureAd;
 import com.team4.isamrs.model.entity.advertisement.Photo;
 import com.team4.isamrs.model.entity.advertisement.Tag;
 import com.team4.isamrs.repository.AdventureAdRepository;
+import com.team4.isamrs.repository.FishingEquipmentRepository;
 import com.team4.isamrs.repository.PhotoRepository;
 import com.team4.isamrs.repository.TagRepository;
 import org.modelmapper.Converter;
@@ -29,6 +30,9 @@ public class DomainMapper {
     @Autowired
     private PhotoRepository photoRepository;
 
+    @Autowired
+    private FishingEquipmentRepository fishingEquipmentRepository;
+
     @Bean
     public ModelMapper ModelMapper() {
         ModelMapper modelMapper = new ModelMapper();
@@ -50,6 +54,7 @@ public class DomainMapper {
 
             // Lookup IDs and fill the collections
             source.getTagIds().forEach(id -> destination.addTag(tagRepository.findById(id).get()));
+            source.getFishingEquipmentIds().forEach(id -> destination.addFishingEquipment(fishingEquipmentRepository.findById(id).get()));
             source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
 
             // Sync bidirectional relationships

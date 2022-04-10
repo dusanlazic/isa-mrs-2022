@@ -83,6 +83,19 @@ public class AdventureController {
         return ResponseEntity.ok("AdventureAd updated.");
     }
 
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<?> removeAd(@PathVariable Long id) {
+        Optional<AdventureAd> adventureAd = adventureAdService.findById(id);
+
+        if (adventureAd.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        if (!adventureAdService.removeAd(adventureAd.get()))
+            return ResponseEntity.internalServerError().build();
+
+        return ResponseEntity.ok("AdventureAd deleted.");
+    }
+
     @GetMapping(value = "/{id}/prices", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<HourlyPriceDisplayDTO>> getPrices(@PathVariable Long id) {
         Optional<AdventureAd> adventureAd = adventureAdService.findById(id);

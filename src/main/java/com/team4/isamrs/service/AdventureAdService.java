@@ -112,4 +112,21 @@ public class AdventureAdService {
         }
         return true;
     }
+
+    public boolean removeAd(AdventureAd adventureAd) {
+        /* Note:
+        Ensure that this advertisement is posted by the current logged-in user.
+         */
+        if (!adventureAd.getReservations().isEmpty())
+            return false;
+
+        try {
+            adventureAd.getFishingEquipment().forEach(e -> e.getAdvertisements().remove(adventureAd));
+            adventureAdRepository.delete(adventureAd);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }

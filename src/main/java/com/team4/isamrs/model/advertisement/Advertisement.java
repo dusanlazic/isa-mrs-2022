@@ -52,10 +52,10 @@ public class Advertisement {
     /*
     e.g. WIFI, Pet friendly, TV
      */
-    @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY)
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY)
     private Set<Photo> photos = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

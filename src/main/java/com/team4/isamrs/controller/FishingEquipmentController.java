@@ -60,22 +60,10 @@ public class FishingEquipmentController {
         FishingEquipment fishingEquipment = modelMapper.map(dto, FishingEquipment.class);
 
         Long id = fishingEquipmentService.createFishingEquipment(fishingEquipment);
-        if (fishingEquipment == null)
+        if (id == null)
             return ResponseEntity.internalServerError().build();
 
         String uri = "/fishing-equipment/" + id;
         return ResponseEntity.created(new URI(uri)).body("New Fishing Equipment created at: " + uri);
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
     }
 }

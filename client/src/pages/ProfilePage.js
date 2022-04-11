@@ -1,6 +1,7 @@
 // main components
 import UserProfileMainInfo from '../components/profile/main/UserProfileMainInfo'
 import ResortProfileMainInfo from '../components/profile/main/ResortProfileMainInfo'
+import BoatProfileMainInfo from '../components/profile/main/BoatProfileMainInfo'
 
 // additional components
 import ClientReviewList from '../components/profile/additional/ClientReviewList'
@@ -10,12 +11,15 @@ import Gallery from '../components/profile/additional/Gallery'
 
 // sidebar components
 import LoyaltyProgramCard from '../components/profile/sidebar/LoyaltyProgramCard'
-import PriceCard from '../components/profile/sidebar/PriceCard'
+import HourlyPriceCard from '../components/profile/sidebar/HourlyPriceCard'
+import DailyPriceCard from '../components/profile/sidebar/DailyPriceCard'
 
 import AdditionalInformation from '../components/profile/additional/AdditionalInformation'
 import Sidebar from '../components/profile/sidebar/Sidebar'
 
-const type = 'resort'
+import Equipment from '../components/profile/sidebar/Equipment'
+
+const type = 'boat'
 
 const clientAdditionalComponents = [
   { title: 'Reviews', component: <ClientReviewList />},
@@ -33,23 +37,39 @@ const resortAdditionalComponents = [
   //{ title: 'Location', component: <Map />},
 ]
 
-const resortSidebarComponents = [<PriceCard/>]
+const resortSidebarComponents = [<DailyPriceCard/>]
 
 const resortMainComponent = <ResortProfileMainInfo/>
+
+const boatAdditionalComponents = [
+  { title: 'About', component: <About />},
+  { title: 'Photos',  component: <Gallery/>},
+  { title: 'Reviews', component: <ClientReviewList />},
+  //{ title: 'Location', component: <Map />},
+]
+
+const boatSidebarComponents = [<HourlyPriceCard/>, <Equipment />]
+
+const boatMainComponent = <BoatProfileMainInfo/>
 
 const ProfilePage = () => {
   
   let sidebar, main, content
 
-  if (type == 'resort') {
+  if (type === 'resort') {
     sidebar = resortSidebarComponents
     main = resortMainComponent
     content = resortAdditionalComponents
   }
-  else {
+  else if (type === 'client') {
     sidebar = clientSidebarComponents
     main = clientMainComponent
     content = clientAdditionalComponents
+  }
+  else {
+    sidebar = boatSidebarComponents
+    main = boatMainComponent
+    content = boatAdditionalComponents
   }
 
   return (

@@ -1,4 +1,4 @@
-const PriceList = () => {
+const DailyPriceList = () => {
     const prices = [
       {
         id: 0,
@@ -28,4 +28,4 @@ const PriceList = () => {
      );
   }
    
-  export default PriceList;
+  export default DailyPriceList;

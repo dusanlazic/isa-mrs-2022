@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-public class AdventureAdDisplayDTO {
+public class AdventureAdDisplayDTO implements DisplayDTO {
     private Long id;
     private Advertiser advertiser;
     private String title;

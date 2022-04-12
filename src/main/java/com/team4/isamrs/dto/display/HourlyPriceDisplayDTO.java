@@ -5,7 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class HourlyPriceDisplayDTO {
+public class HourlyPriceDisplayDTO implements DisplayDTO {
     private Long id;
     private BigDecimal value;
     private Integer minHours;

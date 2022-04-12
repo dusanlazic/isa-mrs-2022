@@ -5,11 +5,7 @@ import com.team4.isamrs.dto.creation.HourlyPriceCreationDTO;
 import com.team4.isamrs.dto.display.AdventureAdDisplayDTO;
 import com.team4.isamrs.dto.display.HourlyPriceDisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
-import com.team4.isamrs.model.adventure.AdventureAd;
-import com.team4.isamrs.model.advertisement.HourlyPrice;
 import com.team4.isamrs.service.AdventureAdService;
-import com.team4.isamrs.service.HourlyPriceService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,136 +14,68 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collection;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/ads/adventures")
+@RequestMapping(
+        value = "/ads/adventures",
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "*")
 public class AdventureController {
 
     @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
     private AdventureAdService adventureAdService;
 
-    @Autowired
-    private HourlyPriceService hourlyPriceService;
-
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<AdventureAdDisplayDTO>> findAllAdventureAds() {
-        Collection<AdventureAd> adventureAds = adventureAdService.findAll();
-
-        Collection<AdventureAdDisplayDTO> dto = adventureAds.stream()
-                .map(e -> modelMapper.map(e, AdventureAdDisplayDTO.class))
-                .collect(Collectors.toSet());
-
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+    @GetMapping("")
+    public ResponseEntity<Collection<AdventureAdDisplayDTO>> findAll() {
+        return new ResponseEntity<>(adventureAdService.findAll(AdventureAdDisplayDTO.class), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdventureAdDisplayDTO> findAdventureAdById(@PathVariable Long id) {
-        Optional<AdventureAd> adventureAd = adventureAdService.findById(id);
-
-        if (adventureAd.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        AdventureAdDisplayDTO dto = modelMapper.map(adventureAd.get(), AdventureAdDisplayDTO.class);
-        return new ResponseEntity<>(dto, HttpStatus.FOUND);
+    @GetMapping("/{id}")
+    public ResponseEntity<AdventureAdDisplayDTO> findById(@PathVariable Long id) {
+        return new ResponseEntity<>(adventureAdService.findById(id, AdventureAdDisplayDTO.class), HttpStatus.OK);
     }
 
-    @PostMapping(value = "")
-    public ResponseEntity<?> addAdventureAd(@Valid @RequestBody AdventureAdCreationDTO dto) throws URISyntaxException {
-        AdventureAd adventureAd = modelMapper.map(dto, AdventureAd.class);
-
-        Long id = adventureAdService.createAdventureAd(adventureAd);
-        if (id == null)
-            return ResponseEntity.internalServerError().build();
-        String uri = "/ads/adventures/" + id;
-        return ResponseEntity.created(new URI(uri)).body("New AdventureAd created at: " + uri);
+    @PostMapping("")
+    public ResponseEntity<String> create(@Valid @RequestBody AdventureAdCreationDTO dto) {
+        return ResponseEntity.created(URI.create("/ads/adventures/" + adventureAdService.create(dto).getId()))
+                             .body("Adventure ad created.");
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<?> updateAdventureAd(@PathVariable Long id, @Valid @RequestBody AdventureAdUpdationDTO dto) {
-        Optional<AdventureAd> adventureAd = adventureAdService.findById(id);
-
-        if (adventureAd.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        if (!adventureAdService.updateAdventureAd(adventureAd.get(), dto))
-            return ResponseEntity.internalServerError().build();
-
-        return ResponseEntity.ok("AdventureAd updated.");
+    @PutMapping("/{id}")
+    public ResponseEntity<String> update(@PathVariable Long id, @Valid @RequestBody AdventureAdUpdationDTO dto) {
+        adventureAdService.update(id, dto);
+        return ResponseEntity.ok("Adventure ad updated.");
     }
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> removeAd(@PathVariable Long id) {
-        Optional<AdventureAd> adventureAd = adventureAdService.findById(id);
-
-        if (adventureAd.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        if (!adventureAdService.removeAd(adventureAd.get()))
-            return ResponseEntity.internalServerError().build();
-
-        return ResponseEntity.ok("AdventureAd deleted.");
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        adventureAdService.delete(id);
+        return ResponseEntity.ok("Adventure ad deleted.");
     }
 
-    @GetMapping(value = "/{id}/prices", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/{id}/prices")
     public ResponseEntity<Collection<HourlyPriceDisplayDTO>> getPrices(@PathVariable Long id) {
-        Optional<AdventureAd> adventureAd = adventureAdService.findById(id);
-        if (adventureAd.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        Collection<HourlyPrice> prices = adventureAd.get().getPrices();
-        Collection<HourlyPriceDisplayDTO> dto = prices.stream()
-                .map(e -> modelMapper.map(e, HourlyPriceDisplayDTO.class))
-                .collect(Collectors.toSet());
-
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        return new ResponseEntity<>(adventureAdService.getPrices(id, HourlyPriceDisplayDTO.class), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/{id}/prices")
-    public ResponseEntity<?> addPrice(@PathVariable Long id, @Valid @RequestBody HourlyPriceCreationDTO dto) {
-        Optional<AdventureAd> adventureAd = adventureAdService.findById(id);
-        if (adventureAd.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        HourlyPrice hourlyPrice = modelMapper.map(dto, HourlyPrice.class);
-        if (!adventureAdService.addPriceToAdventureAd(hourlyPrice, adventureAd.get()))
-            return ResponseEntity.internalServerError().build();
-
-        return ResponseEntity.ok().body("Price created.");
+    @PostMapping("/{id}/prices")
+    public ResponseEntity<String> addPrice(@PathVariable Long id, @Valid @RequestBody HourlyPriceCreationDTO dto) {
+        adventureAdService.addPrice(id, dto);
+        return ResponseEntity.created(URI.create("/ads/adventures/" + id))
+                             .body("Hourly price created.");
     }
 
-    @DeleteMapping(value = "/{advertisementId}/prices/{priceId}")
-    public ResponseEntity<?> removePrice(@PathVariable Long advertisementId, @PathVariable Long priceId) {
-        Optional<AdventureAd> adventureAd = adventureAdService.findById(advertisementId);
-        Optional<HourlyPrice> hourlyPrice = hourlyPriceService.findById(priceId);
-
-        if (adventureAd.isEmpty() || hourlyPrice.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        if (!adventureAdService.removePrice(hourlyPrice.get(), adventureAd.get()))
-            return ResponseEntity.internalServerError().build();
-
-        return ResponseEntity.ok().body("Price deleted.");
+    @PutMapping("/{id}/prices/{priceId}")
+    public ResponseEntity<String> updatePrice(@PathVariable Long id, @PathVariable Long priceId, @Valid @RequestBody HourlyPriceCreationDTO dto) {
+        adventureAdService.updatePrice(id, priceId, dto);
+        return ResponseEntity.ok().body("Hourly price updated.");
     }
 
-    @PutMapping(value = "/{advertisementId}/prices/{priceId}")
-    public ResponseEntity<?> updatePrice(@PathVariable Long advertisementId, @PathVariable Long priceId, @Valid @RequestBody HourlyPriceCreationDTO dto) {
-        Optional<AdventureAd> adventureAd = adventureAdService.findById(advertisementId);
-        Optional<HourlyPrice> hourlyPrice = hourlyPriceService.findById(priceId);
-
-        if (adventureAd.isEmpty() || hourlyPrice.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        if (!adventureAdService.updatePrice(hourlyPrice.get(), adventureAd.get(), dto))
-            return ResponseEntity.internalServerError().build();
-
-        return ResponseEntity.ok().body("Price updated.");
+    @DeleteMapping("/{id}/prices/{priceId}")
+    public ResponseEntity<String> removePrice(@PathVariable Long id, @PathVariable Long priceId) {
+        adventureAdService.removePrice(id, priceId);
+        return ResponseEntity.ok().body("Hourly price deleted.");
     }
 }

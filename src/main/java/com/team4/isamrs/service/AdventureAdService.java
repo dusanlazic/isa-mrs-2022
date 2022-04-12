@@ -1,6 +1,8 @@
 package com.team4.isamrs.service;
 
+import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.creation.HourlyPriceCreationDTO;
+import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
 import com.team4.isamrs.model.adventure.AdventureAd;
 import com.team4.isamrs.model.advertisement.HourlyPrice;
@@ -11,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AdventureAdService {
@@ -25,108 +27,107 @@ public class AdventureAdService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public Collection<AdventureAd> findAll() {
-        return adventureAdRepository.findAll();
+    public <T extends DisplayDTO> Collection<T> findAll(Class<T> returnType) {
+        return adventureAdRepository.findAll().stream()
+                .map(e -> modelMapper.map(e, returnType))
+                .collect(Collectors.toSet());
     }
 
-    public Optional<AdventureAd> findById(Long id) {
-        return adventureAdRepository.findById(id);
+    public <T extends DisplayDTO> T findById(Long id, Class<T> returnType) {
+        // Todo: Custom exception handled by controller advisor
+        AdventureAd adventureAd = adventureAdRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Adventure ad not found."));
+
+        return modelMapper.map(adventureAd, returnType);
     }
 
-    public Long createAdventureAd(AdventureAd adventureAd) {
+    public AdventureAd create(AdventureAdCreationDTO dto) {
         /* Note:
         Every photo in adventureAd.photos should be checked if
         it's uploaded by the current logged-in user.
          */
-        try {
-            adventureAdRepository.save(adventureAd);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return adventureAd.getId();
+        AdventureAd adventureAd = modelMapper.map(dto, AdventureAd.class);
+
+        adventureAdRepository.save(adventureAd);
+        return adventureAd;
     }
 
-    public Boolean updateAdventureAd(AdventureAd adventureAd, AdventureAdUpdationDTO dto) {
+    public void update(Long id, AdventureAdUpdationDTO dto) {
         /* Note:
         Every photo in adventureAd.photos should be checked if
         it's uploaded by the current logged-in user.
          */
+        AdventureAd adventureAd = adventureAdRepository.findById(id).orElseThrow(NullPointerException::new);
+
         modelMapper.map(dto, adventureAd);
-        try {
-            adventureAdRepository.save(adventureAd);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+
+        adventureAdRepository.save(adventureAd);
     }
 
-    public boolean addPriceToAdventureAd(HourlyPrice hourlyPrice, AdventureAd adventureAd) {
+    public void delete(Long id) {
         /* Note:
         Ensure that this advertisement is posted by the current logged-in user.
          */
+        AdventureAd adventureAd = adventureAdRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Adventure ad has reservations."));
+
+        adventureAd.getFishingEquipment().forEach(e -> e.getAdvertisements().remove(adventureAd)); // there must be a better solution
+
+        adventureAdRepository.delete(adventureAd);
+    }
+
+    public <T extends DisplayDTO> Collection<T> getPrices(Long id, Class<T> returnType) {
+        AdventureAd adventureAd = adventureAdRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Adventure ad not found."));
+
+        Collection<HourlyPrice> prices = adventureAd.getPrices();
+        return prices.stream()
+                .map(e -> modelMapper.map(e, returnType))
+                .collect(Collectors.toSet());
+    }
+
+    public HourlyPrice addPrice(Long id, HourlyPriceCreationDTO dto) {
+        /* Note:
+        Ensure that this advertisement is posted by the current logged-in user.
+         */
+        AdventureAd adventureAd = adventureAdRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Adventure ad not found."));
+
+        HourlyPrice hourlyPrice = modelMapper.map(dto, HourlyPrice.class);
         adventureAd.addHourlyPrice(hourlyPrice);
 
-        try {
-            adventureAdRepository.save(adventureAd);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        adventureAdRepository.save(adventureAd);
+        return hourlyPrice;
     }
 
-    public boolean removePrice(HourlyPrice hourlyPrice, AdventureAd adventureAd) {
+    public void updatePrice(Long advertisementId, Long priceId, HourlyPriceCreationDTO dto) {
         /* Note:
         Ensure that this advertisement is posted by the current logged-in user.
          */
+        AdventureAd adventureAd = adventureAdRepository.findById(advertisementId).orElseThrow();
+        HourlyPrice hourlyPrice = hourlyPriceRepository.findById(priceId).orElseThrow();
         if (!adventureAd.getPrices().contains(hourlyPrice))
-            return false;
+            throw new RuntimeException("Price does not belong to Adventure ad.");
+
+        modelMapper.map(dto, hourlyPrice);
+
+        hourlyPriceRepository.save(hourlyPrice);
+    }
+
+    public void removePrice(Long advertisementId, Long priceId) {
+        /* Note:
+        Ensure that this advertisement is posted by the current logged-in user.
+         */
+        AdventureAd adventureAd = adventureAdRepository.findById(advertisementId)
+                .orElseThrow(() -> new RuntimeException("Adventure ad not found."));
+        HourlyPrice hourlyPrice = hourlyPriceRepository.findById(priceId)
+                .orElseThrow(() -> new RuntimeException("Price not found."));
+        if (!adventureAd.getPrices().contains(hourlyPrice))
+            throw new RuntimeException("Price does not belong to Adventure ad.");
 
         adventureAd.removeHourlyPrice(hourlyPrice);
 
-        try {
-            adventureAdRepository.save(adventureAd);
-            hourlyPriceRepository.delete(hourlyPrice);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    public boolean updatePrice(HourlyPrice hourlyPrice, AdventureAd adventureAd, HourlyPriceCreationDTO dto) {
-        /* Note:
-        Ensure that this advertisement is posted by the current logged-in user.
-         */
-        if (!adventureAd.getPrices().contains(hourlyPrice))
-            return false;
-
-        modelMapper.map(dto, hourlyPrice);
-        try {
-            hourlyPriceRepository.save(hourlyPrice);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    public boolean removeAd(AdventureAd adventureAd) {
-        /* Note:
-        Ensure that this advertisement is posted by the current logged-in user.
-         */
-        if (!adventureAd.getReservations().isEmpty())
-            return false;
-
-        try {
-            adventureAd.getFishingEquipment().forEach(e -> e.getAdvertisements().remove(adventureAd));
-            adventureAdRepository.delete(adventureAd);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        adventureAdRepository.save(adventureAd);
+        hourlyPriceRepository.delete(hourlyPrice); // might not be needed because of auto orphan removal
     }
 }

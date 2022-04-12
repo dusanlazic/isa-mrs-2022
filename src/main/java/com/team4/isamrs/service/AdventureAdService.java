@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,9 +35,7 @@ public class AdventureAdService {
     }
 
     public <T extends DisplayDTO> T findById(Long id, Class<T> returnType) {
-        // Todo: Custom exception handled by controller advisor
-        AdventureAd adventureAd = adventureAdRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Adventure ad not found."));
+        AdventureAd adventureAd = adventureAdRepository.findById(id).orElseThrow();
 
         return modelMapper.map(adventureAd, returnType);
     }
@@ -57,7 +56,7 @@ public class AdventureAdService {
         Every photo in adventureAd.photos should be checked if
         it's uploaded by the current logged-in user.
          */
-        AdventureAd adventureAd = adventureAdRepository.findById(id).orElseThrow(NullPointerException::new);
+        AdventureAd adventureAd = adventureAdRepository.findById(id).orElseThrow();
 
         modelMapper.map(dto, adventureAd);
 
@@ -68,8 +67,7 @@ public class AdventureAdService {
         /* Note:
         Ensure that this advertisement is posted by the current logged-in user.
          */
-        AdventureAd adventureAd = adventureAdRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Adventure ad has reservations."));
+        AdventureAd adventureAd = adventureAdRepository.findById(id).orElseThrow();
 
         adventureAd.getFishingEquipment().forEach(e -> e.getAdvertisements().remove(adventureAd)); // there must be a better solution
 
@@ -77,8 +75,7 @@ public class AdventureAdService {
     }
 
     public <T extends DisplayDTO> Collection<T> getPrices(Long id, Class<T> returnType) {
-        AdventureAd adventureAd = adventureAdRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Adventure ad not found."));
+        AdventureAd adventureAd = adventureAdRepository.findById(id).orElseThrow();
 
         Collection<HourlyPrice> prices = adventureAd.getPrices();
         return prices.stream()
@@ -90,8 +87,7 @@ public class AdventureAdService {
         /* Note:
         Ensure that this advertisement is posted by the current logged-in user.
          */
-        AdventureAd adventureAd = adventureAdRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Adventure ad not found."));
+        AdventureAd adventureAd = adventureAdRepository.findById(id).orElseThrow();
 
         HourlyPrice hourlyPrice = modelMapper.map(dto, HourlyPrice.class);
         adventureAd.addHourlyPrice(hourlyPrice);
@@ -107,7 +103,7 @@ public class AdventureAdService {
         AdventureAd adventureAd = adventureAdRepository.findById(advertisementId).orElseThrow();
         HourlyPrice hourlyPrice = hourlyPriceRepository.findById(priceId).orElseThrow();
         if (!adventureAd.getPrices().contains(hourlyPrice))
-            throw new RuntimeException("Price does not belong to Adventure ad.");
+            throw new NoSuchElementException();
 
         modelMapper.map(dto, hourlyPrice);
 
@@ -118,12 +114,10 @@ public class AdventureAdService {
         /* Note:
         Ensure that this advertisement is posted by the current logged-in user.
          */
-        AdventureAd adventureAd = adventureAdRepository.findById(advertisementId)
-                .orElseThrow(() -> new RuntimeException("Adventure ad not found."));
-        HourlyPrice hourlyPrice = hourlyPriceRepository.findById(priceId)
-                .orElseThrow(() -> new RuntimeException("Price not found."));
+        AdventureAd adventureAd = adventureAdRepository.findById(advertisementId).orElseThrow();
+        HourlyPrice hourlyPrice = hourlyPriceRepository.findById(priceId).orElseThrow();
         if (!adventureAd.getPrices().contains(hourlyPrice))
-            throw new RuntimeException("Price does not belong to Adventure ad.");
+            throw new NoSuchElementException();
 
         adventureAd.removeHourlyPrice(hourlyPrice);
 

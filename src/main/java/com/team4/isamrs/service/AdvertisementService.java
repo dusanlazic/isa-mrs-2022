@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,7 +54,7 @@ public class AdvertisementService {
         Advertisement advertisement = advertisementRepository.findById(advertisementId).orElseThrow();
         Option option = optionRepository.findById(priceId).orElseThrow();
         if (!option.getAdvertisement().equals(advertisement))
-            throw new RuntimeException("Price does not belong to Adventure ad.");
+            throw new NoSuchElementException();
 
         modelMapper.map(dto, option);
 
@@ -67,7 +68,7 @@ public class AdvertisementService {
         Advertisement advertisement = advertisementRepository.findById(advertisementId).orElseThrow();
         Option option = optionRepository.findById(optionId).orElseThrow();
         if (!option.getAdvertisement().equals(advertisement))
-            throw new RuntimeException("Price does not belong to Adventure ad.");
+            throw new NoSuchElementException();
 
         advertisement.removeOption(option);
 

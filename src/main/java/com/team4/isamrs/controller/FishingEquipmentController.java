@@ -16,8 +16,7 @@ import java.util.Collection;
 @RestController
 @RequestMapping(
         value = "/fishing-equipment",
-        produces = MediaType.APPLICATION_JSON_VALUE,
-        consumes = MediaType.APPLICATION_JSON_VALUE)
+        produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "*")
 public class FishingEquipmentController {
 
@@ -34,7 +33,7 @@ public class FishingEquipmentController {
         return new ResponseEntity<>(fishingEquipmentService.findById(id, FishingEquipmentDisplayDTO.class), HttpStatus.OK);
     }
 
-    @PostMapping("")
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> create(@Valid @RequestBody FishingEquipmentCreationDTO dto) {
         return ResponseEntity.created(URI.create("/fishing-equipment/" + fishingEquipmentService.create(dto).getId()))
                              .body("Fishing equipment created.");

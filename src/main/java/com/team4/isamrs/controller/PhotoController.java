@@ -9,14 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 @RestController
 @RequestMapping(
         value = "/photos",
-        produces = MediaType.APPLICATION_JSON_VALUE,
-        consumes = MediaType.APPLICATION_JSON_VALUE)
+        produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "*")
 public class PhotoController {
 
@@ -29,7 +27,7 @@ public class PhotoController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> create() throws URISyntaxException {
+    public ResponseEntity<?> create() {
         return ResponseEntity.created(URI.create("/photos/" + photoService.create().getId()))
                              .body("Photo created.");
     }

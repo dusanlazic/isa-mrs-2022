@@ -19,31 +19,30 @@ import java.util.Collection;
 @RestController
 @RequestMapping(
         value = "/ads/adventures",
-        produces = MediaType.APPLICATION_JSON_VALUE,
-        consumes = MediaType.APPLICATION_JSON_VALUE)
+        produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "*")
 public class AdventureController {
 
     @Autowired
     private AdventureAdService adventureAdService;
 
-    @GetMapping("")
+    @GetMapping(value = "")
     public ResponseEntity<Collection<AdventureAdDisplayDTO>> findAll() {
         return new ResponseEntity<>(adventureAdService.findAll(AdventureAdDisplayDTO.class), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<AdventureAdDisplayDTO> findById(@PathVariable Long id) {
         return new ResponseEntity<>(adventureAdService.findById(id, AdventureAdDisplayDTO.class), HttpStatus.OK);
     }
 
-    @PostMapping("")
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> create(@Valid @RequestBody AdventureAdCreationDTO dto) {
         return ResponseEntity.created(URI.create("/ads/adventures/" + adventureAdService.create(dto).getId()))
                              .body("Adventure ad created.");
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> update(@PathVariable Long id, @Valid @RequestBody AdventureAdUpdationDTO dto) {
         adventureAdService.update(id, dto);
         return ResponseEntity.ok("Adventure ad updated.");
@@ -60,14 +59,14 @@ public class AdventureController {
         return new ResponseEntity<>(adventureAdService.getPrices(id, HourlyPriceDisplayDTO.class), HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/prices")
+    @PostMapping(value = "/{id}/prices", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addPrice(@PathVariable Long id, @Valid @RequestBody HourlyPriceCreationDTO dto) {
         adventureAdService.addPrice(id, dto);
         return ResponseEntity.created(URI.create("/ads/adventures/" + id))
                              .body("Hourly price created.");
     }
 
-    @PutMapping("/{id}/prices/{priceId}")
+    @PutMapping(value = "/{id}/prices/{priceId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updatePrice(@PathVariable Long id, @PathVariable Long priceId, @Valid @RequestBody HourlyPriceCreationDTO dto) {
         adventureAdService.updatePrice(id, priceId, dto);
         return ResponseEntity.ok().body("Hourly price updated.");

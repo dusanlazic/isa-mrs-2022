@@ -16,25 +16,24 @@ import java.util.Collection;
 @RestController
 @RequestMapping(
         value = "/tags",
-        produces = MediaType.APPLICATION_JSON_VALUE,
-        consumes = MediaType.APPLICATION_JSON_VALUE)
+        produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "*")
 public class TagController {
 
     @Autowired
     private TagService tagService;
 
-    @GetMapping("")
+    @GetMapping(value = "", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<Collection<TagDisplayDTO>> findAll() {
         return new ResponseEntity<>(tagService.findAll(TagDisplayDTO.class), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<TagDisplayDTO> findById(@PathVariable Long id) {
         return new ResponseEntity<>(tagService.findById(id, TagDisplayDTO.class), HttpStatus.OK);
     }
 
-    @PostMapping("")
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@Valid @RequestBody TagCreationDTO dto) {
         return ResponseEntity.created(URI.create("/tags/" + tagService.create(dto).getId()))
                              .body("Tag created.");

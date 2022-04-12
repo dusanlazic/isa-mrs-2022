@@ -15,8 +15,7 @@ import java.util.Collection;
 @RestController
 @RequestMapping(
         value = "/ads",
-        produces = MediaType.APPLICATION_JSON_VALUE,
-        consumes = MediaType.APPLICATION_JSON_VALUE)
+        produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "*")
 public class AdvertisementController {
 
@@ -28,13 +27,13 @@ public class AdvertisementController {
         return new ResponseEntity<>(advertisementService.getOptions(id, OptionDisplayDTO.class), HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/options")
+    @PostMapping(value = "/{id}/options", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addOption(@PathVariable Long id, @Valid @RequestBody OptionCreationDTO dto) {
         advertisementService.addOption(id, dto);
         return ResponseEntity.ok().body("Option created.");
     }
 
-    @PutMapping("/{id}/options/{optionId}")
+    @PutMapping(value = "/{id}/options/{optionId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateOption(@PathVariable Long id, @PathVariable Long optionId, @Valid @RequestBody OptionCreationDTO dto) {
         advertisementService.updateOption(id, optionId, dto);
         return ResponseEntity.ok().body("Option updated.");

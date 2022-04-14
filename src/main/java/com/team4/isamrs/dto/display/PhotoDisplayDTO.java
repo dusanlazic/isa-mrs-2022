@@ -9,4 +9,7 @@ public class PhotoDisplayDTO implements DisplayDTO {
     Will be extended with some photo metadata when photo upload is implemented.
      */
     private String uri;
+    private String originalFilename;
+    private String contentType;
+    private Long size;
 }

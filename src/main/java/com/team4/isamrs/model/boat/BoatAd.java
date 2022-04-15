@@ -3,6 +3,8 @@ package com.team4.isamrs.model.boat;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.DailyPrice;
 import com.team4.isamrs.model.adventure.FishingEquipment;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -11,6 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 public class BoatAd extends Advertisement {
     @Column(name = "check_out_time", nullable = false)
     private LocalTime CheckOutTime; // e.g. 10:00

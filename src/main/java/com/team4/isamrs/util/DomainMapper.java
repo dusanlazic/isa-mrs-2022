@@ -73,7 +73,7 @@ public class DomainMapper {
         };
 
         Converter<Photo, PhotoDisplayDTO> PhotoToDisplayDtoConverter = context -> {
-            context.getDestination().setUri("/photos/" + context.getSource().getId().toString());
+            context.getDestination().setUri("/photos/" + context.getSource().getStoredFilename());
             return context.getDestination();
         };
 

@@ -16,8 +16,8 @@ public class Photo {
     @Column(name = "original_filename", nullable = false)
     private String originalFilename;
 
-    @Column(name = "content_type", nullable = false)
-    private String contentType;
+    @Column(name = "stored_filename", nullable = false, unique = true)
+    private String storedFilename;
 
     @Column(name = "size", nullable = false)
     private Long size;

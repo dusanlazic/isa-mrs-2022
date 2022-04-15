@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URI;
 import java.util.UUID;
 
@@ -27,14 +27,14 @@ public class PhotoController {
         return new ResponseEntity<>(photoService.findById(id, PhotoDisplayDTO.class), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Resource> serve(@PathVariable UUID id) throws MalformedURLException {
-        return photoService.serve(id);
+    @GetMapping(value = "/{filename}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
+    public ResponseEntity<Resource> serve(@PathVariable String filename) throws IOException {
+        return photoService.serve(filename);
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file) {
-        return ResponseEntity.created(URI.create("/photos/" + photoService.store(file).getId()))
+        return ResponseEntity.created(URI.create("/photos/" + photoService.store(file).getStoredFilename()))
                              .body("Photo uploaded.");
     }
 }

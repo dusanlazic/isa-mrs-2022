@@ -1,10 +1,15 @@
 package com.team4.isamrs.model.user;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public class User {
     /*

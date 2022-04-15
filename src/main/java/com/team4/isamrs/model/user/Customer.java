@@ -3,12 +3,16 @@ package com.team4.isamrs.model.user;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.review.ServiceReview;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 public class Customer extends User {
     /*
     Users that make reservations

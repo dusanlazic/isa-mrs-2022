@@ -2,6 +2,8 @@ package com.team4.isamrs.model.resort;
 
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.DailyPrice;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalTime;
@@ -9,6 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 public class ResortAd extends Advertisement {
     /*
     Number of beds for each room separated by commas.

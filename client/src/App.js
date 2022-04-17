@@ -14,7 +14,10 @@ function App() {
         {/* Navbar Component */}
         <div className="h-full">
             <Routes>
-              <Route path="/" exact element={<ProfilePage/>}/>
+              <Route path="/" exact element={<HomePage/>}/>
+              <Route path="/resort/:id" exact element={<ProfilePage/>}/>
+              <Route path="/client/:id" exact element={<ProfilePage/>}/>
+              <Route path="/boat/:id" exact element={<ProfilePage/>}/>
               <Route path="/edit" exact element={<ProfileEditorPage/>}/>
 
               <Route path="*" element={<NotFound/>}/>

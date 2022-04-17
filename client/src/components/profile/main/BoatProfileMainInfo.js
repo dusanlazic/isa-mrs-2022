@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const description = "A boat is a watercraft of a large range of types and sizes, but generally smaller than a ship, which is distinguished by its larger size, shape, cargo or passenger capacity, or its ability to carry boats. Small boats are typically found on inland waterways such as rivers and lakes, or in protected coastal areas.";
 
-const BoatProfileMainInfo = () => {
+const BoatProfileMainInfo = ({data}) => {
 	let [showMore, setShowMore] = useState(false);
 
 	return (

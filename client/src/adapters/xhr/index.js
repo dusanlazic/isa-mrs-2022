@@ -1,7 +1,7 @@
 import Axios from "axios";
 
 function returnAxiosInstance() {
-  return Axios.create(initializers);
+  return Axios.create({});
 }
 
 export function get(url){

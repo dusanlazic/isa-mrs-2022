@@ -1,3 +1,7 @@
+import { useEffect, useState } from 'react'
+import {useParams} from 'react-router-dom'
+import { get } from "../adapters/xhr";
+
 // main components
 import UserProfileMainInfo from '../components/profile/main/UserProfileMainInfo'
 import ResortProfileMainInfo from '../components/profile/main/ResortProfileMainInfo'
@@ -19,79 +23,93 @@ import Sidebar from '../components/profile/sidebar/Sidebar'
 
 import Equipment from '../components/profile/sidebar/Equipment'
 
-const type = 'boat'
+const type = 'boat';
 
 const clientAdditionalComponents = [
   { title: 'Reviews', component: <ClientReviewList />},
   { title: 'Reservation History',  component: <ClientReservationHistory/>},
-]
+];
 
-const clientSidebarComponents = [<LoyaltyProgramCard/>]
+const clientSidebarComponents = [<LoyaltyProgramCard/>];
 
-const clientMainComponent = <UserProfileMainInfo/>
+const clientMainComponent = UserProfileMainInfo;
 
 const resortAdditionalComponents = [
   { title: 'About', component: <About />},
   { title: 'Photos',  component: <Gallery/>},
   { title: 'Reviews', component: <ClientReviewList />},
   //{ title: 'Location', component: <Map />},
-]
+];
 
-const resortSidebarComponents = [<DailyPriceCard/>]
+const resortSidebarComponents = [<DailyPriceCard/>];
 
-const resortMainComponent = <ResortProfileMainInfo/>
+const resortMainComponent = ResortProfileMainInfo;
 
 const boatAdditionalComponents = [
   { title: 'About', component: <About />},
   { title: 'Photos',  component: <Gallery/>},
   { title: 'Reviews', component: <ClientReviewList />},
   //{ title: 'Location', component: <Map />},
-]
+];
 
-const boatSidebarComponents = [<HourlyPriceCard/>, <Equipment />]
+const boatSidebarComponents = [<HourlyPriceCard/>, <Equipment />];
 
-const boatMainComponent = <BoatProfileMainInfo/>
+const boatMainComponent = BoatProfileMainInfo;
 
 const ProfilePage = () => {
-  
-  let sidebar, main, content
 
-  if (type === 'resort') {
-    sidebar = resortSidebarComponents
-    main = resortMainComponent
-    content = resortAdditionalComponents
+  let sidebarComponents, MainComponent, contentComponents, endpoint;
+
+  if (window.location.href.includes('resort')) {
+    sidebarComponents = resortSidebarComponents;
+    MainComponent = resortMainComponent;
+    contentComponents = resortAdditionalComponents;
+    endpoint = '/ads/resorts';
   }
-  else if (type === 'client') {
-    sidebar = clientSidebarComponents
-    main = clientMainComponent
-    content = clientAdditionalComponents
+  else if (window.location.href.includes('client')) {
+    sidebarComponents = clientSidebarComponents;
+    MainComponent = clientMainComponent;
+    contentComponents = clientAdditionalComponents;
+    endpoint = '/customers';
   }
   else {
-    sidebar = boatSidebarComponents
-    main = boatMainComponent
-    content = boatAdditionalComponents
+    sidebarComponents = boatSidebarComponents;
+    MainComponent = boatMainComponent;
+    contentComponents = boatAdditionalComponents;
+    endpoint = '/ads/boats';
   }
+
+  let { id } = useParams();
+  const [profileData, setProfileData] = useState({});
+
+  // main api call
+  useEffect(() => {
+    get(`/api${endpoint}/${id}`)
+    .then((response) => {
+      setProfileData(response.data);
+    });
+  }, [])
 
   return (
     <div className="block lg:flex items-start py-24 px-4 md:px-20 lg:px-24 xl:px-44 w-full font-display">
       {/* Main part */}
       <div className="block w-full">
         {/* Main profile info */}
-        {main}
+        {<MainComponent data={profileData}/>}
 
         {/* Sidebar on smaller screens is below main info */}
         <div className="block lg:hidden w-full">
-          <Sidebar components={sidebar}/>
+          <Sidebar components={sidebarComponents}/>
         </div>
         
         {/* Profile Content */}
-        <AdditionalInformation options={content}/>
+        <AdditionalInformation options={contentComponents}/>
       
       </div>
 
       {/* Sidebar */}
       <div className="hidden lg:block w-2/5 xl:w-1/3 ">
-        <Sidebar components={sidebar}/>
+        <Sidebar components={sidebarComponents}/>
       </div>
       
     </div>

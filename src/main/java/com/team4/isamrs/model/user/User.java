@@ -1,5 +1,6 @@
 package com.team4.isamrs.model.user;
 
+import com.team4.isamrs.model.advertisement.Photo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,8 +21,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenV1")
     private Long id;
 
-    @Column(name = "avatar_path")
-    private String avatarPath;
+    @OneToOne
+    @JoinColumn(name = "avatar_id")
+    private Photo avatar;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;

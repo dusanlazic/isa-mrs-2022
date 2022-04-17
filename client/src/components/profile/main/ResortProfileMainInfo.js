@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const description = "A resort is a place used for vacation, relaxation or as a daytime getaway. While this can be a single structure such as a hotel, it also can be a whole island or a ship at sea.";
 
-const ResortProfileMainInfo = () => {
+const ResortProfileMainInfo = ({data}) => {
 	let [showMore, setShowMore] = useState(false);
 
 	return (

@@ -2,10 +2,12 @@ package com.team4.isamrs.util;
 
 import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.display.AdventureAdDisplayDTO;
+import com.team4.isamrs.dto.display.CustomerDisplayDTO;
 import com.team4.isamrs.dto.display.PhotoDisplayDTO;
 import com.team4.isamrs.model.adventure.AdventureAd;
 import com.team4.isamrs.model.advertisement.Photo;
 import com.team4.isamrs.model.advertisement.Tag;
+import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.repository.AdventureAdRepository;
 import com.team4.isamrs.repository.FishingEquipmentRepository;
 import com.team4.isamrs.repository.PhotoRepository;
@@ -80,5 +82,6 @@ public class DomainMapper {
         modelMapper.createTypeMap(AdventureAdCreationDTO.class, AdventureAd.class).setPostConverter(CreationDtoToAdventureAdConverter);
         modelMapper.createTypeMap(AdventureAd.class, AdventureAdDisplayDTO.class).setPostConverter(AdventureAdToDisplayDtoConverter);
         modelMapper.createTypeMap(Photo.class, PhotoDisplayDTO.class).setPostConverter(PhotoToDisplayDtoConverter);
+        modelMapper.createTypeMap(Customer.class, CustomerDisplayDTO.class);
     }
 }

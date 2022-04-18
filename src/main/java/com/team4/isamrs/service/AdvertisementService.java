@@ -2,8 +2,10 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.OptionCreationDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
+import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.Option;
+import com.team4.isamrs.model.review.ServiceReview;
 import com.team4.isamrs.repository.AdvertisementRepository;
 import com.team4.isamrs.repository.OptionRepository;
 import org.modelmapper.ModelMapper;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,5 +77,20 @@ public class AdvertisementService {
 
         advertisementRepository.save(advertisement);
         optionRepository.delete(option); // might not be needed because of auto orphan removal
+    }
+
+    public double findRating(Long id) {
+        Set<ServiceReview> serviceReviews = advertisementRepository.findById(id).orElseThrow().getReviews();
+        double rating = 0;
+        if (serviceReviews.size() > 0)
+            rating = serviceReviews.stream().mapToDouble(ServiceReview::getRating).sum() / serviceReviews.size();
+        return Math.round(rating * 100.0) / 100.0;
+    }
+
+    public Collection<ServiceReviewDisplayDTO> getReviews(Long id) {
+        Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
+        return advertisement.getReviews().stream()
+                .map(e -> modelMapper.map(e, ServiceReviewDisplayDTO.class))
+                .collect(Collectors.toSet());
     }
 }

@@ -11,7 +11,7 @@ const ClientReview = ({review}) => {
 
         <div className="block ml-2">
           <h1 className="text-xl text-gray-700 tracking-tight my-auto text-left">
-              {review.advertisement.name}
+              {review.advertisement.title}
           </h1>
           <div className="flex text-lg -mt-2">
             {[0,1,2,3,4].map((id) =>
@@ -27,10 +27,10 @@ const ClientReview = ({review}) => {
       {/* Text */}
       <div className="block w-full text-left mt-1.5">
         <p className="text-gray-500 text-justify pr-2 ">
-          {showMore ? review.text : review.text.substring(0, 200)}{!showMore && review.text.length >= 200 ? '...' : ''}
+          {showMore ? review.comment : review.comment.substring(0, 200)}{!showMore && review.comment.length >= 200 ? '...' : ''}
         </p>
 
-        {review.text.length >= 200 && 
+        {review.comment.length >= 200 && 
         <button onClick={() => setShowMore(!showMore)} className="text-sm text-gray-400 hover:text-gray-600">
           {showMore ? 'Show less' : 'Show more'}
         </button>

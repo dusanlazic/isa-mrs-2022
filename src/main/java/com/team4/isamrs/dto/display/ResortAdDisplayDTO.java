@@ -20,7 +20,7 @@ public class ResortAdDisplayDTO implements DisplayDTO {
     private LocalDateTime availableUntil;
     private String rules;
     private String currency;
-    private Set<String> tags;
+    private Set<TagDisplayDTO> tags;
     private Set<PhotoDisplayDTO> photos;
     private Set<OptionDisplayDTO> options;
     private String numberOfBeds;

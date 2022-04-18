@@ -2,6 +2,7 @@ package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.creation.OptionCreationDTO;
 import com.team4.isamrs.dto.display.OptionDisplayDTO;
+import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
 import com.team4.isamrs.service.AdvertisementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,5 +44,15 @@ public class AdvertisementController {
     public ResponseEntity<String> removeOption(@PathVariable Long id, @PathVariable Long optionId) {
         advertisementService.removeOption(id, optionId);
         return ResponseEntity.ok().body("Option deleted.");
+    }
+
+    @GetMapping(value = "/{id}/rating")
+    public ResponseEntity<Double> findRating(@PathVariable Long id) {
+        return new ResponseEntity<>(advertisementService.findRating(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/reviews")
+    public ResponseEntity<Collection<ServiceReviewDisplayDTO>> getReviews(@PathVariable Long id) {
+        return new ResponseEntity<>(advertisementService.getReviews(id), HttpStatus.OK);
     }
 }

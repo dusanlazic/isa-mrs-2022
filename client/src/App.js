@@ -18,7 +18,7 @@ function App() {
               <Route path="/resort/:id" exact element={<ProfilePage/>}/>
               <Route path="/client/:id" exact element={<ProfilePage/>}/>
               <Route path="/boat/:id" exact element={<ProfilePage/>}/>
-              <Route path="/profile" exact element={<ProfileEditorPage/>}/>
+              <Route path="/account" exact element={<ProfileEditorPage/>}/>
 
               <Route path="*" element={<NotFound/>}/>
             </Routes>

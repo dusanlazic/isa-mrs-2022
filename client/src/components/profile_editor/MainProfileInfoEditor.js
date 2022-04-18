@@ -53,6 +53,7 @@ const MainProfileInfoEditor = ({data}) => {
 
       {/* name and surname */}
       <div className="grid grid-cols-1 md:grid-cols-2 text-left mt-6 gap-x-6">
+
         <div className="block">
           <label className="text-xs">first name:</label>
           <input placeholder="first name" value={firstName ? firstName : ''}
@@ -71,6 +72,7 @@ const MainProfileInfoEditor = ({data}) => {
 
       </div>
 
+      {/* email and phone number */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 mt-1">
 
         <div className="block md:col-span-2 text-left">
@@ -89,6 +91,7 @@ const MainProfileInfoEditor = ({data}) => {
         </div>
       </div>
 
+      {/* city and address */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 mt-1">
 
         <div className="block text-left">
@@ -109,7 +112,9 @@ const MainProfileInfoEditor = ({data}) => {
 
       </div>
 
+      {/* country and confirm button */}
       <div className="grid grid-cols-1 md:grid-cols-3 md:gap-x-6 mt-4">
+
         <div className="col-span-3 md:col-span-2 lg:col-span-1 text-left">
           <label className="text-xs">country:</label>
           <ReactFlagsSelect selectedSize={13} optionsSize={15} searchable={true}
@@ -117,6 +122,7 @@ const MainProfileInfoEditor = ({data}) => {
             onSelect={(code) => setSelectedCountry(code)}
           />
         </div>
+
         <div className="flex flex-col justify-end md:col-start-3 text-left w-full">
           <button className="bg-teal-600 hover:bg-teal-700 active:bg-teal-800 w-full drop-shadow-md
           text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
@@ -124,6 +130,7 @@ const MainProfileInfoEditor = ({data}) => {
             Confirm changes
           </button>
         </div>
+
       </div>
 
     </div>

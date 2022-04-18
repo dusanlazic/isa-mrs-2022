@@ -80,15 +80,20 @@ const ProfilePage = () => {
   }
 
   let { id } = useParams();
-  const [profileData, setProfileData] = useState({});
+  const [profileData, setProfileData] = useState(null);
 
   // main api call
   useEffect(() => {
     get(`/api${endpoint}/${id}`)
     .then((response) => {
+      console.log(response.data)
       setProfileData(response.data);
     });
   }, [])
+
+  if (profileData === null) {
+    return null;
+  }
 
   return (
     <div className="block lg:flex items-start py-24 px-4 md:px-20 lg:px-24 xl:px-44 w-full font-display">

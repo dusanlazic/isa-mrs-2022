@@ -28,3 +28,15 @@ password_hash, active) VALUES
 (1, '2d74b08c-b270-4d7a-ae26-c278bd13816c', 'John', 'Smith',
 'smith25@email.com', 'Karadjordjeva bb', 'Novi Sad',
 'RS', '0696969696', 'password', true);
+
+INSERT INTO public.advertiser(
+    id, active, address, city, country_code, email_address, first_name, last_name, password_hash, phone_number, avatar_id)
+VALUES (2, TRUE , 'Mise Dimitrijevica 1', 'Novi Sad', 'SR', 'maja@gmail.com', 'Maja', 'Majic', 'maja', '12345678', 'ac29818c-5e95-438c-85ff-da0a25cd188c');
+
+INSERT INTO public.address(
+    id, address, city, country_code, latitude, longitude, postal_code, state)
+VALUES (2, 'Gogoljeva 2', 'Novi Sad', 'SR', '1111.1', '1334.2', '21000', 'Srbija');
+
+INSERT INTO public.resort_ad(
+    id, available_after, available_until, currency, description, pricing_description, rules, title, address_id, advertiser_id, check_in_time, check_out_time, number_of_beds)
+VALUES (1, now(), now(), '$', 'jako jako lepa', 'nema popusta', 'pravila neka', 'Vila brvnara', 2, 2, now(), now(), 3);

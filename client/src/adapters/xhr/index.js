@@ -13,3 +13,8 @@ export function post(url, requestData){
   const axios = returnAxiosInstance();
   return axios.post(url, requestData);
 }
+
+export function put(url, requestData){
+  const axios = returnAxiosInstance();
+  return axios.put(url, requestData);
+}

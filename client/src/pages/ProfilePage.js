@@ -17,13 +17,12 @@ import Gallery from '../components/profile/additional/Gallery'
 import LoyaltyProgramCard from '../components/profile/sidebar/LoyaltyProgramCard'
 import HourlyPriceCard from '../components/profile/sidebar/HourlyPriceCard'
 import DailyPriceCard from '../components/profile/sidebar/DailyPriceCard'
+import Equipment from '../components/profile/sidebar/Equipment'
+import Tags from '../components/profile/sidebar/Tags'
 
 import AdditionalInformation from '../components/profile/additional/AdditionalInformation'
 import Sidebar from '../components/profile/sidebar/Sidebar'
 
-import Equipment from '../components/profile/sidebar/Equipment'
-
-const type = 'boat';
 
 const clientAdditionalComponents = [
   { title: 'Reviews', component: <ClientReviewList />},
@@ -33,17 +32,6 @@ const clientAdditionalComponents = [
 const clientSidebarComponents = [<LoyaltyProgramCard/>];
 
 const clientMainComponent = UserProfileMainInfo;
-
-const resortAdditionalComponents = [
-  { title: 'About', component: <About />},
-  { title: 'Photos',  component: <Gallery/>},
-  { title: 'Reviews', component: <ClientReviewList />},
-  //{ title: 'Location', component: <Map />},
-];
-
-const resortSidebarComponents = [<DailyPriceCard/>];
-
-const resortMainComponent = ResortProfileMainInfo;
 
 const boatAdditionalComponents = [
   { title: 'About', component: <About />},
@@ -60,27 +48,21 @@ const ProfilePage = () => {
 
   let sidebarComponents, MainComponent, contentComponents, endpoint;
 
+  let { id } = useParams();
+  const [profileData, setProfileData] = useState(null);
+
   if (window.location.href.includes('resort')) {
-    sidebarComponents = resortSidebarComponents;
-    MainComponent = resortMainComponent;
-    contentComponents = resortAdditionalComponents;
-    endpoint = '/ads/resorts';
+    endpoint = '/ads/resorts'
   }
-  else if (window.location.href.includes('client')) {
-    sidebarComponents = clientSidebarComponents;
-    MainComponent = clientMainComponent;
-    contentComponents = clientAdditionalComponents;
-    endpoint = '/customers';
+  else if (window.location.href.includes('adventure')) {
+    endpoint = '/ads/adventures';
   }
-  else {
-    sidebarComponents = boatSidebarComponents;
-    MainComponent = boatMainComponent;
-    contentComponents = boatAdditionalComponents;
+  else if (window.location.href.includes('boat')) {
     endpoint = '/ads/boats';
   }
-
-  let { id } = useParams();
-  const [profileData, setProfileData] = useState({});
+  else if (window.location.href.includes('client')) {
+    endpoint = '/customers';
+  }
 
   // main api call
   useEffect(() => {
@@ -89,6 +71,31 @@ const ProfilePage = () => {
       setProfileData(response.data);
     });
   }, [])
+
+  if (profileData === null) {
+    return null;
+  }
+
+  if (window.location.href.includes('resort')) {
+    sidebarComponents = [<DailyPriceCard data={profileData} />, <Tags data={profileData} />];
+    MainComponent = ResortProfileMainInfo;
+    contentComponents = [
+      { title: 'About', component: <About data={profileData} />},
+      { title: 'Photos',  component: <Gallery data={profileData} />},
+      { title: 'Reviews', component: <ClientReviewList data={profileData} />},
+      //{ title: 'Location', component: <Map />},
+    ];
+  }
+  else if (window.location.href.includes('client')) {
+    sidebarComponents = clientSidebarComponents;
+    MainComponent = clientMainComponent;
+    contentComponents = clientAdditionalComponents;
+  }
+  else {
+    sidebarComponents = boatSidebarComponents;
+    MainComponent = boatMainComponent;
+    contentComponents = boatAdditionalComponents;
+  }
 
   return (
     <div className="block lg:flex items-start py-24 px-4 md:px-20 lg:px-24 xl:px-44 w-full font-display">
@@ -104,7 +111,6 @@ const ProfilePage = () => {
         
         {/* Profile Content */}
         <AdditionalInformation options={contentComponents}/>
-      
       </div>
 
       {/* Sidebar */}

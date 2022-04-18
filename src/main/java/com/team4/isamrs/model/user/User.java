@@ -11,6 +11,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@Table(name="\"user\"")
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public class User {
     /*

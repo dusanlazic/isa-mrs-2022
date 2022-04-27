@@ -47,7 +47,7 @@ const RegistrationPage = () => {
           in={currentSlide === 0 && nextSlide === 0}
           unmountOnExit>
             <div>
-              <h2 className="mt-4 sm:mt-1 text-lg tracking-widest text-center">Please select your role</h2>
+              <h2 className="mt-4 sm:mt-1 font-bold text-lg tracking-widest text-center text-slate-800">Please select your role</h2>
 
               <div className="block sm:flex sm:flex-row sm:justify-center sm:gap-x-6 mt-6 sm:mt-10">
 
@@ -263,10 +263,11 @@ const RegistrationPage = () => {
 
             {nextSlide !== 0 &&
             <button type="button" onClick={() => handleBack()}
-            className="rounded-md shadow-sm px-6
-            py-2 bg-slate-300 text-base font-medium text-gray-700 hover:bg-slate-400 active:bg-slate-500
+            className="rounded-md px-6
+            py-2 bg-white text-base font-medium text-slate-500 hover:text-slate-700
+            hover:bg-slate-200 active:bg-slate-300
             focus:outline-none w-28 sm:text-sm">
-            back
+            {"<+ back"}
             </button>
             }
 

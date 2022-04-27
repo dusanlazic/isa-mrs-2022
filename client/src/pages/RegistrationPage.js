@@ -9,6 +9,7 @@ const RegistrationPage = () => {
   const [previousSlide, setPreviousSlide] = useState(-1);
 
   const [selectedRole, setSelectedRole] = useState();
+  const [selectedSubrole, setSelectedSubrole] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState();
 
   const handleBack = () => {
@@ -34,10 +35,10 @@ const RegistrationPage = () => {
   return ( 
     <div className="flex flex-col justify-center min-h-screen w-full h-full
     first-letter:font-display bg-slate-500">
-      <div className="flex flex-col justify-between h-140 bg-white w-11/12 sm:w-5/6 md:w-120
+      <div className="flex flex-col justify-between h-160 sm:h-140 bg-white w-11/12 sm:w-5/6 md:w-120
       rounded-xl mx-auto overflow-hidden px-4 sm:px-10">
         <div className="text-left">
-          <h1 className="mt-8 text-2xl tracking-widest text-center">Create a New Account</h1>
+          <h1 className="mt-6 sm:mt-8 text-xl sm:text-2xl tracking-widest text-center">Create a New Account</h1>
 
           {/* step 1 */}
           <CSSTransition
@@ -46,9 +47,9 @@ const RegistrationPage = () => {
           in={currentSlide === 0 && nextSlide === 0}
           unmountOnExit>
             <div>
-              <h2 className="mt-8 text-xl tracking-widest text-center">Please select your role</h2>
+              <h2 className="mt-4 sm:mt-1 text-lg tracking-widest text-center">Please select your role</h2>
 
-              <div className="block sm:flex sm:flex-row sm:justify-center sm:gap-x-6 mt-6 sm:mt-12">
+              <div className="block sm:flex sm:flex-row sm:justify-center sm:gap-x-6 mt-6 sm:mt-10">
 
                 <div onClick={() => setSelectedRole('client')}
                 className={`flex gap-x-5 sm:block w-full sm:w-36 h-20 sm:h-36 p-4 rounded-xl border-2 border-slate-100 hover:border-slate-200
@@ -67,6 +68,41 @@ const RegistrationPage = () => {
                 </div>
 
               </div>
+              
+              
+              <CSSTransition
+              in={selectedRole === 'advertiser'}
+              timeout={{enter: 30, exit: 150}}
+              classNames="slide-fade"
+              unmountOnExit
+              >
+                <div className="block sm:flex sm:flex-row sm:justify-center sm:gap-x-1 mt-3 sm:mt-6">
+
+                  <div onClick={() => setSelectedSubrole('resort owner')}
+                  className={`flex gap-x-5 sm:block w-full sm:w-18 h-14 sm:h-24 sm:py-4 rounded-xl border-2
+                  border-slate-100 hover:border-slate-200 cursor-pointer
+                  ${selectedSubrole === 'resort owner' ? 'border-cyan-700 hover:border-cyan-700' : ''}`}>
+                    <img src="/images/icons/building.png" alt="" className="p-1.5 sm:p-0  sm:h-12 sm:mx-auto" />
+                    <p className="font-display text-lg sm:text-sm text-center my-auto">Resort Owner</p>
+                  </div>
+
+                  <div onClick={() => setSelectedSubrole('boat owner')} 
+                  className={`flex gap-x-5 sm:block w-full sm:w-18 h-14 sm:h-24 sm:py-4 rounded-xl border-2
+                  border-slate-100 hover:border-slate-200 cursor-pointer mt-1 sm:mt-0
+                  ${selectedSubrole === 'boat owner' ? 'border-cyan-700 hover:border-cyan-700' : ''}`}>
+                    <img src="/images/icons/sailboat.png" alt="" className="p-1.5 sm:p-0 sm:h-12 sm:mx-auto" />
+                    <p className="font-display text-lg sm:text-sm text-center my-auto">Boat Owner</p>
+                  </div>
+                  
+                  <div onClick={() => setSelectedSubrole('instructor')} 
+                  className={`flex gap-x-5 sm:block w-full sm:w-18 h-14 sm:h-24 sm:py-4 rounded-xl border-2
+                  border-slate-100 hover:border-slate-200 cursor-pointer mt-1 sm:mt-0
+                  ${selectedSubrole === 'instructor' ? 'border-cyan-700 hover:border-cyan-700' : ''}`}>
+                    <img src="/images/icons/fisherman.png" alt="" className="p-1.5 sm:p-0 sm:h-12 sm:mx-auto" />
+                    <p className="font-display text-lg sm:text-sm text-center my-auto">Instructor</p>
+                  </div>
+                </div>
+              </CSSTransition>
 
             </div>
           </CSSTransition>

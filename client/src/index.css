@@ -187,3 +187,11 @@ code {
   transform: translateX(500px);
 }
 
+.slide-fade-enter-active, .slide-fade-enter, .slide-fade-exit-active, .slide-fade-exit, .slide-fade-enter-done,
+.slide-fade-exit-done {
+  transition: all 0.3s ease;
+}
+.slide-fade-enter, .slide-fade-exit {
+  transform: translateY(-22px);
+  opacity: 0;
+}

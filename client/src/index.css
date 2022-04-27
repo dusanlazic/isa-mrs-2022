@@ -97,3 +97,93 @@ code {
   color: white;
   background: rgb(52, 73, 94);
 }
+
+/* registration */
+.registration-first-enter-done {
+  transition: all .5s ease;
+}
+.registration-first-enter-active {
+  transition: all .5s ease;
+}
+.registration-first-exit-active {
+  transition: all .5s ease;
+}
+.registration-first-exit-done {
+  transition: all .5s ease;
+}
+.registration-first-exit {
+  transition: all .5s ease;
+}
+.registration-first-enter {
+  transform: translateX(-500px);
+}
+.registration-first-exit {
+  transform: translateX(-500px);
+}
+
+.second-enter-done, .second.enter-done{
+  transition: all .5s ease;
+}
+.second-enter-active, .second.enter-active {
+  transition: all .5s ease;
+}
+.second-exit-active, .second.exit-active {
+  transition: all .5s ease;
+}
+.second-exit, .second.exit{
+  transition: all .5s ease;
+}
+.second-exit-done, .second.exit-done {
+  transition: all .5s ease;
+}
+.second-enter, .second.enter {
+  transform: translateX(500px);
+}
+.second-exit, .second.exit {
+  transform: translateX(500px);
+}
+
+.inter-first-enter-done {
+  transition: all .5s ease;
+}
+.inter-first-enter-active {
+  transition: all .5s ease;
+}
+.inter-first-exit-active {
+  transition: all .5s ease;
+}
+.inter-first-exit-done {
+  transition: all .5s ease;
+}
+.inter-first-exit {
+  transition: all .5s ease;
+}
+.inter-first-enter {
+  transform: translateX(500px);
+}
+.inter-first-exit {
+  transform: translateX(-500px);
+}
+
+.inter-second-enter-done {
+  transition: all .5s ease;
+}
+.inter-second-enter-active {
+  transition: all .5s ease;
+}
+.inter-second-exit-active {
+  transition: all .5s ease;
+}
+.inter-second-exit-done {
+  transition: all .5s ease;
+}
+.inter-second-exit {
+  transition: all .5s ease;
+}
+.inter-second-enter {
+  transform: translateX(-500px);
+}
+.inter-second-exit {
+  transform: translateX(500px);
+}
+

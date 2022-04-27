@@ -1,10 +1,10 @@
-import { appendErrors, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import schema from '../validators/loginSchema' 
 
 const LoginPage = () => {
 
-  const { register, handleSubmit, formState, clearErrors, reset} = useForm({
+  const { register, handleSubmit, formState, clearErrors} = useForm({
     resolver: yupResolver(schema),
     mode: 'onSubmit',
     reValidateMode: 'onChange',

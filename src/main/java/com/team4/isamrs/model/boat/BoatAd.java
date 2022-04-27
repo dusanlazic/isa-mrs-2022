@@ -60,4 +60,14 @@ public class BoatAd extends Advertisement {
 
     @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY)
     private Set<BoatReservation> reservations = new HashSet<>();
+
+    public void addFishingEquipment(FishingEquipment singleFishingEquipment) {
+        fishingEquipment.add(singleFishingEquipment);
+        singleFishingEquipment.getAdvertisements().add(this);
+    }
+
+    public void addNavigationalEquipment(NavigationalEquipment singleNavigationalEquipment) {
+        navigationalEquipment.add(singleNavigationalEquipment);
+        singleNavigationalEquipment.getAdvertisements().add(this);
+    }
 }

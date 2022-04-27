@@ -1,5 +1,6 @@
 package com.team4.isamrs.controller;
 
+import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
 import com.team4.isamrs.service.BoatAdService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.net.URI;
 import java.util.Collection;
 
 @RestController
@@ -27,5 +30,11 @@ public class BoatController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<BoatAdDisplayDTO> findById(@PathVariable Long id) {
         return new ResponseEntity<>(boatAdService.findById(id, BoatAdDisplayDTO.class), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> create(@Valid @RequestBody BoatAdCreationDTO dto) {
+        return ResponseEntity.created(URI.create("/ads/boats/" + boatAdService.create(dto).getId()))
+                .body("Adventure ad created.");
     }
 }

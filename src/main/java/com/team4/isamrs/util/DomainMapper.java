@@ -1,17 +1,17 @@
 package com.team4.isamrs.util;
 
 import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
+import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.display.AdventureAdDisplayDTO;
+import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
 import com.team4.isamrs.dto.display.CustomerDisplayDTO;
 import com.team4.isamrs.dto.display.PhotoDisplayDTO;
 import com.team4.isamrs.model.adventure.AdventureAd;
 import com.team4.isamrs.model.advertisement.Photo;
 import com.team4.isamrs.model.advertisement.Tag;
+import com.team4.isamrs.model.boat.BoatAd;
 import com.team4.isamrs.model.user.Customer;
-import com.team4.isamrs.repository.AdventureAdRepository;
-import com.team4.isamrs.repository.FishingEquipmentRepository;
-import com.team4.isamrs.repository.PhotoRepository;
-import com.team4.isamrs.repository.TagRepository;
+import com.team4.isamrs.repository.*;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +34,9 @@ public class DomainMapper {
 
     @Autowired
     private FishingEquipmentRepository fishingEquipmentRepository;
+
+    @Autowired
+    private NavigationalEquipmentRepository navigationalEquipmentRepository;
 
     @Bean
     public ModelMapper ModelMapper() {
@@ -79,9 +82,36 @@ public class DomainMapper {
             return context.getDestination();
         };
 
+        Converter<BoatAdCreationDTO, BoatAd> CreationDtoToBoatAdConverter = context -> {
+            BoatAdCreationDTO source = context.getSource();
+            BoatAd destination = context.getDestination();
+
+            // Lookup IDs and fill the collections
+            source.getTagIds().forEach(id -> destination.addTag(tagRepository.findById(id).get()));
+            source.getFishingEquipmentIds().forEach(id -> destination.addFishingEquipment(fishingEquipmentRepository.findById(id).get()));
+            source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
+            source.getNavigationalEquipmentIds().forEach(id -> destination.addNavigationalEquipment(navigationalEquipmentRepository.findById(id).get()));
+
+            // Sync bidirectional relationships
+            destination.getOptions().forEach(e -> e.setAdvertisement(destination));
+
+            return destination;
+        };
+
+        Converter<BoatAd, BoatAdDisplayDTO> BoatAdToDisplayDtoConverter = context -> {
+            BoatAd source = context.getSource();
+            BoatAdDisplayDTO destination = context.getDestination();
+
+            destination.setTags(source.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
+
+            return destination;
+        };
+
         modelMapper.createTypeMap(AdventureAdCreationDTO.class, AdventureAd.class).setPostConverter(CreationDtoToAdventureAdConverter);
         modelMapper.createTypeMap(AdventureAd.class, AdventureAdDisplayDTO.class).setPostConverter(AdventureAdToDisplayDtoConverter);
         modelMapper.createTypeMap(Photo.class, PhotoDisplayDTO.class).setPostConverter(PhotoToDisplayDtoConverter);
         modelMapper.createTypeMap(Customer.class, CustomerDisplayDTO.class);
+        modelMapper.createTypeMap(BoatAdCreationDTO.class, BoatAd.class).setPostConverter(CreationDtoToBoatAdConverter);
+        modelMapper.createTypeMap(BoatAd.class, BoatAdDisplayDTO.class).setPostConverter(BoatAdToDisplayDtoConverter);
     }
 }

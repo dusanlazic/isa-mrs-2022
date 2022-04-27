@@ -36,8 +36,8 @@ public class BoatAdDisplayDTO implements DisplayDTO {
     private String engineNumber;
     private String enginePower;
     private String boatSpeed;
-    private Set<FishingEquipment> fishingEquipment = new HashSet<>();
-    private Set<NavigationalEquipment> navigationalEquipment = new HashSet<>();
+    private Set<FishingEquipmentDisplayDTO> fishingEquipment = new HashSet<>();
+    private Set<NavigationalEquipmentDisplayDTO> navigationalEquipment = new HashSet<>();
     private Integer capacity;
     private BigDecimal cancellationFee;
     private Set<DailyPrice> prices = new HashSet<>();

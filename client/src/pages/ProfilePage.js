@@ -11,6 +11,7 @@ import BoatProfileMainInfo from '../components/profile/main/BoatProfileMainInfo'
 import ClientReviewList from '../components/profile/additional/ClientReviewList'
 import ClientReservationHistory from '../components/profile/additional/ClientReservationHistory'
 import About from '../components/profile/additional/AboutTab'
+import BoatAbout from '../components/profile/additional/BoatAboutTab'
 import Gallery from '../components/profile/additional/Gallery'
 
 // sidebar components
@@ -32,15 +33,6 @@ const clientAdditionalComponents = [
 const clientSidebarComponents = [<LoyaltyProgramCard/>];
 
 const clientMainComponent = UserProfileMainInfo;
-
-const boatAdditionalComponents = [
-  { title: 'About', component: <About />},
-  { title: 'Photos',  component: <Gallery/>},
-  { title: 'Reviews', component: <ClientReviewList />},
-  //{ title: 'Location', component: <Map />},
-];
-
-const boatSidebarComponents = [<HourlyPriceCard/>, <Equipment />];
 
 const boatMainComponent = BoatProfileMainInfo;
 
@@ -93,9 +85,14 @@ const ProfilePage = () => {
     contentComponents = clientAdditionalComponents;
   }
   else {
-    sidebarComponents = boatSidebarComponents;
+    sidebarComponents = [<DailyPriceCard data={profileData} />, <Tags data={profileData} />];
     MainComponent = boatMainComponent;
-    contentComponents = boatAdditionalComponents;
+    contentComponents = [
+      { title: 'About', component: <BoatAbout data={profileData} />},
+      { title: 'Photos',  component: <Gallery data={profileData} />},
+      { title: 'Reviews', component: <ClientReviewList data={profileData} />},
+      //{ title: 'Location', component: <Map />},
+    ];
   }
 
   return (

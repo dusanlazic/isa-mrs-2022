@@ -2,15 +2,64 @@ import { useState } from "react";
 import { CSSTransition } from 'react-transition-group';
 import ReactFlagsSelect from "react-flags-select";
 
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { pageTwoSchema, pageThreeSchema, pageFourSchema } from '../validators/registrationSchema' 
+
 const RegistrationPage = () => {
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [nextSlide, setNextSlide] = useState(0);
   const [previousSlide, setPreviousSlide] = useState(-1);
 
-  const [selectedRole, setSelectedRole] = useState();
+  const [selectedRole, setSelectedRole] = useState('client');
   const [selectedSubrole, setSelectedSubrole] = useState(null);
-  const [selectedCountry, setSelectedCountry] = useState();
+  const [selectedCountry, setSelectedCountry] = useState('RS');
+  const [reason, setReason] = useState('');
+
+  const { register: registerTwo, handleSubmit: handleSubmitTwo,
+    formState: { errors: errorsTwo }, clearErrors: clearErrorsTwo,
+    getValues: getValuesTwo } = useForm({
+    resolver: yupResolver(pageTwoSchema),
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
+  });
+
+  const { register: registerThree, handleSubmit: handleSubmitThree,
+    formState: { errors: errorsThree }, clearErrors: clearErrorsThree,
+    getValues: getValuesThree } = useForm({
+    resolver: yupResolver(pageThreeSchema),
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
+  });
+
+  const { register: registerFour, handleSubmit: handleSubmitFour,
+    formState: { errors: errorsFour }, clearErrors: clearErrorsFour,
+    getValues: getValuesFour } = useForm({
+    resolver: yupResolver(pageFourSchema),
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
+  });
+
+  const nextTwo = (data) => {
+    handleNextAnimation();
+  }
+
+  const nextThree = (data) => {
+    handleNextAnimation();
+  }
+
+  const submitAll = (data) => {
+    console.log(selectedRole);
+    if (selectedSubrole != null)
+      console.log(selectedSubrole);
+    console.log(getValuesTwo());
+    if (reason !== '')
+      console.log("Reason: ", reason);
+    console.log(getValuesThree());
+    console.log(getValuesFour());
+    console.log(selectedCountry);
+  }
 
   const handleBack = () => {
     const c = currentSlide - 1 < 0 ? 0 : currentSlide - 1;
@@ -23,6 +72,19 @@ const RegistrationPage = () => {
   }
 
   const handleNext = () => {
+    if (currentSlide === 0) {
+      handleNextAnimation();
+    }
+  }
+
+  const handleEnter = (e) => {
+    if (e.key === 'Enter') {
+      e.target.blur();
+      handleSubmitTwo(nextTwo);
+    }
+  }
+
+  const handleNextAnimation = () => {
     const c = currentSlide + 1 > 3 ? 3 : currentSlide + 1;
     setPreviousSlide(c - 1);
     setNextSlide(c);
@@ -59,7 +121,7 @@ const RegistrationPage = () => {
                   <p className="font-display text-2xl sm:text-base text-center my-auto">Customer</p>
                 </div>
 
-                <div onClick={() => setSelectedRole('advertiser')} 
+                <div onClick={() => {setSelectedRole('advertiser'); setSelectedSubrole('resort owner')}} 
                 className={`flex gap-x-5 sm:block w-full sm:w-36 h-20  sm:h-36 p-4 rounded-xl border-2 border-slate-100 hover:border-slate-200
                 cursor-pointer mt-4 sm:mt-0
                 ${selectedRole === 'advertiser' ? 'border-cyan-700 hover:border-cyan-700' : ''}`}>
@@ -113,59 +175,56 @@ const RegistrationPage = () => {
           timeout={100} 
           in={currentSlide === 1 && nextSlide === 1}
           unmountOnExit>
-            <div className="block mt-8">
+            <form id="registration-form-two" className="block mt-8" onSubmit={handleSubmitTwo(nextTwo)}>
 
               {/* <!-- email --> */}
-              <label htmlFor="emailInput" className="text-xs text-slate-500">email:</label>
-              <input id="emailInput" type="email" v-model="email" placeholder="email address"
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700 py-1"/>
-              <div className="h-2">
-                {/* <p v-if="$v.email.$dirty && !$v.email.required" className="text-xs text-red-500 my-0">Field required.</p>
-                <p v-if="$v.email.$dirty && !$v.email.email" className="text-xs text-red-500 my-0">Invalid email.</p> */}
+              <label className="text-xs text-slate-500">email:</label>
+              <input name="email" placeholder="email address"
+              {...registerTwo('email')} onChange={() => {clearErrorsTwo()}} onKeyPress={e => handleEnter(e)} 
+              className={`block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg
+              focus:outline-none focus:border-gray-500 w-full caret-gray-700 py-1
+              ${errorsTwo.email?.message != null ? "border-red-700 focus:border-red-700" : ''}`}/>
+              <div className="h-2 mb-2">
+                <p className="text-xs text-red-500 my-0">{errorsTwo.email?.message}</p>
               </div>
 
               {/* <!-- password --> */}
               <label className="text-xs text-slate-500">password:</label>
-              <input type="password" v-model="password" placeholder="password"
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg py-1
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-              <div className="h-2">
-                {/* <p v-if="$v.password.$dirty && !$v.password.required" className="text-xs text-red-500 my-0">Field required.</p>
-                <p v-if="$v.password.$dirty && !$v.password.minLength" className="text-xs text-red-500 my-0">
-                  Password must have at least 6 characters.
-                </p> */}
+              <input name="password" type="password" placeholder="password"
+              {...registerTwo('password')} onChange={() => {clearErrorsTwo()}} onKeyPress={e => handleEnter(e)}
+              className={`block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg py-1
+              focus:outline-none focus:border-gray-500 w-full caret-gray-700
+              ${errorsTwo.password?.message != null ? "border-red-700 focus:border-red-700" : ''}`}/>
+              <div className="h-2 mb-2">
+                <p className="text-xs text-red-500 my-0">{errorsTwo.password?.message}</p>
               </div>
 
               {/* <!-- repeat password --> */}
               <label className="text-xs text-slate-500">confirm password:</label>
-              <input type="password" placeholder="confirm password"
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg py-1
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-              <div className="h-2">
-                {/* <p v-if="$v.repeatPassword.$dirty && !$v.repeatPassword.sameAsPassword" className="text-xs text-red-500 my-0">
-                  Passwords do not match.
-                </p> */}
+              <input name="confirmPassword" type="password" placeholder="confirm password"
+              {...registerTwo('confirmPassword')} onChange={() => {clearErrorsTwo()}} onKeyPress={e => handleEnter(e)}
+              className={`block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg py-1
+              focus:outline-none focus:border-gray-500 w-full caret-gray-700
+              ${errorsTwo.confirmPassword?.message != null ? "border-red-700 focus:border-red-700" : ''}`}/>
+              <div className="h-2 mb-2">
+                <p className="text-xs text-red-500 my-0">{errorsTwo.confirmPassword?.message}</p>
               </div>
               
               {/* reason for advertiser account */}
               { selectedRole === 'advertiser' &&
               <div>
                 <label className="text-xs text-slate-500">reason:</label>
-                <textarea placeholder="I am a good candidate for receiving an advertisers account because..."
-                rows={3}
+                <textarea placeholder="I am a good candidate for receiving an advertiser account because..."
+                rows={3} required onChange={event => setReason(event.target.value)}
                 className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
                 focus:outline-none focus:border-gray-500 w-full caret-gray-700 resize-none
                 hidden-scrollbar"/>
-                <div className="h-2">
-                  {/* <p v-if="$v.repeatPassword.$dirty && !$v.repeatPassword.sameAsPassword" className="text-xs text-red-500 my-0">
-                    Passwords do not match.
-                  </p> */}
-                </div>
               </div>
               }
 
-            </div>
+              <input className="hidden" type="submit" />
+
+            </form>
           </CSSTransition>
 
           {/* <!-- step 3 --> */}
@@ -174,44 +233,42 @@ const RegistrationPage = () => {
           timeout={50}
           in={currentSlide === 2 && nextSlide === 2}
           unmountOnExit>
-            <div className="block mt-8">
+            <form id="registration-form-three" className="block mt-8" onSubmit={handleSubmitThree(nextThree)}>
 
               {/* <!-- first name --> */}
               <label className="text-xs text-slate-500">first name:</label>
-              <input placeholder="first name"
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg py-1
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-              <div className="h-2">
-                {/* <p v-if="$v.firstName.$dirty && !$v.firstName.required" className="text-xs text-red-500 my-0">Field required.</p>
-                <p v-if="$v.firstName.$dirty && !$v.firstName.maxLength" className="text-xs text-red-500 my-0">
-                  First name must be shorter than 30 characters.
-                </p> */}
+              <input name="firstName" placeholder="first name"
+              {...registerThree('firstName')} onChange={() => {clearErrorsThree()}} onKeyPress={e => handleEnter(e)} 
+              className={`block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg py-1
+              focus:outline-none focus:border-gray-500 w-full caret-gray-700
+              ${errorsThree.firstName?.message != null ? "border-red-700 focus:border-red-700" : ''}`}/>
+              <div className="h-2 mb-2">
+                <p className="text-xs text-red-500 my-0">{errorsThree.firstName?.message}</p>
               </div>
 
               {/* <!-- last name --> */}
               <label className="text-xs text-slate-500">last name:</label>
-              <input v-model="lastName" placeholder="last name"
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg py-1
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-              <div className="h-2">
-                {/* <p v-if="$v.lastName.$dirty && !$v.lastName.required" className="text-xs text-red-500 my-0">Field required.</p>
-                <p v-if="$v.lastName.$dirty && !$v.lastName.maxLength" className="text-xs text-red-500 my-0">
-                  Last name must be shorter than 30 characters.
-                </p> */}
+              <input name="lastName" placeholder="last name"
+              {...registerThree('lastName')} onChange={() => {clearErrorsThree()}} onKeyPress={e => handleEnter(e)} 
+              className={`block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg py-1
+              focus:outline-none focus:border-gray-500 w-full caret-gray-700
+              ${errorsThree.lastName?.message != null ? "border-red-700 focus:border-red-700" : ''}`}/>
+              <div className="h-2 mb-2">
+                <p className="text-xs text-red-500 my-0">{errorsThree.lastName?.message}</p>
               </div>
 
               <label className="text-xs text-slate-500">phone number:</label>
-              <input placeholder="phone number"
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg py-1
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+              <input name="phoneNumber" placeholder="phone number"
+              {...registerThree('phoneNumber')} onChange={() => {clearErrorsThree()}} onKeyPress={e => handleEnter(e)} 
+              className={`block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg py-1
+              focus:outline-none focus:border-gray-500 w-full caret-gray-700
+              ${errorsThree.phoneNumber?.message != null ? "border-red-700 focus:border-red-700" : ''}`}/>
               <div className="h-2">
-                {/* <p v-if="$v.firstName.$dirty && !$v.firstName.required" className="text-xs text-red-500 my-0">Field required.</p>
-                <p v-if="$v.firstName.$dirty && !$v.firstName.maxLength" className="text-xs text-red-500 my-0">
-                  First name must be shorter than 30 characters.
-                </p> */}
+                <p className="text-xs text-red-500 my-0">{errorsThree.phoneNumber?.message}</p>
               </div>
 
-            </div>
+              <input className="hidden" type="submit" />
+            </form>
           </CSSTransition >
 
 
@@ -221,37 +278,36 @@ const RegistrationPage = () => {
           timeout={50}
           in={currentSlide === 3 && nextSlide === 3}
           unmountOnExit>
-            <div className="block mt-8">
+            <form id="registration-form-four" className="block mt-8" onSubmit={handleSubmitFour(submitAll)}>
 
               <label className="text-xs text-slate-500">address:</label>
-              <input placeholder="address"
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg py-1
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-              <div className="h-2">
-                {/* <p v-if="$v.firstName.$dirty && !$v.firstName.required" className="text-xs text-red-500 my-0">Field required.</p>
-                <p v-if="$v.firstName.$dirty && !$v.firstName.maxLength" className="text-xs text-red-500 my-0">
-                  First name must be shorter than 30 characters.
-                </p> */}
+              <input name="address" placeholder="address"
+              {...registerFour('address')} onChange={() => {clearErrorsFour()}} onKeyPress={e => handleEnter(e)}
+              className={`block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg py-1
+              focus:outline-none focus:border-gray-500 w-full caret-gray-700
+              ${errorsFour.address?.message != null ? "border-red-700 focus:border-red-700" : ''}`}/>
+              <div className="h-2 mb-2">
+                <p className="text-xs text-red-500 my-0">{errorsFour.address?.message}</p>
               </div>
 
               <label className="text-xs text-slate-500">city:</label>
-              <input placeholder="city"
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg py-1
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-              <div className="h-2">
-                {/* <p v-if="$v.firstName.$dirty && !$v.firstName.required" className="text-xs text-red-500 my-0">Field required.</p>
-                <p v-if="$v.firstName.$dirty && !$v.firstName.maxLength" className="text-xs text-red-500 my-0">
-                  First name must be shorter than 30 characters.
-                </p> */}
+              <input name="city" placeholder="city"
+              {...registerFour('city')} onChange={() => {clearErrorsFour()}} onKeyPress={e => handleEnter(e)}
+              className={`block rounded-lg px-3 border text-gray-700 border-gray-300 text-lg py-1
+              focus:outline-none focus:border-gray-500 w-full caret-gray-700
+              ${errorsFour.city?.message != null ? "border-red-700 focus:border-red-700" : ''}`}/>
+              <div className="h-2 mb-2">
+                <p className="text-xs text-red-500 my-0">{errorsFour.city?.message}</p>
               </div>
 
               <label className="text-xs text-slate-500">country:</label>
               <ReactFlagsSelect selectedSize={13} optionsSize={15} searchable={true}
                 selected={selectedCountry}
-                onSelect={(code) => setSelectedCountry(code)}
+                onSelect={(code) => setSelectedCountry(code)} required
               />
 
-            </div>
+            <input className="hidden" type="submit" />
+            </form>
           </CSSTransition >
         </div>
         
@@ -272,20 +328,22 @@ const RegistrationPage = () => {
             }
 
             {nextSlide !== 3 &&
-            <button type="button" onClick={() => handleNext()}
+            <button type="submit" onClick={() => handleNext()}
             className="rounded-md shadow-sm
             px-6 py-2 bg-cyan-700 text-base font-medium text-white
             hover:bg-cyan-800 active:bg-cyan-900 focus:outline-none
-            w-28 sm:text-sm">
+            w-28 sm:text-sm"
+            form={currentSlide === 1 ? 'registration-form-two' : 'registration-form-three'}>
             next
             </button>
             }
 
             {nextSlide === 3 &&
-            <button type="button" className="rounded-md
+            <button type="submit" className="rounded-md
             shadow-sm px-6 py-2 bg-cyan-700 text-base font-medium text-white
             hover:bg-cyan-800 active:bg-cyan-900  focus:outline-none w-28
-            sm:text-sm">
+            sm:text-sm"
+            form="registration-form-four">
             sign up
             </button>
             }

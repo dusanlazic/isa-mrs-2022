@@ -1,16 +1,15 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import schema from '../validators/loginSchema' 
+import schema from '../validators/loginSchema';
 
 const LoginPage = () => {
 
-  const { register, handleSubmit, formState, clearErrors} = useForm({
+  const { register, handleSubmit, formState: { errors }, clearErrors} = useForm({
     resolver: yupResolver(schema),
     mode: 'onSubmit',
     reValidateMode: 'onChange',
   
   });
-  const { errors } = formState;
 
   const logIn = (data) => {
     console.log(data);
@@ -18,7 +17,6 @@ const LoginPage = () => {
 
   const handleEnter = (e) => {
     if (e.key === 'Enter') {
-      console.log("CKCKS")
       e.target.blur();
       handleSubmit(logIn)
     }
@@ -48,7 +46,7 @@ const LoginPage = () => {
             text-lg md:text-base lg:text-lg py-1 bg-slate-100 focus:outline-none focus:border-gray-500
             w-full caret-gray-700"/>
             <div className="h-2">
-              <p className="text-xs text-red-500 my-0">{formState.errors.email?.message}</p>
+              <p className="text-xs text-red-500 my-0">{errors.email?.message}</p>
             </div>
 
             {/* PASSWORD */}
@@ -58,7 +56,7 @@ const LoginPage = () => {
             text-lg md:text-base lg:text-lg py-1 bg-slate-100 focus:outline-none
             focus:border-gray-500 w-full caret-gray-700"/>
             <div className="h-2">
-              <p className="text-xs text-red-500 my-0">{formState.errors.password?.message}</p>
+              <p className="text-xs text-red-500 my-0">{errors.password?.message}</p>
             </div>
 
             {/* main error */}

@@ -1,5 +1,6 @@
 package com.team4.isamrs.model.adventure;
 
+import com.team4.isamrs.model.advertisement.Advertisement;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,5 +24,5 @@ public class FishingEquipment {
             name = "fishing_equipment_ads",
             joinColumns = @JoinColumn(name = "fishing_equipment_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "advertisement_id", referencedColumnName = "id"))
-    private Set<AdventureAd> advertisements = new HashSet<>();
+    private Set<Advertisement> advertisements = new HashSet<>();
 }

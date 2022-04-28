@@ -1,10 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react"
+import { get } from "../../../adapters/xhr";
 
-
-const description = "A boat is a watercraft of a large range of types and sizes, but generally smaller than a ship, which is distinguished by its larger size, shape, cargo or passenger capacity, or its ability to carry boats. Small boats are typically found on inland waterways such as rivers and lakes, or in protected coastal areas.";
 
 const BoatProfileMainInfo = ({data}) => {
 	let [showMore, setShowMore] = useState(false);
+	let description = data.description;
+	const [rating, setRating] = useState(null);
+
+	useEffect(() => {
+		get(`/api/ads/${data.id}/rating`).then((response) => {
+			setRating(response.data);
+		  });
+		}, [])
 
 	return (
 		<div className="block md:flex bg-gray-100 rounded-lg p-10">
@@ -19,17 +26,17 @@ const BoatProfileMainInfo = ({data}) => {
 			<div className="flex flex-col flex-grow md:ml-4">
 
 				<div className="block md:flex w-full justify-between text-center md:text-left">
-					<h1 className="text-3xl md:text-2xl xl:text-3xl mt-4 mb-1 lg:mb-2 md:mt-1 tracking-tight my-auto">Yacht Platz</h1>
+					<h1 className="text-3xl md:text-2xl xl:text-3xl mt-4 mb-1 lg:mb-2 md:mt-1 tracking-tight my-auto">{data.title}</h1>
 					<div className="block md:hidden text-lg text-center -mt-2">
-						<div className="md:text-left -mt-1 text-sm text-gray-500">Service provider name</div>
-						4.76 <span className="text-yellow-500 text-xl">&#9733;</span>
+						<div className="md:text-left -mt-1 text-sm text-gray-500">{data.advertiser.firstName} {data.advertiser.lastName}</div>
+						{rating} <span className="text-yellow-500 text-xl">&#9733;</span>
 					</div>
 				</div>
 
 
 				<div className="hidden md:block text-lg text-left">
-					<div className="md:text-left -mt-3 text-sm text-gray-500">Service provider name</div>
-					4.76 <span className="text-yellow-500 text-xl">&#9733;</span>
+					<div className="md:text-left -mt-3 text-sm text-gray-500">{data.advertiser.firstName} {data.advertiser.lastName}</div>
+					{rating} <span className="text-yellow-500 text-xl">&#9733;</span>
 				</div>
 
 				{/* Description */}

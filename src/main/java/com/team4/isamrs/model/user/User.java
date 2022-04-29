@@ -3,6 +3,7 @@ package com.team4.isamrs.model.user;
 import com.team4.isamrs.model.advertisement.Photo;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,10 +14,7 @@ import java.util.Set;
 @Setter
 @Table(name="\"user\"")
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-public class User {
-    /*
-    Will be replaced by Spring Security's User class
-     */
+public class User implements UserDetails {
     @Id
     @SequenceGenerator(name = "mySeqGenV1", sequenceName = "mySeqV1", initialValue = 1, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenV1")
@@ -32,8 +30,8 @@ public class User {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "email_address", unique = true, nullable = false)
-    private String emailAddress;
+    @Column(name = "username", unique = true, nullable = false)
+    private String username;
 
     @Column(name = "address", nullable = false)
     private String address;
@@ -47,9 +45,32 @@ public class User {
     @Column(name = "phone_number", unique = true, nullable = false)
     private String phoneNumber;
 
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+    @Column(name = "password", nullable = false)
+    private String password;
 
-    @Column(name = "active", nullable = false)
-    private Boolean active;
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> authorities = new HashSet<>();
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return enabled;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return enabled;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return enabled;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
 }

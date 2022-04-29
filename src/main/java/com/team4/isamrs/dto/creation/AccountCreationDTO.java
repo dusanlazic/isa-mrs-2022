@@ -21,7 +21,7 @@ public class AccountCreationDTO {
 
     @NotBlank
     @Email(message = "Email should be valid")
-    private String emailAddress;
+    private String username;
 
     @NotBlank
     private String address;

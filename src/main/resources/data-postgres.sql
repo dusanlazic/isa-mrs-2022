@@ -33,10 +33,6 @@ INSERT INTO public.advertiser(
     id, enabled, address, city, country_code, username, first_name, last_name, password, phone_number, avatar_id)
 VALUES (2, TRUE , 'Mise Dimitrijevica 1', 'Novi Sad', 'SR', 'maja@gmail.com', 'Maja', 'Majic', 'maja', '12345678', 'ac29818c-5e95-438c-85ff-da0a25cd188c');
 
-INSERT INTO public.advertiser(
-    id, enabled, address, city, country_code, username, first_name, last_name, password, phone_number, avatar_id)
-VALUES (3, TRUE , 'Kod mene kući BB', 'Novi Sad', 'RS', 'contact@dusanlazic.com', 'Dusan', 'Lazic', 'dusan', '0651337', 'ac29818c-5e95-438c-85ff-da0a25cd188c');
-
 INSERT INTO public.address(
     id, address, city, country_code, latitude, longitude, postal_code, state)
 VALUES (2, 'Gogoljeva 2', 'Novi Sad', 'SR', '1111.1', '1334.2', '21000', 'Srbija');
@@ -53,4 +49,3 @@ INSERT INTO public.role(id, authority) VALUES (5, 'Fishing Instructor');
 
 INSERT INTO public.user_authorities(user_id, authorities_id) VALUES (1, 2);
 INSERT INTO public.user_authorities(user_id, authorities_id) VALUES (2, 3);
-INSERT INTO public.user_authorities(user_id, authorities_id) VALUES (3, 5);

@@ -1,9 +1,7 @@
 package com.team4.isamrs.dto.display;
 
-import com.team4.isamrs.model.adventure.FishingEquipment;
 import com.team4.isamrs.model.advertisement.Address;
 import com.team4.isamrs.model.advertisement.DailyPrice;
-import com.team4.isamrs.model.boat.NavigationalEquipment;
 import com.team4.isamrs.model.user.Advertiser;
 import lombok.Data;
 
@@ -26,7 +24,7 @@ public class BoatAdDisplayDTO implements DisplayDTO {
     private String rules;
     private String currency;
     private Set<String> tags;
-    private Set<PhotoDisplayDTO> photos;
+    private Set<PhotoBriefDisplayDTO> photos;
     private Set<OptionDisplayDTO> options;
 
     private LocalTime CheckOutTime;

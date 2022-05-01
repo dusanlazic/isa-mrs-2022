@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class CustomerDisplayDTO implements DisplayDTO {
     private Long id;
-    private PhotoDisplayDTO avatar;
+    private PhotoBriefDisplayDTO avatar;
     private String firstName;
     private String lastName;
     private String username;

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -39,8 +40,8 @@ public class AdventureController {
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
-    public ResponseEntity<String> create(@Valid @RequestBody AdventureAdCreationDTO dto) {
-        return ResponseEntity.created(URI.create("/ads/adventures/" + adventureAdService.create(dto).getId()))
+    public ResponseEntity<String> create(@Valid @RequestBody AdventureAdCreationDTO dto, Authentication authentication) {
+        return ResponseEntity.created(URI.create("/ads/adventures/" + adventureAdService.create(dto, authentication).getId()))
                 .body("Adventure ad created.");
     }
 

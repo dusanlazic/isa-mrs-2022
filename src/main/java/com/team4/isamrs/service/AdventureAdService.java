@@ -4,12 +4,15 @@ import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.creation.HourlyPriceCreationDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
+import com.team4.isamrs.exception.PhotoNotFoundException;
 import com.team4.isamrs.model.adventure.AdventureAd;
 import com.team4.isamrs.model.advertisement.HourlyPrice;
+import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.AdventureAdRepository;
 import com.team4.isamrs.repository.HourlyPriceRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -40,12 +43,15 @@ public class AdventureAdService {
         return modelMapper.map(adventureAd, returnType);
     }
 
-    public AdventureAd create(AdventureAdCreationDTO dto) {
-        /* Note:
-        Every photo in adventureAd.photos should be checked if
-        it's uploaded by the current logged-in user.
-         */
+    public AdventureAd create(AdventureAdCreationDTO dto, Authentication authentication) {
+        Advertiser advertiser = (Advertiser) authentication.getPrincipal();
+
         AdventureAd adventureAd = modelMapper.map(dto, AdventureAd.class);
+        adventureAd.setAdvertiser(advertiser);
+        adventureAd.getPhotos().forEach(photo -> {
+            if (!photo.getUploader().getUsername().equals(advertiser.getUsername()))
+                throw new PhotoNotFoundException();
+        });
 
         adventureAdRepository.save(adventureAd);
         return adventureAd;

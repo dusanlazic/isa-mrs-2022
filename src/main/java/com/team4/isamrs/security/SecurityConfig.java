@@ -73,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         web.ignoring().antMatchers(
                 HttpMethod.GET,
-                "uploads/**",
+                "photos/**",
                 "/ads/**",
                 "/fishing-equipment/**",
                 "/tags/*");

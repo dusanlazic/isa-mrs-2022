@@ -1,13 +1,13 @@
 package com.team4.isamrs.controller;
 
-import com.team4.isamrs.dto.creation.AccountCreationDTO;
-import com.team4.isamrs.dto.creation.OptionCreationDTO;
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
+import com.team4.isamrs.dto.updation.AccountUpdationDTO;
 import com.team4.isamrs.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,8 +27,8 @@ public class AccountController {
     }
 
     @PutMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateAccount(@Valid @RequestBody AccountCreationDTO dto) {
-        accountService.updateAccount(dto);
+    public ResponseEntity<String> updateAccount(@Valid @RequestBody AccountUpdationDTO dto, Authentication auth) {
+        accountService.updateAccount(dto, auth);
         return ResponseEntity.ok().body("Account updated.");
     }
 }

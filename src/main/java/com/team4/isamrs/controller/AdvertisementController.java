@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,22 +32,25 @@ public class AdvertisementController {
 
     @PostMapping(value = "/{id}/options", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADVERTISER')")
-    public ResponseEntity<String> addOption(@PathVariable Long id, @Valid @RequestBody OptionCreationDTO dto) {
-        advertisementService.addOption(id, dto);
+    public ResponseEntity<String> addOption(@PathVariable Long id, @Valid @RequestBody OptionCreationDTO dto, Authentication auth) {
+        advertisementService.addOption(id, dto, auth);
         return ResponseEntity.ok().body("Option created.");
     }
 
     @PutMapping(value = "/{id}/options/{optionId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADVERTISER')")
-    public ResponseEntity<String> updateOption(@PathVariable Long id, @PathVariable Long optionId, @Valid @RequestBody OptionCreationDTO dto) {
-        advertisementService.updateOption(id, optionId, dto);
+    public ResponseEntity<String> updateOption(@PathVariable Long id,
+                                               @PathVariable Long optionId,
+                                               @Valid @RequestBody OptionCreationDTO dto,
+                                               Authentication auth) {
+        advertisementService.updateOption(id, optionId, dto, auth);
         return ResponseEntity.ok().body("Option updated.");
     }
 
     @DeleteMapping("/{id}/options/{optionId}")
     @PreAuthorize("hasRole('ADVERTISER')")
-    public ResponseEntity<String> removeOption(@PathVariable Long id, @PathVariable Long optionId) {
-        advertisementService.removeOption(id, optionId);
+    public ResponseEntity<String> removeOption(@PathVariable Long id, @PathVariable Long optionId, Authentication auth) {
+        advertisementService.removeOption(id, optionId, auth);
         return ResponseEntity.ok().body("Option deleted.");
     }
 

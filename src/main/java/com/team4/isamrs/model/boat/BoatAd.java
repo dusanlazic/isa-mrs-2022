@@ -3,6 +3,7 @@ package com.team4.isamrs.model.boat;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.DailyPrice;
 import com.team4.isamrs.model.adventure.FishingEquipment;
+import com.team4.isamrs.model.user.Advertiser;
 import lombok.Getter;
 import lombok.Setter;
 

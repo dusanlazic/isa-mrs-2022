@@ -1,7 +1,7 @@
 package com.team4.isamrs.service;
 
-import com.team4.isamrs.dto.creation.AccountCreationDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
+import com.team4.isamrs.dto.updation.AccountUpdationDTO;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Role;
 import com.team4.isamrs.model.user.User;
@@ -10,6 +10,7 @@ import com.team4.isamrs.repository.RoleRepository;
 import com.team4.isamrs.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,9 +38,9 @@ public class AccountService {
         return modelMapper.map(userRepository.findById(id).orElseThrow(), returnType);
     }
 
-    public void updateAccount(AccountCreationDTO dto) {
-        User user = userRepository.findById(dto.getId()).orElseThrow();
-        dto.setUsername(user.getUsername()); // email stays the same
+    public void updateAccount(AccountUpdationDTO dto, Authentication auth) {
+        User user = (User) auth.getPrincipal();
+
         modelMapper.map(dto, user);
         userRepository.save(user);
     }

@@ -70,8 +70,8 @@ public class PhotoService {
         return modelMapper.map(photo, returnType);
     }
 
-    public PhotoUploadDisplayDTO store(MultipartFile file, Authentication authentication) {
-        User uploader = (User) authentication.getPrincipal();
+    public PhotoUploadDisplayDTO store(MultipartFile file, Authentication auth) {
+        User uploader = (User) auth.getPrincipal();
 
         String contentType = detectContentType(file);
         Photo photo = createPhotoFromMultipartFile(file, contentType);

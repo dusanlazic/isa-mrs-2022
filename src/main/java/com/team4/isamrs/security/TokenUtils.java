@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.team4.isamrs.exception.TokenNotProvidedException;
 import com.team4.isamrs.model.user.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -55,7 +56,7 @@ public class TokenUtils {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7); // Ignore "Bearer " part
         }
-        return null;
+        throw new TokenNotProvidedException("Token is not provided.");
     }
 
     public DecodedJWT verifyToken(String token) {

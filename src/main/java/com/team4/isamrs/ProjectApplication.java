@@ -21,6 +21,7 @@ public class ProjectApplication {
 	CommandLineRunner init(PhotoService photoService, AccountService accountService) {
 		return (args) -> {
 			photoService.init();
+			accountService.initializeRoles();
 			accountService.createTestAccount();
 		};
 	}

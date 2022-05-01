@@ -41,11 +41,8 @@ INSERT INTO public.resort_ad(
     id, available_after, available_until, currency, description, pricing_description, rules, title, address_id, advertiser_id, check_in_time, check_out_time, number_of_beds)
 VALUES (1, now(), now(), '$', 'jako jako lepa', 'nema popusta', 'pravila neka', 'Vila brvnara', 2, 2, now(), now(), 3);
 
-INSERT INTO public.role(id, authority) VALUES (1, 'Administrator');
-INSERT INTO public.role(id, authority) VALUES (2, 'Customer');
-INSERT INTO public.role(id, authority) VALUES (3, 'Resort Owner');
-INSERT INTO public.role(id, authority) VALUES (4, 'Boat Owner');
-INSERT INTO public.role(id, authority) VALUES (5, 'Fishing Instructor');
-
-INSERT INTO public.user_authorities(user_id, authorities_id) VALUES (1, 2);
-INSERT INTO public.user_authorities(user_id, authorities_id) VALUES (2, 3);
+-- INSERT INTO public.role(id, authority) VALUES (1, 'ADMIN');
+-- INSERT INTO public.role(id, authority) VALUES (2, 'CUSTOMER');
+-- INSERT INTO public.role(id, authority) VALUES (3, 'RESORT_OWNER');
+-- INSERT INTO public.role(id, authority) VALUES (4, 'BOAT_OWNER');
+-- INSERT INTO public.role(id, authority) VALUES (5, 'FISHING_INSTRUCTOR');

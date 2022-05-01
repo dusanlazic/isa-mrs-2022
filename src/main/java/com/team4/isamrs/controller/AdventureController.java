@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,18 +38,21 @@ public class AdventureController {
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
     public ResponseEntity<String> create(@Valid @RequestBody AdventureAdCreationDTO dto) {
         return ResponseEntity.created(URI.create("/ads/adventures/" + adventureAdService.create(dto).getId()))
-                             .body("Adventure ad created.");
+                .body("Adventure ad created.");
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
     public ResponseEntity<String> update(@PathVariable Long id, @Valid @RequestBody AdventureAdUpdationDTO dto) {
         adventureAdService.update(id, dto);
         return ResponseEntity.ok("Adventure ad updated.");
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR') or hasRole('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         adventureAdService.delete(id);
         return ResponseEntity.ok("Adventure ad deleted.");
@@ -60,6 +64,7 @@ public class AdventureController {
     }
 
     @PostMapping(value = "/{id}/prices", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
     public ResponseEntity<String> addPrice(@PathVariable Long id, @Valid @RequestBody HourlyPriceCreationDTO dto) {
         adventureAdService.addPrice(id, dto);
         return ResponseEntity.created(URI.create("/ads/adventures/" + id))
@@ -67,12 +72,14 @@ public class AdventureController {
     }
 
     @PutMapping(value = "/{id}/prices/{priceId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
     public ResponseEntity<String> updatePrice(@PathVariable Long id, @PathVariable Long priceId, @Valid @RequestBody HourlyPriceCreationDTO dto) {
         adventureAdService.updatePrice(id, priceId, dto);
         return ResponseEntity.ok().body("Hourly price updated.");
     }
 
     @DeleteMapping("/{id}/prices/{priceId}")
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
     public ResponseEntity<String> removePrice(@PathVariable Long id, @PathVariable Long priceId) {
         adventureAdService.removePrice(id, priceId);
         return ResponseEntity.ok().body("Hourly price deleted.");

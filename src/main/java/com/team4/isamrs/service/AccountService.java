@@ -3,6 +3,7 @@ package com.team4.isamrs.service;
 import com.team4.isamrs.dto.creation.AccountCreationDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.model.user.Advertiser;
+import com.team4.isamrs.model.user.Role;
 import com.team4.isamrs.model.user.User;
 import com.team4.isamrs.repository.PhotoRepository;
 import com.team4.isamrs.repository.RoleRepository;
@@ -53,9 +54,18 @@ public class AccountService {
         advertiser.setFirstName("Dusan");
         advertiser.setLastName("Lazic");
         advertiser.setPassword(passwordEncoder.encode("13371337"));
-        advertiser.getAuthorities().add(roleRepository.findByAuthority("Fishing Instructor").get());
+        advertiser.getAuthorities().add(roleRepository.findByName("ROLE_FISHING_INSTRUCTOR").get());
         advertiser.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
         advertiser.setPhoneNumber("065-1337");
         userRepository.save(advertiser);
+    }
+
+    public void initializeRoles() {
+        roleRepository.save(new Role("ROLE_ADMIN"));
+        roleRepository.save(new Role("ROLE_CUSTOMER"));
+        roleRepository.save(new Role("ROLE_ADVERTISER"));
+        roleRepository.save(new Role("ROLE_FISHING_INSTRUCTOR"));
+        roleRepository.save(new Role("ROLE_RESORT_OWNER"));
+        roleRepository.save(new Role("ROLE_BOAT_OWNER"));
     }
 }

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,20 +39,23 @@ public class AdventureController {
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> create(@Valid @RequestBody AdventureAdCreationDTO dto) {
-        return ResponseEntity.created(URI.create("/ads/adventures/" + adventureAdService.create(dto).getId()))
-                             .body("Adventure ad created.");
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<String> create(@Valid @RequestBody AdventureAdCreationDTO dto, Authentication auth) {
+        return ResponseEntity.created(URI.create("/ads/adventures/" + adventureAdService.create(dto, auth).getId()))
+                .body("Adventure ad created.");
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> update(@PathVariable Long id, @Valid @RequestBody AdventureAdUpdationDTO dto) {
-        adventureAdService.update(id, dto);
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<String> update(@PathVariable Long id, @Valid @RequestBody AdventureAdUpdationDTO dto, Authentication auth) {
+        adventureAdService.update(id, dto, auth);
         return ResponseEntity.ok("Adventure ad updated.");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
-        adventureAdService.delete(id);
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR') or hasRole('ADMIN')")
+    public ResponseEntity<String> delete(@PathVariable Long id, Authentication auth) {
+        adventureAdService.delete(id, auth);
         return ResponseEntity.ok("Adventure ad deleted.");
     }
 
@@ -60,21 +65,27 @@ public class AdventureController {
     }
 
     @PostMapping(value = "/{id}/prices", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addPrice(@PathVariable Long id, @Valid @RequestBody HourlyPriceCreationDTO dto) {
-        adventureAdService.addPrice(id, dto);
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<String> addPrice(@PathVariable Long id, @Valid @RequestBody HourlyPriceCreationDTO dto, Authentication auth) {
+        adventureAdService.addPrice(id, dto, auth);
         return ResponseEntity.created(URI.create("/ads/adventures/" + id))
                              .body("Hourly price created.");
     }
 
     @PutMapping(value = "/{id}/prices/{priceId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updatePrice(@PathVariable Long id, @PathVariable Long priceId, @Valid @RequestBody HourlyPriceCreationDTO dto) {
-        adventureAdService.updatePrice(id, priceId, dto);
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<String> updatePrice(@PathVariable Long id,
+                                              @PathVariable Long priceId,
+                                              @Valid @RequestBody HourlyPriceCreationDTO dto,
+                                              Authentication auth) {
+        adventureAdService.updatePrice(id, priceId, dto, auth);
         return ResponseEntity.ok().body("Hourly price updated.");
     }
 
     @DeleteMapping("/{id}/prices/{priceId}")
-    public ResponseEntity<String> removePrice(@PathVariable Long id, @PathVariable Long priceId) {
-        adventureAdService.removePrice(id, priceId);
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
+    public ResponseEntity<String> removePrice(@PathVariable Long id, @PathVariable Long priceId, Authentication auth) {
+        adventureAdService.removePrice(id, priceId, auth);
         return ResponseEntity.ok().body("Hourly price deleted.");
     }
 }

@@ -1,5 +1,6 @@
 package com.team4.isamrs.model.advertisement;
 
+import com.team4.isamrs.exception.PhotoNotFoundException;
 import com.team4.isamrs.model.review.ServiceReview;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
@@ -93,5 +94,13 @@ public class Advertisement {
     public void removeOption(Option option) {
         options.remove(option);
         option.setAdvertisement(null);
+    }
+
+    public void verifyPhotosOwnership(Advertiser advertiser) {
+        String username = advertiser.getUsername();
+        photos.forEach(photo -> {
+            if (!photo.getUploader().getUsername().equals(username))
+                 throw new PhotoNotFoundException();
+        });
     }
 }

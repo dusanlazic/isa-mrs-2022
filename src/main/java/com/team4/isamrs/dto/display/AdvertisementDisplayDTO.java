@@ -20,6 +20,6 @@ public class AdvertisementDisplayDTO implements DisplayDTO {
     private String rules;
     private String currency;
     private Set<String> tags;
-    private Set<PhotoDisplayDTO> photos;
+    private Set<PhotoBriefDisplayDTO> photos;
     private Set<OptionDisplayDTO> options;
 }

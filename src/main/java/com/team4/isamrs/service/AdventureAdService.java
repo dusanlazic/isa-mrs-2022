@@ -6,10 +6,12 @@ import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
 import com.team4.isamrs.model.adventure.AdventureAd;
 import com.team4.isamrs.model.advertisement.HourlyPrice;
+import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.AdventureAdRepository;
 import com.team4.isamrs.repository.HourlyPriceRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -40,34 +42,30 @@ public class AdventureAdService {
         return modelMapper.map(adventureAd, returnType);
     }
 
-    public AdventureAd create(AdventureAdCreationDTO dto) {
-        /* Note:
-        Every photo in adventureAd.photos should be checked if
-        it's uploaded by the current logged-in user.
-         */
+    public AdventureAd create(AdventureAdCreationDTO dto, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+
         AdventureAd adventureAd = modelMapper.map(dto, AdventureAd.class);
+        adventureAd.setAdvertiser(advertiser);
+        adventureAd.verifyPhotosOwnership(advertiser);
 
         adventureAdRepository.save(adventureAd);
         return adventureAd;
     }
 
-    public void update(Long id, AdventureAdUpdationDTO dto) {
-        /* Note:
-        Every photo in adventureAd.photos should be checked if
-        it's uploaded by the current logged-in user.
-         */
-        AdventureAd adventureAd = adventureAdRepository.findById(id).orElseThrow();
+    public void update(Long id, AdventureAdUpdationDTO dto, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        AdventureAd adventureAd = adventureAdRepository.findAdventureAdByIdAndAdvertiser(id, advertiser).orElseThrow();
 
         modelMapper.map(dto, adventureAd);
+        adventureAd.verifyPhotosOwnership(advertiser);
 
         adventureAdRepository.save(adventureAd);
     }
 
-    public void delete(Long id) {
-        /* Note:
-        Ensure that this advertisement is posted by the current logged-in user.
-         */
-        AdventureAd adventureAd = adventureAdRepository.findById(id).orElseThrow();
+    public void delete(Long id, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        AdventureAd adventureAd = adventureAdRepository.findAdventureAdByIdAndAdvertiser(id, advertiser).orElseThrow();
 
         adventureAd.getFishingEquipment().forEach(e -> e.getAdvertisements().remove(adventureAd)); // there must be a better solution
 
@@ -83,11 +81,9 @@ public class AdventureAdService {
                 .collect(Collectors.toSet());
     }
 
-    public HourlyPrice addPrice(Long id, HourlyPriceCreationDTO dto) {
-        /* Note:
-        Ensure that this advertisement is posted by the current logged-in user.
-         */
-        AdventureAd adventureAd = adventureAdRepository.findById(id).orElseThrow();
+    public HourlyPrice addPrice(Long id, HourlyPriceCreationDTO dto, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        AdventureAd adventureAd = adventureAdRepository.findAdventureAdByIdAndAdvertiser(id, advertiser).orElseThrow();
 
         HourlyPrice hourlyPrice = modelMapper.map(dto, HourlyPrice.class);
         adventureAd.addHourlyPrice(hourlyPrice);
@@ -96,11 +92,9 @@ public class AdventureAdService {
         return hourlyPrice;
     }
 
-    public void updatePrice(Long advertisementId, Long priceId, HourlyPriceCreationDTO dto) {
-        /* Note:
-        Ensure that this advertisement is posted by the current logged-in user.
-         */
-        AdventureAd adventureAd = adventureAdRepository.findById(advertisementId).orElseThrow();
+    public void updatePrice(Long advertisementId, Long priceId, HourlyPriceCreationDTO dto, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        AdventureAd adventureAd = adventureAdRepository.findAdventureAdByIdAndAdvertiser(advertisementId, advertiser).orElseThrow();
         HourlyPrice hourlyPrice = hourlyPriceRepository.findById(priceId).orElseThrow();
         if (!adventureAd.getPrices().contains(hourlyPrice))
             throw new NoSuchElementException();
@@ -110,11 +104,9 @@ public class AdventureAdService {
         hourlyPriceRepository.save(hourlyPrice);
     }
 
-    public void removePrice(Long advertisementId, Long priceId) {
-        /* Note:
-        Ensure that this advertisement is posted by the current logged-in user.
-         */
-        AdventureAd adventureAd = adventureAdRepository.findById(advertisementId).orElseThrow();
+    public void removePrice(Long advertisementId, Long priceId, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        AdventureAd adventureAd = adventureAdRepository.findAdventureAdByIdAndAdvertiser(advertisementId, advertiser).orElseThrow();
         HourlyPrice hourlyPrice = hourlyPriceRepository.findById(priceId).orElseThrow();
         if (!adventureAd.getPrices().contains(hourlyPrice))
             throw new NoSuchElementException();

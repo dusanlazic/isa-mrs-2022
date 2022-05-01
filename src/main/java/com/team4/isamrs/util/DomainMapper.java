@@ -2,10 +2,7 @@ package com.team4.isamrs.util;
 
 import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
-import com.team4.isamrs.dto.display.AdventureAdDisplayDTO;
-import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
-import com.team4.isamrs.dto.display.CustomerDisplayDTO;
-import com.team4.isamrs.dto.display.PhotoDisplayDTO;
+import com.team4.isamrs.dto.display.*;
 import com.team4.isamrs.model.adventure.AdventureAd;
 import com.team4.isamrs.model.advertisement.Photo;
 import com.team4.isamrs.model.advertisement.Tag;
@@ -77,7 +74,12 @@ public class DomainMapper {
             return destination;
         };
 
-        Converter<Photo, PhotoDisplayDTO> PhotoToDisplayDtoConverter = context -> {
+        Converter<Photo, PhotoBriefDisplayDTO> PhotoToDisplayDtoConverter = context -> {
+            context.getDestination().setUri("/photos/" + context.getSource().getStoredFilename());
+            return context.getDestination();
+        };
+
+        Converter<Photo, PhotoUploadDisplayDTO> PhotoToUploadDisplayDtoConverter = context -> {
             context.getDestination().setUri("/photos/" + context.getSource().getStoredFilename());
             return context.getDestination();
         };
@@ -109,7 +111,8 @@ public class DomainMapper {
 
         modelMapper.createTypeMap(AdventureAdCreationDTO.class, AdventureAd.class).setPostConverter(CreationDtoToAdventureAdConverter);
         modelMapper.createTypeMap(AdventureAd.class, AdventureAdDisplayDTO.class).setPostConverter(AdventureAdToDisplayDtoConverter);
-        modelMapper.createTypeMap(Photo.class, PhotoDisplayDTO.class).setPostConverter(PhotoToDisplayDtoConverter);
+        modelMapper.createTypeMap(Photo.class, PhotoBriefDisplayDTO.class).setPostConverter(PhotoToDisplayDtoConverter);
+        modelMapper.createTypeMap(Photo.class, PhotoUploadDisplayDTO.class).setPostConverter(PhotoToUploadDisplayDtoConverter);
         modelMapper.createTypeMap(Customer.class, CustomerDisplayDTO.class);
         modelMapper.createTypeMap(BoatAdCreationDTO.class, BoatAd.class).setPostConverter(CreationDtoToBoatAdConverter);
         modelMapper.createTypeMap(BoatAd.class, BoatAdDisplayDTO.class).setPostConverter(BoatAdToDisplayDtoConverter);

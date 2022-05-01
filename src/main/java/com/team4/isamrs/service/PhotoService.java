@@ -1,11 +1,13 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.display.DisplayDTO;
+import com.team4.isamrs.dto.display.PhotoUploadDisplayDTO;
 import com.team4.isamrs.exception.PhotoNotFoundException;
 import com.team4.isamrs.exception.PhotoPathTraversalException;
 import com.team4.isamrs.exception.PhotoStorageException;
 import com.team4.isamrs.exception.PhotoUploadException;
 import com.team4.isamrs.model.advertisement.Photo;
+import com.team4.isamrs.model.user.User;
 import com.team4.isamrs.repository.PhotoRepository;
 import com.team4.isamrs.util.StorageConfig;
 import org.apache.tika.Tika;
@@ -18,6 +20,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -68,9 +70,12 @@ public class PhotoService {
         return modelMapper.map(photo, returnType);
     }
 
-    public Photo store(MultipartFile file) {
+    public PhotoUploadDisplayDTO store(MultipartFile file, Authentication auth) {
+        User uploader = (User) auth.getPrincipal();
+
         String contentType = detectContentType(file);
         Photo photo = createPhotoFromMultipartFile(file, contentType);
+        photo.setUploader(uploader);
         Path uploadedFilePath = createDestinationPath(photo);
 
         try (InputStream is = file.getInputStream()) {
@@ -80,7 +85,7 @@ public class PhotoService {
             throw new PhotoStorageException("Failed to store file.", e);
         }
 
-        return photo;
+        return modelMapper.map(photo, PhotoUploadDisplayDTO.class);
     }
 
     public ResponseEntity<Resource> serve(String filename) throws IOException {

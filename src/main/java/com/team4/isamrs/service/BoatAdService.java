@@ -3,12 +3,13 @@ package com.team4.isamrs.service;
 import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.model.boat.BoatAd;
+import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.BoatAdRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import javax.net.ssl.SSLSession;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -32,8 +33,13 @@ public class BoatAdService {
         return modelMapper.map(boatAd, returnType);
     }
 
-    public BoatAd create(BoatAdCreationDTO dto) {
+    public BoatAd create(BoatAdCreationDTO dto, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+
         BoatAd boatAd = modelMapper.map(dto, BoatAd.class);
+        boatAd.setAdvertiser(advertiser);
+        boatAd.verifyPhotosOwnership(advertiser);
+
         boatAdRepository.save(boatAd);
         return boatAd;
     }

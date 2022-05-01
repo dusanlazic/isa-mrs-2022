@@ -6,10 +6,12 @@ import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.Option;
 import com.team4.isamrs.model.review.ServiceReview;
+import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.AdvertisementRepository;
 import com.team4.isamrs.repository.OptionRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -38,11 +40,9 @@ public class AdvertisementService {
                 .collect(Collectors.toSet());
     }
 
-    public void addOption(Long id, OptionCreationDTO dto) {
-        /* Note:
-        Ensure that this advertisement is posted by the current logged-in user.
-         */
-        Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
+    public void addOption(Long id, OptionCreationDTO dto, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        Advertisement advertisement = advertisementRepository.findAdvertisementByIdAndAdvertiser(id, advertiser).orElseThrow();
 
         Option option = modelMapper.map(dto, Option.class);
         advertisement.addOption(option);
@@ -50,11 +50,10 @@ public class AdvertisementService {
         advertisementRepository.save(advertisement);
     }
 
-    public void updateOption(Long advertisementId, Long priceId, OptionCreationDTO dto) {
-        /* Note:
-        Ensure that this advertisement is posted by the current logged-in user.
-         */
-        Advertisement advertisement = advertisementRepository.findById(advertisementId).orElseThrow();
+    public void updateOption(Long advertisementId, Long priceId, OptionCreationDTO dto, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        Advertisement advertisement = advertisementRepository.findAdvertisementByIdAndAdvertiser(advertisementId, advertiser).orElseThrow();
+
         Option option = optionRepository.findById(priceId).orElseThrow();
         if (!option.getAdvertisement().equals(advertisement))
             throw new NoSuchElementException();
@@ -64,11 +63,9 @@ public class AdvertisementService {
         optionRepository.save(option);
     }
 
-    public void removeOption(Long advertisementId, Long optionId) {
-        /* Note:
-        Ensure that this advertisement is posted by the current logged-in user.
-         */
-        Advertisement advertisement = advertisementRepository.findById(advertisementId).orElseThrow();
+    public void removeOption(Long advertisementId, Long optionId, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        Advertisement advertisement = advertisementRepository.findAdvertisementByIdAndAdvertiser(advertisementId, advertiser).orElseThrow();
         Option option = optionRepository.findById(optionId).orElseThrow();
         if (!option.getAdvertisement().equals(advertisement))
             throw new NoSuchElementException();

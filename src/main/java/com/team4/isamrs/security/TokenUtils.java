@@ -20,13 +20,16 @@ public class TokenUtils {
 
     private final String secret;
     private final String issuer;
+    private final Integer lifespan;
     private final Algorithm signatureAlgorithm;
     private final JWTVerifier verifier;
 
     public TokenUtils(@Value("${token-utils.secret}") String secret,
-                      @Value("${token-utils.issuer}") String issuer) {
+                      @Value("${token-utils.issuer}") String issuer,
+                      @Value("${token-utils.lifespan}") Integer lifespan) {
         this.secret = secret;
         this.issuer = issuer;
+        this.lifespan = lifespan;
         this.signatureAlgorithm = Algorithm.HMAC256(secret.getBytes());
         this.verifier = JWT.require(signatureAlgorithm).build();
     }
@@ -36,16 +39,7 @@ public class TokenUtils {
                 .withSubject(user.getUsername())
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .withIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
-                .withExpiresAt(Date.from(ZonedDateTime.now().plusMinutes(10).toInstant()))
-                .withIssuer(issuer)
-                .sign(signatureAlgorithm);
-    }
-
-    public String generateRefreshToken(User user) {
-        return JWT.create()
-                .withSubject(user.getUsername())
-                .withIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
-                .withExpiresAt(Date.from(ZonedDateTime.now().plusMinutes(10).toInstant()))
+                .withExpiresAt(Date.from(ZonedDateTime.now().plusMinutes(lifespan).toInstant()))
                 .withIssuer(issuer)
                 .sign(signatureAlgorithm);
     }

@@ -43,7 +43,7 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = (User) authentication.getPrincipal();
 
-        TokenResponse response = new TokenResponse(tokenUtils.generateAccessToken(user), tokenUtils.generateRefreshToken(user));
+        TokenResponse response = new TokenResponse(tokenUtils.generateAccessToken(user));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

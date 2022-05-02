@@ -76,12 +76,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 HttpMethod.POST,
                 "/auth/login");
 
-        web.ignoring().antMatchers(
-                HttpMethod.GET,
+        web.ignoring().antMatchers(HttpMethod.GET,
                 "photos/**",
                 "/ads/**",
                 "/fishing-equipment/**",
                 "/tags/*");
+
+        web.ignoring().antMatchers(HttpMethod.GET,
+                "/",
+                "/*.html",
+                "favicon.ico",
+                "/**/*.html",
+                "/**/*.css",
+                "/**/*.js",
+                "/swagger-resources/**",
+                "/swagger-ui.html",
+                "/v2/api-docs",
+                "/webjars/**"
+        );
     }
 
     @Bean

@@ -60,10 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .exceptionHandling()
-                    .authenticationEntryPoint(restAuthenticationEntryPoint)
-                    .accessDeniedHandler(restAccessDeniedHandler).and()
-                .authorizeRequests().expressionHandler(webSecurityExpressionHandler())
+                .authorizeRequests()
+                .antMatchers("/account/**").permitAll()
                 .anyRequest().authenticated().and()
                 .cors().and()
                 .csrf().disable()
@@ -74,7 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(
                 HttpMethod.POST,
-                "/auth/login");
+                "/auth/login",
+                "/account/**");
 
         web.ignoring().antMatchers(HttpMethod.GET,
                 "photos/**",

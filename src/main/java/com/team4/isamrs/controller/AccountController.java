@@ -1,7 +1,9 @@
 package com.team4.isamrs.controller;
 
+import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
 import com.team4.isamrs.dto.updation.AccountUpdationDTO;
+import com.team4.isamrs.exception.EmailAlreadyExistsException;
 import com.team4.isamrs.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,5 +32,17 @@ public class AccountController {
     public ResponseEntity<String> updateAccount(@Valid @RequestBody AccountUpdationDTO dto, Authentication auth) {
         accountService.updateAccount(dto, auth);
         return ResponseEntity.ok().body("Account updated.");
+    }
+
+    @PostMapping("/advertiser-registration")
+    public ResponseEntity<String> registerUserAccount(@Valid @RequestBody RegistrationRequestCreationDTO registrationRequest) {
+        try {
+            accountService.AddNewRegistrationRequest(registrationRequest);
+        } catch (EmailAlreadyExistsException e) {
+            return ResponseEntity.badRequest().body("Advertiser already exists.");
+        }
+
+        // rest of the implementation
+        return ResponseEntity.ok().body("Registration request created.");
     }
 }

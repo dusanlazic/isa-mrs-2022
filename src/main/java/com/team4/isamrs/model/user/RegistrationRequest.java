@@ -2,11 +2,15 @@ package com.team4.isamrs.model.user;
 
 import com.team4.isamrs.model.enumeration.AccountType;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
 public class RegistrationRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +32,6 @@ public class RegistrationRequest {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "email_address", nullable = false)
-    private String emailAddress;
-
     @Column(name = "address", nullable = false)
     private String address;
 
@@ -50,6 +51,6 @@ public class RegistrationRequest {
     @Enumerated(EnumType.ORDINAL)
     private ApprovalStatus approvalStatus;
 
-    @Column(name = "rejection_reason", nullable = false)
+    @Column(name = "rejection_reason")
     private String rejectionReason;
 }

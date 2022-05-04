@@ -1,18 +1,18 @@
 package com.team4.isamrs.service;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.team4.isamrs.dto.creation.CustomerCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AccountUpdationDTO;
+import com.team4.isamrs.exception.ConfirmationLinkExpiredException;
 import com.team4.isamrs.exception.EmailAlreadyExistsException;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
-import com.team4.isamrs.model.user.Advertiser;
-import com.team4.isamrs.model.user.RegistrationRequest;
-import com.team4.isamrs.model.user.Role;
-import com.team4.isamrs.model.user.User;
-import com.team4.isamrs.repository.PhotoRepository;
-import com.team4.isamrs.repository.RegistrationRequestRepository;
-import com.team4.isamrs.repository.RoleRepository;
-import com.team4.isamrs.repository.UserRepository;
+import com.team4.isamrs.model.user.*;
+import com.team4.isamrs.repository.*;
+import com.team4.isamrs.security.EmailSender;
+import com.team4.isamrs.security.TokenUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -29,6 +29,9 @@ public class AccountService {
     private UserRepository userRepository;
 
     @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
     private RoleRepository roleRepository;
 
     @Autowired
@@ -42,6 +45,12 @@ public class AccountService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmailSender emailSender;
+
+    @Autowired
+    private TokenUtils tokenUtils;
 
     public <T extends DisplayDTO> T findById(Long id, Class<T> returnType) {
         return modelMapper.map(userRepository.findById(id).orElseThrow(), returnType);
@@ -79,14 +88,41 @@ public class AccountService {
         roleRepository.save(new Role("ROLE_BOAT_OWNER"));
     }
 
-    public void AddNewRegistrationRequest(RegistrationRequestCreationDTO registrationRequestDTO) throws EmailAlreadyExistsException {
-        if (userRepository.findByUsername(registrationRequestDTO.getUsername()).isPresent()) {
+    public void createRegistrationRequest(RegistrationRequestCreationDTO registrationRequestDTO) {
+        if (userRepository.findByUsername(registrationRequestDTO.getUsername()).isPresent() ||
+            registrationRequestRepository.findByUsername(registrationRequestDTO.getUsername()).isPresent())
             throw new EmailAlreadyExistsException("There is an account with that email address.");
-        }
 
         RegistrationRequest registrationRequest = modelMapper.map(registrationRequestDTO, RegistrationRequest.class);
         registrationRequest.setCreatedAt(LocalDateTime.now());
         registrationRequest.setPasswordHash(passwordEncoder.encode(registrationRequestDTO.getPassword()));
         registrationRequestRepository.save(registrationRequest);
+    }
+
+    public void createClient(CustomerCreationDTO customerDTO) {
+        if (userRepository.findByUsername(customerDTO.getUsername()).isPresent() ||
+            registrationRequestRepository.findByUsername(customerDTO.getUsername()).isPresent())
+            throw new EmailAlreadyExistsException("There is an account with that email address.");
+
+        Customer customer = modelMapper.map(customerDTO, Customer.class);
+        customer.setPassword(passwordEncoder.encode(customerDTO.getPassword()));
+        customer.setEnabled(false);
+        customer.getAuthorities().add(roleRepository.findByName("ROLE_CUSTOMER").orElseThrow());
+        customerRepository.save(customer);
+
+        String token = tokenUtils.generateConfirmationToken(customer);
+        emailSender.sendRegistrationEmail(customer, token);
+    }
+
+    public void confirmRegistration(String confirmationToken) {
+        try {
+            DecodedJWT decodedJWT = tokenUtils.verifyToken(confirmationToken);
+            User user = userRepository.findByUsername(decodedJWT.getSubject()).orElseThrow();
+            user.setEnabled(true);
+            userRepository.save(user);
+        }
+        catch (TokenExpiredException e) {
+            throw new ConfirmationLinkExpiredException();
+        }
     }
 }

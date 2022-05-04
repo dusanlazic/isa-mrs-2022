@@ -53,6 +53,15 @@ public class TokenUtils {
         throw new TokenNotProvidedException("Token is not provided.");
     }
 
+    public String generateConfirmationToken(User user) {
+        return JWT.create()
+                .withSubject(user.getUsername())
+                .withIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
+                .withExpiresAt(Date.from(ZonedDateTime.now().plusMinutes(15).toInstant()))
+                .withIssuer(issuer)
+                .sign(signatureAlgorithm);
+    }
+
     public DecodedJWT verifyToken(String token) {
         return verifier.verify(token);
     }

@@ -1,8 +1,10 @@
 package com.team4.isamrs.controller;
 
+import com.team4.isamrs.dto.creation.CustomerCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
 import com.team4.isamrs.dto.updation.AccountUpdationDTO;
+import com.team4.isamrs.exception.ConfirmationLinkExpiredException;
 import com.team4.isamrs.exception.EmailAlreadyExistsException;
 import com.team4.isamrs.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,14 +37,35 @@ public class AccountController {
     }
 
     @PostMapping("/advertiser-registration")
-    public ResponseEntity<String> registerUserAccount(@Valid @RequestBody RegistrationRequestCreationDTO registrationRequest) {
+    public ResponseEntity<String> registerAdvertiser(@Valid @RequestBody RegistrationRequestCreationDTO registrationRequest) {
         try {
-            accountService.AddNewRegistrationRequest(registrationRequest);
-        } catch (EmailAlreadyExistsException e) {
-            return ResponseEntity.badRequest().body("Advertiser already exists.");
+            accountService.createRegistrationRequest(registrationRequest);
+            return ResponseEntity.ok().body("Registration request created.");
         }
+        catch (EmailAlreadyExistsException e) {
+            return ResponseEntity.badRequest().body("Email already exists.");
+        }
+    }
 
-        // rest of the implementation
-        return ResponseEntity.ok().body("Registration request created.");
+    @PostMapping("customer-registration")
+    public ResponseEntity<String> registerClient(@Valid @RequestBody CustomerCreationDTO customer) {
+        try {
+            accountService.createClient(customer);
+            return ResponseEntity.ok().body("Registration confirmation sent.");
+        }
+        catch (EmailAlreadyExistsException e) {
+            return ResponseEntity.badRequest().body("Email already exists.");
+        }
+    }
+
+    @GetMapping("/confirm-registration/{token}")
+    public ResponseEntity<String> confirmRegistration(@PathVariable String token) {
+        try {
+            accountService.confirmRegistration(token);
+            return ResponseEntity.ok().body("Registration confirmed.");
+        }
+        catch (ConfirmationLinkExpiredException e) {
+            return ResponseEntity.badRequest().body("Confirmation token expired");
+        }
     }
 }

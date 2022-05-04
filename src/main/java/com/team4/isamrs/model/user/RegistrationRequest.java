@@ -32,6 +32,9 @@ public class RegistrationRequest {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Column(name = "username", nullable = false)
+    private String username;
+
     @Column(name = "address", nullable = false)
     private String address;
 

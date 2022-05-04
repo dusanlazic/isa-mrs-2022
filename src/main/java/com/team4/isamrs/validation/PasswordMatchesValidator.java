@@ -1,5 +1,6 @@
 package com.team4.isamrs.validation;
 
+import com.team4.isamrs.dto.creation.CustomerCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 
 import javax.validation.ConstraintValidator;
@@ -12,7 +13,12 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
     }
     @Override
     public boolean isValid(Object obj, ConstraintValidatorContext context){
-        RegistrationRequestCreationDTO registrationRequest = (RegistrationRequestCreationDTO) obj;
-        return registrationRequest.getPassword().equals(registrationRequest.getPasswordConfirmation());
+        if (obj instanceof RegistrationRequestCreationDTO registrationRequest) {
+            return registrationRequest.getPassword().equals(registrationRequest.getPasswordConfirmation());
+        }
+        else if (obj instanceof CustomerCreationDTO customer) {
+            return customer.getPassword().equals(customer.getPasswordConfirmation());
+        }
+        return false;
     }
 }

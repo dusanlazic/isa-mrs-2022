@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import NotFound from './pages/NotFound'
 
 import { BrowserRouter as Router, Route, Routes, Head } from 'react-router-dom'
+import RegistrationConfirmation from './pages/RegistrationConfirmationPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
               <Route path="/account" exact element={<ProfileEditorPage/>}/>
               <Route path="/register" exact element={<RegistrationPage/>}/>
               <Route path="/login" exact element={<LoginPage/>}/>
+              <Route path="/confirm-registration/:token" exact element={<RegistrationConfirmation/>}/>
               <Route path="*" element={<NotFound/>}/>
             </Routes>
           </div>

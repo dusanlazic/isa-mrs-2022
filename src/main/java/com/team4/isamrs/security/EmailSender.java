@@ -25,7 +25,7 @@ public class EmailSender {
     public void sendRegistrationEmail(Customer customer, String token) {
 
         String confirmationUrl
-                = "http://localhost:8080/account/confirm-registration/" + token;
+                = "http://localhost:3000/confirm-registration/" + token;
 
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();

@@ -9,4 +9,5 @@ public interface RegistrationRequestRepository  extends JpaRepository<Registrati
 
     Optional<RegistrationRequest> findByUsername(String username);
 
+    Optional<RegistrationRequest> findByPhoneNumber(String phoneNumber);
 }

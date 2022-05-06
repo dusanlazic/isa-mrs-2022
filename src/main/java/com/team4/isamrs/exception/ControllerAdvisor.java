@@ -78,4 +78,28 @@ public class ControllerAdvisor {
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ExceptionResponseBody handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(PhoneNumberAlreadyExistsException.class)
+    public ExceptionResponseBody handlePhoneNumberAlreadyExistsException(PhoneNumberAlreadyExistsException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.GONE)
+    @ExceptionHandler(ConfirmationLinkExpiredException.class)
+    public ExceptionResponseBody handleConfirmationLinkExpiredException(ConfirmationLinkExpiredException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.GONE.value(),
+                ex.getMessage());
+    }
 }

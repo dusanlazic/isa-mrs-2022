@@ -8,7 +8,7 @@ import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AccountUpdationDTO;
 import com.team4.isamrs.exception.ConfirmationLinkExpiredException;
 import com.team4.isamrs.exception.EmailAlreadyExistsException;
-import com.team4.isamrs.model.enumeration.ApprovalStatus;
+import com.team4.isamrs.exception.PhoneNumberAlreadyExistsException;
 import com.team4.isamrs.model.user.*;
 import com.team4.isamrs.repository.*;
 import com.team4.isamrs.security.EmailSender;
@@ -89,9 +89,9 @@ public class AccountService {
     }
 
     public void createRegistrationRequest(RegistrationRequestCreationDTO registrationRequestDTO) {
-        if (userRepository.findByUsername(registrationRequestDTO.getUsername()).isPresent() ||
-            registrationRequestRepository.findByUsername(registrationRequestDTO.getUsername()).isPresent())
-            throw new EmailAlreadyExistsException("There is an account with that email address.");
+
+        checkForExistingEmail(registrationRequestDTO.getUsername());
+        checkForExistingPhoneNumber(registrationRequestDTO.getPhoneNumber());
 
         RegistrationRequest registrationRequest = modelMapper.map(registrationRequestDTO, RegistrationRequest.class);
         registrationRequest.setCreatedAt(LocalDateTime.now());
@@ -100,9 +100,8 @@ public class AccountService {
     }
 
     public void createClient(CustomerCreationDTO customerDTO) {
-        if (userRepository.findByUsername(customerDTO.getUsername()).isPresent() ||
-            registrationRequestRepository.findByUsername(customerDTO.getUsername()).isPresent())
-            throw new EmailAlreadyExistsException("There is an account with that email address.");
+        checkForExistingEmail(customerDTO.getUsername());
+        checkForExistingPhoneNumber(customerDTO.getPhoneNumber());
 
         Customer customer = modelMapper.map(customerDTO, Customer.class);
         customer.setPassword(passwordEncoder.encode(customerDTO.getPassword()));
@@ -114,15 +113,27 @@ public class AccountService {
         emailSender.sendRegistrationEmail(customer, token);
     }
 
+    private void checkForExistingEmail(String username) {
+        if (userRepository.findByUsername(username).isPresent() ||
+            registrationRequestRepository.findByUsername(username).isPresent())
+            throw new EmailAlreadyExistsException("Email already exists.");
+    }
+
+    private void checkForExistingPhoneNumber(String phoneNumber) {
+        if (userRepository.findByPhoneNumber(phoneNumber).isPresent() ||
+            registrationRequestRepository.findByPhoneNumber(phoneNumber).isPresent())
+            throw new PhoneNumberAlreadyExistsException("Phone number already exists.");
+    }
+
     public void confirmRegistration(String confirmationToken) {
         try {
             DecodedJWT decodedJWT = tokenUtils.verifyToken(confirmationToken);
             User user = userRepository.findByUsername(decodedJWT.getSubject()).orElseThrow();
             user.setEnabled(true);
             userRepository.save(user);
-        }
-        catch (TokenExpiredException e) {
-            throw new ConfirmationLinkExpiredException();
+
+        } catch (TokenExpiredException e) {
+            throw new ConfirmationLinkExpiredException("Confirmation link expired.");
         }
     }
 }

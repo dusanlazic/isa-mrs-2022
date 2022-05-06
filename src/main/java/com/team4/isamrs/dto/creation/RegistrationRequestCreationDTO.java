@@ -51,7 +51,7 @@ public class RegistrationRequestCreationDTO {
     private String explanation;
 
     @NotNull
-    @Min(value = 0)
-    @Max(value = 4)
+    @Min(value = 2, message = "Account type must be greater than or equal to 2, and less than or equal to 4.")
+    @Max(value = 4, message = "Account type must be greater than or equal to 2, and less than or equal to 4.")
     private Integer accountType;
 }

@@ -60,8 +60,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .exceptionHandling()
+                .authenticationEntryPoint(restAuthenticationEntryPoint)
+                .accessDeniedHandler(restAccessDeniedHandler).and()
                 .authorizeRequests()
                 .antMatchers("/account/**").permitAll()
+                .expressionHandler(webSecurityExpressionHandler())
                 .anyRequest().authenticated().and()
                 .cors().and()
                 .csrf().disable()

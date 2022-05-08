@@ -6,6 +6,8 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { pageTwoSchema, pageThreeSchema, pageFourSchema } from '../validators/registrationSchema' 
 
+import { registerCustomer, registerAdvertiser } from '../adapters/registration'
+
 const RegistrationPage = () => {
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -50,15 +52,28 @@ const RegistrationPage = () => {
   }
 
   const submitAll = (data) => {
-    console.log(selectedRole);
-    if (selectedSubrole != null)
-      console.log(selectedSubrole);
-    console.log(getValuesTwo());
-    if (reason !== '')
-      console.log("Reason: ", reason);
-    console.log(getValuesThree());
-    console.log(getValuesFour());
-    console.log(selectedCountry);
+    if (selectedRole === 'client') {
+      registerCustomer(
+        {
+          ...getValuesTwo(),
+          ...getValuesThree(),
+          ...getValuesFour(),
+          selectedCountry
+        }
+      )
+    }
+    else {
+      registerAdvertiser(
+        {
+          ...getValuesTwo(),
+          ...getValuesThree(),
+          ...getValuesFour(),
+          selectedSubrole,
+          reason,
+          selectedCountry
+        }
+      )
+    }
   }
 
   const handleBack = () => {
@@ -121,7 +136,7 @@ const RegistrationPage = () => {
                   <p className="font-display text-2xl sm:text-base text-center my-auto">Customer</p>
                 </div>
 
-                <div onClick={() => {setSelectedRole('advertiser'); setSelectedSubrole('resort owner')}} 
+                <div onClick={() => {setSelectedRole('advertiser'); setSelectedSubrole('resort-owner')}} 
                 className={`flex gap-x-5 sm:block w-full sm:w-36 h-20  sm:h-36 p-4 rounded-xl border-2 border-slate-100 hover:border-slate-200
                 cursor-pointer mt-4 sm:mt-0
                 ${selectedRole === 'advertiser' ? 'border-cyan-700 hover:border-cyan-700' : ''}`}>
@@ -140,18 +155,18 @@ const RegistrationPage = () => {
               >
                 <div className="block sm:flex sm:flex-row sm:justify-center sm:gap-x-1 mt-3 sm:mt-6">
 
-                  <div onClick={() => setSelectedSubrole('resort owner')}
+                  <div onClick={() => setSelectedSubrole('resort-owner')}
                   className={`flex gap-x-5 sm:block w-full sm:w-18 h-14 sm:h-24 sm:py-4 rounded-xl border-2
                   border-slate-100 hover:border-slate-200 cursor-pointer
-                  ${selectedSubrole === 'resort owner' ? 'border-cyan-700 hover:border-cyan-700' : ''}`}>
+                  ${selectedSubrole === 'resort-owner' ? 'border-cyan-700 hover:border-cyan-700' : ''}`}>
                     <img src="/images/icons/building.png" alt="" className="p-1.5 sm:p-0  sm:h-12 sm:mx-auto" />
                     <p className="font-display text-lg sm:text-sm text-center my-auto">Resort Owner</p>
                   </div>
 
-                  <div onClick={() => setSelectedSubrole('boat owner')} 
+                  <div onClick={() => setSelectedSubrole('boat-owner')} 
                   className={`flex gap-x-5 sm:block w-full sm:w-18 h-14 sm:h-24 sm:py-4 rounded-xl border-2
                   border-slate-100 hover:border-slate-200 cursor-pointer mt-1 sm:mt-0
-                  ${selectedSubrole === 'boat owner' ? 'border-cyan-700 hover:border-cyan-700' : ''}`}>
+                  ${selectedSubrole === 'boat-owner' ? 'border-cyan-700 hover:border-cyan-700' : ''}`}>
                     <img src="/images/icons/sailboat.png" alt="" className="p-1.5 sm:p-0 sm:h-12 sm:mx-auto" />
                     <p className="font-display text-lg sm:text-sm text-center my-auto">Boat Owner</p>
                   </div>

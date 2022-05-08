@@ -40,7 +40,7 @@ public class AccountController {
         return ResponseEntity.ok().body("Registration request created.");
     }
 
-    @PostMapping("customer-registration")
+    @PostMapping("/customer-registration")
     public ResponseEntity<String> registerClient(@Valid @RequestBody CustomerCreationDTO customer) {
         accountService.createClient(customer);
         return ResponseEntity.ok().body("Registration confirmation sent.");

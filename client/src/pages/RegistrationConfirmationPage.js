@@ -13,7 +13,7 @@ const RegistrationConfirmation = () => {
       setReady(true);
     })
     .catch(error => {
-      if (error.status == 400)
+      if (error.status === 400)
         setReady(true);
       else
         navigate("/");

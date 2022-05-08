@@ -1,24 +1,38 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import schema from '../validators/loginSchema';
+import { login } from '../adapters/login'
+import { getToken } from '../contexts'
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (getToken()) {
+      redirect();
+    }
+  }, [])
+  
+  const redirect = () => {
+    navigate('/');
+  }
 
   const { register, handleSubmit, formState: { errors }, clearErrors} = useForm({
     resolver: yupResolver(schema),
     mode: 'onSubmit',
     reValidateMode: 'onChange',
-  
   });
-
-  const logIn = (data) => {
-    console.log(data);
+  
+  const handleLogin = (data) => {
+    login(data, redirect);
   }
 
   const handleEnter = (e) => {
     if (e.key === 'Enter') {
       e.target.blur();
-      handleSubmit(logIn)
+      handleSubmit(handleLogin)
     }
   }
 
@@ -37,7 +51,7 @@ const LoginPage = () => {
             <h3 className="text-lg tracking-widest">Welcome back.</h3>
           </div>
 
-          <form className="block mt-6" onSubmit={handleSubmit(logIn)}>
+          <form className="block mt-6" onSubmit={handleSubmit(handleLogin)}>
 
             {/* EMAIL */}
             <input id="emailInput" placeholder="email address" name="email" {...register('email')} 

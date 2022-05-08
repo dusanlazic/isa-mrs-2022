@@ -68,6 +68,7 @@ public class AdventureAdService {
         AdventureAd adventureAd = adventureAdRepository.findAdventureAdByIdAndAdvertiser(id, advertiser).orElseThrow();
 
         adventureAd.getFishingEquipment().forEach(e -> e.getAdvertisements().remove(adventureAd)); // there must be a better solution
+        adventureAd.getTags().forEach(e -> e.getAdvertisements().remove(adventureAd));
 
         adventureAdRepository.delete(adventureAd);
     }

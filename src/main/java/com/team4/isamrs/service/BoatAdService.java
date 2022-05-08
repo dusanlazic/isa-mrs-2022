@@ -43,4 +43,15 @@ public class BoatAdService {
         boatAdRepository.save(boatAd);
         return boatAd;
     }
+
+    public void delete(Long id, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        BoatAd boatAd = boatAdRepository.findBoatAdByIdAndAdvertiser(id, advertiser).orElseThrow();
+
+        boatAd.getNavigationalEquipment().forEach(e -> e.getAdvertisements().remove(boatAd));
+        boatAd.getFishingEquipment().forEach(e -> e.getAdvertisements().remove(boatAd));
+        boatAd.getTags().forEach(e -> e.getAdvertisements().remove(boatAd));
+
+        boatAdRepository.delete(boatAd);
+    }
 }

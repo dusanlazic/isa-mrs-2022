@@ -37,6 +37,8 @@ public class ResortAdService {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
         ResortAd resortAd = resortAdRepository.findResortAdByIdAndAdvertiser(id, advertiser).orElseThrow();
 
+        resortAd.getTags().forEach(e -> e.getAdvertisements().remove(resortAd));
+
         resortAdRepository.delete(resortAd);
     }
 }

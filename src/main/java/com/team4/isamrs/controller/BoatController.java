@@ -40,4 +40,11 @@ public class BoatController {
         return ResponseEntity.created(URI.create("/ads/boats/" + boatAdService.create(dto, auth).getId()))
                 .body("Adventure ad created.");
     }
+
+    @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('BOAT_OWNER') or hasRole('ADMIN')")
+    public ResponseEntity<String> delete(@PathVariable Long id, Authentication auth) {
+        boatAdService.delete(id, auth);
+        return ResponseEntity.ok("Boat deleted.");
+    }
 }

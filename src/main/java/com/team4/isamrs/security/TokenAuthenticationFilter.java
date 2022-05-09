@@ -51,7 +51,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private void sendResponse(HttpServletResponse response, int status, String message) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setStatus(status);
         new ObjectMapper().writeValue(response.getOutputStream(), new ExceptionResponseBody(status, message));
     }
 }

@@ -5,10 +5,14 @@ import com.team4.isamrs.dto.creation.HourlyPriceCreationDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
 import com.team4.isamrs.model.adventure.AdventureAd;
+import com.team4.isamrs.model.adventure.FishingEquipment;
 import com.team4.isamrs.model.advertisement.HourlyPrice;
+import com.team4.isamrs.model.advertisement.Tag;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.AdventureAdRepository;
+import com.team4.isamrs.repository.FishingEquipmentRepository;
 import com.team4.isamrs.repository.HourlyPriceRepository;
+import com.team4.isamrs.repository.TagRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +31,12 @@ public class AdventureAdService {
 
     @Autowired
     private HourlyPriceRepository hourlyPriceRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
+
+    @Autowired
+    private FishingEquipmentRepository fishingEquipmentRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -46,10 +57,30 @@ public class AdventureAdService {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
 
         AdventureAd adventureAd = modelMapper.map(dto, AdventureAd.class);
+        dto.getTagNames().forEach(name -> {
+            Optional<Tag> tag = tagRepository.findByNameIgnoreCase(name);
+            if (tag.isPresent()) {
+                adventureAd.addTag(tag.get());
+            } else {
+                Tag newTag = new Tag(name);
+                adventureAd.addTag(newTag);
+            }
+        });
+        dto.getFishingEquipmentNames().forEach(name -> {
+            Optional<FishingEquipment> fishingEquipment = fishingEquipmentRepository.findByNameIgnoreCase(name);
+            if (fishingEquipment.isPresent()) {
+                adventureAd.addFishingEquipment(fishingEquipment.get());
+            } else {
+                FishingEquipment newFishingEquipment = new FishingEquipment(name);
+                adventureAd.addFishingEquipment(newFishingEquipment);
+            }
+        });
         adventureAd.setAdvertiser(advertiser);
         adventureAd.verifyPhotosOwnership(advertiser);
 
         adventureAdRepository.save(adventureAd);
+        tagRepository.saveAll(adventureAd.getTags());
+        fishingEquipmentRepository.saveAll(adventureAd.getFishingEquipment());
         return adventureAd;
     }
 

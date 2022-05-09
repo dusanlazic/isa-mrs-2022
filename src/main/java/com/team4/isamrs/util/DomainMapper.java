@@ -59,8 +59,6 @@ public class DomainMapper {
             AdventureAd destination = context.getDestination();
 
             // Lookup IDs and fill the collections
-            source.getTagIds().forEach(id -> destination.addTag(tagRepository.findById(id).get()));
-            source.getFishingEquipmentIds().forEach(id -> destination.addFishingEquipment(fishingEquipmentRepository.findById(id).get()));
             source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
 
             // Sync bidirectional relationships

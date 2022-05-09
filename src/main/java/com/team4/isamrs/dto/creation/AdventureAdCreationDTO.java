@@ -66,20 +66,20 @@ public class AdventureAdCreationDTO {
 
     @NotNull
     @Size(min=3, max=10)
-    private Set<Long> tagIds;
+    private Set<String> tagNames;
 
     @NotNull
     @Size(min=3, max=10)
     private Set<UUID> photoIds;
 
     @NotEmpty
-    private Set<Long> fishingEquipmentIds;
+    private Set<String> fishingEquipmentNames;
 
     @NotNull
     @Valid
     private AddressCreationDTO address;
 
-    @NotEmpty
+    @Size(max=10)
     @Valid
     private Set<OptionCreationDTO> options;
 

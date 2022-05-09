@@ -24,4 +24,12 @@ public class Tag {
             joinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "advertisement_id", referencedColumnName = "id"))
     private Set<Advertisement> advertisements = new HashSet<>();
+
+    public Tag() {
+
+    }
+
+    public Tag(String name) {
+        this.name = name;
+    }
 }

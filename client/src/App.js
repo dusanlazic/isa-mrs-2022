@@ -3,6 +3,7 @@ import HomePage from './pages/HomePage'
 import ProfilePage from './pages/ProfilePage';
 import ProfileEditorPage from './pages/ProfileEditorPage';
 import RegistrationPage from './pages/RegistrationPage';
+import CreateAdventurePage from './pages/CreateAdventurePage';
 import LoginPage from './pages/LoginPage';
 
 import NotFound from './pages/NotFound'
@@ -18,6 +19,7 @@ function App() {
         <div className="h-full">
             <Routes>
               <Route path="/" exact element={<HomePage/>}/>
+              <Route path="/new/adventure" exact element={<CreateAdventurePage/>}/>
               <Route path="/resort/:id" exact element={<ProfilePage/>}/>
               <Route path="/client/:id" exact element={<ProfilePage/>}/>
               <Route path="/boat/:id" exact element={<ProfilePage/>}/>

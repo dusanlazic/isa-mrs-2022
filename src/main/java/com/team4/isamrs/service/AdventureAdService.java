@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,6 +59,7 @@ public class AdventureAdService {
 
         AdventureAd adventureAd = modelMapper.map(dto, AdventureAd.class);
         dto.getTagNames().forEach(name -> {
+            adventureAd.setTags(new HashSet<>());
             Optional<Tag> tag = tagRepository.findByNameIgnoreCase(name);
             if (tag.isPresent()) {
                 adventureAd.addTag(tag.get());
@@ -67,6 +69,7 @@ public class AdventureAdService {
             }
         });
         dto.getFishingEquipmentNames().forEach(name -> {
+            adventureAd.setFishingEquipment(new HashSet<>());
             Optional<FishingEquipment> fishingEquipment = fishingEquipmentRepository.findByNameIgnoreCase(name);
             if (fishingEquipment.isPresent()) {
                 adventureAd.addFishingEquipment(fishingEquipment.get());

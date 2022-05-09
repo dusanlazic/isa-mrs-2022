@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -27,5 +29,12 @@ public class ResortController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<ResortAdDisplayDTO> findById(@PathVariable Long id) {
         return new ResponseEntity<>(resortAdService.findById(id), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('RESORT_OWNER') or hasRole('ADMIN')")
+    public ResponseEntity<String> delete(@PathVariable Long id, Authentication auth) {
+        resortAdService.delete(id, auth);
+        return ResponseEntity.ok("Resort deleted.");
     }
 }

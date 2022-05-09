@@ -9,7 +9,7 @@ const RegistrationConfirmation = () => {
 
   useEffect(() => {
   get(`/api/account/confirm-registration/${window.location.pathname.split("/").pop()}`)
-    .then( (response) => {
+    .then((response) => {
       setReady(true);
     })
     .catch(error => {

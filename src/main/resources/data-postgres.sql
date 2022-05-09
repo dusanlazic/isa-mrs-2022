@@ -35,11 +35,41 @@ VALUES (2, TRUE , 'Mise Dimitrijevica 1', 'Novi Sad', 'SR', 'maja@gmail.com', 'M
 
 INSERT INTO public.address(
     id, address, city, country_code, latitude, longitude, postal_code, state)
-VALUES (1001, 'Gogoljeva 2', 'Novi Sad', 'SR', '1111.1', '1334.2', '21000', 'Srbija');
+VALUES (1001, 'Gogoljeva 2', 'Novi Sad', 'RS', '1111.1', '1334.2', '21000', 'Srbija');
+
+INSERT INTO public.address(
+    id, address, city, country_code, latitude, longitude, postal_code, state)
+VALUES (1002, 'Gogoljeva 2', 'Novi Sad', 'RS', '1111.1', '1334.2', '21000', 'Srbija');
+
 
 INSERT INTO public.resort_ad(
     id, available_after, available_until, currency, description, pricing_description, rules, title, address_id, advertiser_id, check_in_time, check_out_time, number_of_beds)
 VALUES (1, now(), now(), '$', 'jako jako lepa', 'nema popusta', 'pravila neka', 'Vila brvnara', 1001, 2, now(), now(), 3);
+
+INSERT INTO public.boat_ad(
+    id, available_after, available_until, currency, description, pricing_description, rules, title, address_id, advertiser_id, check_in_time, check_out_time, boat_length, boat_speed, boat_type, cancellation_fee, capacity, engine_number, engine_power)
+VALUES (2, now(), now(), '$', 'jako jako lepa', 'nema popusta', 'pravila neka', 'Vila brvnara', 1002, 2, now(), now(), 'xl', 'jako brz', 'jahta', 100, 20, 'puno', 'bas jaki');
+
+INSERT INTO public.fishing_equipment_ads(
+    fishing_equipment_id, advertisement_id)
+VALUES (1, 1);
+INSERT INTO public.fishing_equipment_ads(
+    fishing_equipment_id, advertisement_id)
+VALUES (2, 1);
+INSERT INTO public.fishing_equipment_ads(
+    fishing_equipment_id, advertisement_id)
+VALUES (3, 1);
+
+INSERT INTO public.tags_ads(
+    tag_id, advertisement_id)
+VALUES (1, 1);
+INSERT INTO public.tags_ads(
+    tag_id, advertisement_id)
+VALUES (2, 1);
+INSERT INTO public.tags_ads(
+    tag_id, advertisement_id)
+VALUES (3, 1);
+
 
 -- INSERT INTO public.role(id, authority) VALUES (1, 'ADMIN');
 -- INSERT INTO public.role(id, authority) VALUES (2, 'CUSTOMER');

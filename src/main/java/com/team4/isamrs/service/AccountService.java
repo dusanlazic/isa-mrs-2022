@@ -64,6 +64,7 @@ public class AccountService {
     }
 
     public void createTestAccount() {
+
         Advertiser advertiser = new Advertiser();
         advertiser.setEnabled(true);
         advertiser.setAddress("Kod mene kući BB");
@@ -77,6 +78,12 @@ public class AccountService {
         advertiser.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
         advertiser.setPhoneNumber("065-1337");
         userRepository.save(advertiser);
+
+        User user = userRepository.findById(2L).orElseThrow();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.getAuthorities().add(roleRepository.findByName("ROLE_BOAT_OWNER").get());
+        user.getAuthorities().add(roleRepository.findByName("ROLE_ADVERTISER").get());
+        userRepository.save(user);
     }
 
     public void initializeRoles() {

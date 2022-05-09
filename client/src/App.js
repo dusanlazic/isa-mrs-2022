@@ -1,15 +1,15 @@
 import './App.css';
-import HomePage from './pages/HomePage'
+import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
 import ProfileEditorPage from './pages/ProfileEditorPage';
 import RegistrationPage from './pages/RegistrationPage';
 import CreateAdventurePage from './pages/CreateAdventurePage';
 import LoginPage from './pages/LoginPage';
-
-import NotFound from './pages/NotFound'
-
-import { BrowserRouter as Router, Route, Routes, Head } from 'react-router-dom'
 import RegistrationConfirmation from './pages/RegistrationConfirmationPage';
+
+import NotFound from './pages/NotFound';
+
+import { BrowserRouter as Router, Route, Routes, Head } from 'react-router-dom';
 
 function App() {
   return (

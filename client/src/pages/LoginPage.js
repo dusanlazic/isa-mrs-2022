@@ -1,24 +1,39 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import schema from '../validators/loginSchema';
+import { login } from '../adapters/login'
+import { getToken } from '../contexts'
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (getToken()) {
+      redirect();
+    }
+  }, [])
+  
+  const redirect = () => {
+    navigate('/');
+  }
 
   const { register, handleSubmit, formState: { errors }, clearErrors} = useForm({
     resolver: yupResolver(schema),
     mode: 'onSubmit',
     reValidateMode: 'onChange',
-  
   });
-
-  const logIn = (data) => {
-    console.log(data);
+  
+  const handleLogin = (data) => {
+    login(data, redirect, setError);
   }
 
   const handleEnter = (e) => {
     if (e.key === 'Enter') {
       e.target.blur();
-      handleSubmit(logIn)
+      handleSubmit(handleLogin)
     }
   }
 
@@ -37,34 +52,29 @@ const LoginPage = () => {
             <h3 className="text-lg tracking-widest">Welcome back.</h3>
           </div>
 
-          <form className="block mt-6" onSubmit={handleSubmit(logIn)}>
+          <form className="block mt-6" onSubmit={handleSubmit(handleLogin)}>
 
             {/* EMAIL */}
             <input id="emailInput" placeholder="email address" name="email" {...register('email')} 
-            onChange={() => {clearErrors()}} onKeyPress={e => handleEnter(e)}
+            onChange={() => {clearErrors(); setError('');}} onKeyPress={e => handleEnter(e)}
             className="block rounded-lg px-3 border text-gray-700 border-gray-300
             text-lg md:text-base lg:text-lg py-1 bg-slate-100 focus:outline-none focus:border-gray-500
             w-full caret-gray-700"/>
             <div className="h-2">
-              <p className="text-xs text-red-500 my-0">{errors.email?.message}</p>
+              <p className="text-xs text-red-500 my-0 tracking-wide">{error !== '' ? '' : errors.email?.message}</p>
             </div>
 
             {/* PASSWORD */}
             <input type="password" placeholder="password" name="password" {...register('password')} 
-            onChange={() => {clearErrors()}} onKeyPress={e => handleEnter(e)}
+            onChange={() => {clearErrors(); setError('');}} onKeyPress={e => handleEnter(e)}
             className="block rounded-lg px-3 border text-gray-700 border-gray-300 mt-2
             text-lg md:text-base lg:text-lg py-1 bg-slate-100 focus:outline-none
             focus:border-gray-500 w-full caret-gray-700"/>
             <div className="h-2">
-              <p className="text-xs text-red-500 my-0">{errors.password?.message}</p>
+              <p className="text-xs text-red-500 my-0 tracking-wide">{error !== '' ? error + '.' : errors.password?.message}</p>
             </div>
 
-            {/* main error */}
-            <div className="h-2">
-              {/* <p className="text-xs text-red-500 tracking-wide"></p> */}
-            </div>
-
-            <div className="flex justify-end mt-16 md:mt-2">
+            <div className="flex justify-end mt-16 md:mt-6">
               <input type="submit" value="Sign In" className="inline-flex justify-center rounded-md shadow-sm
               px-6 py-2 bg-cyan-700 text-base font-medium text-white hover:bg-cyan-800
               active:bg-cyan-900 focus:outline-none w-full md:w-auto sm:text-sm"/>

@@ -1,7 +1,12 @@
 import Axios from "axios";
+import { getToken } from "../../contexts";
 
 function returnAxiosInstance() {
-  return Axios.create({});
+  let instance = Axios.create({});
+  if (getToken() !== undefined)
+    instance.defaults.headers.common["Authorization"] = `Bearer ${getToken()}`;
+
+  return instance;
 }
 
 export function get(url){

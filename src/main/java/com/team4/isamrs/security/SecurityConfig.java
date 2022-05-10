@@ -64,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(restAuthenticationEntryPoint)
                 .accessDeniedHandler(restAccessDeniedHandler).and()
                 .authorizeRequests()
-                .antMatchers("/account/**").permitAll()
+                .antMatchers("/account/register/**").permitAll()
                 .expressionHandler(webSecurityExpressionHandler())
                 .anyRequest().authenticated().and()
                 .cors().and()
@@ -77,14 +77,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers(
                 HttpMethod.POST,
                 "/auth/login",
-                "/account/**");
+                "/account/register/**");
 
         web.ignoring().antMatchers(HttpMethod.GET,
                 "/photos/**",
                 "/ads/**",
                 "/fishing-equipment/**",
                 "/tags/*",
-                "/account/**");
+                "/account/register/**");
 
         web.ignoring().antMatchers(HttpMethod.GET,
                 "/",

@@ -1,7 +1,7 @@
 import { post } from "../xhr";
 
 export function registerCustomer(data) {
-  post('/api/account/customer-registration', 
+  post('/api/account/register/customer', 
   {
     firstName: data.firstName,
     lastName: data.lastName,
@@ -20,7 +20,7 @@ export function registerAdvertiser(data) {
   if (data.selectedSubrole === 'resort-owner') subrole = 2;
   else if (data.selectedSubrole === 'boat-owner') subrole = 3;
   else subrole = 4;
-  post('/api/account/advertiser-registration', 
+  post('/api/account/register/advertiser', 
   {
     firstName: data.firstName,
     lastName: data.lastName,

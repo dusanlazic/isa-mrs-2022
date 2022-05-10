@@ -34,19 +34,19 @@ public class AccountController {
         return ResponseEntity.ok().body("Account updated.");
     }
 
-    @PostMapping("/advertiser-registration")
+    @PostMapping("/register/advertiser")
     public ResponseEntity<String> registerAdvertiser(@Valid @RequestBody RegistrationRequestCreationDTO registrationRequest) {
         accountService.createRegistrationRequest(registrationRequest);
         return ResponseEntity.ok().body("Registration request created.");
     }
 
-    @PostMapping("/customer-registration")
+    @PostMapping("/register/customer")
     public ResponseEntity<String> registerClient(@Valid @RequestBody CustomerCreationDTO customer) {
         accountService.createClient(customer);
         return ResponseEntity.ok().body("Registration confirmation sent.");
     }
 
-    @GetMapping("/confirm-registration/{token}")
+    @GetMapping("/register/confirm/{token}")
     public ResponseEntity<String> confirmRegistration(@PathVariable String token) {
         accountService.confirmRegistration(token);
         return ResponseEntity.ok().body("Registration confirmed.");

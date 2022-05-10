@@ -10,6 +10,7 @@ import RegistrationConfirmation from './pages/RegistrationConfirmationPage';
 import NotFound from './pages/NotFound';
 
 import { BrowserRouter as Router, Route, Routes, Head } from 'react-router-dom';
+import UpdateAdventurePage from './pages/UpdateAdventurePage';
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
         <div className="h-full">
             <Routes>
               <Route path="/" exact element={<HomePage/>}/>
-              <Route path="/new/adventure" exact element={<CreateAdventurePage/>}/>
+              <Route path="/adventure/new" exact element={<CreateAdventurePage/>}/>
+              <Route path="/adventure/:id/edit" exact element={<UpdateAdventurePage/>}/>
               <Route path="/resort/:id" exact element={<ProfilePage/>}/>
               <Route path="/client/:id" exact element={<ProfilePage/>}/>
               <Route path="/boat/:id" exact element={<ProfilePage/>}/>

@@ -4,7 +4,10 @@ import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.display.*;
+import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
+import com.team4.isamrs.dto.updation.OptionUpdationDTO;
 import com.team4.isamrs.model.adventure.AdventureAd;
+import com.team4.isamrs.model.advertisement.Option;
 import com.team4.isamrs.model.advertisement.Photo;
 import com.team4.isamrs.model.advertisement.Tag;
 import com.team4.isamrs.model.boat.BoatAd;
@@ -67,6 +70,30 @@ public class DomainMapper {
             return destination;
         };
 
+        Converter<AdventureAdUpdationDTO, AdventureAd> UpdationDtoToAdventureAdConverter = context -> {
+            AdventureAdUpdationDTO source = context.getSource();
+            AdventureAd destination = context.getDestination();
+
+            // Lookup IDs and fill the collections
+            source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
+
+            // Delete options marked for deletion
+            int index = 0;
+            for (OptionUpdationDTO dto: source.getOptions()) {
+                if (dto.getDelete() != null) {
+                    Option option = destination.getOptions().get(index);
+                    if (option != null)
+                        destination.removeOption(option);
+                }
+                index++;
+            }
+
+            // Sync bidirectional relationships
+            destination.getOptions().forEach(e -> e.setAdvertisement(destination));
+
+            return destination;
+        };
+
         Converter<AdventureAd, AdventureAdDisplayDTO> AdventureAdToDisplayDtoConverter = context -> {
             AdventureAd source = context.getSource();
             AdventureAdDisplayDTO destination = context.getDestination();
@@ -122,6 +149,7 @@ public class DomainMapper {
         };
 
         modelMapper.createTypeMap(AdventureAdCreationDTO.class, AdventureAd.class).setPostConverter(CreationDtoToAdventureAdConverter);
+        modelMapper.createTypeMap(AdventureAdUpdationDTO.class, AdventureAd.class).setPostConverter(UpdationDtoToAdventureAdConverter);
         modelMapper.createTypeMap(AdventureAd.class, AdventureAdDisplayDTO.class).setPostConverter(AdventureAdToDisplayDtoConverter);
         modelMapper.createTypeMap(Photo.class, PhotoBriefDisplayDTO.class).setPostConverter(PhotoToDisplayDtoConverter);
         modelMapper.createTypeMap(Photo.class, PhotoUploadDisplayDTO.class).setPostConverter(PhotoToUploadDisplayDtoConverter);

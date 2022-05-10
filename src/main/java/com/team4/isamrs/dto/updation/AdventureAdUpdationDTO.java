@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -48,16 +49,20 @@ public class AdventureAdUpdationDTO {
 
     @NotNull
     @Size(min=3, max=10)
-    private Set<Long> tagIds;
+    private Set<String> tagNames;
 
     @NotNull
     @Size(min=3, max=10)
     private Set<UUID> photoIds;
 
     @NotEmpty
-    private Set<Long> fishingEquipmentIds;
+    private Set<String> fishingEquipmentNames;
 
     @NotNull
     @Valid
     private AddressUpdationDTO address;
+
+    @Size(max=10)
+    @Valid
+    private List<OptionUpdationDTO> options;
 }

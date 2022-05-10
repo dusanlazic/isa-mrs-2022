@@ -3,8 +3,10 @@ package com.team4.isamrs.service;
 import com.team4.isamrs.dto.creation.OptionCreationDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
+import com.team4.isamrs.model.adventure.AdventureAd;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.Option;
+import com.team4.isamrs.model.boat.BoatAd;
 import com.team4.isamrs.model.review.ServiceReview;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.AdvertisementRepository;
@@ -30,6 +32,25 @@ public class AdvertisementService {
 
     @Autowired
     private OptionRepository optionRepository;
+
+    public void delete(Long id, Authentication auth) {
+        /* Note:
+        Do not allow deletion if any future or current reservations for this ad exist.
+         */
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        Advertisement advertisement = advertisementRepository.findAdvertisementByIdAndAdvertiser(id, advertiser).orElseThrow();
+
+        // Update bidirectional relationships
+        advertisement.getTags().forEach(e -> e.getAdvertisements().remove(advertisement));
+        if (advertisement instanceof AdventureAd adventureAd) {
+            adventureAd.getFishingEquipment().forEach(e -> e.getAdvertisements().remove(advertisement));
+        } else if (advertisement instanceof BoatAd boatAd) {
+            boatAd.getNavigationalEquipment().forEach(e -> e.getAdvertisements().remove(advertisement));
+            boatAd.getFishingEquipment().forEach(e -> e.getAdvertisements().remove(advertisement));
+        }
+
+        advertisementRepository.delete(advertisement);
+    }
 
     public <T extends DisplayDTO> Collection<T> getOptions(Long id, Class<T> returnType) {
         Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();

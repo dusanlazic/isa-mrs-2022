@@ -1,18 +1,37 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom";
-import { get } from "../../../adapters/xhr";
-
+import { get, del } from "../../../adapters/xhr";
+import DeletionModal from "../../modals/DeletionModal";
 
 const AdventureProfileMainInfo = ({data, advertisementId}) => {
 	let [showMore, setShowMore] = useState(false);
 	let description = data.description;
 	const [rating, setRating] = useState(null);
+	const [showModal, setShowModal] = useState(false);
+	const [showDeleteBtn, setShowDeleteBtn] = useState(false);
+	const show = () => setShowModal(true);
+	const hide = () => setShowModal(false);
+
+	const deleteAd = () =>  {
+		del(`/api/ads/${advertisementId}`).then((response) => {
+			console.log(response);
+			setShowModal(false);
+			window.location.reload();
+		});
+	}
 
 	useEffect(() => {
 		get(`/api/ads/${advertisementId}/rating`).then((response) => {
 			setRating(response.data);
 		  });
 		}, [])
+
+	useEffect(() => {
+		get(`/api/account/whoami`).then((response) => {
+			setShowDeleteBtn(response.data.id == data.advertiser.id);
+			});
+		}, [])
+
 
 	return (
 		<div className="block md:flex bg-gray-100 rounded-lg p-10">
@@ -22,7 +41,13 @@ const AdventureProfileMainInfo = ({data, advertisementId}) => {
 					bg-gray-200 hover:bg-gray-300 hover:text-gray-800 active:bg-transparent
 					active:bg-gray-400 active:text-gray-50
 					rounded-b-lg px-4 h-min text-base md:text-sm xl:text-base"
-					to={`/adventure/${advertisementId}/edit`}>Edit Profile</Link>
+					to={`/adventure/${advertisementId}/edit`}>Edit</Link>
+				{ showDeleteBtn && 
+					<button className="text-gray-500
+					bg-gray-200 hover:bg-red-300 hover:text-red-800 active:bg-transparent
+					active:bg-red-400 active:text-red-50
+					rounded-b-lg px-4 h-min text-base md:text-sm xl:text-base" onClick={show}>
+						Delete</button> }
 			</div>
 				
 			<div className="flex flex-col flex-grow md:ml-4">
@@ -55,6 +80,10 @@ const AdventureProfileMainInfo = ({data, advertisementId}) => {
 				</div>
 
 			</div>
+			{showModal && <DeletionModal  closeFunction = {() => hide(false)}
+                                      deleteFunction = {() => deleteAd()}
+                                      entityName = { data.title }
+        	/>}
 		</div>
 	);
 }

@@ -25,6 +25,13 @@ public class AdvertisementController {
     @Autowired
     private AdvertisementService advertisementService;
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADVERTISER')")
+    public ResponseEntity<String> delete(@PathVariable Long id, Authentication auth) {
+        advertisementService.delete(id, auth);
+        return ResponseEntity.ok().body("Advertisement deleted");
+    }
+
     @GetMapping("/{id}/options")
     public ResponseEntity<Collection<OptionDisplayDTO>> getOptions(@PathVariable Long id) {
         return new ResponseEntity<>(advertisementService.getOptions(id, OptionDisplayDTO.class), HttpStatus.OK);

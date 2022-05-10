@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -79,14 +81,16 @@ public class DomainMapper {
 
             // Delete options marked for deletion
             int index = 0;
+            List<Option> removedOptions = new LinkedList<>();
             for (OptionUpdationDTO dto: source.getOptions()) {
                 if (dto.getDelete() != null) {
                     Option option = destination.getOptions().get(index);
                     if (option != null)
-                        destination.removeOption(option);
+                        removedOptions.add(option);
                 }
                 index++;
             }
+            removedOptions.forEach(destination::removeOption);
 
             // Sync bidirectional relationships
             destination.getOptions().forEach(e -> e.setAdvertisement(destination));

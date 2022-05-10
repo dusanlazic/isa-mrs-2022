@@ -4,7 +4,12 @@ import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.display.*;
+import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
+import com.team4.isamrs.dto.updation.HourlyPriceUpdationDTO;
+import com.team4.isamrs.dto.updation.OptionUpdationDTO;
 import com.team4.isamrs.model.adventure.AdventureAd;
+import com.team4.isamrs.model.advertisement.HourlyPrice;
+import com.team4.isamrs.model.advertisement.Option;
 import com.team4.isamrs.model.advertisement.Photo;
 import com.team4.isamrs.model.advertisement.Tag;
 import com.team4.isamrs.model.boat.BoatAd;
@@ -19,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -60,6 +67,45 @@ public class DomainMapper {
 
             // Lookup IDs and fill the collections
             source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
+
+            // Sync bidirectional relationships
+            destination.getOptions().forEach(e -> e.setAdvertisement(destination));
+
+            return destination;
+        };
+
+        Converter<AdventureAdUpdationDTO, AdventureAd> UpdationDtoToAdventureAdConverter = context -> {
+            AdventureAdUpdationDTO source = context.getSource();
+            AdventureAd destination = context.getDestination();
+
+            // Lookup IDs and fill the collections
+            source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
+
+            // Delete options marked for deletion
+            int index = 0;
+            List<Option> removedOptions = new LinkedList<>();
+            for (OptionUpdationDTO dto: source.getOptions()) {
+                if (dto.getDelete() != null) {
+                    Option option = destination.getOptions().get(index);
+                    if (option != null)
+                        removedOptions.add(option);
+                }
+                index++;
+            }
+            removedOptions.forEach(destination::removeOption);
+
+            // Delete prices marked for deletion
+            index = 0;
+            List<HourlyPrice> removedPrices = new LinkedList<>();
+            for (HourlyPriceUpdationDTO dto: source.getPrices()) {
+                if (dto.getDelete() != null) {
+                    HourlyPrice price = destination.getPrices().get(index);
+                    if (price != null)
+                        removedPrices.add(price);
+                }
+                index++;
+            }
+            removedPrices.forEach(destination::removeHourlyPrice);
 
             // Sync bidirectional relationships
             destination.getOptions().forEach(e -> e.setAdvertisement(destination));
@@ -122,6 +168,7 @@ public class DomainMapper {
         };
 
         modelMapper.createTypeMap(AdventureAdCreationDTO.class, AdventureAd.class).setPostConverter(CreationDtoToAdventureAdConverter);
+        modelMapper.createTypeMap(AdventureAdUpdationDTO.class, AdventureAd.class).setPostConverter(UpdationDtoToAdventureAdConverter);
         modelMapper.createTypeMap(AdventureAd.class, AdventureAdDisplayDTO.class).setPostConverter(AdventureAdToDisplayDtoConverter);
         modelMapper.createTypeMap(Photo.class, PhotoBriefDisplayDTO.class).setPostConverter(PhotoToDisplayDtoConverter);
         modelMapper.createTypeMap(Photo.class, PhotoUploadDisplayDTO.class).setPostConverter(PhotoToUploadDisplayDtoConverter);

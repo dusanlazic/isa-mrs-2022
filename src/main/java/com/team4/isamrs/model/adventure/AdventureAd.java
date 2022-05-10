@@ -7,7 +7,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -30,7 +32,8 @@ public class AdventureAd extends Advertisement {
     private BigDecimal cancellationFee;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<HourlyPrice> prices = new HashSet<>();
+    @OrderColumn
+    private List<HourlyPrice> prices = new ArrayList<>();
 
     @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY)
     private Set<AdventureReservation> reservations = new HashSet<>();

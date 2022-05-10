@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -81,7 +82,7 @@ public class AdventureAdCreationDTO {
 
     @Size(max=10)
     @Valid
-    private Set<OptionCreationDTO> options;
+    private List<OptionCreationDTO> options;
 
     @NotEmpty
     @Valid

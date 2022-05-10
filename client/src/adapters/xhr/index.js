@@ -23,3 +23,8 @@ export function put(url, requestData){
   const axios = returnAxiosInstance();
   return axios.put(url, requestData);
 }
+
+export function del(url, requestData){
+  const axios = returnAxiosInstance();
+  return axios.delete(url, requestData);
+}

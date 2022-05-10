@@ -5,8 +5,10 @@ import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.display.*;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
+import com.team4.isamrs.dto.updation.HourlyPriceUpdationDTO;
 import com.team4.isamrs.dto.updation.OptionUpdationDTO;
 import com.team4.isamrs.model.adventure.AdventureAd;
+import com.team4.isamrs.model.advertisement.HourlyPrice;
 import com.team4.isamrs.model.advertisement.Option;
 import com.team4.isamrs.model.advertisement.Photo;
 import com.team4.isamrs.model.advertisement.Tag;
@@ -91,6 +93,19 @@ public class DomainMapper {
                 index++;
             }
             removedOptions.forEach(destination::removeOption);
+
+            // Delete prices marked for deletion
+            index = 0;
+            List<HourlyPrice> removedPrices = new LinkedList<>();
+            for (HourlyPriceUpdationDTO dto: source.getPrices()) {
+                if (dto.getDelete() != null) {
+                    HourlyPrice price = destination.getPrices().get(index);
+                    if (price != null)
+                        removedPrices.add(price);
+                }
+                index++;
+            }
+            removedPrices.forEach(destination::removeHourlyPrice);
 
             // Sync bidirectional relationships
             destination.getOptions().forEach(e -> e.setAdvertisement(destination));

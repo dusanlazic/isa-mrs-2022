@@ -26,5 +26,5 @@ public class AdventureAdDisplayDTO implements DisplayDTO {
     private Set<PhotoUploadDisplayDTO> photos;
     private List<OptionDisplayDTO> options;
     private Set<FishingEquipmentDisplayDTO> fishingEquipment;
-    private Set<HourlyPriceDisplayDTO> prices;
+    private List<HourlyPriceDisplayDTO> prices;
 }

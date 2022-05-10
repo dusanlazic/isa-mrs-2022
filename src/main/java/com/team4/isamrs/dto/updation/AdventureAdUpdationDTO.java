@@ -65,4 +65,8 @@ public class AdventureAdUpdationDTO {
     @Size(max=10)
     @Valid
     private List<OptionUpdationDTO> options;
+
+    @NotEmpty
+    @Valid
+    private List<HourlyPriceUpdationDTO> prices;
 }

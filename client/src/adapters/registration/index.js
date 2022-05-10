@@ -1,6 +1,6 @@
 import { post } from "../xhr";
 
-export function registerCustomer(data) {
+export function registerCustomer(data, setIsRegistrationSuccessful, setError) {
   post('/api/account/register/customer', 
   {
     firstName: data.firstName,
@@ -13,9 +13,17 @@ export function registerCustomer(data) {
     countryCode: data.selectedCountry,
     phoneNumber: data.phoneNumber
   })
+  .then(res => {
+    setIsRegistrationSuccessful(true);
+  })
+  .catch(err => {
+    if (err.response.data.message) {
+      setError(err.response.data.message);
+    }
+  })
 }
 
-export function registerAdvertiser(data) {
+export function registerAdvertiser(data, setIsRegistrationSuccessful, setError) {
   let subrole;
   if (data.selectedSubrole === 'resort-owner') subrole = 2;
   else if (data.selectedSubrole === 'boat-owner') subrole = 3;
@@ -33,5 +41,13 @@ export function registerAdvertiser(data) {
     phoneNumber: data.phoneNumber,
     accountType: subrole,
     explanation: data.reason
+  })
+  .then(res => {
+    setIsRegistrationSuccessful(true);
+  })
+  .catch(err => {
+    if (err.response.data.message) {
+      setError(err.response.data.message);
+    }
   })
 }

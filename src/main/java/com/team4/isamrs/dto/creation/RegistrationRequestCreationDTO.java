@@ -47,7 +47,7 @@ public class RegistrationRequestCreationDTO {
     private String phoneNumber;
 
     @NotBlank
-    @Size(min = 20, max = 500, message = "Explanation must be longer than 2, and shorter than 20 characters.")
+    @Size(min = 20, max = 500, message = "Explanation must be longer than 20, and shorter than 500 characters.")
     private String explanation;
 
     @NotNull

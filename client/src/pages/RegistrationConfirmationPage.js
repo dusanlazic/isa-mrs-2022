@@ -8,7 +8,7 @@ const RegistrationConfirmation = () => {
   const [ready, setReady] = useState(null);
 
   useEffect(() => {
-  get(`/api/account/confirm-registration/${window.location.pathname.split("/").pop()}`)
+  get(`/api/account/register/confirm/${window.location.pathname.split("/").pop()}`)
     .then((response) => {
       setReady(true);
     })

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import {useParams} from 'react-router-dom'
-import { get } from "../adapters/xhr";
+import { useParams, useNavigate } from 'react-router-dom'
+import { get } from "../adapters/xhr"
+import NotFound from './NotFound'
 
 // main components
 import UserProfileMainInfo from '../components/profile/main/UserProfileMainInfo'
@@ -10,6 +11,7 @@ import AdventureProfileMainInfo from '../components/profile/main/AdventureProfil
 
 // additional components
 import ClientReviewList from '../components/profile/additional/ClientReviewList'
+import AdvertisementReviewList from '../components/profile/additional/AdvertisementReviewList'
 import ClientReservationHistory from '../components/profile/additional/ClientReservationHistory'
 import About from '../components/profile/additional/AboutTab'
 import BoatAbout from '../components/profile/additional/BoatAboutTab'
@@ -26,12 +28,6 @@ import AdditionalInformation from '../components/profile/additional/AdditionalIn
 import Sidebar from '../components/profile/sidebar/Sidebar'
 
 
-const clientAdditionalComponents = [
-  { title: 'Reviews', component: <ClientReviewList />},
-  { title: 'Reservation History',  component: <ClientReservationHistory/>},
-];
-
-const clientSidebarComponents = [<LoyaltyProgramCard/>];
 
 const clientMainComponent = UserProfileMainInfo;
 
@@ -59,12 +55,17 @@ const ProfilePage = () => {
     endpoint = '/customers';
   }
 
+  const navigate = useNavigate();
+
   // main api call
   useEffect(() => {
     get(`/api${endpoint}/${id}`)
     .then((response) => {
       console.log(response.data)
       setProfileData(response.data);
+    })
+    .catch((error) => {
+      navigate('/notfound');
     });
   }, [])
 
@@ -78,14 +79,9 @@ const ProfilePage = () => {
     contentComponents = [
       { title: 'About', component: <About data={profileData} />},
       { title: 'Photos',  component: <Gallery data={profileData} />},
-      { title: 'Reviews', component: <ClientReviewList data={profileData} />},
+      { title: 'Reviews', component: <AdvertisementReviewList data={profileData} />},
       //{ title: 'Location', component: <Map />},
     ];
-  }
-  else if (window.location.href.includes('client')) {
-    sidebarComponents = clientSidebarComponents;
-    MainComponent = clientMainComponent;
-    contentComponents = clientAdditionalComponents;
   }
   else if (window.location.href.includes('boat')) {
     sidebarComponents = [<DailyPriceCard data={profileData} />, <Tags data={profileData} />];
@@ -93,7 +89,7 @@ const ProfilePage = () => {
     contentComponents = [
       { title: 'About', component: <BoatAbout data={profileData} />},
       { title: 'Photos',  component: <Gallery data={profileData} />},
-      { title: 'Reviews', component: <ClientReviewList data={profileData} />},
+      { title: 'Reviews', component: <AdvertisementReviewList data={profileData} />},
       //{ title: 'Location', component: <Map />},
     ];
   }
@@ -103,8 +99,16 @@ const ProfilePage = () => {
     contentComponents = [
       { title: 'About', component: <About data={profileData} />},
       { title: 'Photos',  component: <Gallery data={profileData} />},
-      { title: 'Reviews', component: <ClientReviewList data={profileData} />},
+      { title: 'Reviews', component: <AdvertisementReviewList data={profileData} />},
       //{ title: 'Location', component: <Map />},
+    ];
+  }
+  else if (window.location.href.includes('client')) {
+    sidebarComponents = [<LoyaltyProgramCard/>];
+    MainComponent = clientMainComponent;
+    contentComponents = [
+      { title: 'Reviews', component: <ClientReviewList data = {profileData} /> },
+      { title: 'Reservation History',  component: <ClientReservationHistory/> },
     ];
   }
 

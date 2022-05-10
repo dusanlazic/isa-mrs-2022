@@ -2,12 +2,12 @@ import { useEffect, useState } from "react"
 import { get } from "../../../adapters/xhr";
 import ClientReview from './ClientReview'
 
-const ClientReviewList = ({data}) => {
+const AdvertisementReviewList = ({data}) => {
 
 	const [reviews, setReviews] = useState(null);
 
 	useEffect(() => {
-		get(`/api/customers/${data.id}/reviews`).then((response) => {
+		get(`/api/ads/${data.id}/reviews`).then((response) => {
 			setReviews(response.data);
 		  });
 		}, [])
@@ -26,4 +26,4 @@ const ClientReviewList = ({data}) => {
    );
 }
  
-export default ClientReviewList;
+export default AdvertisementReviewList;

@@ -23,6 +23,11 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+    @GetMapping(value = "/whoami")
+    public ResponseEntity<AccountDisplayDTO> whoAmI(Authentication auth) {
+        return new ResponseEntity<>(accountService.whoAmI(auth), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<AccountDisplayDTO> findById(@PathVariable Long id) {
         return new ResponseEntity<>(accountService.findById(id, AccountDisplayDTO.class), HttpStatus.OK);

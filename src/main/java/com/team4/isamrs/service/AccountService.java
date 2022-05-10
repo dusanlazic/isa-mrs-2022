@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.team4.isamrs.dto.creation.CustomerCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
+import com.team4.isamrs.dto.display.AccountDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AccountUpdationDTO;
 import com.team4.isamrs.exception.ConfirmationLinkExpiredException;
@@ -142,5 +143,10 @@ public class AccountService {
         } catch (TokenExpiredException e) {
             throw new ConfirmationLinkExpiredException("Confirmation link expired.");
         }
+    }
+
+    public AccountDisplayDTO whoAmI(Authentication auth) {
+        User user = (User) auth.getPrincipal();
+        return modelMapper.map(user, AccountDisplayDTO.class);
     }
 }

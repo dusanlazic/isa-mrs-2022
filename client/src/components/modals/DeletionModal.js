@@ -63,7 +63,7 @@ export default function DeletionModal ({ closeFunction, deleteFunction, entityNa
                     type="button"
                     className="w-full inline-flex justify-center rounded-md border border-red-300 
                     shadow-sm px-4 py-2 bg-red-200 text-base font-medium text-red-600 hover:bg-red-400 
-                    sm:ml-3 sm:w-auto sm:text-sm"
+                    hover:text-red-900 sm:ml-3 sm:w-auto sm:text-sm"
                     onClick={() => {deleteFunction(); hide()}}
                   >
                     Delete

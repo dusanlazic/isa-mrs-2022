@@ -1,15 +1,34 @@
 import { useEffect, useState } from "react"
-import { get } from "../../../adapters/xhr";
+import { get, del } from "../../../adapters/xhr";
+import DeletionModal from "../../modals/DeletionModal";
 
 
 const BoatProfileMainInfo = ({data}) => {
 	let [showMore, setShowMore] = useState(false);
 	let description = data.description;
 	const [rating, setRating] = useState(null);
+	const [showModal, setShowModal] = useState(false);
+	const [showDeleteBtn, setShowDeleteBtn] = useState(false);
+  const show = () => setShowModal(true);
+  const hide = () => setShowModal(false);
+
+  const deleteFun = () =>  {
+		del(`/api/ads/boats/${data.id}`).then((response) => {
+			console.log(response);
+      setShowModal(false);
+			window.location.reload();
+		  });
+  }
 
 	useEffect(() => {
 		get(`/api/ads/${data.id}/rating`).then((response) => {
 			setRating(response.data);
+		  });
+		}, [])
+
+	useEffect(() => {
+		get(`/api/account/whoami`).then((response) => {
+			setShowDeleteBtn(response.data.id == data.advertiser.id);
 		  });
 		}, [])
 
@@ -20,7 +39,13 @@ const BoatProfileMainInfo = ({data}) => {
 				<button className="text-gray-500
 					bg-gray-200 hover:bg-gray-300 hover:text-gray-800 active:bg-transparent
 					active:bg-gray-400 active:text-gray-50
-					rounded-b-lg px-4 h-min text-base md:text-sm xl:text-base">Edit Profile</button>
+					rounded-b-lg px-4 h-min text-base md:text-sm xl:text-base">Edit</button>
+					{ showDeleteBtn && 
+					<button className="text-gray-500
+					bg-gray-200 hover:bg-red-300 hover:text-red-800 active:bg-transparent
+					active:bg-red-400 active:text-red-50
+					rounded-b-lg px-4 h-min text-base md:text-sm xl:text-base" onClick={show}>
+						Delete</button> }
 			</div>
 				
 			<div className="flex flex-col flex-grow md:ml-4">
@@ -53,6 +78,10 @@ const BoatProfileMainInfo = ({data}) => {
 				</div>
 
 			</div>
+			{showModal && <DeletionModal  closeFunction = {() => hide(false)}
+                                      deleteFunction = {() => deleteFun()}
+                                      entityName = { data.title }
+        />}
 		</div>
 	);
 }

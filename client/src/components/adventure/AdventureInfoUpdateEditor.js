@@ -59,7 +59,7 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
      })
     .then((response) => {
       alert(response.data);
-      navigate('/');
+      navigate(`/adventure/${advertisementId}`);
     })
     .catch((error) => {
       alert(error.response.data.message);

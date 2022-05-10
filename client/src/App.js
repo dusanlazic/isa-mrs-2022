@@ -22,6 +22,7 @@ function App() {
               <Route path="/" exact element={<HomePage/>}/>
               <Route path="/adventure/new" exact element={<CreateAdventurePage/>}/>
               <Route path="/adventure/:id/edit" exact element={<UpdateAdventurePage/>}/>
+              <Route path="/adventure/:id" exact element={<ProfilePage/>}/>
               <Route path="/resort/:id" exact element={<ProfilePage/>}/>
               <Route path="/client/:id" exact element={<ProfilePage/>}/>
               <Route path="/boat/:id" exact element={<ProfilePage/>}/>

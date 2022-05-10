@@ -6,6 +6,7 @@ import { get } from "../adapters/xhr";
 import UserProfileMainInfo from '../components/profile/main/UserProfileMainInfo'
 import ResortProfileMainInfo from '../components/profile/main/ResortProfileMainInfo'
 import BoatProfileMainInfo from '../components/profile/main/BoatProfileMainInfo'
+import AdventureProfileMainInfo from '../components/profile/main/AdventureProfileMainInfo'
 
 // additional components
 import ClientReviewList from '../components/profile/additional/ClientReviewList'
@@ -35,6 +36,8 @@ const clientSidebarComponents = [<LoyaltyProgramCard/>];
 const clientMainComponent = UserProfileMainInfo;
 
 const boatMainComponent = BoatProfileMainInfo;
+
+const adventureMainComponent = AdventureProfileMainInfo;
 
 const ProfilePage = () => {
 
@@ -84,11 +87,21 @@ const ProfilePage = () => {
     MainComponent = clientMainComponent;
     contentComponents = clientAdditionalComponents;
   }
-  else {
+  else if (window.location.href.includes('boat')) {
     sidebarComponents = [<DailyPriceCard data={profileData} />, <Tags data={profileData} />];
     MainComponent = boatMainComponent;
     contentComponents = [
       { title: 'About', component: <BoatAbout data={profileData} />},
+      { title: 'Photos',  component: <Gallery data={profileData} />},
+      { title: 'Reviews', component: <ClientReviewList data={profileData} />},
+      //{ title: 'Location', component: <Map />},
+    ];
+  }
+  else if (window.location.href.includes('adventure')) {
+    sidebarComponents = [<HourlyPriceCard data={profileData} />, <Tags data={profileData} />];
+    MainComponent = adventureMainComponent;
+    contentComponents = [
+      { title: 'About', component: <About data={profileData} />},
       { title: 'Photos',  component: <Gallery data={profileData} />},
       { title: 'Reviews', component: <ClientReviewList data={profileData} />},
       //{ title: 'Location', component: <Map />},
@@ -100,7 +113,7 @@ const ProfilePage = () => {
       {/* Main part */}
       <div className="block w-full">
         {/* Main profile info */}
-        {<MainComponent data={profileData}/>}
+        {<MainComponent data={profileData} advertisementId={id} />}
 
         {/* Sidebar on smaller screens is below main info */}
         <div className="block lg:hidden w-full">

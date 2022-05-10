@@ -5,7 +5,7 @@ const Gallery = ({data}) => {
 		<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-2 gap-y-2">
 	
 			{data.photos.map((image) => 
-				<img src="/images/property_placeholder.jpg" alt="" key={image.uri}
+				<img src={"/api/" + image.uri} alt="" key={image.uri}
 				className="h-full rounded-md object-cover" />
 			)}
 		</div>

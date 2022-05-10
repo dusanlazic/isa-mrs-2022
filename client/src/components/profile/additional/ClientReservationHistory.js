@@ -19,7 +19,7 @@ const reservations = [
   },
   {
     id: 2,
-    name: 'Pucaj mi u lobanju - vikendica',
+    name: 'Lorem Ipsum',
     image: '/images/property_placeholder.jpg',
     startDate: '11/09/2001',
     endDate: '12/09/2001',

@@ -3,7 +3,7 @@ import { get, del } from "../../../adapters/xhr";
 import DeletionModal from "../../modals/DeletionModal";
 
 
-const BoatProfileMainInfo = ({data}) => {
+const BoatProfileMainInfo = ({data, advertisementId}) => {
 	let [showMore, setShowMore] = useState(false);
 	let description = data.description;
 	const [rating, setRating] = useState(null);
@@ -13,7 +13,7 @@ const BoatProfileMainInfo = ({data}) => {
   const hide = () => setShowModal(false);
 
   const deleteFun = () =>  {
-		del(`/api/ads/boats/${data.id}`).then((response) => {
+		del(`/api/ads/${advertisementId}`).then((response) => {
 			console.log(response);
       setShowModal(false);
 			window.location.reload();
@@ -35,7 +35,7 @@ const BoatProfileMainInfo = ({data}) => {
 	return (
 		<div className="block md:flex bg-gray-100 rounded-lg p-10">
 			<div className="block flex-none">
-				<img src="images/property_placeholder.jpg" alt="" className="flex-none w-64 h-64 md:w-44 md:h-44 xl:w-52 xl:h-52 object-cover rounded-lg mx-auto" />
+				<img src="/images/property_placeholder.jpg" alt="" className="flex-none w-64 h-64 md:w-44 md:h-44 xl:w-52 xl:h-52 object-cover rounded-lg mx-auto" />
 				<button className="text-gray-500
 					bg-gray-200 hover:bg-gray-300 hover:text-gray-800 active:bg-transparent
 					active:bg-gray-400 active:text-gray-50

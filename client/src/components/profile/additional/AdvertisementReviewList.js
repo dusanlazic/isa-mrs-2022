@@ -19,8 +19,8 @@ const AdvertisementReviewList = ({data}) => {
 
   return ( 
     <div className="flex flex-col gap-y-6">
-      {reviews.map((review) => 
-        <ClientReview review={review} key={review.id}/>
+      {reviews.map((review, index) => 
+        <ClientReview review={review} key={index}/>
       )}
     </div>
    );

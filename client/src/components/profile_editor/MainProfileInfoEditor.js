@@ -26,6 +26,8 @@ const MainProfileInfoEditor = ({data}) => {
     put(`/api/account`, {id: data.id, firstName, lastName, phoneNumber, city, address,
       countryCode: selectedCountry, emailAddress:data.emailAddress})
     .then((response) => {
+      alert("Changes saved");
+      window.location.reload();
       console.log(response);
     });
   }
@@ -77,7 +79,7 @@ const MainProfileInfoEditor = ({data}) => {
 
         <div className="block md:col-span-2 text-left">
           <label className="text-xs">email (immutable):</label>
-          <input disabled readOnly value={data.emailAddress ? data.emailAddress : ''}
+          <input disabled readOnly value={data.username ? data.username : ''}
           className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>

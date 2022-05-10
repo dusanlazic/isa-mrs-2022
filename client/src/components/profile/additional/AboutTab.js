@@ -8,15 +8,19 @@ const About = ({data}) => {
 
 			<div className="mb-5 text-xl text-black">Optional features</div>
 			<div className="grid grid-cols-1">
-				{data.options.map(x =>
-					<span className="mb-2">&#8729; {x.name} ({x.maxCount}) - {x.description}</span>
+				{data.options.map((x, index) =>
+				{
+					return (
+						<span key={index} className="mb-2">&#8729; {x.name} ({x.maxCount}) - {x.description}</span>
+					)
+				}
 				)}
 			</div>
 
 			<div className="mt-10 mb-5 text-xl text-black">Rules</div>
 			<div className="grid grid-cols-1">
-				{rules.map(x =>
-					<span className="mb-2">&#8729; {x}</span>
+				{rules.map((x, index) =>
+					<span key={index} className="mb-2">&#8729; {x}</span>
 				)}
 			</div>
 		</div>

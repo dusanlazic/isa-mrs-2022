@@ -39,29 +39,29 @@ const BoatAbout = ({ data }) => {
 
 			<div className="mt-10 mb-5 text-xl text-black">Optional features</div>
 			<div className="grid grid-cols-1">
-				{data.options.map(x =>
-					<span className="mb-2">&#8729; {x.name} ({x.maxCount}) - {x.description}</span>
+				{data.options.map((x, index) =>
+					<span key={index} className="mb-2">&#8729; {x.name} ({x.maxCount}) - {x.description}</span>
 				)}
 			</div>
 
 			<div className="mt-10 mb-5 text-xl text-black">Fishing equpment</div>
 			<div className="grid grid-cols-1">
-				{data.fishingEquipment.map(x =>
-					<span className="mb-2">&#8729; {x.name}</span>
+				{data.fishingEquipment.map((x, index) =>
+					<span key={index} className="mb-2">&#8729; {x.name}</span>
 				)}
 			</div>
 
 			<div className="mt-10 mb-5 text-xl text-black">Navigational equipment</div>
 			<div className="grid grid-cols-1">
-				{data.navigationalEquipment.map(x =>
-					<span className="mb-2">&#8729; {x.name}</span>
+				{data.navigationalEquipment.map((x, index) =>
+					<span key={index} className="mb-2">&#8729; {x.name}</span>
 				)}
 			</div>
 
 			<div className="mt-10 mb-5 text-xl text-black">Rules</div>
 			<div className="grid grid-cols-1">
-				{rules.map(x =>
-					<span className="mb-2">&#8729; {x}</span>
+				{rules.map((x, index) =>
+					<span key={index} className="mb-2">&#8729; {x}</span>
 				)}
 			</div>
 		</div>

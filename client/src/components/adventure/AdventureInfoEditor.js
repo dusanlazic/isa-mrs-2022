@@ -55,7 +55,7 @@ const AdventureInfoEditor = () => {
      })
     .then((response) => {
       alert(response.data);
-      navigate('/');
+      navigate(`/adventure/${response.headers['location'].split("/").pop()}`);
     })
     .catch((error) => {
       alert(error.response.data.message);

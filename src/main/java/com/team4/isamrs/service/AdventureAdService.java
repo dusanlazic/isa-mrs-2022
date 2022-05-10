@@ -58,8 +58,9 @@ public class AdventureAdService {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
 
         AdventureAd adventureAd = modelMapper.map(dto, AdventureAd.class);
+
+        adventureAd.setTags(new HashSet<>());
         dto.getTagNames().forEach(name -> {
-            adventureAd.setTags(new HashSet<>());
             Optional<Tag> tag = tagRepository.findByNameIgnoreCase(name);
             if (tag.isPresent()) {
                 adventureAd.addTag(tag.get());
@@ -68,8 +69,9 @@ public class AdventureAdService {
                 adventureAd.addTag(newTag);
             }
         });
+
+        adventureAd.setFishingEquipment(new HashSet<>());
         dto.getFishingEquipmentNames().forEach(name -> {
-            adventureAd.setFishingEquipment(new HashSet<>());
             Optional<FishingEquipment> fishingEquipment = fishingEquipmentRepository.findByNameIgnoreCase(name);
             if (fishingEquipment.isPresent()) {
                 adventureAd.addFishingEquipment(fishingEquipment.get());
@@ -92,6 +94,28 @@ public class AdventureAdService {
         AdventureAd adventureAd = adventureAdRepository.findAdventureAdByIdAndAdvertiser(id, advertiser).orElseThrow();
 
         modelMapper.map(dto, adventureAd);
+        adventureAd.setTags(new HashSet<>());
+        dto.getTagNames().forEach(name -> {
+            Optional<Tag> tag = tagRepository.findByNameIgnoreCase(name);
+            if (tag.isPresent()) {
+                adventureAd.addTag(tag.get());
+            } else {
+                Tag newTag = new Tag(name);
+                adventureAd.addTag(newTag);
+            }
+        });
+
+        adventureAd.setFishingEquipment(new HashSet<>());
+        dto.getFishingEquipmentNames().forEach(name -> {
+            Optional<FishingEquipment> fishingEquipment = fishingEquipmentRepository.findByNameIgnoreCase(name);
+            if (fishingEquipment.isPresent()) {
+                adventureAd.addFishingEquipment(fishingEquipment.get());
+            } else {
+                FishingEquipment newFishingEquipment = new FishingEquipment(name);
+                adventureAd.addFishingEquipment(newFishingEquipment);
+            }
+        });
+
         adventureAd.verifyPhotosOwnership(advertiser);
 
         adventureAdRepository.save(adventureAd);

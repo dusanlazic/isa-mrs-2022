@@ -8,11 +8,10 @@ import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
 import com.team4.isamrs.dto.updation.HourlyPriceUpdationDTO;
 import com.team4.isamrs.dto.updation.OptionUpdationDTO;
 import com.team4.isamrs.model.adventure.AdventureAd;
-import com.team4.isamrs.model.advertisement.HourlyPrice;
-import com.team4.isamrs.model.advertisement.Option;
-import com.team4.isamrs.model.advertisement.Photo;
-import com.team4.isamrs.model.advertisement.Tag;
+import com.team4.isamrs.model.adventure.FishingEquipment;
+import com.team4.isamrs.model.advertisement.*;
 import com.team4.isamrs.model.boat.BoatAd;
+import com.team4.isamrs.model.boat.NavigationalEquipment;
 import com.team4.isamrs.model.enumeration.AccountType;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.user.Customer;
@@ -24,8 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -64,6 +62,12 @@ public class DomainMapper {
         Converter<AdventureAdCreationDTO, AdventureAd> CreationDtoToAdventureAdConverter = context -> {
             AdventureAdCreationDTO source = context.getSource();
             AdventureAd destination = context.getDestination();
+
+            // Lookup names and fill the collections
+            destination.setTags(new HashSet<Tag>());
+            mapTagNames(source.getTagNames()).forEach(destination::addTag);
+            destination.setFishingEquipment(new HashSet<FishingEquipment>());
+            mapFishingEquipmentNames(source.getFishingEquipmentNames()).forEach(destination::addFishingEquipment);
 
             // Lookup IDs and fill the collections
             source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
@@ -136,13 +140,15 @@ public class DomainMapper {
             BoatAdCreationDTO source = context.getSource();
             BoatAd destination = context.getDestination();
 
-            // Lookup IDs and fill the collections
-            source.getTagIds().forEach(id -> destination.addTag(tagRepository.findById(id).get()));
-            source.getFishingEquipmentIds().forEach(id -> destination.addFishingEquipment(fishingEquipmentRepository.findById(id).get()));
-            source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
-            source.getNavigationalEquipmentIds().forEach(id -> destination.addNavigationalEquipment(navigationalEquipmentRepository.findById(id).get()));
+            destination.setTags(new HashSet<Tag>());
+            mapTagNames(source.getTagNames()).forEach(destination::addTag);
+            destination.setFishingEquipment(new HashSet<FishingEquipment>());
+            mapFishingEquipmentNames(source.getFishingEquipmentNames()).forEach(destination::addFishingEquipment);
+            destination.setNavigationalEquipment(new HashSet<NavigationalEquipment>());
+            mapNavigationalEquipmentNames(source.getNavigationalEquipmentNames()).forEach(destination::addNavigationalEquipment);
 
-            // Sync bidirectional relationships
+            source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
+
             destination.getOptions().forEach(e -> e.setAdvertisement(destination));
 
             return destination;
@@ -176,5 +182,44 @@ public class DomainMapper {
         modelMapper.createTypeMap(BoatAdCreationDTO.class, BoatAd.class).setPostConverter(CreationDtoToBoatAdConverter);
         modelMapper.createTypeMap(BoatAd.class, BoatAdDisplayDTO.class).setPostConverter(BoatAdToDisplayDtoConverter);
         modelMapper.createTypeMap(RegistrationRequestCreationDTO.class, RegistrationRequest.class).setPostConverter(RegistrationRequestCreationDTOToRegistrationRequest);
+    }
+
+    private HashSet<Tag> mapTagNames(Set<String> tagNames) {
+        HashSet<Tag> newSet = new HashSet<>();
+        tagNames.forEach(name -> {
+            Optional<Tag> tag = tagRepository.findByNameIgnoreCase(name);
+            if (tag.isPresent()) {
+                newSet.add(tag.get());
+            } else {
+                newSet.add(new Tag(name));
+            }
+        });
+        return newSet;
+    }
+
+    private HashSet<FishingEquipment> mapFishingEquipmentNames(Set<String> fishingEquipmentNames) {
+        HashSet<FishingEquipment> newSet = new HashSet<>();
+        fishingEquipmentNames.forEach(name -> {
+            Optional<FishingEquipment> fishingEquipment = fishingEquipmentRepository.findByNameIgnoreCase(name);
+            if (fishingEquipment.isPresent()) {
+                newSet.add(fishingEquipment.get());
+            } else {
+                newSet.add(new FishingEquipment(name));
+            }
+        });
+        return newSet;
+    }
+
+    private HashSet<NavigationalEquipment> mapNavigationalEquipmentNames(Set<String> navigationalEquipmentNames) {
+        HashSet<NavigationalEquipment> newSet = new HashSet<>();
+        navigationalEquipmentNames.forEach(name -> {
+            Optional<NavigationalEquipment> navigationalEquipment = navigationalEquipmentRepository.findByNameIgnoreCase(name);
+            if (navigationalEquipment.isPresent()) {
+                newSet.add(navigationalEquipment.get());
+            } else {
+                newSet.add(new NavigationalEquipment(name));
+            }
+        });
+        return newSet;
     }
 }

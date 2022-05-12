@@ -1,12 +1,14 @@
 package com.team4.isamrs.dto.creation;
 
-import com.team4.isamrs.dto.display.DailyPriceDisplayDTO;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,9 +29,9 @@ public class BoatAdCreationDTO {
     @Size(max=100)
     private String pricingDescription;
 
-    private LocalDateTime availableAfter;
+    private LocalDate availableAfter;
 
-    private LocalDateTime availableUntil;
+    private LocalDate availableUntil;
 
     @Size(max=500)
     private String rules;
@@ -40,21 +42,19 @@ public class BoatAdCreationDTO {
 
     @NotNull
     @Size(min=3, max=10)
-    private Set<Long> tagIds;
+    private Set<String> tagNames;
 
-    @NotNull
-    @Size(min=3, max=10)
+    @Size(max=10)
     private Set<UUID> photoIds;
 
-    @NotEmpty
     @Valid
-    private Set<OptionCreationDTO> options;
+    private List<OptionCreationDTO> options;
 
     @NotNull
-    private LocalDateTime CheckOutTime;
+    private LocalTime checkOutTime;
 
     @NotNull
-    private LocalDateTime CheckInTime;
+    private LocalTime checkInTime;
 
     @NotBlank
     @Size(max=20)
@@ -77,10 +77,10 @@ public class BoatAdCreationDTO {
     private String boatSpeed;
 
     @NotEmpty
-    private Set<Long> fishingEquipmentIds;
+    private Set<String> fishingEquipmentNames;
 
     @NotEmpty
-    private Set<Long> navigationalEquipmentIds;
+    private Set<String> navigationalEquipmentNames;
 
     @NotNull
     @Positive

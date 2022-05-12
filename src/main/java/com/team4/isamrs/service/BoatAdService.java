@@ -5,6 +5,9 @@ import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.model.boat.BoatAd;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.BoatAdRepository;
+import com.team4.isamrs.repository.FishingEquipmentRepository;
+import com.team4.isamrs.repository.NavigationalEquipmentRepository;
+import com.team4.isamrs.repository.TagRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -18,6 +21,15 @@ public class BoatAdService {
 
     @Autowired
     private BoatAdRepository boatAdRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
+
+    @Autowired
+    private FishingEquipmentRepository fishingEquipmentRepository;
+
+    @Autowired
+    private NavigationalEquipmentRepository navigationalEquipmentRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -35,12 +47,14 @@ public class BoatAdService {
 
     public BoatAd create(BoatAdCreationDTO dto, Authentication auth) {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
-
         BoatAd boatAd = modelMapper.map(dto, BoatAd.class);
         boatAd.setAdvertiser(advertiser);
         boatAd.verifyPhotosOwnership(advertiser);
 
         boatAdRepository.save(boatAd);
+        tagRepository.saveAll(boatAd.getTags());
+        fishingEquipmentRepository.saveAll(boatAd.getFishingEquipment());
+        navigationalEquipmentRepository.saveAll(boatAd.getNavigationalEquipment());
         return boatAd;
     }
 

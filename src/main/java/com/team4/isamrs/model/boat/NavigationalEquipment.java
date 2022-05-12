@@ -26,4 +26,11 @@ public class NavigationalEquipment {
             joinColumns = @JoinColumn(name = "navigational_equipment_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "advertisement_id", referencedColumnName = "id"))
     private Set<Advertisement> advertisements = new HashSet<>();
+
+    public NavigationalEquipment() {
+    }
+
+    public NavigationalEquipment(String name) {
+        this.name = name;
+    }
 }

@@ -1,5 +1,6 @@
 package com.team4.isamrs.controller;
 
+import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
 import com.team4.isamrs.service.BoatAdService;
@@ -38,7 +39,7 @@ public class BoatController {
     @PreAuthorize("hasRole('BOAT_OWNER')")
     public ResponseEntity<String> create(@Valid @RequestBody BoatAdCreationDTO dto, Authentication auth) {
         return ResponseEntity.created(URI.create("/ads/boats/" + boatAdService.create(dto, auth).getId()))
-                .body("Adventure ad created.");
+                .body("Boat ad created.");
     }
 
     @DeleteMapping(value = "/{id}")

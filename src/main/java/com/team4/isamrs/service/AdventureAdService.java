@@ -59,27 +59,6 @@ public class AdventureAdService {
 
         AdventureAd adventureAd = modelMapper.map(dto, AdventureAd.class);
 
-        adventureAd.setTags(new HashSet<>());
-        dto.getTagNames().forEach(name -> {
-            Optional<Tag> tag = tagRepository.findByNameIgnoreCase(name);
-            if (tag.isPresent()) {
-                adventureAd.addTag(tag.get());
-            } else {
-                Tag newTag = new Tag(name);
-                adventureAd.addTag(newTag);
-            }
-        });
-
-        adventureAd.setFishingEquipment(new HashSet<>());
-        dto.getFishingEquipmentNames().forEach(name -> {
-            Optional<FishingEquipment> fishingEquipment = fishingEquipmentRepository.findByNameIgnoreCase(name);
-            if (fishingEquipment.isPresent()) {
-                adventureAd.addFishingEquipment(fishingEquipment.get());
-            } else {
-                FishingEquipment newFishingEquipment = new FishingEquipment(name);
-                adventureAd.addFishingEquipment(newFishingEquipment);
-            }
-        });
         adventureAd.setAdvertiser(advertiser);
         adventureAd.verifyPhotosOwnership(advertiser);
 

@@ -37,6 +37,8 @@ const AdventureInfoEditor = () => {
       currency: currency,
       instructorBio: instructorBio,
       rules: rules,
+      availableAfter: availableAfter,
+      availableUntil: availableUntil,
       pricingDescription: pricingDescription,
       address: {
         address: address,

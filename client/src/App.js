@@ -6,11 +6,12 @@ import RegistrationPage from './pages/RegistrationPage';
 import CreateAdventurePage from './pages/CreateAdventurePage';
 import LoginPage from './pages/LoginPage';
 import RegistrationConfirmation from './pages/RegistrationConfirmationPage';
+import UpdateAdventurePage from './pages/UpdateAdventurePage';
+import CreateBoatPage from './pages/CreateBoatPage';
 
 import NotFound from './pages/NotFound';
 
 import { BrowserRouter as Router, Route, Routes, Head } from 'react-router-dom';
-import UpdateAdventurePage from './pages/UpdateAdventurePage';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
               <Route path="/resort/:id" exact element={<ProfilePage/>}/>
               <Route path="/client/:id" exact element={<ProfilePage/>}/>
               <Route path="/boat/:id" exact element={<ProfilePage/>}/>
+              <Route path="/boat/new" exact element={<CreateBoatPage/>}/>
               <Route path="/account" exact element={<ProfileEditorPage/>}/>
               <Route path="/register" exact element={<RegistrationPage/>}/>
               <Route path="/login" exact element={<LoginPage/>}/>

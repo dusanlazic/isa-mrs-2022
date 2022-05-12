@@ -11,6 +11,7 @@ import NotFound from './pages/NotFound';
 
 import { BrowserRouter as Router, Route, Routes, Head } from 'react-router-dom';
 import UpdateAdventurePage from './pages/UpdateAdventurePage';
+import CreateResortPage from './pages/CreateResortPage';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
               <Route path="/adventure/:id/edit" exact element={<UpdateAdventurePage/>}/>
               <Route path="/adventure/:id" exact element={<ProfilePage/>}/>
               <Route path="/resort/:id" exact element={<ProfilePage/>}/>
+              <Route path="/resort/new" exact element={<CreateResortPage/>}/>
               <Route path="/client/:id" exact element={<ProfilePage/>}/>
               <Route path="/boat/:id" exact element={<ProfilePage/>}/>
               <Route path="/account" exact element={<ProfileEditorPage/>}/>

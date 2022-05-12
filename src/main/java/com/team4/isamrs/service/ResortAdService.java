@@ -1,15 +1,19 @@
 package com.team4.isamrs.service;
 
+import com.team4.isamrs.dto.creation.ResortAdCreationDTO;
 import com.team4.isamrs.dto.display.ResortAdDisplayDTO;
 import com.team4.isamrs.model.adventure.AdventureAd;
+import com.team4.isamrs.model.boat.BoatAd;
 import com.team4.isamrs.model.resort.ResortAd;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.ResortAdRepository;
+import com.team4.isamrs.repository.TagRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import javax.net.ssl.SSLSession;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -18,6 +22,9 @@ public class ResortAdService {
 
     @Autowired
     private ResortAdRepository resortAdRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -31,6 +38,17 @@ public class ResortAdService {
     public ResortAdDisplayDTO findById(Long id) {
         ResortAd resortAd = resortAdRepository.findById(id).orElseThrow();
         return modelMapper.map(resortAd, ResortAdDisplayDTO.class);
+    }
+
+    public ResortAd create(ResortAdCreationDTO dto, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        ResortAd resortAd = modelMapper.map(dto, ResortAd.class);
+        resortAd.setAdvertiser(advertiser);
+        resortAd.verifyPhotosOwnership(advertiser);
+
+        resortAdRepository.save(resortAd);
+        tagRepository.saveAll(resortAd.getTags());
+        return resortAd;
     }
 
     public void delete(Long id, Authentication auth) {

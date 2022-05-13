@@ -10,21 +10,20 @@ export function login(data, redirect, setError) {
   .then(response => {
     if (response.data) {
       saveToken(response.data.accessToken);
-      getWhoAmI();
-      redirect();
+      getWhoAmI(redirect);
     }
   })
   .catch((err) => {
-    console.log(err.response.data.message);
     if (err.response.data.message) {
       setError(err.response.data.message);
     }
   })
 }
 
-export function getWhoAmI() {
+export function getWhoAmI(redirect=undefined) {
   get('/api/account/whoami')
   .then(response => {
-    saveSession(response.data)
+    saveSession(response.data);
+    if (redirect) redirect();
   })
 }

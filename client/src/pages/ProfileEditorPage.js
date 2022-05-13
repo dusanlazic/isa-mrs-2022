@@ -15,7 +15,7 @@ const ProfileEditorPage = () => {
     .then((response) => {
       setAccountData(response.data);
     });
-  }, [])
+  }, [session.id])
 
   if (accountData === null || session === undefined) {
     return null;

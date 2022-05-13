@@ -119,9 +119,10 @@ const RegistrationPage = () => {
   return (
     <div className="flex flex-col justify-center min-h-screen w-full h-full
     first-letter:font-display bg-slate-500">
+      { /* used to be bg-slate-500 */}
       {!isRegistrationSuccessful && 
       <div className="flex flex-col justify-between h-160 sm:h-140 bg-white w-11/12 sm:w-5/6 md:w-120
-      rounded-xl mx-auto overflow-hidden px-4 sm:px-10">
+      rounded-xl mx-auto overflow-hidden px-4 sm:px-10 shadow-sm">
         
           <div className="text-left">
             <h1 className="mt-6 sm:mt-8 text-xl sm:text-2xl tracking-widest text-center">Create a New Account</h1>

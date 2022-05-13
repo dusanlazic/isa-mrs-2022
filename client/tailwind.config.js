@@ -4,6 +4,11 @@ module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  plugins: [require("daisyui")],
+  daisyui: {
+    styled: false,
+    themes: false,
+  },
   theme: {
     extend: {
       fontFamily: {
@@ -17,13 +22,14 @@ module.exports = {
         '160': '40rem'
       },
       colors: {
-        'skobeloff': '#127475',
-        'viridian-green': '#0E9594',
+        'pine': '#127475',
+        'light-pine': '#0E9594',
         'raisin-black': '#272635',
-        'gainsboro': '#DBDBDB',
-        'baby-green': '#e9f5db'
+        'whitish-gray': '#DBDBDB',
+        'baby-green': '#e9f5db',
+        'baby-green-darker': '#bad698'
       }
     },
-  },
-  plugins: [],
+  }
+
 }

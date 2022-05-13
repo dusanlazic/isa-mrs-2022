@@ -21,6 +21,10 @@ export const saveSession = (state) => {
   }
 }
 
+export const invalidateSession = () => {
+  localStorage.removeItem('session');
+}
+
 export const getToken = () => {
   try {
     const token = localStorage.getItem('token');
@@ -39,4 +43,8 @@ export const saveToken = (token) => {
   } catch (err) {
     // rest in peace
   }
+}
+
+export const invalidateToken = () => {
+  localStorage.removeItem('token');
 }

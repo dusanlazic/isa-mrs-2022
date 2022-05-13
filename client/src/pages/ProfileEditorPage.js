@@ -1,3 +1,4 @@
+import { getSession } from '../contexts/'
 import { useState, useEffect } from "react";
 import { get } from "../adapters/xhr";
 
@@ -6,16 +7,17 @@ import PasswordEditor from "../components/profile_editor/PasswordEditor";
 
 const ProfileEditorPage = () => {
   const [accountData, setAccountData] = useState(null);
+  const session = getSession();
 
   useEffect(() => {
     // get(`/api${endpoint}/${id}`)
-    get(`/api/account/1`)
+    get(`/api/account/${session.id}`)
     .then((response) => {
       setAccountData(response.data);
     });
   }, [])
 
-  if (accountData === null) {
+  if (accountData === null || session === undefined) {
     return null;
   }
 

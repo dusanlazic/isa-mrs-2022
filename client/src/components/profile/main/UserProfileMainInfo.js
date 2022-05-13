@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const UserProfileMainInfo = ({data}) => {
   console.log(data)
   return ( 
@@ -5,10 +7,14 @@ const UserProfileMainInfo = ({data}) => {
       <div>
         <img src='/images/fish_guy.jpg' alt="" className="flex-none w-64 h-64 md:w-44 md:h-44 xl:w-52
         xl:h-52 object-cover rounded-lg mx-auto" />
-        <button className="text-gray-500
-        bg-gray-200 hover:bg-gray-300 hover:text-gray-800 active:bg-transparent
-        active:bg-gray-400 active:text-gray-50
-        rounded-b-lg px-4 h-min text-base md:text-sm xl:text-base">Edit Profile</button>
+        <Link to='/account'>
+          <button className="text-gray-500
+          bg-gray-200 hover:bg-gray-300 hover:text-gray-800 active:bg-transparent
+          active:bg-gray-400 active:text-gray-50
+          rounded-b-lg px-4 h-min text-base md:text-sm xl:text-base">
+            Edit Profile
+          </button>
+        </Link>
       </div>
 
       <div className="flex flex-col justify-between flex-grow md:ml-4">

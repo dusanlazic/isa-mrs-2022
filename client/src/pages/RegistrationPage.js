@@ -199,7 +199,7 @@ const RegistrationPage = () => {
             timeout={100} 
             in={currentSlide === 1 && nextSlide === 1}
             unmountOnExit>
-              <form id="registration-form-two" className="block mt-8" onSubmit={handleSubmitTwo(nextTwo)}>
+              <form autoComplete="off" id="registration-form-two" className="block mt-8" onSubmit={handleSubmitTwo(nextTwo)}>
 
                 {/* <!-- email --> */}
                 <label className="text-xs text-slate-500">email:</label>
@@ -257,7 +257,7 @@ const RegistrationPage = () => {
             timeout={50}
             in={currentSlide === 2 && nextSlide === 2}
             unmountOnExit>
-              <form id="registration-form-three" className="block mt-8" onSubmit={handleSubmitThree(nextThree)}>
+              <form autoComplete="off" id="registration-form-three" className="block mt-8" onSubmit={handleSubmitThree(nextThree)}>
 
                 {/* <!-- first name --> */}
                 <label className="text-xs text-slate-500">first name:</label>
@@ -302,7 +302,7 @@ const RegistrationPage = () => {
             timeout={50}
             in={currentSlide === 3 && nextSlide === 3}
             unmountOnExit>
-              <form id="registration-form-four" className="block mt-8" onSubmit={handleSubmitFour(submitAll)}>
+              <form autoComplete="off" id="registration-form-four" className="block mt-8" onSubmit={handleSubmitFour(submitAll)}>
 
                 <label className="text-xs text-slate-500">address:</label>
                 <input name="address" placeholder="address"

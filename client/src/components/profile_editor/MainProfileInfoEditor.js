@@ -1,6 +1,7 @@
-import { useState, useEffect} from "react";
+import { useState } from "react";
 import ReactFlagsSelect from "react-flags-select";
 import { put } from "../../adapters/xhr";
+import { getWhoAmI } from "../../adapters/login";
 
 const MainProfileInfoEditor = ({data}) => {
 
@@ -26,6 +27,7 @@ const MainProfileInfoEditor = ({data}) => {
     put(`/api/account`, {id: data.id, firstName, lastName, phoneNumber, city, address,
       countryCode: selectedCountry, emailAddress:data.emailAddress})
     .then((response) => {
+      getWhoAmI();
       alert("Changes saved");
       window.location.reload();
       console.log(response);

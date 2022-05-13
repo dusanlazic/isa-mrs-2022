@@ -18,10 +18,19 @@ const ClientReviewList = ({data}) => {
   }
 
   return ( 
-    <div className="flex flex-col gap-y-6">
-      {reviews.map((review) => 
-        <ClientReview review={review} key={review.id}/>
-      )}
+    <div>
+      {reviews.length === 0 && 
+        <div className="flex flex-col gap-y-6">
+          <div>You haven't left any reviews.</div>
+        </div>
+      } 
+      {reviews.length > 0 && 
+        <div className="flex flex-col gap-y-6">
+        {reviews.map((review) => 
+          <ClientReview review={review} key={review.id}/>
+        )}
+      </div>
+      }
     </div>
    );
 }

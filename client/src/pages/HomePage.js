@@ -1,7 +1,10 @@
+import BannerSearch from "../components/home/BannerSearch";
+
 const HomePage = () => {
   return ( 
-    <div>
-      Home page
+    <div className="bg-baby-green bg-opacity-50">
+      <BannerSearch/>
+      <div className="min-h-screen"></div>
     </div>
    );
 }

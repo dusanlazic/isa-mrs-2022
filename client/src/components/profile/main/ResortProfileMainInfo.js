@@ -28,7 +28,7 @@ const ResortProfileMainInfo = ({data, advertisementId}) => {
 
 	useEffect(() => {
 		get(`/api/account/whoami`).then((response) => {
-			setShowDeleteBtn(response.data.id == data.advertiser.id);
+			setShowDeleteBtn(response.data.id === data.advertiser.id);
 		  });
 		}, [])
 

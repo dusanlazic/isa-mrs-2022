@@ -3,33 +3,31 @@ import { post } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import ReactFlagsSelect from "react-flags-select";
 
-const ResortInfoEditor = () => {
-  const [title, setTitle] = useState(null);
-  const [description, setDescription] = useState(null);
-  const [availableAfter, setAvailableAfter] = useState(null);
-  const [availableUntil, setAvailableUntil] = useState(null);
-  const [rules, setRules] = useState(null);
-  const [currency, setCurrency] = useState(null);
-  const [numOfBeds, setNumOfBeds] = useState(null);
-  const [cancellationFee, setCancellationFee] = useState(null);
-  const [address, setAddress] = useState(null);
-  const [countryCode, setCountryCode] = useState(null);
-  const [city, setCity] = useState(null);
-  const [postalCode, setPostalCode] = useState(null);
-  const [state, setState] = useState(null);
-  const [tags, setTags] = useState(null);
-  const [pricingDescription, setPricingDescription] = useState(null);
-  const [optionsInputFields, setOptionsInputFields] = useState([{name: '', description: '', maxCount: ''}]);
-  const [pricesInputFields, setPricesInputFields] = useState([{value: '', minDays: ''}]);
-  const [photoPreviews, setPhotoPreviews] = useState([]);
-  const [photoIds, setPhotoIds] = useState([]);
-  const [checkInTime, setCheckInTime] = useState([null]);
-  const [checkOutTime, setCheckOutTime] = useState([null]);
+const ResortInfoEditor = ({data, advertisementId}) => {
+  const [title, setTitle] = useState(data.title);
+  const [description, setDescription] = useState(data.description);
+  const [rules, setRules] = useState(data.rules);
+  const [currency, setCurrency] = useState(data.currency);
+  const [numOfBeds, setNumOfBeds] = useState(data.numberOfBeds);
+  const [cancellationFee, setCancellationFee] = useState(data.cancellationFee);
+  const [address, setAddress] = useState(data.address.address);
+  const [countryCode, setCountryCode] = useState(data.address.countryCode);
+  const [city, setCity] = useState(data.address.city);
+  const [postalCode, setPostalCode] = useState(data.address.postalCode);
+  const [state, setState] = useState(data.address.state);
+  const [tags, setTags] = useState(data.tags.join(", "));
+  const [pricingDescription, setPricingDescription] = useState(data.pricingDescription);
+  const [optionsInputFields, setOptionsInputFields] = useState(data.options);
+  const [pricesInputFields, setPricesInputFields] = useState(data.prices);
+  const [photoPreviews, setPhotoPreviews] = useState(data.photos.map(item => "/api" + item.uri));
+  const [photoIds, setPhotoIds] = useState(data.photos.map(item => item.id));
+  const [checkInTime, setCheckInTime] = useState(data.checkInTime);
+  const [checkOutTime, setCheckOutTime] = useState(data.checkOutTime);
 
   const navigate = useNavigate();
 
-  const createAd = () => {
-    post(`/api/ads/resorts`, {
+  const updateAd = () => {
+    post(`/api/ads/resorts${advertisementId}`, {
       description: description,
       cancellationFee: cancellationFee,
       title: title,
@@ -51,13 +49,11 @@ const ResortInfoEditor = () => {
       prices: Array.from(pricesInputFields),
       photoIds: photoIds,
       checkInTime: checkInTime,
-      checkOutTime: checkOutTime,
-      availableAfter: availableAfter,
-      availableUntil: availableUntil
+      checkOutTime: checkOutTime
      })
     .then((response) => {
       alert(response.data);
-      navigate(`/resort/${response.headers['location'].split("/").pop()}`);
+      navigate(`/resort/${advertisementId}`);
     })
     .catch((error) => {
       alert(error.response.data.message);
@@ -123,7 +119,7 @@ const ResortInfoEditor = () => {
 
   return ( 
     <div className="block w-full">
-      <h1 className="text-2xl text-left text-gray-400 font-sans">Create a new resort for your adventure</h1>
+      <h1 className="text-2xl text-left text-gray-400 font-sans">Edit resort</h1>
       
       {/* Basic info */}
       <h2 className="text-xl text-left text-gray-800 font-sans mt-4">Basic information ℹ️</h2>
@@ -131,6 +127,7 @@ const ResortInfoEditor = () => {
         <div className="mt-2 text-left">
           <label className="text-xs">title</label>
           <input placeholder="title"
+          value={title}
           onChange={(event) => {setTitle(event.target.value)}}
           className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
@@ -139,6 +136,7 @@ const ResortInfoEditor = () => {
         <div className="mt-2 text-left">
           <label className="text-xs">description</label>
           <textarea placeholder="tell the world about your offer"
+          value={description}
           onChange={(event) => {setDescription(event.target.value)}}
           className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"
@@ -187,7 +185,7 @@ const ResortInfoEditor = () => {
       <div className="grid grid-cols-3 mt-2 gap-x-3">
         <div className="block col-span-2 text-left">
           <label className="text-xs">address</label>
-          <input placeholder="address"
+          <input placeholder="address" value={address}
           onChange={(event) => {setAddress(event.target.value)}}
           className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
@@ -195,7 +193,7 @@ const ResortInfoEditor = () => {
 
         <div className="block col-span-1 text-left">
           <label className="text-xs">city</label>
-          <input placeholder="city"
+          <input placeholder="city" value={city}
           onChange={(event) => {setCity(event.target.value)}}
           className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
@@ -205,7 +203,7 @@ const ResortInfoEditor = () => {
       <div className="grid grid-cols-3 mt-2 gap-x-3">
         <div className="block col-span-1 text-left">
           <label className="text-xs">postal code</label>
-          <input placeholder="postal code"
+          <input placeholder="postal code" value={postalCode}
           onChange={(event) => {setPostalCode(event.target.value)}}
           className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
@@ -213,7 +211,7 @@ const ResortInfoEditor = () => {
 
         <div className="block col-span-1 text-left">
           <label className="text-xs">state</label>
-          <input placeholder="state"
+          <input placeholder="state" value={state}
           onChange={(event) => {setState(event.target.value)}}
           className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
@@ -238,7 +236,7 @@ const ResortInfoEditor = () => {
       <div className="grid grid-cols-3 mt-2 gap-x-3">
         <div className="block col-span-2 text-left">
           <label className="text-xs">rules of conduct</label>
-          <textarea placeholder="rules of conduct"
+          <textarea placeholder="rules of conduct"  value={rules}
           onChange={(event) => {setRules(event.target.value)}}
           className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"
@@ -247,7 +245,7 @@ const ResortInfoEditor = () => {
 
         <div className="block col-span-1 text-left">
           <label className="text-xs">number of beds</label>
-          <input placeholder="number of beds"
+          <input placeholder="capacity"  value={numOfBeds}
           onChange={(event) => {setNumOfBeds(event.target.value)}}
           type="number"
           className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
@@ -303,7 +301,7 @@ const ResortInfoEditor = () => {
       {/* Tags */}
       <div className="block text-left mt-4">
         <label className="text-xs">tags</label>
-        <input placeholder="tags separated by comma"
+        <input placeholder="tags separated by comma"  value={tags}
         onChange={(event) => {setTags(event.target.value)}}
         className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
         focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
@@ -314,7 +312,7 @@ const ResortInfoEditor = () => {
       <div className="grid grid-cols-3 mt-1 gap-x-3">
         <div className="block col-span-1 text-left">
           <label className="text-xs">currency</label>
-          <input placeholder="e.g. EUR, USD, RSD"
+          <input placeholder="e.g. EUR, USD, RSD"  value={currency}
           onChange={(event) => {setCurrency(event.target.value)}}
           className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
@@ -324,7 +322,7 @@ const ResortInfoEditor = () => {
           <label className="text-xs">cancellation fee</label>
           <input placeholder="cancellation fee"
           onChange={(event) => {setCancellationFee(event.target.value)}}
-          type="number"
+          type="number"  value={cancellationFee}
           className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
@@ -368,34 +366,12 @@ const ResortInfoEditor = () => {
 
         <div className="mt-2 text-left">
           <label className="text-xs">pricing description</label>
-          <textarea placeholder="additional info about prices"
+          <textarea placeholder="additional info about prices"  value={pricingDescription}
           onChange={(event) => {setPricingDescription(event.target.value)}}
           className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"
           rows="3"/>
         </div>
-
-{/* Availability */}
-<h2 className="text-xl text-left text-gray-800 font-sans mt-12">Availability 📅</h2>
-<div className="grid grid-cols-2 mt-1 gap-x-3">
-  <div className="block col-span-1 text-left">
-    <label className="text-xs">available after</label>
-    <input
-    onChange={(event) => {setAvailableAfter(event.target.value)}}
-    type="date"
-    className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-    focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-  </div>
-
-  <div className="block col-span-1 text-left">
-    <label className="text-xs">available until</label>
-    <input
-    onChange={(event) => {setAvailableUntil(event.target.value)}}
-    type="date"
-    className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-    focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-  </div>
-</div>
 
 {/* Check in/out */}
 <h2 className="text-xl text-left text-gray-800 font-sans mt-12">Check in and check out 🕑</h2>
@@ -404,7 +380,7 @@ const ResortInfoEditor = () => {
     <label className="text-xs">check in</label>
     <input
     onChange={(event) => {setCheckInTime(event.target.value)}}
-    type="time"
+    type="time"  value={checkInTime}
     className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
     focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
   </div>
@@ -413,7 +389,7 @@ const ResortInfoEditor = () => {
     <label className="text-xs">check out</label>
     <input
     onChange={(event) => {setCheckOutTime(event.target.value)}}
-    type="time"
+    type="time"  value={checkOutTime}
     className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
     focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
   </div>
@@ -424,8 +400,8 @@ const ResortInfoEditor = () => {
         <div className="flex flex-col justify-end md:col-start-3 text-left w-full">
           <button className="bg-teal-600 hover:bg-teal-700 active:bg-teal-800 w-full drop-shadow-md
           text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
-          onClick={() => {createAd()}}>
-            Create advertisement
+          onClick={() => {updateAd()}}>
+            Save changes
           </button>
         </div>
 

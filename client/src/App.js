@@ -9,6 +9,7 @@ import RegistrationConfirmation from './pages/RegistrationConfirmationPage';
 import UpdateAdventurePage from './pages/UpdateAdventurePage';
 import CreateBoatPage from './pages/CreateBoatPage';
 import CreateResortPage from './pages/CreateResortPage';
+import UpdateResortPage from './pages/UpdateResortPage';
 
 import NotFound from './pages/NotFound';
 
@@ -25,8 +26,9 @@ function App() {
               <Route path="/adventure/new" exact element={<CreateAdventurePage/>}/>
               <Route path="/adventure/:id/edit" exact element={<UpdateAdventurePage/>}/>
               <Route path="/adventure/:id" exact element={<ProfilePage/>}/>
-              <Route path="/resort/:id" exact element={<ProfilePage/>}/>
               <Route path="/resort/new" exact element={<CreateResortPage/>}/>
+              <Route path="/resort/:id" exact element={<ProfilePage/>}/>
+              <Route path="/resort/:id/edit" exact element={<UpdateResortPage/>}/>
               <Route path="/client/:id" exact element={<ProfilePage/>}/>
               <Route path="/boat/:id" exact element={<ProfilePage/>}/>
               <Route path="/boat/new" exact element={<CreateBoatPage/>}/>

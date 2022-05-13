@@ -2,6 +2,7 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.ResortAdCreationDTO;
 import com.team4.isamrs.dto.display.ResortAdDisplayDTO;
+import com.team4.isamrs.dto.updation.ResortAdUpdationDTO;
 import com.team4.isamrs.model.adventure.AdventureAd;
 import com.team4.isamrs.model.boat.BoatAd;
 import com.team4.isamrs.model.resort.ResortAd;
@@ -58,5 +59,17 @@ public class ResortAdService {
         resortAd.getTags().forEach(e -> e.getAdvertisements().remove(resortAd));
 
         resortAdRepository.delete(resortAd);
+    }
+
+    public void update(Long id, ResortAdUpdationDTO dto, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        ResortAd resortAd = resortAdRepository.findAdventureAdByIdAndAdvertiser(id, advertiser).orElseThrow();
+
+        modelMapper.map(dto, resortAd);
+
+        resortAd.verifyPhotosOwnership(advertiser);
+
+        tagRepository.saveAll(resortAd.getTags());
+        resortAdRepository.save(resortAd);
     }
 }

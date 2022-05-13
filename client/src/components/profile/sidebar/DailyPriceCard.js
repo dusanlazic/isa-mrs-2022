@@ -12,9 +12,11 @@ const DailyPriceList = ({data}) => {
           </div>  
           )}
         </div>
-        <div className="text-xs leading-5 mt-5">
-          *Cancellation fee is <span className="font-mono font-bold text-sm leading-4">{data.cancellationFee}€</span>
-        </div>
+        { !window.location.href.includes('resort') && 
+          <div className="text-xs leading-5 mt-5">
+            *Cancellation fee is <span className="font-mono font-bold text-sm leading-4">{data.cancellationFee}€</span>
+          </div>
+        }
       </div>
      );
   }

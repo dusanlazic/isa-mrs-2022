@@ -2,12 +2,15 @@ package com.team4.isamrs.model.resort;
 
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.DailyPrice;
+import com.team4.isamrs.model.advertisement.HourlyPrice;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,8 +31,16 @@ public class ResortAd extends Advertisement {
     private LocalTime CheckInTime; // e.g. 13:00
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<DailyPrice> prices = new HashSet<>();
+    private List<DailyPrice> prices = new ArrayList<>();
 
     @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY)
     private Set<ResortReservation> reservations = new HashSet<>();
+
+    public void addDailyPrice(DailyPrice dailyPrice) {
+        prices.add(dailyPrice);
+    }
+
+    public void removeDailyPrice(DailyPrice dailyPrice) {
+        prices.remove(dailyPrice);
+    }
 }

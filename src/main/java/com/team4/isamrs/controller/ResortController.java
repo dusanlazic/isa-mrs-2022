@@ -1,8 +1,8 @@
 package com.team4.isamrs.controller;
 
-import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.creation.ResortAdCreationDTO;
 import com.team4.isamrs.dto.display.ResortAdDisplayDTO;
+import com.team4.isamrs.dto.updation.ResortAdUpdationDTO;
 import com.team4.isamrs.service.ResortAdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,6 +40,13 @@ public class ResortController {
     public ResponseEntity<String> create(@Valid @RequestBody ResortAdCreationDTO dto, Authentication auth) {
         return ResponseEntity.created(URI.create("/ads/resorts/" + resortAdService.create(dto, auth).getId()))
                 .body("Resort ad created.");
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('RESORT_OWNER')")
+    public ResponseEntity<String> update(@PathVariable Long id, @Valid @RequestBody ResortAdUpdationDTO dto, Authentication auth) {
+        resortAdService.update(id, dto, auth);
+        return ResponseEntity.ok("Resort ad updated.");
     }
 
     @DeleteMapping(value = "/{id}")

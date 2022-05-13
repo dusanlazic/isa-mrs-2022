@@ -29,7 +29,7 @@ const Navbar = () => {
           <div>
 
             <Link to="/register">
-              <button className=' border-white text-white
+              <button className=' border-white
               font-bold rounded-lg px-6 py-1 bg-raisin-black text-baby-green
               hover:bg-opacity-100'>
                 Register

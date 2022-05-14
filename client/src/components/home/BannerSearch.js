@@ -1,4 +1,5 @@
 import Navbar from "../util/Navbar";
+import SearchBar from "./SearchBar";
 
 const BannerSearch = () => {
 
@@ -11,8 +12,9 @@ const BannerSearch = () => {
   return ( 
     <div className="w-full h-84 lg:h-120 rounded-xl">
       <div style={divStyle}
-      className="flex flex-col h-full bg-cover rounded-xl">
+      className="flex flex-col justify-between h-full bg-cover rounded-xl">
         <Navbar/>
+        <SearchBar/>
       </div>
     </div>
    );

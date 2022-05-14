@@ -3,7 +3,7 @@ import MainEntityLinks from "../components/home/MainEntityLinks";
 
 const HomePage = () => {
   return ( 
-    <div className="bg-baby-green bg-opacity-50 px-12 lg:px-24 xl:px-48 pt-10">
+    <div className="bg-baby-green px-12 lg:px-24 xl:px-48 pt-10">
       <BannerSearch/>
       <MainEntityLinks/>
       <div className="min-h-screen"></div>

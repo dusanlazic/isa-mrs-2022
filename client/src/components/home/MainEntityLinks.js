@@ -7,10 +7,10 @@ const MainEntityLinks = () => {
       <div className="grid grid-cols-2 grid-rows-2 h-64 sm:h-80 md:h-120 gap-x-4 mx-auto">
         
           <div class="relative row-span-2 overflow-hidden h-full w-full">
-            <Link to='/'>
+            <Link to='/' className="group">
               <img src="/images/fishing-rod-small.jpg" alt="" 
               className="h-full w-full object-cover rounded-2xl lg:rounded-3xl transition
-              duration-150 ease-in-out hover:scale-110"/>
+              duration-150 ease-in-out group-hover:scale-110"/>
               <div 
               class="absolute w-full py-3 bottom-0 inset-x-0 text-white px-4
               text-left">

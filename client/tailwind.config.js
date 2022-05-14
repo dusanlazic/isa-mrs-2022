@@ -27,7 +27,7 @@ module.exports = {
         'light-pine': '#0E9594',
         'raisin-black': '#272635',
         'whitish-gray': '#DBDBDB',
-        'baby-green': '#e9f5db',
+        'baby-green': '#ddf0c7',
         'baby-green-darker': '#bad698'
       }
     },

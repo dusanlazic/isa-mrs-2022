@@ -6,13 +6,12 @@ const BannerSearch = () => {
   const divStyle = {
     backgroundImage: 'url(/images/dual-cabin.jpg)',
     backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center top'
   };
 
   return ( 
-    <div className="w-full h-84 lg:h-120 rounded-xl">
+    <div className="w-full h-84 lg:h-120">
       <div style={divStyle}
-      className="flex flex-col justify-between h-full bg-cover rounded-xl">
+      className="flex flex-col justify-between h-full bg-cover rounded-none sm:rounded-t-xl bg-left sm:bg-top">
         <Navbar/>
         <SearchBar/>
       </div>

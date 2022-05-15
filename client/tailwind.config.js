@@ -28,7 +28,8 @@ module.exports = {
         'raisin-black': '#272635',
         'whitish-gray': '#DBDBDB',
         'baby-green': '#ddf0c7',
-        'baby-green-darker': '#bad698'
+        'baby-green-darker': '#bad698',
+        'gray-green': '#e9f2ef'
       }
     },
   }

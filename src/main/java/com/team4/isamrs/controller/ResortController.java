@@ -26,6 +26,11 @@ public class ResortController {
         return new ResponseEntity<>(resortAdService.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/top10")
+    public ResponseEntity<Collection<ResortAdDisplayDTO>> findTopTen() {
+        return new ResponseEntity<>(resortAdService.findTopTen(), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<ResortAdDisplayDTO> findById(@PathVariable Long id) {
         return new ResponseEntity<>(resortAdService.findById(id), HttpStatus.OK);

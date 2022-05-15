@@ -1,6 +1,7 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
+import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.model.boat.BoatAd;
 import com.team4.isamrs.model.user.Advertiser;
@@ -10,6 +11,7 @@ import com.team4.isamrs.repository.NavigationalEquipmentRepository;
 import com.team4.isamrs.repository.TagRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,12 @@ public class BoatAdService {
     public <T extends DisplayDTO> Collection<T> findAll(Class<T> returnType) {
         return boatAdRepository.findAll().stream()
                 .map(e -> modelMapper.map(e, returnType))
+                .collect(Collectors.toSet());
+    }
+
+    public Collection<BoatAdDisplayDTO> findTopTen() {
+        return boatAdRepository.findAll(PageRequest.of(0, 10)).stream()
+                .map(e -> modelMapper.map(e, BoatAdDisplayDTO.class))
                 .collect(Collectors.toSet());
     }
 

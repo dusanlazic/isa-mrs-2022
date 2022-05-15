@@ -33,6 +33,11 @@ public class AdventureController {
         return new ResponseEntity<>(adventureAdService.findAll(AdventureAdDisplayDTO.class), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/top10")
+    public ResponseEntity<Collection<AdventureAdDisplayDTO>> findTopTen() {
+        return new ResponseEntity<>(adventureAdService.findTopTen(), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<AdventureAdDisplayDTO> findById(@PathVariable Long id) {
         return new ResponseEntity<>(adventureAdService.findById(id, AdventureAdDisplayDTO.class), HttpStatus.OK);

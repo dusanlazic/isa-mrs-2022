@@ -1,6 +1,5 @@
 package com.team4.isamrs.controller;
 
-import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
 import com.team4.isamrs.service.BoatAdService;
@@ -28,6 +27,11 @@ public class BoatController {
     @GetMapping(value = "")
     public ResponseEntity<Collection<BoatAdDisplayDTO>> findAll() {
         return new ResponseEntity<>(boatAdService.findAll(BoatAdDisplayDTO.class), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/top10")
+    public ResponseEntity<Collection<BoatAdDisplayDTO>> findTopTen() {
+        return new ResponseEntity<>(boatAdService.findTopTen(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")

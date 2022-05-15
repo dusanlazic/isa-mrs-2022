@@ -1,8 +1,8 @@
 package com.team4.isamrs.controller;
 
-import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
+import com.team4.isamrs.dto.updation.BoatAdUpdationDTO;
 import com.team4.isamrs.service.BoatAdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,6 +40,13 @@ public class BoatController {
     public ResponseEntity<String> create(@Valid @RequestBody BoatAdCreationDTO dto, Authentication auth) {
         return ResponseEntity.created(URI.create("/ads/boats/" + boatAdService.create(dto, auth).getId()))
                 .body("Boat ad created.");
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('BOAT_OWNER')")
+    public ResponseEntity<String> update(@PathVariable Long id, @Valid @RequestBody BoatAdUpdationDTO dto, Authentication auth) {
+        boatAdService.update(id, dto, auth);
+        return ResponseEntity.ok("Boat ad updated.");
     }
 
     @DeleteMapping(value = "/{id}")

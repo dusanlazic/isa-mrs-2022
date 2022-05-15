@@ -168,6 +168,48 @@ public class DomainMapper {
             return destination;
         };
 
+        Converter<BoatAdUpdationDTO, BoatAd> UpdationDtoToBoatAdConverter = context -> {
+            BoatAdUpdationDTO source = context.getSource();
+            BoatAd destination = context.getDestination();
+
+            source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
+
+            int index = 0;
+            List<Option> removedOptions = new LinkedList<>();
+            for (OptionUpdationDTO dto: source.getOptions()) {
+                if (dto.getDelete() != null) {
+                    Option option = destination.getOptions().get(index);
+                    if (option != null)
+                        removedOptions.add(option);
+                }
+                index++;
+            }
+            removedOptions.forEach(destination::removeOption);
+
+            index = 0;
+            List<DailyPrice> removedPrices = new LinkedList<>();
+            for (DailyPriceUpdationDTO dto: source.getPrices()) {
+                if (dto.getDelete() != null) {
+                    DailyPrice price = destination.getPrices().get(index);
+                    if (price != null)
+                        removedPrices.add(price);
+                }
+                index++;
+            }
+            removedPrices.forEach(destination::removeDailyPrice);
+
+            destination.getOptions().forEach(e -> e.setAdvertisement(destination));
+
+            destination.setTags(new HashSet<Tag>());
+            mapTagNames(source.getTagNames()).forEach(destination::addTag);
+            destination.setNavigationalEquipment(new HashSet<NavigationalEquipment>());
+            mapNavigationalEquipmentNames(source.getNavigationalEquipmentNames()).forEach(destination::addNavigationalEquipment);
+            destination.setFishingEquipment(new HashSet<FishingEquipment>());
+            mapFishingEquipmentNames(source.getFishingEquipmentNames()).forEach(destination::addFishingEquipment);
+
+            return destination;
+        };
+
         Converter<RegistrationRequestCreationDTO, RegistrationRequest> RegistrationRequestCreationDTOToRegistrationRequest = context -> {
             RegistrationRequestCreationDTO source = context.getSource();
             RegistrationRequest destination = context.getDestination();
@@ -246,6 +288,7 @@ public class DomainMapper {
         modelMapper.createTypeMap(Photo.class, PhotoUploadDisplayDTO.class).setPostConverter(PhotoToUploadDisplayDtoConverter);
         modelMapper.createTypeMap(Customer.class, CustomerDisplayDTO.class);
         modelMapper.createTypeMap(BoatAdCreationDTO.class, BoatAd.class).setPostConverter(CreationDtoToBoatAdConverter);
+        modelMapper.createTypeMap(BoatAdUpdationDTO.class, BoatAd.class).setPostConverter(UpdationDtoToBoatAdConverter);
         modelMapper.createTypeMap(BoatAd.class, BoatAdDisplayDTO.class).setPostConverter(BoatAdToDisplayDtoConverter);
         modelMapper.createTypeMap(RegistrationRequestCreationDTO.class, RegistrationRequest.class).setPostConverter(RegistrationRequestCreationDTOToRegistrationRequest);
         modelMapper.createTypeMap(ResortAdCreationDTO.class, ResortAd.class).setPostConverter(CreationDtoToResortAdConverter);

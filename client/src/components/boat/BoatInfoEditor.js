@@ -71,7 +71,7 @@ const BoatInfoEditor = () => {
     })
       .then((response) => {
         alert(response.data);
-        navigate(`/adventure/${response.headers['location'].split("/").pop()}`);
+        navigate(`/boat/${response.headers['location'].split("/").pop()}`);
       })
       .catch((error) => {
         alert(error.response.data.message);
@@ -137,7 +137,7 @@ const BoatInfoEditor = () => {
 
   return (
     <div className="block w-full">
-      <h1 className="text-2xl text-left text-gray-400 font-sans">Create a new advertisement for your adventure</h1>
+      <h1 className="text-2xl text-left text-gray-400 font-sans">Create a new advertisement for your boat</h1>
 
       {/* Basic info */}
       <h2 className="text-xl text-left text-gray-800 font-sans mt-4">Basic information ℹ️</h2>
@@ -160,51 +160,6 @@ const BoatInfoEditor = () => {
             className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"
             rows="5" />
-        </div>
-      </div>
-
-      {/* Boat specials */}
-      <div className="grid grid-cols-3 mt-2 gap-x-3">
-        <div className="block col-span-1 text-left">
-          <label className="text-xs">capacity</label>
-          <input autoComplete="off" onChange={(event) => { setCapacity(event.target.value) }} type="number" min={1}
-            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-          focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-        </div>
-
-        <div className="block col-span-1 text-left">
-          <label className="text-xs">type</label>
-          <input autoComplete="off" onChange={(event) => { setBoatType(event.target.value) }}
-            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-          focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-        </div>
-
-        <div className="block col-span-1 text-left">
-          <label className="text-xs">length</label>
-          <input autoComplete="off" onChange={(event) => { setBoatLength(event.target.value) }}
-            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-            focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-        </div>
-
-        <div className="block col-span-1 text-left">
-          <label className="text-xs">engine number</label>
-          <input autoComplete="off" onChange={(event) => { setEngineNumber(event.target.value) }}
-            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-            focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-        </div>
-
-        <div className="block col-span-1 text-left">
-          <label className="text-xs">engine power</label>
-          <input autoComplete="off" onChange={(event) => { setEnginePower(event.target.value) }}
-            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-            focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-        </div>
-
-        <div className="block col-span-1 text-left">
-          <label className="text-xs">speed</label>
-          <input autoComplete="off" onChange={(event) => { setBoatSpeed(event.target.value) }}
-            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-            focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
       </div>
 
@@ -362,21 +317,67 @@ const BoatInfoEditor = () => {
         focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
       </div>
 
-<div className="block text-left mt-4">
-  <label className="text-xs">fishing equpiment</label>
-  <input autoComplete="off" placeholder="fishing equipment separated by comma"
-    onChange={(event) => { setFishingEquipment(event.target.value) }}
-    className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+      <div className="block text-left mt-4">
+        <label className="text-xs">fishing equpiment</label>
+        <input autoComplete="off" placeholder="fishing equipment separated by comma"
+          onChange={(event) => { setFishingEquipment(event.target.value) }}
+          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
   focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-</div>
+      </div>
 
-<div className="block text-left mt-4">
-  <label className="text-xs">navigational equpiment</label>
-  <input autoComplete="off" placeholder="navigational equipment separated by comma"
-    onChange={(event) => { setNavigationalEquipment(event.target.value) }}
-    className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+      <div className="block text-left mt-4">
+        <label className="text-xs">navigational equpiment</label>
+        <input autoComplete="off" placeholder="navigational equipment separated by comma"
+          onChange={(event) => { setNavigationalEquipment(event.target.value) }}
+          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
   focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-</div>
+      </div>
+
+
+      {/* Boat specials */}
+      <div className="grid grid-cols-3 mt-2 gap-x-3">
+        <div className="block col-span-1 text-left">
+          <label className="text-xs">capacity</label>
+          <input autoComplete="off" onChange={(event) => { setCapacity(event.target.value) }} type="number" min={1}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+          focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+        </div>
+
+        <div className="block col-span-1 text-left">
+          <label className="text-xs">type</label>
+          <input autoComplete="off" onChange={(event) => { setBoatType(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+          focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+        </div>
+
+        <div className="block col-span-1 text-left">
+          <label className="text-xs">length</label>
+          <input autoComplete="off" onChange={(event) => { setBoatLength(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+            focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+        </div>
+
+        <div className="block col-span-1 text-left">
+          <label className="text-xs">engine number</label>
+          <input autoComplete="off" onChange={(event) => { setEngineNumber(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+            focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+        </div>
+
+        <div className="block col-span-1 text-left">
+          <label className="text-xs">engine power</label>
+          <input autoComplete="off" onChange={(event) => { setEnginePower(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+            focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+        </div>
+
+        <div className="block col-span-1 text-left">
+          <label className="text-xs">speed</label>
+          <input autoComplete="off" onChange={(event) => { setBoatSpeed(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+            focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+        </div>
+      </div>
 
       {/* Pricing */}
       <h2 className="text-xl text-left text-gray-800 font-sans mt-12">Pricing 💵</h2>
@@ -446,49 +447,49 @@ const BoatInfoEditor = () => {
         </div>
       </div>
 
-{/* Availability */}
-<h2 className="text-xl text-left text-gray-800 font-sans mt-12">Availability 📅</h2>
-<div className="grid grid-cols-4 mt-1 gap-x-3">
-  <div className="block col-span-2 text-left">
-    <label className="text-xs">available after</label>
-    <input
-      onChange={(event) => { setAvailableAfter(event.target.value) }}
-      autoComplete="off"type="date"
-      className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+      {/* Availability */}
+      <h2 className="text-xl text-left text-gray-800 font-sans mt-12">Availability 📅</h2>
+      <div className="grid grid-cols-4 mt-1 gap-x-3">
+        <div className="block col-span-2 text-left">
+          <label className="text-xs">available after</label>
+          <input
+            onChange={(event) => { setAvailableAfter(event.target.value) }}
+            autoComplete="off" type="date"
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
     focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-  </div>
+        </div>
 
-  <div className="block col-span-2 text-left">
-    <label className="text-xs">available until</label>
-    <input
-      onChange={(event) => { setAvailableUntil(event.target.value) }}
-      autoComplete="off"type="date"
-      className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+        <div className="block col-span-2 text-left">
+          <label className="text-xs">available until</label>
+          <input
+            onChange={(event) => { setAvailableUntil(event.target.value) }}
+            autoComplete="off" type="date"
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
     focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-  </div>
-</div>
+        </div>
+      </div>
 
-{/* Ckeck in/out */}
-<h2 className="text-xl text-left text-gray-800 font-sans mt-12">Check in and check out 🕑</h2>
-<div className="grid grid-cols-4 mt-1 gap-x-3">
-  <div className="block col-span-2 text-left">
-    <label className="text-xs">check in</label>
-    <input
-      onChange={(event) => { setCheckIn(event.target.value) }}
-      autoComplete="off"type="time"
-      className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+      {/* Ckeck in/out */}
+      <h2 className="text-xl text-left text-gray-800 font-sans mt-12">Check in and check out 🕑</h2>
+      <div className="grid grid-cols-4 mt-1 gap-x-3">
+        <div className="block col-span-2 text-left">
+          <label className="text-xs">check in</label>
+          <input
+            onChange={(event) => { setCheckIn(event.target.value) }}
+            autoComplete="off" type="time"
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
     focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-  </div>
+        </div>
 
-  <div className="block col-span-2 text-left">
-    <label className="text-xs">check out</label>
-    <input
-      onChange={(event) => { setCheckOut(event.target.value) }}
-      autoComplete="off"type="time"
-      className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+        <div className="block col-span-2 text-left">
+          <label className="text-xs">check out</label>
+          <input
+            onChange={(event) => { setCheckOut(event.target.value) }}
+            autoComplete="off" type="time"
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
     focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-  </div>
-</div>
+        </div>
+      </div>
 
       {/* confirm button */}
       <div className="grid grid-cols-1 md:grid-cols-3 md:gap-x-6 mt-4">

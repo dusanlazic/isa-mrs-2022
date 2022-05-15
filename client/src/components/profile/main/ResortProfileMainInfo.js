@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from 'react-router-dom';
 import { get, del } from "../../../adapters/xhr";
 import DeletionModal from "../../modals/DeletionModal";
 
@@ -11,6 +12,11 @@ const ResortProfileMainInfo = ({data, advertisementId}) => {
 	const [showDeleteBtn, setShowDeleteBtn] = useState(false);
   const show = () => setShowModal(true);
   const hide = () => setShowModal(false);
+	const navigate = useNavigate(); 
+
+  const redirectToEdit = () =>{ 
+    navigate(`/resort/${advertisementId}/edit`);
+  }
 
   const deleteFun = () =>  {
 		del(`/api/ads/${advertisementId}`).then((response) => {
@@ -39,7 +45,7 @@ const ResortProfileMainInfo = ({data, advertisementId}) => {
 				<button className="text-gray-500
 					bg-gray-200 hover:bg-gray-300 hover:text-gray-800 active:bg-transparent
 					active:bg-gray-400 active:text-gray-50
-					rounded-b-lg px-4 h-min text-base md:text-sm xl:text-base">Edit</button>
+					rounded-b-lg px-4 h-min text-base md:text-sm xl:text-base" onClick={redirectToEdit}>Edit</button>
 					{ showDeleteBtn && 
 					<button className="text-gray-500
 					bg-gray-200 hover:bg-red-200 hover:text-red-500 active:bg-transparent

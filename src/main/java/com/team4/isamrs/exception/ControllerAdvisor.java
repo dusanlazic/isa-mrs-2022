@@ -102,4 +102,12 @@ public class ControllerAdvisor {
                 HttpStatus.GONE.value(),
                 ex.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(RegistrationRequestAlreadyResolvedException.class)
+    public ExceptionResponseBody handleRegistrationRequestAlreadyResolvedException(RegistrationRequestAlreadyResolvedException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                "Cannot respond to the registration request since it is already resolved.");
+    }
 }

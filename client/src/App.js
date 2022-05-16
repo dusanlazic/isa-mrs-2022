@@ -11,6 +11,7 @@ import CreateBoatPage from './pages/CreateBoatPage';
 import UpdateBoatPage from './pages/UpdateBoatPage';
 import CreateResortPage from './pages/CreateResortPage';
 import UpdateResortPage from './pages/UpdateResortPage';
+import RegistrationRequestsPage from './pages/RegistrationRequestsPage';
 
 import NotFound from './pages/NotFound';
 
@@ -38,6 +39,7 @@ function App() {
               <Route path="/register" exact element={<RegistrationPage/>}/>
               <Route path="/login" exact element={<LoginPage/>}/>
               <Route path="/confirm-registration/:token" exact element={<RegistrationConfirmation/>}/>
+              <Route path="/admin/registration-requests" exact element={<RegistrationRequestsPage/>}/>
               <Route path="*" element={<NotFound/>}/>
             </Routes>
           </div>

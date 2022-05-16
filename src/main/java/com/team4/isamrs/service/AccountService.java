@@ -75,7 +75,7 @@ public class AccountService {
         advertiser.setFirstName("Dusan");
         advertiser.setLastName("Lazic");
         advertiser.setPassword(passwordEncoder.encode("13371337"));
-        advertiser.getAuthorities().add(roleRepository.findByName("ROLE_FISHING_INSTRUCTOR").get());
+        advertiser.getAuthorities().add(roleRepository.findByName("ROLE_ADMIN").get());
         advertiser.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
         advertiser.setPhoneNumber("065-1337");
         userRepository.save(advertiser);

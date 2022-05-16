@@ -24,6 +24,11 @@ export function put(url, requestData){
   return axios.put(url, requestData);
 }
 
+export function patch(url, requestData){
+  const axios = returnAxiosInstance();
+  return axios.patch(url, requestData);
+}
+
 export function del(url, requestData){
   const axios = returnAxiosInstance();
   return axios.delete(url, requestData);

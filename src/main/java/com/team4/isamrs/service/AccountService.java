@@ -4,12 +4,14 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.team4.isamrs.dto.creation.CustomerCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
+import com.team4.isamrs.dto.creation.RemovalRequestCreationDTO;
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AccountUpdationDTO;
 import com.team4.isamrs.exception.ConfirmationLinkExpiredException;
 import com.team4.isamrs.exception.EmailAlreadyExistsException;
 import com.team4.isamrs.exception.PhoneNumberAlreadyExistsException;
+import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.user.*;
 import com.team4.isamrs.repository.*;
 import com.team4.isamrs.security.EmailSender;
@@ -37,6 +39,9 @@ public class AccountService {
 
     @Autowired
     private PhotoRepository photoRepository;
+
+    @Autowired
+    private RemovalRequestRepository removalRequestRepository;
 
     @Autowired
     private RegistrationRequestRepository registrationRequestRepository;
@@ -95,6 +100,16 @@ public class AccountService {
         roleRepository.save(new Role("ROLE_FISHING_INSTRUCTOR"));
         roleRepository.save(new Role("ROLE_RESORT_OWNER"));
         roleRepository.save(new Role("ROLE_BOAT_OWNER"));
+    }
+
+    public void createRemovalRequest(RemovalRequestCreationDTO removalRequestCreationDTO, Authentication auth) {
+        User user = (User) auth.getPrincipal();
+        RemovalRequest removalRequest = modelMapper.map(removalRequestCreationDTO, RemovalRequest.class);
+        removalRequest.setUser(user);
+        removalRequest.setCreatedAt(LocalDateTime.now());
+        removalRequest.setResponse("");
+        removalRequest.setApprovalStatus(ApprovalStatus.PENDING);
+        removalRequestRepository.save(removalRequest);
     }
 
     public void createRegistrationRequest(RegistrationRequestCreationDTO registrationRequestDTO) {

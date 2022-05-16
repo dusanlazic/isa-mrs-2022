@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { del } from "../../adapters/xhr";
 
 const RemovalRequestForm = ({id}) => {
   const [showForm, setShowForm] = useState(false);
@@ -7,7 +7,15 @@ const RemovalRequestForm = ({id}) => {
 
   const submitForm = (event) => {
     event.preventDefault();
-    
+    del('/api/account', {
+      "explanation": reason,
+    })
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch(err => {
+      console.log(err.response)
+    })
   }
 
   return ( 

@@ -387,7 +387,7 @@ const AdventureInfoEditor = () => {
         <button onClick={addPriceField}>Add price..</button>
       </div>
 
-      <div className="grid grid-cols-3 mt-2 gap-x-3 mt-4">
+      <div className="grid grid-cols-3 gap-x-3 mt-4">
         <div className="block col-span-2 text-left">
           <label className="text-xs">pricing description</label>
           <textarea placeholder="additional info about prices"

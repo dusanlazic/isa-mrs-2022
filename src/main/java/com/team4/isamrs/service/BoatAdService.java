@@ -3,6 +3,7 @@ package com.team4.isamrs.service;
 import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
+import com.team4.isamrs.dto.updation.BoatAdUpdationDTO;
 import com.team4.isamrs.model.boat.BoatAd;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.BoatAdRepository;
@@ -75,5 +76,18 @@ public class BoatAdService {
         boatAd.getTags().forEach(e -> e.getAdvertisements().remove(boatAd));
 
         boatAdRepository.delete(boatAd);
+    }
+
+    public void update(Long id, BoatAdUpdationDTO dto, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        BoatAd boatAd = boatAdRepository.findBoatAdByIdAndAdvertiser(id, advertiser).orElseThrow();
+
+        modelMapper.map(dto, boatAd);
+
+        boatAd.verifyPhotosOwnership(advertiser);
+
+        fishingEquipmentRepository.saveAll(boatAd.getFishingEquipment());
+        tagRepository.saveAll(boatAd.getTags());
+        boatAdRepository.save(boatAd);
     }
 }

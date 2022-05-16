@@ -3,10 +3,9 @@ package com.team4.isamrs.util;
 import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
+import com.team4.isamrs.dto.creation.ResortAdCreationDTO;
 import com.team4.isamrs.dto.display.*;
-import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
-import com.team4.isamrs.dto.updation.HourlyPriceUpdationDTO;
-import com.team4.isamrs.dto.updation.OptionUpdationDTO;
+import com.team4.isamrs.dto.updation.*;
 import com.team4.isamrs.model.adventure.AdventureAd;
 import com.team4.isamrs.model.adventure.FishingEquipment;
 import com.team4.isamrs.model.advertisement.*;
@@ -14,6 +13,7 @@ import com.team4.isamrs.model.boat.BoatAd;
 import com.team4.isamrs.model.boat.NavigationalEquipment;
 import com.team4.isamrs.model.enumeration.AccountType;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
+import com.team4.isamrs.model.resort.ResortAd;
 import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.model.user.RegistrationRequest;
 import com.team4.isamrs.repository.*;
@@ -114,6 +114,11 @@ public class DomainMapper {
             // Sync bidirectional relationships
             destination.getOptions().forEach(e -> e.setAdvertisement(destination));
 
+            destination.setTags(new HashSet<Tag>());
+            mapTagNames(source.getTagNames()).forEach(destination::addTag);
+            destination.setFishingEquipment(new HashSet<FishingEquipment>());
+            mapFishingEquipmentNames(source.getFishingEquipmentNames()).forEach(destination::addFishingEquipment);
+
             return destination;
         };
 
@@ -163,12 +168,115 @@ public class DomainMapper {
             return destination;
         };
 
+        Converter<BoatAdUpdationDTO, BoatAd> UpdationDtoToBoatAdConverter = context -> {
+            BoatAdUpdationDTO source = context.getSource();
+            BoatAd destination = context.getDestination();
+
+            source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
+
+            int index = 0;
+            List<Option> removedOptions = new LinkedList<>();
+            for (OptionUpdationDTO dto: source.getOptions()) {
+                if (dto.getDelete() != null) {
+                    Option option = destination.getOptions().get(index);
+                    if (option != null)
+                        removedOptions.add(option);
+                }
+                index++;
+            }
+            removedOptions.forEach(destination::removeOption);
+
+            index = 0;
+            List<DailyPrice> removedPrices = new LinkedList<>();
+            for (DailyPriceUpdationDTO dto: source.getPrices()) {
+                if (dto.getDelete() != null) {
+                    DailyPrice price = destination.getPrices().get(index);
+                    if (price != null)
+                        removedPrices.add(price);
+                }
+                index++;
+            }
+            removedPrices.forEach(destination::removeDailyPrice);
+
+            destination.getOptions().forEach(e -> e.setAdvertisement(destination));
+
+            destination.setTags(new HashSet<Tag>());
+            mapTagNames(source.getTagNames()).forEach(destination::addTag);
+            destination.setNavigationalEquipment(new HashSet<NavigationalEquipment>());
+            mapNavigationalEquipmentNames(source.getNavigationalEquipmentNames()).forEach(destination::addNavigationalEquipment);
+            destination.setFishingEquipment(new HashSet<FishingEquipment>());
+            mapFishingEquipmentNames(source.getFishingEquipmentNames()).forEach(destination::addFishingEquipment);
+
+            return destination;
+        };
+
         Converter<RegistrationRequestCreationDTO, RegistrationRequest> RegistrationRequestCreationDTOToRegistrationRequest = context -> {
             RegistrationRequestCreationDTO source = context.getSource();
             RegistrationRequest destination = context.getDestination();
 
             destination.setAccountType(AccountType.values()[source.getAccountType()]);
             destination.setApprovalStatus(ApprovalStatus.PENDING);
+
+            return destination;
+        };
+
+        Converter<ResortAdCreationDTO, ResortAd> CreationDtoToResortAdConverter = context -> {
+            ResortAdCreationDTO source = context.getSource();
+            ResortAd destination = context.getDestination();
+
+            destination.setTags(new HashSet<Tag>());
+            mapTagNames(source.getTagNames()).forEach(destination::addTag);
+
+            source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
+
+            destination.getOptions().forEach(e -> e.setAdvertisement(destination));
+
+            return destination;
+        };
+
+        Converter<ResortAd, ResortAdDisplayDTO> ResortAdToDisplayDtoConverter = context -> {
+            ResortAd source = context.getSource();
+            ResortAdDisplayDTO destination = context.getDestination();
+
+            destination.setTags(source.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
+
+            return destination;
+        };
+
+        Converter<ResortAdUpdationDTO, ResortAd> UpdationDtoToResortAdConverter = context -> {
+            ResortAdUpdationDTO source = context.getSource();
+            ResortAd destination = context.getDestination();
+
+            source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
+
+            int index = 0;
+            List<Option> removedOptions = new LinkedList<>();
+            for (OptionUpdationDTO dto: source.getOptions()) {
+                if (dto.getDelete() != null) {
+                    Option option = destination.getOptions().get(index);
+                    if (option != null)
+                        removedOptions.add(option);
+                }
+                index++;
+            }
+            removedOptions.forEach(destination::removeOption);
+
+            index = 0;
+            List<DailyPrice> removedPrices = new LinkedList<>();
+            for (DailyPriceUpdationDTO dto: source.getPrices()) {
+                if (dto.getDelete() != null) {
+                    DailyPrice price = destination.getPrices().get(index);
+                    if (price != null)
+                        removedPrices.add(price);
+                }
+                index++;
+            }
+            removedPrices.forEach(destination::removeDailyPrice);
+
+            destination.getOptions().forEach(e -> e.setAdvertisement(destination));
+
+            destination.setTags(new HashSet<Tag>());
+            mapTagNames(source.getTagNames()).forEach(destination::addTag);
 
             return destination;
         };
@@ -180,8 +288,12 @@ public class DomainMapper {
         modelMapper.createTypeMap(Photo.class, PhotoUploadDisplayDTO.class).setPostConverter(PhotoToUploadDisplayDtoConverter);
         modelMapper.createTypeMap(Customer.class, CustomerDisplayDTO.class);
         modelMapper.createTypeMap(BoatAdCreationDTO.class, BoatAd.class).setPostConverter(CreationDtoToBoatAdConverter);
+        modelMapper.createTypeMap(BoatAdUpdationDTO.class, BoatAd.class).setPostConverter(UpdationDtoToBoatAdConverter);
         modelMapper.createTypeMap(BoatAd.class, BoatAdDisplayDTO.class).setPostConverter(BoatAdToDisplayDtoConverter);
         modelMapper.createTypeMap(RegistrationRequestCreationDTO.class, RegistrationRequest.class).setPostConverter(RegistrationRequestCreationDTOToRegistrationRequest);
+        modelMapper.createTypeMap(ResortAdCreationDTO.class, ResortAd.class).setPostConverter(CreationDtoToResortAdConverter);
+        modelMapper.createTypeMap(ResortAdUpdationDTO.class, ResortAd.class).setPostConverter(UpdationDtoToResortAdConverter);
+        modelMapper.createTypeMap(ResortAd.class, ResortAdDisplayDTO.class).setPostConverter(ResortAdToDisplayDtoConverter);
     }
 
     private HashSet<Tag> mapTagNames(Set<String> tagNames) {

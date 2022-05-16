@@ -6,8 +6,8 @@ const Tags = ({data}) => {
         <h1 className="text-xl font-medium text-gray-900">Tags</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-y-3">
           {data.tags.map(tag =>
-          <div key={tag.name}>
-            <h1 className="text-sm leading-5">&#10003; {tag.name}</h1>
+          <div key={tag}>
+            <h1 className="text-sm leading-5">&#10003; {tag}</h1>
           </div>  
           )}
         </div>

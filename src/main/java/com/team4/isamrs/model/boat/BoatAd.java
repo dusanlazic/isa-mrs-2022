@@ -10,7 +10,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -57,7 +59,7 @@ public class BoatAd extends Advertisement {
     private BigDecimal cancellationFee;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<DailyPrice> prices = new HashSet<>();
+    private List<DailyPrice> prices = new ArrayList<>();
 
     @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY)
     private Set<BoatReservation> reservations = new HashSet<>();
@@ -71,4 +73,10 @@ public class BoatAd extends Advertisement {
         navigationalEquipment.add(singleNavigationalEquipment);
         singleNavigationalEquipment.getAdvertisements().add(this);
     }
+
+    public void addDailyPrice(DailyPrice dailyPrice) {
+        prices.add(dailyPrice);
+    }
+
+    public void removeDailyPrice(DailyPrice dailyPrice) { prices.remove(dailyPrice); }
 }

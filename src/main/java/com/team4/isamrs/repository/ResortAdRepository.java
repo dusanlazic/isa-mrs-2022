@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface ResortAdRepository  extends JpaRepository<ResortAd, Long> {
     Optional<ResortAd> findResortAdByIdAndAdvertiser(Long id, Advertiser advertiser);
+
+    Optional<ResortAd> findAdventureAdByIdAndAdvertiser(Long id, Advertiser advertiser);
 }

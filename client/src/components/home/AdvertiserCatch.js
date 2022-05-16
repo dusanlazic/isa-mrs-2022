@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const AdvertiserCatch = () => {
   return ( 
     <div className="py-11 w-full px-8 lg:px-28 xl:px-40
-    text-left bg-slate-100 shadow-sm">
+    text-left bg-slate-100 shadow-sm rounded-b-xl">
       <div className="text-lg font-medium">Promote your services with us</div>
       <div className="text-xs">Become an advertiser</div>
 

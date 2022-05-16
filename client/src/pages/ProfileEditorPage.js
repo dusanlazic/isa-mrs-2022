@@ -1,19 +1,26 @@
 import { getSession } from '../contexts/'
 import { useState, useEffect } from "react";
 import { get } from "../adapters/xhr";
+import { useNavigate } from 'react-router-dom';
 
 import MainProfileInfoEditor from "../components/profile_editor/MainProfileInfoEditor";
 import PasswordEditor from "../components/profile_editor/PasswordEditor";
+import RemovalRequestForm from '../components/profile_editor/RemovalRequestForm';
+
 
 const ProfileEditorPage = () => {
   const [accountData, setAccountData] = useState(null);
   const session = getSession();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // get(`/api${endpoint}/${id}`)
     get(`/api/account/${session.id}`)
     .then((response) => {
       setAccountData(response.data);
+    })
+    .catch((error) => {
+      navigate('/');
     });
   }, [session.id])
 
@@ -28,6 +35,7 @@ const ProfileEditorPage = () => {
        h-full border-0.5 rounded-lg gap-y-4">
         <MainProfileInfoEditor data={accountData}/>
         <PasswordEditor/>
+        <RemovalRequestForm id={accountData.id}/>
       </div>
 
     </div>

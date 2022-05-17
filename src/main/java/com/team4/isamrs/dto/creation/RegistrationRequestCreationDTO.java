@@ -1,7 +1,5 @@
 package com.team4.isamrs.dto.creation;
 
-import com.team4.isamrs.model.enumeration.AccountType;
-import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.validation.CountryCode;
 import com.team4.isamrs.validation.Email;
 import com.team4.isamrs.validation.PasswordMatches;
@@ -27,6 +25,7 @@ public class RegistrationRequestCreationDTO {
     private String username;
 
     @NotBlank
+    @Size(min = 8, message = "Password must be longer than 8 characters.")
     private String password;
 
     @NotBlank

@@ -2,14 +2,17 @@ package com.team4.isamrs.service;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.team4.isamrs.dto.creation.AdminCreationDTO;
 import com.team4.isamrs.dto.creation.CustomerCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.creation.RemovalRequestCreationDTO;
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AccountUpdationDTO;
+import com.team4.isamrs.dto.updation.PasswordUpdationDTO;
 import com.team4.isamrs.exception.ConfirmationLinkExpiredException;
 import com.team4.isamrs.exception.EmailAlreadyExistsException;
+import com.team4.isamrs.exception.PasswordSameAsOldException;
 import com.team4.isamrs.exception.PhoneNumberAlreadyExistsException;
 import com.team4.isamrs.exception.error.RemovalRequestAlreadyCreatedException;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
@@ -17,7 +20,6 @@ import com.team4.isamrs.model.user.*;
 import com.team4.isamrs.repository.*;
 import com.team4.isamrs.security.EmailSender;
 import com.team4.isamrs.security.TokenUtils;
-import net.bytebuddy.implementation.bytecode.Removal;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -71,6 +73,18 @@ public class AccountService {
         userRepository.save(user);
     }
 
+    public void changeInitialPassword(PasswordUpdationDTO dto, Authentication auth) {
+        Administrator admin = (Administrator) auth.getPrincipal();
+
+        if (passwordEncoder.matches(dto.getPassword(), admin.getPassword()))
+            throw new PasswordSameAsOldException();
+
+        admin.setPassword(passwordEncoder.encode(dto.getPassword()));
+        admin.getAuthorities().clear();
+        admin.getAuthorities().add(roleRepository.findByName("ROLE_ADMIN").orElseThrow());
+        userRepository.save(admin);
+    }
+
     public void createTestAccount() {
 
         Advertiser advertiser = new Advertiser();
@@ -82,7 +96,7 @@ public class AccountService {
         advertiser.setFirstName("Dusan");
         advertiser.setLastName("Lazic");
         advertiser.setPassword(passwordEncoder.encode("13371337"));
-        advertiser.getAuthorities().add(roleRepository.findByName("ROLE_ADMIN").get());
+        advertiser.getAuthorities().add(roleRepository.findByName("ROLE_SUPERUSER").get());
         advertiser.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
         advertiser.setPhoneNumber("065-1337");
         userRepository.save(advertiser);
@@ -96,7 +110,9 @@ public class AccountService {
     }
 
     public void initializeRoles() {
+        roleRepository.save(new Role("ROLE_SUPERUSER"));
         roleRepository.save(new Role("ROLE_ADMIN"));
+        roleRepository.save(new Role("ROLE_FRESH_ADMIN"));
         roleRepository.save(new Role("ROLE_CUSTOMER"));
         roleRepository.save(new Role("ROLE_ADVERTISER"));
         roleRepository.save(new Role("ROLE_FISHING_INSTRUCTOR"));
@@ -138,6 +154,18 @@ public class AccountService {
 
         String token = tokenUtils.generateConfirmationToken(customer);
         emailSender.sendRegistrationEmail(customer, token);
+    }
+
+    public void createAdmin(AdminCreationDTO dto) {
+        checkForExistingEmail(dto.getUsername());
+
+        Administrator administrator = modelMapper.map(dto, Administrator.class);
+        administrator.setPassword(passwordEncoder.encode(dto.getPassword()));
+        administrator.setEnabled(true);
+        administrator.getAuthorities().add(roleRepository.findByName("ROLE_FRESH_ADMIN").orElseThrow());
+        userRepository.save(administrator);
+
+        emailSender.sendAdministratorRegistrationEmail(administrator);
     }
 
     private void checkForExistingRemovalRequest(Long userId) {

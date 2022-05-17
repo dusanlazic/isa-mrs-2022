@@ -105,6 +105,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
         String hierarchy = """
+                ROLE_SUPERUSER > ROLE_ADMIN\s
                 ROLE_FISHING_INSTRUCTOR > ROLE_ADVERTISER\s
                 ROLE_BOAT_OWNER > ROLE_ADVERTISER\s
                 ROLE_RESORT_OWNER > ROLE_ADVERTISER""";

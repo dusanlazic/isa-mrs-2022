@@ -110,4 +110,12 @@ public class ControllerAdvisor {
                 HttpStatus.CONFLICT.value(),
                 "Cannot respond to the registration request since it is already resolved.");
     }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(PasswordSameAsOldException.class)
+    public ExceptionResponseBody handlePasswordSameAsOldException(PasswordSameAsOldException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                "New password cannot be the same as old.");
+    }
 }

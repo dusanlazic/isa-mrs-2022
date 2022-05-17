@@ -1,5 +1,6 @@
 package com.team4.isamrs.security;
 
+import com.team4.isamrs.model.user.Administrator;
 import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.model.user.RegistrationRequest;
 import lombok.AllArgsConstructor;
@@ -69,6 +70,14 @@ public class EmailSender {
         variables.put("reason", registrationRequest.getRejectionReason());
 
         sendEmail("rejection.html", variables, "Your request has been REJECTED", registrationRequest.getUsername());
+    }
+
+    public void sendAdministratorRegistrationEmail(Administrator administrator) {
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("name", administrator.getFirstName());
+        variables.put("link", "http://localhost:3000/login");
+
+        sendEmail("administrator-registration.html", variables, "Activate your administrator account", administrator.getUsername());
     }
 
     private String buildEmailFromTemplate(String filename, HashMap<String, String> variables) throws IOException {

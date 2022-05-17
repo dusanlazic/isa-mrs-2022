@@ -5,12 +5,12 @@ import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.creation.RemovalRequestCreationDTO;
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
 import com.team4.isamrs.dto.updation.AccountUpdationDTO;
+import com.team4.isamrs.dto.updation.PasswordUpdationDTO;
 import com.team4.isamrs.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +39,12 @@ public class AccountController {
     public ResponseEntity<String> updateAccount(@Valid @RequestBody AccountUpdationDTO dto, Authentication auth) {
         accountService.updateAccount(dto, auth);
         return ResponseEntity.ok().body("Account updated.");
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<String> changePassword(@Valid @RequestBody PasswordUpdationDTO dto, Authentication auth) {
+        accountService.changePassword(dto, auth);
+        return ResponseEntity.ok().body("Password updated.");
     }
 
     @DeleteMapping("")

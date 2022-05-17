@@ -8,13 +8,10 @@ import javax.validation.constraints.Size;
 
 @Data
 @PasswordMatches
-public class PasswordUpdationDTO {
-    @NotBlank
-    private String currentPassword;
-
+public class InitialPasswordUpdationDTO {
     @NotBlank
     @Size(min = 8, message = "Password must be longer than 8 characters.")
-    private String newPassword;
+    private String password;
 
     @NotBlank
     private String passwordConfirmation;

@@ -118,4 +118,12 @@ public class ControllerAdvisor {
                 HttpStatus.CONFLICT.value(),
                 "New password cannot be the same as old.");
     }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(IncorrectCurrentPasswordException.class)
+    public ExceptionResponseBody handleIncorrectCurrentPasswordException(IncorrectCurrentPasswordException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.FORBIDDEN.value(),
+                "Incorrect current password.");
+    }
 }

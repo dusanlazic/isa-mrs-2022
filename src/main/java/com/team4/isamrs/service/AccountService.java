@@ -9,11 +9,9 @@ import com.team4.isamrs.dto.creation.RemovalRequestCreationDTO;
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AccountUpdationDTO;
+import com.team4.isamrs.dto.updation.InitialPasswordUpdationDTO;
 import com.team4.isamrs.dto.updation.PasswordUpdationDTO;
-import com.team4.isamrs.exception.ConfirmationLinkExpiredException;
-import com.team4.isamrs.exception.EmailAlreadyExistsException;
-import com.team4.isamrs.exception.PasswordSameAsOldException;
-import com.team4.isamrs.exception.PhoneNumberAlreadyExistsException;
+import com.team4.isamrs.exception.*;
 import com.team4.isamrs.exception.error.RemovalRequestAlreadyCreatedException;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.user.*;
@@ -73,7 +71,7 @@ public class AccountService {
         userRepository.save(user);
     }
 
-    public void changeInitialPassword(PasswordUpdationDTO dto, Authentication auth) {
+    public void changeInitialPassword(InitialPasswordUpdationDTO dto, Authentication auth) {
         Administrator admin = (Administrator) auth.getPrincipal();
 
         if (passwordEncoder.matches(dto.getPassword(), admin.getPassword()))
@@ -83,6 +81,18 @@ public class AccountService {
         admin.getAuthorities().clear();
         admin.getAuthorities().add(roleRepository.findByName("ROLE_ADMIN").orElseThrow());
         userRepository.save(admin);
+    }
+
+    public void changePassword(PasswordUpdationDTO dto, Authentication auth) {
+        User user = (User) auth.getPrincipal();
+
+        if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword()))
+            throw new IncorrectCurrentPasswordException();
+        if (passwordEncoder.matches(dto.getNewPassword(), user.getPassword()))
+            throw new PasswordSameAsOldException();
+
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
     }
 
     public void createTestAccount() {

@@ -1,7 +1,7 @@
 package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.creation.AdminCreationDTO;
-import com.team4.isamrs.dto.updation.PasswordUpdationDTO;
+import com.team4.isamrs.dto.updation.InitialPasswordUpdationDTO;
 import com.team4.isamrs.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -30,7 +30,7 @@ public class AdminController {
 
     @PatchMapping("/password")
     @PreAuthorize("hasRole('FRESH_ADMIN')")
-    public ResponseEntity<String> changeInitialPassword(@Valid @RequestBody PasswordUpdationDTO dto, Authentication auth) {
+    public ResponseEntity<String> changeInitialPassword(@Valid @RequestBody InitialPasswordUpdationDTO dto, Authentication auth) {
         accountService.changeInitialPassword(dto, auth);
         return ResponseEntity.ok().body("Password updated.");
     }

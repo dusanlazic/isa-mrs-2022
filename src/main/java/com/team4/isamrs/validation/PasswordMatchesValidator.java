@@ -3,6 +3,7 @@ package com.team4.isamrs.validation;
 import com.team4.isamrs.dto.creation.AdminCreationDTO;
 import com.team4.isamrs.dto.creation.CustomerCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
+import com.team4.isamrs.dto.updation.InitialPasswordUpdationDTO;
 import com.team4.isamrs.dto.updation.PasswordUpdationDTO;
 
 import javax.validation.ConstraintValidator;
@@ -24,8 +25,11 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
         else if (obj instanceof AdminCreationDTO dto) {
             return dto.getPassword().equals(dto.getPasswordConfirmation());
         }
-        else if (obj instanceof PasswordUpdationDTO dto) {
+        else if (obj instanceof InitialPasswordUpdationDTO dto) {
             return dto.getPassword().equals(dto.getPasswordConfirmation());
+        }
+        else if (obj instanceof PasswordUpdationDTO dto) {
+            return dto.getNewPassword().equals(dto.getPasswordConfirmation());
         }
         return false;
     }

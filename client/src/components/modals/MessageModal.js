@@ -1,8 +1,7 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { ExclamationIcon } from '@heroicons/react/outline'
 
-export default function DeletionModal ({ closeFunction, deleteFunction, text })  {
+export default function DeletionModal ({ closeFunction, text })  {
   const [open, setOpen] = useState(true)
 
   const hide = () => {
@@ -43,12 +42,9 @@ export default function DeletionModal ({ closeFunction, deleteFunction, text }) 
               <Dialog.Panel className="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
-                    <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                      <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
-                    </div>
                     <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                       <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
-                        Warning
+                        Response
                       </Dialog.Title>
                       <div className="mt-2">
                         <p className="text-sm text-gray-500">
@@ -61,21 +57,12 @@ export default function DeletionModal ({ closeFunction, deleteFunction, text }) 
                 <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                   <button
                     type="button"
-                    className="w-full inline-flex justify-center rounded-md border border-red-300 
-                    shadow-sm px-4 py-2 bg-red-200 text-base font-medium text-red-600 hover:bg-red-400 
-                    hover:text-red-900 sm:ml-3 sm:w-auto sm:text-sm"
-                    onClick={() => {deleteFunction(); hide()}}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    type="button"
                     className="w-full inline-flex justify-center rounded-md border border-gray-300 
                     shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 
                     sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                     onClick={hide}
                   >
-                    Cancel
+                    Okay
                   </button>
                 </div>
               </Dialog.Panel>

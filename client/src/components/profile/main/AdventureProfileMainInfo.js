@@ -82,7 +82,7 @@ const AdventureProfileMainInfo = ({data, advertisementId}) => {
 			</div>
 			{showModal && <DeletionModal  closeFunction = {() => hide(false)}
                                       deleteFunction = {() => deleteAd()}
-                                      entityName = { data.title }
+                                      text = {`Are you sure you want to permanently delete ${data.title }? This action cannot be undone.`}
         	/>}
 		</div>
 	);

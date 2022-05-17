@@ -86,7 +86,7 @@ const BoatProfileMainInfo = ({data, advertisementId}) => {
 			</div>
 			{showModal && <DeletionModal  closeFunction = {() => hide(false)}
                                       deleteFunction = {() => deleteFun()}
-                                      entityName = { data.title }
+                                      text = {`Are you sure you want to permanently delete ${data.title }? This action cannot be undone.`}
         />}
 		</div>
 	);

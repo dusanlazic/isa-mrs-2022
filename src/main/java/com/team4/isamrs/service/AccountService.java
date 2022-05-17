@@ -11,11 +11,13 @@ import com.team4.isamrs.dto.updation.AccountUpdationDTO;
 import com.team4.isamrs.exception.ConfirmationLinkExpiredException;
 import com.team4.isamrs.exception.EmailAlreadyExistsException;
 import com.team4.isamrs.exception.PhoneNumberAlreadyExistsException;
+import com.team4.isamrs.exception.error.RemovalRequestAlreadyCreatedException;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.user.*;
 import com.team4.isamrs.repository.*;
 import com.team4.isamrs.security.EmailSender;
 import com.team4.isamrs.security.TokenUtils;
+import net.bytebuddy.implementation.bytecode.Removal;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -104,6 +106,7 @@ public class AccountService {
 
     public void createRemovalRequest(RemovalRequestCreationDTO removalRequestCreationDTO, Authentication auth) {
         User user = (User) auth.getPrincipal();
+        checkForExistingRemovalRequest(user.getId());
         RemovalRequest removalRequest = modelMapper.map(removalRequestCreationDTO, RemovalRequest.class);
         removalRequest.setUser(user);
         removalRequest.setCreatedAt(LocalDateTime.now());
@@ -135,6 +138,14 @@ public class AccountService {
 
         String token = tokenUtils.generateConfirmationToken(customer);
         emailSender.sendRegistrationEmail(customer, token);
+    }
+
+    private void checkForExistingRemovalRequest(Long userId) {
+        if (removalRequestRepository.findByUserId(userId).isPresent()) {
+            RemovalRequest request = removalRequestRepository.findByUserId(userId).get();
+            if (request.getApprovalStatus() == ApprovalStatus.PENDING)
+                throw new RemovalRequestAlreadyCreatedException("Removal request already submitted.");
+        }
     }
 
     private void checkForExistingEmail(String username) {

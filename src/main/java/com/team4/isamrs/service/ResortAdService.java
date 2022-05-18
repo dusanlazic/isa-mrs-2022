@@ -2,6 +2,12 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.ResortAdCreationDTO;
 import com.team4.isamrs.dto.display.ResortAdDisplayDTO;
+import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
+import com.team4.isamrs.exception.ReservationsInUnavailabilityPeriodException;
+import com.team4.isamrs.model.boat.BoatAd;
+import com.team4.isamrs.model.reservation.Reservation;
+import com.team4.isamrs.model.resort.ResortReservation;
+import com.team4.isamrs.repository.ResortReservationRepository;
 import org.springframework.data.domain.PageRequest;
 import com.team4.isamrs.dto.updation.ResortAdUpdationDTO;
 import com.team4.isamrs.model.resort.ResortAd;
@@ -14,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +34,9 @@ public class ResortAdService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private ResortReservationRepository reservationRepository;
 
     public Collection<ResortAdDisplayDTO> findAll() {
         return resortAdRepository.findAll().stream()
@@ -74,6 +84,30 @@ public class ResortAdService {
         resortAd.verifyPhotosOwnership(advertiser);
 
         tagRepository.saveAll(resortAd.getTags());
+        resortAdRepository.save(resortAd);
+    }
+
+    public void updateAvailabilityPeriod(Long id, AvailabilityPeriodUpdationDTO dto, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        ResortAd resortAd = resortAdRepository.findResortAdByIdAndAdvertiser(id, advertiser).orElseThrow();
+
+        // availability period
+        if (dto.getAvailableAfter().isBefore(dto.getAvailableUntil())) {
+            Set<ResortReservation> reservations = reservationRepository.findReservationsByStartDateBeforeOrEndDateAfter(dto.getAvailableAfter(), dto.getAvailableUntil());
+            reservations.removeIf(Reservation::getCancelled);
+            if (!reservations.isEmpty())
+                throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+        }
+        // unavailability period
+        else {
+            Set<ResortReservation> reservations = reservationRepository.findReservationsByStartDateBeforeAndEndDateAfter(dto.getAvailableAfter(), dto.getAvailableUntil());
+            reservations.removeIf(Reservation::getCancelled);
+            if (!reservations.isEmpty())
+                throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+        }
+
+        resortAd.setAvailableAfter(dto.getAvailableAfter());
+        resortAd.setAvailableUntil(dto.getAvailableUntil());
         resortAdRepository.save(resortAd);
     }
 }

@@ -110,4 +110,12 @@ public class ControllerAdvisor {
                 HttpStatus.CONFLICT.value(),
                 "Cannot respond to the registration request since it is already resolved.");
     }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ReservationsInUnavailabilityPeriodException.class)
+    public ExceptionResponseBody handleReservationsInUnavailabilityPeriodException(ReservationsInUnavailabilityPeriodException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                "There are " + ex.getMessage() + " reservations in that unavailability period.");
+    }
 }

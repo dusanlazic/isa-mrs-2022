@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import schema from '../validators/loginSchema';
 import { login } from '../adapters/login'
 import { getToken } from '../contexts'
+import jwt_decode from 'jwt-decode';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -17,7 +18,12 @@ const LoginPage = () => {
   }, [])
   
   const redirect = () => {
-    navigate('/');
+    let role = jwt_decode(getToken()).roles[0]
+    if (role === "ROLE_FRESH_ADMIN") {
+      navigate('/admin/setup');
+    } else {
+      navigate('/')
+    }
   }
 
   const { register, handleSubmit, formState: { errors }, clearErrors} = useForm({

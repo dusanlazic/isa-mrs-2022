@@ -36,8 +36,8 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
 
   const updateAvailability = () => {
     put(`/api/ads/resorts/${advertisementId}/availability-period`, {
-      availableAfter: availableAfter,
-      availableUntil: availableUntil
+      availableAfter: availableAfter === "" ? null : availableAfter,
+      availableUntil: availableUntil === "" ? null : availableUntil
     })
       .then((response) => {
         alert(response.data);

@@ -7,7 +7,6 @@ import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.dto.updation.BoatAdUpdationDTO;
 import com.team4.isamrs.exception.IdenticalAvailabilityDatesException;
 import com.team4.isamrs.exception.ReservationsInUnavailabilityPeriodException;
-import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.boat.BoatAd;
 import com.team4.isamrs.model.boat.BoatReservation;
 import com.team4.isamrs.model.reservation.Reservation;
@@ -99,25 +98,41 @@ public class BoatAdService {
     }
 
     public void updateAvailabilityPeriod(Long id, AvailabilityPeriodUpdationDTO dto, Authentication auth) {
-        if (dto.getAvailableUntil().equals(dto.getAvailableAfter()))
+        if (dto.getAvailableUntil() != null && dto.getAvailableAfter() != null &&
+                dto.getAvailableUntil().equals(dto.getAvailableAfter()))
             throw new IdenticalAvailabilityDatesException();
 
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
         BoatAd boatAd = boatAdRepository.findBoatAdByIdAndAdvertiser(id, advertiser).orElseThrow();
 
-        // availability period
-        if (dto.getAvailableAfter().isBefore(dto.getAvailableUntil())) {
-            Set<BoatReservation> reservations = reservationRepository.findReservationsByStartDateBeforeOrEndDateAfter(dto.getAvailableAfter(), dto.getAvailableUntil());
-            reservations.removeIf(Reservation::getCancelled);
-            if (!reservations.isEmpty())
-                throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
-        }
-        // unavailability period
-        else {
-            Set<BoatReservation> reservations = reservationRepository.findReservationsByStartDateBeforeAndEndDateAfter(dto.getAvailableAfter(), dto.getAvailableUntil());
-            reservations.removeIf(Reservation::getCancelled);
-            if (!reservations.isEmpty())
-                throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+        if (!(dto.getAvailableUntil() == null && dto.getAvailableAfter() == null)) {
+            // only available until is defined
+            if (dto.getAvailableAfter() == null) {
+                Set<BoatReservation> reservations = reservationRepository.findReservationsByEndDateAfter(dto.getAvailableUntil());
+                if (!reservations.isEmpty())
+                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+            }
+            // only available after is defined
+            else if (dto.getAvailableUntil() == null) {
+                Set<BoatReservation> reservations = reservationRepository.findReservationsByStartDateBefore(dto.getAvailableAfter());
+                if (!reservations.isEmpty())
+                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+            }
+            // both are defined
+            // availability period
+            else if (dto.getAvailableAfter().isBefore(dto.getAvailableUntil())) {
+                Set<BoatReservation> reservations = reservationRepository.findReservationsByStartDateBeforeOrEndDateAfter(dto.getAvailableAfter(), dto.getAvailableUntil());
+                reservations.removeIf(Reservation::getCancelled);
+                if (!reservations.isEmpty())
+                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+            }
+            // unavailability period
+            else {
+                Set<BoatReservation> reservations = reservationRepository.findReservationsByStartDateBeforeAndEndDateAfter(dto.getAvailableAfter(), dto.getAvailableUntil());
+                reservations.removeIf(Reservation::getCancelled);
+                if (!reservations.isEmpty())
+                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+            }
         }
 
         boatAd.setAvailableAfter(dto.getAvailableAfter());

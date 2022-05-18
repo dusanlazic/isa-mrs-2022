@@ -44,8 +44,8 @@ const BoatInfoEditor = ({ data, advertisementId }) => {
 
   const updateAvailability = () => {
     put(`/api/ads/boats/${advertisementId}/availability-period`, {
-      availableAfter: availableAfter,
-      availableUntil: availableUntil
+      availableAfter: availableAfter === "" ? null : availableAfter,
+      availableUntil: availableUntil === "" ? null : availableUntil
     })
       .then((response) => {
         alert(response.data);

@@ -3,6 +3,7 @@ package com.team4.isamrs.service;
 import com.team4.isamrs.dto.creation.ResortAdCreationDTO;
 import com.team4.isamrs.dto.display.ResortAdDisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
+import com.team4.isamrs.exception.IdenticalAvailabilityDatesException;
 import com.team4.isamrs.exception.ReservationsInUnavailabilityPeriodException;
 import com.team4.isamrs.model.boat.BoatAd;
 import com.team4.isamrs.model.reservation.Reservation;
@@ -88,6 +89,9 @@ public class ResortAdService {
     }
 
     public void updateAvailabilityPeriod(Long id, AvailabilityPeriodUpdationDTO dto, Authentication auth) {
+        if (dto.getAvailableUntil().equals(dto.getAvailableAfter()))
+            throw new IdenticalAvailabilityDatesException();
+
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
         ResortAd resortAd = resortAdRepository.findResortAdByIdAndAdvertiser(id, advertiser).orElseThrow();
 

@@ -118,4 +118,12 @@ public class ControllerAdvisor {
                 HttpStatus.CONFLICT.value(),
                 "There are " + ex.getMessage() + " reservations in that unavailability period.");
     }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(IdenticalAvailabilityDatesException.class)
+    public ExceptionResponseBody handleIdenticalAvailabilityDatesException(IdenticalAvailabilityDatesException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                "Availability period dates should not be the same.");
+    }
 }

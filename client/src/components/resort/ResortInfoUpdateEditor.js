@@ -1,15 +1,18 @@
 import { useState } from "react";
-import { post, put } from "../../adapters/xhr";
+import { post, put, del } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import ReactFlagsSelect from "react-flags-select";
+import DeletionModal from "../modals/DeletionModal"
 
 const ResortInfoEditor = ({ data, advertisementId }) => {
+  const [showModal, setShowModal] = useState(false);
+  const hide = () => setShowModal(false);
+
   const [title, setTitle] = useState(data.title);
   const [description, setDescription] = useState(data.description);
   const [rules, setRules] = useState(data.rules);
   const [currency, setCurrency] = useState(data.currency);
   const [numOfBeds, setNumOfBeds] = useState(data.numberOfBeds);
-  const [cancellationFee, setCancellationFee] = useState(data.cancellationFee);
   const [address, setAddress] = useState(data.address.address);
   const [countryCode, setCountryCode] = useState(data.address.countryCode);
   const [city, setCity] = useState(data.address.city);
@@ -25,13 +28,28 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
   const [photoIds, setPhotoIds] = useState(data.photos.map(item => item.id));
   const [checkInTime, setCheckInTime] = useState(data.checkInTime);
   const [checkOutTime, setCheckOutTime] = useState(data.checkOutTime);
+  const [availableAfter, setAvailableAfter] = useState(data.availableAfter);
+  const [availableUntil, setAvailableUntil] = useState(data.availableUntil);
 
   const navigate = useNavigate();
+
+  const updateAvailability = () => {
+    put(`/api/ads/resorts/${advertisementId}/availability-period`, {
+      availableAfter: availableAfter,
+      availableUntil: availableUntil
+    })
+      .then((response) => {
+        alert(response.data);
+        navigate(`/resort/${advertisementId}`);
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
+  }
 
   const updateAd = () => {
     put(`/api/ads/resorts/${advertisementId}`, {
       description: description,
-      cancellationFee: cancellationFee,
       title: title,
       numberOfBeds: numOfBeds,
       currency: currency,
@@ -149,6 +167,14 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
 
     setPhotoIds(ids);
     setPhotoPreviews(previews);
+  }
+
+  const deleteAdvertisement = () => {
+    del(`/api/ads/${advertisementId}`).then((response) => {
+      console.log(response);
+      setShowModal(false);
+      navigate("/");
+    });
   }
 
   return (
@@ -298,27 +324,27 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
             <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
               <div className="block col-span-4 text-left">
                 <input placeholder="option name"
-                name="name"
-                value={input.name}
-                className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
-                focus:outline-none w-full"readonly/>
+                  name="name"
+                  value={input.name}
+                  className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
+                focus:outline-none w-full"readonly />
               </div>
-  
+
               <div className="block col-span-5 text-left">
                 <input placeholder="description"
-                name="description"
-                value={input.description}
-                className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
-                focus:outline-none w-full"readonly/>
+                  name="description"
+                  value={input.description}
+                  className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
+                focus:outline-none w-full"readonly />
               </div>
-  
+
               <div className="block col-span-2 text-left">
                 <input placeholder="max count"
-                name="maxCount"
-                value={input.maxCount}
-                type="number" min={1}
-                className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
-                focus:outline-none w-full"readonly/>
+                  name="maxCount"
+                  value={input.maxCount}
+                  type="number" min={1}
+                  className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
+                focus:outline-none w-full"readonly />
               </div>
 
               <button onClick={() => toggleOptionRemoval(index)}>Undo</button>
@@ -329,32 +355,32 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
             <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
               <div className="block col-span-4 text-left">
                 <input placeholder="option name"
-                name="name"
-                value={input.name}
-                onChange={event => handleOptionsChange(index, event)}
-                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                  name="name"
+                  value={input.name}
+                  onChange={event => handleOptionsChange(index, event)}
+                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
                 focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
               </div>
-  
+
               <div className="block col-span-5 text-left">
                 <input placeholder="description"
-                name="description"
-                value={input.description}
-                onChange={event => handleOptionsChange(index, event)}
-                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                  name="description"
+                  value={input.description}
+                  onChange={event => handleOptionsChange(index, event)}
+                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
                 focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
               </div>
-  
+
               <div className="block col-span-2 text-left">
                 <input placeholder="max count"
-                name="maxCount"
-                value={input.maxCount}
-                onChange={event => handleOptionsChange(index, event)}
-                type="number" min={1}
-                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                  name="maxCount"
+                  value={input.maxCount}
+                  onChange={event => handleOptionsChange(index, event)}
+                  type="number" min={1}
+                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
                 focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
               </div>
-  
+
               <button onClick={() => toggleOptionRemoval(index)}>Remove</button>
             </div>
           )
@@ -371,29 +397,29 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
           <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
             <div className="block col-span-4 text-left">
               <input placeholder="option name"
-              name="name"
-              value={input.name}
-              onChange={event => handleNewOptionsChange(index, event)}
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                name="name"
+                value={input.name}
+                onChange={event => handleNewOptionsChange(index, event)}
+                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
               focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
             </div>
 
             <div className="block col-span-5 text-left">
               <input placeholder="description"
-              name="description"
-              value={input.description}
-              onChange={event => handleNewOptionsChange(index, event)}
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                name="description"
+                value={input.description}
+                onChange={event => handleNewOptionsChange(index, event)}
+                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
               focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
             </div>
 
             <div className="block col-span-2 text-left">
               <input placeholder="max count"
-              name="maxCount"
-              value={input.maxCount}
-              onChange={event => handleNewOptionsChange(index, event)}
-              type="number" min={1}
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                name="maxCount"
+                value={input.maxCount}
+                onChange={event => handleNewOptionsChange(index, event)}
+                type="number" min={1}
+                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
               focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
             </div>
 
@@ -556,16 +582,69 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
       </div>
 
       {/* confirm button */}
-      <div className="grid grid-cols-1 md:grid-cols-3 md:gap-x-6 mt-4">
-        <div className="flex flex-col justify-end md:col-start-3 text-left w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 md:gap-x-3 mt-4">
+        <div className="flex flex-col justify-end lg:col-start-3 sm:col-start-2 text-left w-full">
           <button className="bg-teal-600 hover:bg-teal-700 active:bg-teal-800 w-full drop-shadow-md
-          text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
+    text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
             onClick={() => { updateAd() }}>
             Save changes
           </button>
         </div>
 
       </div>
+
+      {/* Availability */}
+      <h2 className="text-xl text-left text-gray-800 font-sans mt-6 pt-6 border-t border-gray-200">Availability 📅</h2>
+      <div className="grid grid-cols-2 mt-1 gap-x-3">
+        <div className="block col-span-1 text-left">
+          <label className="text-xs">available after</label>
+          <input
+            value={availableAfter}
+            onChange={(event) => { setAvailableAfter(event.target.value) }}
+            type="date"
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+    focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+        </div>
+
+        <div className="block col-span-1 text-left">
+          <label className="text-xs">available until</label>
+          <input
+            value={availableUntil}
+            onChange={(event) => { setAvailableUntil(event.target.value) }}
+            type="date"
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+    focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+        </div>
+      </div>
+
+      {/* confirm button */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 md:gap-x-3 mt-4">
+        <div className="flex flex-col justify-end lg:col-start-3 sm:col-start-2 text-left w-full">
+          <button className="bg-teal-600 hover:bg-teal-700 active:bg-teal-800 w-full drop-shadow-md
+    text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
+            onClick={() => { updateAvailability() }}>
+            Change availability
+          </button>
+        </div>
+
+      </div>
+
+      {/* delete button */}
+      <h2 className="text-xl text-left text-gray-800 font-sans mt-6 pt-6 border-t border-gray-200">Delete resort ❌</h2>
+      <div className="grid grid-cols-1 justify-end lg:grid-cols-3 sm:grid-cols-2 md:gap-x-3 mt-4">
+        <div className="flex flex-col lg:col-start-3 sm:col-start-2 text-left w-full">
+          <button className="bg-red-600 hover:bg-red-700 active:bg-red-800 w-full drop-shadow-md
+      text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
+            onClick={() => { setShowModal(true) }}>
+            Delete
+          </button>
+        </div>
+      </div>
+
+			{showModal && <DeletionModal  closeFunction = {() => hide(false)}
+                                      deleteFunction = {() => deleteAdvertisement()}
+                                      text = {`Are you sure you want to permanently delete ${ data.title }? This action cannot be undone.`}
+        />}
 
     </div>
   );

@@ -6,7 +6,7 @@ import com.team4.isamrs.model.user.Advertiser;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,8 +19,8 @@ public class BoatAdDisplayDTO implements DisplayDTO {
     private Address address;
     private String description;
     private String pricingDescription;
-    private LocalDateTime availableAfter;
-    private LocalDateTime availableUntil;
+    private LocalDate availableAfter;
+    private LocalDate availableUntil;
     private String rules;
     private String currency;
     private Set<String> tags;

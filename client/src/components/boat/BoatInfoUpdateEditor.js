@@ -1,9 +1,13 @@
 import { useState } from "react";
-import { post, put } from "../../adapters/xhr";
+import { post, put, del } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import ReactFlagsSelect from "react-flags-select";
+import DeletionModal from "../modals/DeletionModal"
 
 const BoatInfoEditor = ({data, advertisementId}) => {
+  const [showModal, setShowModal] = useState(false);
+  const hide = () => setShowModal(false);
+
   const [title, setTitle] = useState(data.title);
   const [description, setDescription] = useState(data.description);
   const [rules, setRules] = useState(data.rules);
@@ -32,8 +36,24 @@ const BoatInfoEditor = ({data, advertisementId}) => {
   const [checkInTime, setCheckInTime] = useState(data.checkInTime);
   const [checkOutTime, setCheckOutTime] = useState(data.checkOutTime);
   const [navigationalEquipment, setNavigationalEquipment] = useState(data.navigationalEquipment.map(item => item.name).join(", "));
+  const [availableAfter, setAvailableAfter] = useState(data.availableAfter);
+  const [availableUntil, setAvailableUntil] = useState(data.availableUntil);
 
   const navigate = useNavigate();
+
+  const updateAvailability = () => {
+    put(`/api/ads/boats/${advertisementId}/availability-period`, {
+      availableAfter: availableAfter,
+      availableUntil: availableUntil
+    })
+      .then((response) => {
+        alert(response.data);
+        navigate(`/boat/${advertisementId}`);
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
+  }
 
   const updateAd = () => {
     put(`/api/ads/boats/${advertisementId}`, {
@@ -69,7 +89,7 @@ const BoatInfoEditor = ({data, advertisementId}) => {
     })
       .then((response) => {
         alert(response.data);
-        navigate(`/boat/${response.headers['location'].split("/").pop()}`);
+        navigate(`/boat/${advertisementId}`);
       })
       .catch((error) => {
         alert(error.response.data.message);
@@ -163,6 +183,14 @@ const BoatInfoEditor = ({data, advertisementId}) => {
 
     setPhotoIds(ids);
     setPhotoPreviews(previews);
+  }
+
+  const deleteAdvertisement = () => {
+    del(`/api/ads/${advertisementId}`).then((response) => {
+      console.log(response);
+      setShowModal(false);
+      navigate("/");
+    });
   }
 
   return (
@@ -628,19 +656,72 @@ const BoatInfoEditor = ({data, advertisementId}) => {
         </div>
       </div>
 
-      {/* confirm button */}
-      <div className="grid grid-cols-1 md:grid-cols-3 md:gap-x-6 mt-4">
-        <div className="flex flex-col justify-end md:col-start-3 text-left w-full">
-          <button className="bg-teal-600 hover:bg-teal-700 active:bg-teal-800 w-full drop-shadow-md
-          text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
-            onClick={() => { updateAd() }}>
-            Save changes
-          </button>
-        </div>
+{/* confirm button */}
+<div className="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 md:gap-x-3 mt-4">
+  <div className="flex flex-col justify-end lg:col-start-3 sm:col-start-2 text-left w-full">
+    <button className="bg-teal-600 hover:bg-teal-700 active:bg-teal-800 w-full drop-shadow-md
+text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
+      onClick={() => { updateAd() }}>
+      Save changes
+    </button>
+  </div>
 
-      </div>
+</div>
 
-    </div>
+{/* Availability */}
+<h2 className="text-xl text-left text-gray-800 font-sans mt-6 pt-6 border-t border-gray-200">Availability 📅</h2>
+<div className="grid grid-cols-2 mt-1 gap-x-3">
+  <div className="block col-span-1 text-left">
+    <label className="text-xs">available after</label>
+    <input
+      value={availableAfter}
+      onChange={(event) => { setAvailableAfter(event.target.value) }}
+      type="date"
+      className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+  </div>
+
+  <div className="block col-span-1 text-left">
+    <label className="text-xs">available until</label>
+    <input
+      value={availableUntil}
+      onChange={(event) => { setAvailableUntil(event.target.value) }}
+      type="date"
+      className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+  </div>
+</div>
+
+{/* confirm button */}
+<div className="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 md:gap-x-3 mt-4">
+  <div className="flex flex-col justify-end lg:col-start-3 sm:col-start-2 text-left w-full">
+    <button className="bg-teal-600 hover:bg-teal-700 active:bg-teal-800 w-full drop-shadow-md
+text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
+      onClick={() => { updateAvailability() }}>
+      Change availability
+    </button>
+  </div>
+
+</div>
+
+{/* delete button */}
+<h2 className="text-xl text-left text-gray-800 font-sans mt-6 pt-6 border-t border-gray-200">Delete resort ❌</h2>
+<div className="grid grid-cols-1 justify-end lg:grid-cols-3 sm:grid-cols-2 md:gap-x-3 mt-4">
+  <div className="flex flex-col lg:col-start-3 sm:col-start-2 text-left w-full">
+    <button className="bg-red-600 hover:bg-red-700 active:bg-red-800 w-full drop-shadow-md
+text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
+      onClick={() => { setShowModal(true) }}>
+      Delete
+    </button>
+  </div>
+</div>
+
+{showModal && <DeletionModal  closeFunction = {() => hide(false)}
+                                deleteFunction = {() => deleteAdvertisement()}
+                                text = {`Are you sure you want to permanently delete ${ data.title }? This action cannot be undone.`}
+  />}
+
+</div>
   );
 }
 

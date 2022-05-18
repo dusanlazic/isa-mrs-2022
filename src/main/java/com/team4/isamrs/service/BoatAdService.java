@@ -5,6 +5,7 @@ import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.dto.updation.BoatAdUpdationDTO;
+import com.team4.isamrs.exception.IdenticalAvailabilityDatesException;
 import com.team4.isamrs.exception.ReservationsInUnavailabilityPeriodException;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.boat.BoatAd;
@@ -98,6 +99,9 @@ public class BoatAdService {
     }
 
     public void updateAvailabilityPeriod(Long id, AvailabilityPeriodUpdationDTO dto, Authentication auth) {
+        if (dto.getAvailableUntil().equals(dto.getAvailableAfter()))
+            throw new IdenticalAvailabilityDatesException();
+
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
         BoatAd boatAd = boatAdRepository.findBoatAdByIdAndAdvertiser(id, advertiser).orElseThrow();
 

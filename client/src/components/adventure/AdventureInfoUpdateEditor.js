@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { put, post } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import ReactFlagsSelect from "react-flags-select";
+import { Icon } from '@iconify/react';
 
 const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
   const [title, setTitle] = useState(data.title);
@@ -160,7 +161,10 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
       <h1 className="text-2xl text-left text-gray-400 font-sans">Edit advertisement</h1>
       
       {/* Basic info */}
-      <h2 className="text-xl text-left text-gray-800 font-sans mt-4">Basic information ℹ️</h2>
+      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-12">
+        <Icon className="mr-2" icon="tabler:info-circle" inline={true} fontSize={30} />
+        <span>Basic information</span>
+      </h2>
 
       <div className="grid grid-cols-3 mt-2">
         <div className="block col-span-2 text-left">
@@ -196,7 +200,11 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
       </div>
 
       {/* Photos */}
-      <h2 className="text-xl text-left text-gray-800 font-sans mt-12">Photos 📸</h2>
+      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-12">
+        <Icon className="mr-2" icon="tabler:camera" inline={true} fontSize={30} />
+        <span>Photos</span>
+      </h2>
+
       <div className="grid grid-cols-10 gap-x-6 mt-4">
         <div className="block col-span-1">
           <div className="flex rounded-lg w-full ml-1">
@@ -233,7 +241,11 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
       </div>
 
       {/* Location info */}
-      <h2 className="text-xl text-left text-gray-800 font-sans mt-12">Location 📍</h2>
+      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-12">
+        <Icon className="mr-2" icon="tabler:map-pin" inline={true} fontSize={30} />
+        <span>Location</span>
+      </h2>
+
       <div className="grid grid-cols-3 mt-2 gap-x-3">
         <div className="block col-span-2 text-left">
           <label className="text-xs">address</label>
@@ -288,7 +300,11 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
       </div>
 
       {/* Details */}
-      <h2 className="text-xl text-left text-gray-800 font-sans mt-12">Details ✅</h2>
+      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-12">
+        <Icon className="mr-2" icon="tabler:list-details" inline={true} fontSize={30} />
+        <span>Details</span>
+      </h2>
+
       <div className="grid grid-cols-3 mt-2 gap-x-3">
         <div className="block col-span-2 text-left">
           <label className="text-xs">rules of conduct</label>
@@ -450,7 +466,11 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
       </div>
 
       {/* Pricing */}
-      <h2 className="text-xl text-left text-gray-800 font-sans mt-12">Pricing 💵</h2>
+      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-12">
+        <Icon className="mr-2" icon="tabler:coin" inline={true} fontSize={30} />
+        <span>Pricing</span>
+      </h2>
+      
       <div className="grid grid-cols-3 mt-1 gap-x-3">
         <div className="block col-span-1 text-left">
           <label className="text-xs">currency</label>
@@ -578,7 +598,11 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
       </div>
 
       {/* Availability */}
-      <h2 className="text-xl text-left text-gray-800 font-sans mt-12">Availability 📅</h2>
+      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-6 pt-6 border-t border-gray-200">
+        <Icon className="mr-2" icon="tabler:calendar" inline={true} fontSize={30} />
+        <span>Availability</span>
+      </h2>
+      
       <div className="grid grid-cols-3 mt-1 gap-x-3">
         <div className="block col-span-1 text-left">
           <label className="text-xs">available after</label>

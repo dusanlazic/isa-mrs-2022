@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import schema from '../validators/loginSchema';
 import { get, patch } from "../adapters/xhr";
-import { getToken, getSession } from '../contexts'
+import { getSession } from '../contexts'
 import { logout } from '../util'; 
 
 const AdminPasswordPage = () => {
@@ -27,6 +24,10 @@ const AdminPasswordPage = () => {
   }, [session.id])
 
   const changePassword = () => {
+    if (password !== passwordConfirmation) {
+      return;
+    }
+
     patch('/api/admin/password', {
       password: password,
       passwordConfirmation: passwordConfirmation
@@ -74,7 +75,7 @@ const AdminPasswordPage = () => {
             className="block rounded-lg px-3 border text-gray-700 border-gray-300
             text-lg md:text-base lg:text-lg py-1 bg-slate-100 focus:outline-none focus:border-gray-500
             w-full caret-gray-700"
-            autoComplete="off"/>
+            autoComplete="new-password"/>
             <div className="h-2">
               <p className="text-xs text-red-500 my-0 tracking-wide">{errors === null ? '' : errors.password}</p>
             </div>
@@ -84,7 +85,7 @@ const AdminPasswordPage = () => {
             className="block rounded-lg px-3 border text-gray-700 border-gray-300 mt-2
             text-lg md:text-base lg:text-lg py-1 bg-slate-100 focus:outline-none
             focus:border-gray-500 w-full caret-gray-700"
-            autoComplete="off"/>
+            autoComplete="new-password"/>
             <div className="h-2">
               <p className="text-xs text-red-500 my-0 tracking-wide">{errors === null ? '' : errors.passwordConfirmation}</p>
               <p className="text-xs text-red-500 my-0 tracking-wide">{password !== passwordConfirmation && passwordConfirmationChanged ? 'Passwords do not match.' : ''}</p>            

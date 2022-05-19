@@ -17,20 +17,26 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
     @Override
     public boolean isValid(Object obj, ConstraintValidatorContext context){
         if (obj instanceof RegistrationRequestCreationDTO dto) {
-            return dto.getPassword().equals(dto.getPasswordConfirmation());
+            return passwordsMatch(dto.getPassword(), dto.getPasswordConfirmation());
         }
         else if (obj instanceof CustomerCreationDTO dto) {
-            return dto.getPassword().equals(dto.getPasswordConfirmation());
+            return passwordsMatch(dto.getPassword(), dto.getPasswordConfirmation());
         }
         else if (obj instanceof AdminCreationDTO dto) {
-            return dto.getPassword().equals(dto.getPasswordConfirmation());
+            return passwordsMatch(dto.getPassword(), dto.getPasswordConfirmation());
         }
         else if (obj instanceof InitialPasswordUpdationDTO dto) {
-            return dto.getPassword().equals(dto.getPasswordConfirmation());
+            return passwordsMatch(dto.getPassword(), dto.getPasswordConfirmation());
         }
         else if (obj instanceof PasswordUpdationDTO dto) {
-            return dto.getNewPassword().equals(dto.getPasswordConfirmation());
+            return passwordsMatch(dto.getNewPassword(), dto.getPasswordConfirmation());
         }
         return false;
+    }
+
+    private boolean passwordsMatch(String password, String confirmation) {
+        if (password == null || confirmation == null)
+            return false;
+        return password.equals(confirmation);
     }
 }

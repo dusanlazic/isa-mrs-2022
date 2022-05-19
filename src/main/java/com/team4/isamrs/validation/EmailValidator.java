@@ -20,6 +20,8 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
     }
 
     private boolean validateEmail(String email) {
+        if (email == null)
+            return false;
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();

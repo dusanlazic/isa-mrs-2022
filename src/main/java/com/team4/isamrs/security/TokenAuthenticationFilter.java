@@ -45,6 +45,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         } catch (TokenNotProvidedException | JWTVerificationException | UserNotFoundException ex) {
             sendResponse(response, HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
         } catch (Exception ex) {
+            ex.printStackTrace();
             sendResponse(response, HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error has occurred.");
         }
     }

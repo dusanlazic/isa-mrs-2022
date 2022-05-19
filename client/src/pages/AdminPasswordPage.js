@@ -38,7 +38,6 @@ const AdminPasswordPage = () => {
     })
     .catch((error) => {
       setErrors(error.response.data.errors);
-      console.log(errors);
     });
   }
 

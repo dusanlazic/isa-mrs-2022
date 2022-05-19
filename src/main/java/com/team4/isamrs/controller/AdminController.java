@@ -23,7 +23,7 @@ public class AdminController {
 
     @PostMapping("/register")
     @PreAuthorize("hasRole('SUPERUSER')")
-    public ResponseEntity<String> registerClient(@Valid @RequestBody AdminCreationDTO dto) {
+    public ResponseEntity<String> registerAdmin(@Valid @RequestBody AdminCreationDTO dto) {
         accountService.createAdmin(dto);
         return ResponseEntity.ok().body("Administrator registered.");
     }

@@ -12,6 +12,7 @@ import UpdateBoatPage from './pages/UpdateBoatPage';
 import CreateResortPage from './pages/CreateResortPage';
 import UpdateResortPage from './pages/UpdateResortPage';
 import RegistrationRequestsPage from './pages/RegistrationRequestsPage';
+import Navbar from './components/util/Navbar';
 
 import NotFound from './pages/NotFound';
 
@@ -22,6 +23,7 @@ function App() {
     <Router>
       <div className="App min-h-screen">
         {/* Navbar Component */}
+        <Navbar />
         <div className="h-full">
             <Routes>
               <Route path="/" exact element={<HomePage/>}/>

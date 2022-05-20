@@ -18,6 +18,7 @@ const LoginPage = () => {
   
   const redirect = () => {
     navigate('/');
+    window.location.reload();
   }
 
   const { register, handleSubmit, formState: { errors }, clearErrors} = useForm({

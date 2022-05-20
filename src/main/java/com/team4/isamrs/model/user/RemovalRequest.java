@@ -26,6 +26,6 @@ public class RemovalRequest {
     @Enumerated(EnumType.ORDINAL)
     private ApprovalStatus approvalStatus;
 
-    @Column(name = "response", nullable = false)
-    private String response;
+    @Column(name = "rejection_reason")
+    private String rejectionReason;
 }

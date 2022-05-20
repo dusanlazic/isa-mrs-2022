@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,7 +45,7 @@ public class AuthenticationController {
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler({ BadCredentialsException.class, InternalAuthenticationServiceException.class })
+    @ExceptionHandler({ BadCredentialsException.class, InternalAuthenticationServiceException.class, LockedException.class })
     public ExceptionResponseBody handleBadCredentials(Exception ex) {
         if (ex.getCause() instanceof UserNotFoundException)
             // Prevents the attackers from enumerating users by relying on the response time.

@@ -3,6 +3,7 @@ package com.team4.isamrs.security;
 import com.team4.isamrs.model.user.Administrator;
 import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.model.user.RegistrationRequest;
+import com.team4.isamrs.model.user.RemovalRequest;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -53,23 +54,23 @@ public class EmailSender {
         variables.put("name", customer.getFirstName());
         variables.put("link", "http://localhost:3000/confirm-registration/" + token);
 
-        sendEmail("confirmation.html", variables, "Registration Confirmation", customer.getUsername());
+        sendEmail("registration/confirmation.html", variables, "Registration Confirmation", customer.getUsername());
     }
 
-    public void sendApprovalEmail(RegistrationRequest registrationRequest) {
+    public void sendRegistrationApprovalEmail(RegistrationRequest registrationRequest) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", registrationRequest.getFirstName());
         variables.put("link", "http://localhost:3000/login");
 
-        sendEmail("approval.html", variables, "Your request has been APPROVED", registrationRequest.getUsername());
+        sendEmail("registration/approval.html", variables, "Your request has been APPROVED", registrationRequest.getUsername());
     }
 
-    public void sendRejectionEmail(RegistrationRequest registrationRequest) {
+    public void sendRegistrationRejectionEmail(RegistrationRequest registrationRequest) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", registrationRequest.getFirstName());
         variables.put("reason", registrationRequest.getRejectionReason());
 
-        sendEmail("rejection.html", variables, "Your request has been REJECTED", registrationRequest.getUsername());
+        sendEmail("registration/rejection.html", variables, "Your request has been REJECTED", registrationRequest.getUsername());
     }
 
     public void sendAdministratorRegistrationEmail(Administrator administrator) {
@@ -77,7 +78,22 @@ public class EmailSender {
         variables.put("name", administrator.getFirstName());
         variables.put("link", "http://localhost:3000/login");
 
-        sendEmail("administrator-registration.html", variables, "Activate your administrator account", administrator.getUsername());
+        sendEmail("registration/administrator.html", variables, "Activate your administrator account", administrator.getUsername());
+    }
+
+    public void sendRemovalApprovalEmail(RemovalRequest removalRequest) {
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("name", removalRequest.getUser().getFirstName());
+
+        sendEmail("removal/approval.html", variables, "Your account has been DELETED", removalRequest.getUser().getUsername());
+    }
+
+    public void sendRemovalRejectionEmail(RemovalRequest removalRequest) {
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("name", removalRequest.getUser().getFirstName());
+        variables.put("reason", removalRequest.getRejectionReason());
+
+        sendEmail("removal/rejection.html", variables, "Your request for account removal has been REJECTED", removalRequest.getUser().getUsername());
     }
 
     private String buildEmailFromTemplate(String filename, HashMap<String, String> variables) throws IOException {

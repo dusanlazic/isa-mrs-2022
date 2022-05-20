@@ -50,11 +50,11 @@ public class RegistrationRequestService {
         if (dto.getApprove()) {
             request.setApprovalStatus(ApprovalStatus.APPROVED);
             createAdvertiser(request);
-            emailSender.sendApprovalEmail(request);
+            emailSender.sendRegistrationApprovalEmail(request);
         } else {
             request.setApprovalStatus(ApprovalStatus.REJECTED);
             request.setRejectionReason(dto.getRejectionReason());
-            emailSender.sendRejectionEmail(request);
+            emailSender.sendRegistrationRejectionEmail(request);
         }
         registrationRequestRepository.save(request);
     }

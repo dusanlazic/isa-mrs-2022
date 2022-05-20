@@ -133,22 +133,22 @@ public class AccountService {
     public void createRemovalRequest(RemovalRequestCreationDTO removalRequestCreationDTO, Authentication auth) {
         User user = (User) auth.getPrincipal();
         checkForExistingRemovalRequest(user.getId());
-        RemovalRequest removalRequest = modelMapper.map(removalRequestCreationDTO, RemovalRequest.class);
+        RemovalRequest removalRequest = new RemovalRequest();
+        removalRequest.setExplanation(removalRequestCreationDTO.getExplanation());
         removalRequest.setUser(user);
         removalRequest.setCreatedAt(LocalDateTime.now());
-        removalRequest.setResponse("");
         removalRequest.setApprovalStatus(ApprovalStatus.PENDING);
         removalRequestRepository.save(removalRequest);
     }
 
     public void createRegistrationRequest(RegistrationRequestCreationDTO registrationRequestDTO) {
-
         checkForExistingEmail(registrationRequestDTO.getUsername());
         checkForExistingPhoneNumber(registrationRequestDTO.getPhoneNumber());
 
         RegistrationRequest registrationRequest = modelMapper.map(registrationRequestDTO, RegistrationRequest.class);
         registrationRequest.setCreatedAt(LocalDateTime.now());
         registrationRequest.setPasswordHash(passwordEncoder.encode(registrationRequestDTO.getPassword()));
+        registrationRequest.setApprovalStatus(ApprovalStatus.PENDING);
         registrationRequestRepository.save(registrationRequest);
     }
 

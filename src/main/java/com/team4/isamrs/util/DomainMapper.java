@@ -14,8 +14,7 @@ import com.team4.isamrs.model.boat.NavigationalEquipment;
 import com.team4.isamrs.model.enumeration.AccountType;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.resort.ResortAd;
-import com.team4.isamrs.model.user.Customer;
-import com.team4.isamrs.model.user.RegistrationRequest;
+import com.team4.isamrs.model.user.*;
 import com.team4.isamrs.repository.*;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -281,12 +280,56 @@ public class DomainMapper {
             return destination;
         };
 
+        Converter<Advertiser, AccountDisplayDTO> AdvertiserToAccountDisplayDtoConverter = context -> {
+            User source = context.getSource();
+            AccountDisplayDTO destination = context.getDestination();
+
+            destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
+
+            return destination;
+        };
+
+        Converter<Administrator, AccountDisplayDTO> AdministratorToAccountDisplayDtoConverter = context -> {
+            User source = context.getSource();
+            AccountDisplayDTO destination = context.getDestination();
+
+            destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
+
+            return destination;
+        };
+
+        Converter<Customer, AccountDisplayDTO> CustomerToAccountDisplayDtoConverter = context -> {
+            User source = context.getSource();
+            AccountDisplayDTO destination = context.getDestination();
+
+            destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
+
+            return destination;
+        };
+
+        Converter<User, AccountDisplayDTO> UserToAccountDisplayDtoConverter = context -> {
+            User source = context.getSource();
+            AccountDisplayDTO destination = context.getDestination();
+
+            destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
+
+            return destination;
+        };
+
+        Converter<RemovalRequest, RemovalRequestDisplayDTO> RemovalRequestToDisplayDtoConverter = context -> {
+            RemovalRequest source = context.getSource();
+            RemovalRequestDisplayDTO destination = context.getDestination();
+
+            destination.setUser(modelMapper.map(source.getUser(), AccountDisplayDTO.class));
+
+            return destination;
+        };
+
         modelMapper.createTypeMap(AdventureAdCreationDTO.class, AdventureAd.class).setPostConverter(CreationDtoToAdventureAdConverter);
         modelMapper.createTypeMap(AdventureAdUpdationDTO.class, AdventureAd.class).setPostConverter(UpdationDtoToAdventureAdConverter);
         modelMapper.createTypeMap(AdventureAd.class, AdventureAdDisplayDTO.class).setPostConverter(AdventureAdToDisplayDtoConverter);
         modelMapper.createTypeMap(Photo.class, PhotoBriefDisplayDTO.class).setPostConverter(PhotoToDisplayDtoConverter);
         modelMapper.createTypeMap(Photo.class, PhotoUploadDisplayDTO.class).setPostConverter(PhotoToUploadDisplayDtoConverter);
-        modelMapper.createTypeMap(Customer.class, CustomerDisplayDTO.class);
         modelMapper.createTypeMap(BoatAdCreationDTO.class, BoatAd.class).setPostConverter(CreationDtoToBoatAdConverter);
         modelMapper.createTypeMap(BoatAdUpdationDTO.class, BoatAd.class).setPostConverter(UpdationDtoToBoatAdConverter);
         modelMapper.createTypeMap(BoatAd.class, BoatAdDisplayDTO.class).setPostConverter(BoatAdToDisplayDtoConverter);
@@ -294,6 +337,11 @@ public class DomainMapper {
         modelMapper.createTypeMap(ResortAdCreationDTO.class, ResortAd.class).setPostConverter(CreationDtoToResortAdConverter);
         modelMapper.createTypeMap(ResortAdUpdationDTO.class, ResortAd.class).setPostConverter(UpdationDtoToResortAdConverter);
         modelMapper.createTypeMap(ResortAd.class, ResortAdDisplayDTO.class).setPostConverter(ResortAdToDisplayDtoConverter);
+        modelMapper.createTypeMap(Advertiser.class, AccountDisplayDTO.class).setPostConverter(AdvertiserToAccountDisplayDtoConverter);
+        modelMapper.createTypeMap(Administrator.class, AccountDisplayDTO.class).setPostConverter(AdministratorToAccountDisplayDtoConverter);
+        modelMapper.createTypeMap(Customer.class, AccountDisplayDTO.class).setPostConverter(CustomerToAccountDisplayDtoConverter);
+        modelMapper.createTypeMap(User.class, AccountDisplayDTO.class).setPostConverter(UserToAccountDisplayDtoConverter);
+        modelMapper.createTypeMap(RemovalRequest.class, RemovalRequestDisplayDTO.class).setPostConverter(RemovalRequestToDisplayDtoConverter);
     }
 
     private HashSet<Tag> mapTagNames(Set<String> tagNames) {

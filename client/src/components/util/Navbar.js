@@ -48,14 +48,14 @@ const Navbar = () => {
 
             <Link to="/register">
               <button className=' border-white
-              font-bold rounded-lg px-6 py-1 text-baby-green hover:text-baby-green-darker'>
+              font-bold rounded-lg px-6 py-1 text-silver-accent hover:text-slate-300'>
                 Register
               </button>
             </Link>
 
             <Link to="/login">
               <button className=' border-white text-raisin-black ml-2
-              font-bold rounded-lg px-6 py-1 bg-baby-green hover:bg-baby-green-darker'>
+              font-bold rounded-lg px-6 py-1 bg-silver-accent hover:bg-slate-300'>
                 Login
               </button>
             </Link>
@@ -65,9 +65,9 @@ const Navbar = () => {
         {isSessionActive &&
           <div className='dropdown dropdown-end my-auto'>
             <label tabIndex="0" className='btn' id="dropdown-btn-nav-2" onClick={() => handleDropdown()}>
-              <Icon className="w-10 h-10 text-gray-600 bg-baby-green rounded-full" icon="tabler:user-circle" inline={true} />
+              <Icon className="w-10 h-10 text-gray-600 bg-silver-accent rounded-full" icon="tabler:user-circle" inline={true} />
             </label>
-            <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-baby-green text-left rounded-box w-40">
+            <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-silver-accent text-left rounded-box w-40">
               <Link to={`/client/${session.id}`}>
                 <li>
                   <div className='flex text-lg rounded-lg hover:bg-gray-500 hover:bg-opacity-10 px-1'>

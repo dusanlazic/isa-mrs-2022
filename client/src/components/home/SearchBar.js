@@ -53,8 +53,8 @@ const SearchBar = () => {
         {/* type of entity */}
         <div>
           <div className='dropdown sm:dropdown-end'>
-            <label tabIndex="0" className='btn w-full' id="dropdown-btn-search" onClick={() => handleDropdown()}>
-              <Icon className="h-10 w-10 p-2.5 text-gray-50 bg-slate-600 rounded-md"
+            <label tabIndex="0" className='btn px-0 pr-4 pl-4' id="dropdown-btn-search" onClick={() => handleDropdown()}>
+              <Icon className="h-10 w-10 p-2.5 text-gray-50 bg-slate-600 rounded-md transition ease-in-out hover:scale-105"
               icon={getIconBasedOnType()} inline={true} />
             </label>
             <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-slate-600 text-left rounded-box w-40">
@@ -137,7 +137,7 @@ const SearchBar = () => {
 
         {/* button */}
         <div className='shrink-0 p-1 pr-4'>
-          <button className='h-10 w-10 text-gray-50 bg-slate-600 rounded-md text-center'>
+          <button className='h-10 w-10 text-gray-50 bg-slate-600 rounded-md text-center transition ease-in-out hover:scale-105'>
             <Icon icon='tabler:search' className='mx-auto'/>
           </button>
         </div>

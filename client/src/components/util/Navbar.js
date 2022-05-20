@@ -40,7 +40,7 @@ const Navbar = () => {
   }
 
   return ( 
-    <div className='flex justify-between bg-raisin-black px-3'>
+    <div className='fixed top-0 w-full flex justify-between bg-raisin-black px-3'>
       <Link to="/" className=' my-auto py-2'><img src='/images/logo-v1.png' alt='' className='h-10 my-auto' /></Link>
       <div className='flex'>
         {!isSessionActive &&

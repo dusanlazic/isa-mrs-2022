@@ -67,12 +67,11 @@ code {
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #888;
-  border-radius: 10px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #666; 
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

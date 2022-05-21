@@ -39,11 +39,11 @@ const SearchBar = () => {
       query += guests.trim() !== '' ? `${query !== '?' ? '&' : ''}guests=` + guests.trim() : '';
       
       if (startDate) {
-        const start = moment(startDate).format('DD-MM-yyyy');
+        const start = moment(startDate).format('yyyy-MM-DD');
         query += start ? `${query !== '?' ? '&' : ''}startDate=` + start : '';
       }
       if (endDate) {
-        const end = moment(endDate).format('DD-MM-yyyy');
+        const end = moment(endDate).format('yyyy-MM-DD');
         query += end ? `${query !== '?' ? '&' : ''}endDate=` + end : '';
       }
     }

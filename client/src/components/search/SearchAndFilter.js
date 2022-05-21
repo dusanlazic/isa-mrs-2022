@@ -1,18 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import DatePicker from "react-datepicker";
-import { isDOMComponent } from 'react-dom/test-utils';
+import moment from 'moment';
 
 const SearchAndFilter = ({whereProp, entityProp, guestsProp, startDateProp, endDateProp, searchResults}) => {
   
+  const navigate = useNavigate();
+
   const [where, setWhere] = useState(whereProp);
-  const [startDate, setStartDate] = useState(startDateProp);
-  const [endDate, setEndDate] = useState(endDateProp);
   const [guests, setGuests] = useState(guestsProp);
+
+  const [startDate, setStartDate] = useState(startDateProp ? new Date(startDateProp) : null);
+  const [endDate, setEndDate] = useState(endDateProp ? new Date(endDateProp) : null);
 
   const [selectedEntity, setSelectedEntity] = useState(entityProp);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
 
   const handleDropdown = () => {
     if (isDropdownOpen && document.activeElement === document.getElementById('dropdown-btn-search')) {
@@ -34,6 +37,33 @@ const SearchAndFilter = ({whereProp, entityProp, guestsProp, startDateProp, endD
       return 'tabler:sailboat';
     else if (selectedEntity.includes('adventures'))
       return 'tabler:fish';
+  }
+
+  const clearAll = () => {
+    setSelectedEntity(entityProp);
+    setWhere('');
+    setStartDate(null);
+    setEndDate(null);
+    setGuests('');
+  }
+
+  const applyFilter = () => {
+    let query = '';
+    if (where.trim() !== '' || guests.trim() !== '' || startDate || endDate) {
+      query += '?';
+      query += where.trim() !== '' ? 'where=' + where.trim() : '';
+      query += guests.trim() !== '' ? `${query !== '?' ? '&' : ''}guests=` + guests.trim() : '';
+      
+      if (startDate) {
+        const start = moment(startDate).format('yyyy-MM-DD');
+        query += start ? `${query !== '?' ? '&' : ''}startDate=` + start : '';
+      }
+      if (endDate) {
+        const end = moment(endDate).format('yyyy-MM-DD');
+        query += end ? `${query !== '?' ? '&' : ''}endDate=` + end : '';
+      }
+    }
+    navigate(`/ads/${selectedEntity}${query}`);
   }
 
   return ( 
@@ -94,6 +124,8 @@ const SearchAndFilter = ({whereProp, entityProp, guestsProp, startDateProp, endD
             <input
               onChange={(e) => setGuests(e.target.value)}
               placeholder="Guests"
+              value={guests}
+              type="number"
               className={`w-20 outline-none text-center rounded-lg placeholder-slate-400
               text-slate-600 focus:text-slate-900 h-10 px-2 border border-slate-200
               ${guests ? 'pt-2 font-medium' : ''}`}
@@ -141,14 +173,16 @@ const SearchAndFilter = ({whereProp, entityProp, guestsProp, startDateProp, endD
             <div className='text-xs text-gray-400 tracking-wide'>Searching results:</div>
               <div className='text-xl'>
                 <span className='text-slate-700 font-medium'>{searchResults} Result{searchResults === 1 ? '' : 's' } </span>
-                <span className='text-gray-500'>{where ? 'in ' + where : ''}</span>
+                <span className='text-gray-500'>{whereProp ? 'in ' + whereProp : ''}</span>
               </div>
             </div>
 
           <div className='flex self-end gap-x-3 mt-2 sm:mt-0'>
-            <button className='border-white text-raisin-black font-medium rounded-lg text-sm sm:text-base
+            <button onClick={clearAll}
+            className='border-white text-raisin-black font-medium rounded-lg text-sm sm:text-base
             px-3 sm:px-6 py-1 bg-silver-accent hover:bg-slate-300'>Clear all</button>
-            <button className='border-white text-raisin-black font-medium rounded-lg text-sm sm:text-base
+            <button onClick={applyFilter}
+            className='border-white text-raisin-black font-medium rounded-lg text-sm sm:text-base
             px-3 sm:px-6 py-1 bg-silver-accent hover:bg-slate-300'>Apply filter</button>
           </div>
         </div>

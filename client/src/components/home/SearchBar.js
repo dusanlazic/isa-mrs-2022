@@ -10,9 +10,9 @@ const SearchBar = () => {
   const [where, setWhere] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [guests, setGuests] = useState('');
   const [selectedEntity, setSelectedEntity] = useState('resorts');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [guests, setGuests] = useState('');
 
   const handleCalendarClose = () => console.log(startDate);
   const handleCalendarOpen = () => console.log(endDate);
@@ -65,7 +65,6 @@ const SearchBar = () => {
       return;
     }
     guests < 1 ? setGuests(1) : setGuests(guests);
-    
   }
 
   return ( 
@@ -76,26 +75,27 @@ const SearchBar = () => {
         {/* type of entity */}
         <div>
           <div className='dropdown sm:dropdown-end'>
-            <label tabIndex="0" className='btn px-0 pr-4 pl-4' id="dropdown-btn-search" onClick={() => handleDropdown()}>
+            <label tabIndex="0" className='btn px-0 pr-4 pl-4' id="dropdown-btn-search" 
+            onBlur={e => setIsDropdownOpen(false)} onClick={() => handleDropdown()}>
               <Icon className="h-10 w-10 p-2.5 text-gray-50 bg-slate-600 rounded-md transition ease-in-out hover:scale-105"
               icon={getIconBasedOnType()} inline={true} />
             </label>
             <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-slate-600 text-left rounded-box w-40">
-              <li onClick={() => {setSelectedEntity('resorts'); handleDropdown();}}>
+              <li onClick={() => setSelectedEntity('resorts')}>
                 <div className='flex text-lg rounded-lg hover:bg-slate-700 text-gray-50 hover:bg-opacity-75 px-1'>
                   <Icon className='w-6 h-6 ' icon="tabler:window" inline={true} />
                   <span className='ml-1.5 pb-1'>resort</span>
                 </div>
               </li>
 
-              <li onClick={() => {setSelectedEntity('boats'); handleDropdown();}}>
+              <li onClick={() => setSelectedEntity('boats')}>
                 <div className='flex text-lg rounded-lg hover:bg-slate-700 text-gray-50 hover:bg-opacity-75 px-1'>
                   <Icon className='w-6 h-6 ' icon="tabler:sailboat" inline={true} />
                   <span className='ml-1.5 pb-1'>boat</span>
                 </div>
               </li>
 
-              <li onClick={() => {setSelectedEntity('adventures'); handleDropdown();}}>
+              <li onClick={() => setSelectedEntity('adventures')}>
                 <div className='flex text-lg rounded-lg hover:bg-slate-700 text-gray-50 hover:bg-opacity-75 px-1'>
                   <Icon className='w-6 h-6 ' icon="tabler:fish" inline={true} />
                   <span className='ml-1.5 pb-1'>adventure</span>

@@ -243,6 +243,42 @@ public class DomainMapper {
             return destination;
         };
 
+        Converter<ResortAd, ResortAdSimpleDisplayDTO> ResortAdToSimpleDisplayDtoConverter = context -> {
+            ResortAd source = context.getSource();
+            ResortAdSimpleDisplayDTO destination = context.getDestination();
+
+            destination.setPhoto(source.getPhotos().isEmpty() ?
+                    null :
+                    modelMapper.map(source.getPhotos().stream().findFirst().orElse(null),
+                    PhotoBriefDisplayDTO.class));
+
+            return destination;
+        };
+
+        Converter<BoatAd, BoatAdSimpleDisplayDTO> BoatAdToSimpleDisplayDtoConverter = context -> {
+            BoatAd source = context.getSource();
+            BoatAdSimpleDisplayDTO destination = context.getDestination();
+
+            destination.setPhoto(source.getPhotos().isEmpty() ?
+                    null :
+                    modelMapper.map(source.getPhotos().stream().findFirst().orElse(null),
+                            PhotoBriefDisplayDTO.class));
+
+            return destination;
+        };
+
+        Converter<AdventureAd, AdventureAdSimpleDisplayDTO> AdventureAdToSimpleDisplayDtoConverter = context -> {
+            AdventureAd source = context.getSource();
+            AdventureAdSimpleDisplayDTO destination = context.getDestination();
+
+            destination.setPhoto(source.getPhotos().isEmpty() ?
+                    null :
+                    modelMapper.map(source.getPhotos().stream().findFirst().orElse(null),
+                            PhotoBriefDisplayDTO.class));
+
+            return destination;
+        };
+
         Converter<ResortAdUpdationDTO, ResortAd> UpdationDtoToResortAdConverter = context -> {
             ResortAdUpdationDTO source = context.getSource();
             ResortAd destination = context.getDestination();
@@ -294,6 +330,9 @@ public class DomainMapper {
         modelMapper.createTypeMap(ResortAdCreationDTO.class, ResortAd.class).setPostConverter(CreationDtoToResortAdConverter);
         modelMapper.createTypeMap(ResortAdUpdationDTO.class, ResortAd.class).setPostConverter(UpdationDtoToResortAdConverter);
         modelMapper.createTypeMap(ResortAd.class, ResortAdDisplayDTO.class).setPostConverter(ResortAdToDisplayDtoConverter);
+        modelMapper.createTypeMap(ResortAd.class, ResortAdSimpleDisplayDTO.class).setPostConverter(ResortAdToSimpleDisplayDtoConverter);
+        modelMapper.createTypeMap(BoatAd.class, BoatAdSimpleDisplayDTO.class).setPostConverter(BoatAdToSimpleDisplayDtoConverter);
+        modelMapper.createTypeMap(AdventureAd.class, AdventureAdSimpleDisplayDTO.class).setPostConverter(AdventureAdToSimpleDisplayDtoConverter);
     }
 
     private HashSet<Tag> mapTagNames(Set<String> tagNames) {

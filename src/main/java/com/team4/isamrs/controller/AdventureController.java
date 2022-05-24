@@ -3,6 +3,7 @@ package com.team4.isamrs.controller;
 import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.creation.HourlyPriceCreationDTO;
 import com.team4.isamrs.dto.display.AdventureAdDisplayDTO;
+import com.team4.isamrs.dto.display.AdventureAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.HourlyPriceDisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
 import com.team4.isamrs.service.AdventureAdService;
@@ -33,9 +34,9 @@ public class AdventureController {
         return new ResponseEntity<>(adventureAdService.findAll(AdventureAdDisplayDTO.class), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/top10")
-    public ResponseEntity<Collection<AdventureAdDisplayDTO>> findTopTen() {
-        return new ResponseEntity<>(adventureAdService.findTopTen(), HttpStatus.OK);
+    @GetMapping(value = "/top6")
+    public ResponseEntity<Collection<AdventureAdSimpleDisplayDTO>> findTopSix() {
+        return new ResponseEntity<>(adventureAdService.findTopSix(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")

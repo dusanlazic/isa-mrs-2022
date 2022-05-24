@@ -2,6 +2,7 @@ package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
+import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.updation.BoatAdUpdationDTO;
 import com.team4.isamrs.service.BoatAdService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,9 @@ public class BoatController {
         return new ResponseEntity<>(boatAdService.findAll(BoatAdDisplayDTO.class), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/top10")
-    public ResponseEntity<Collection<BoatAdDisplayDTO>> findTopTen() {
-        return new ResponseEntity<>(boatAdService.findTopTen(), HttpStatus.OK);
+    @GetMapping(value = "/top6")
+    public ResponseEntity<Collection<BoatAdSimpleDisplayDTO>> findTopSix() {
+        return new ResponseEntity<>(boatAdService.findTopSix(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")

@@ -2,6 +2,7 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.ResortAdCreationDTO;
 import com.team4.isamrs.dto.display.ResortAdDisplayDTO;
+import com.team4.isamrs.dto.display.ResortAdSimpleDisplayDTO;
 import org.springframework.data.domain.PageRequest;
 import com.team4.isamrs.dto.updation.ResortAdUpdationDTO;
 import com.team4.isamrs.model.resort.ResortAd;
@@ -39,9 +40,15 @@ public class ResortAdService {
         return modelMapper.map(resortAd, ResortAdDisplayDTO.class);
     }
 
-    public Collection<ResortAdDisplayDTO> findTopTen() {
-        return resortAdRepository.findAll(PageRequest.of(0, 10)).stream()
-                .map(e -> modelMapper.map(e, ResortAdDisplayDTO.class))
+    public Collection<ResortAdSimpleDisplayDTO> findTopSix() {
+        return resortAdRepository.findAll(PageRequest.of(0, 6)).stream()
+                .map(e -> modelMapper.map(e, ResortAdSimpleDisplayDTO.class))
+                .collect(Collectors.toSet());
+    }
+
+    public Collection<ResortAdSimpleDisplayDTO> search(int page) {
+        return resortAdRepository.findAll(PageRequest.of(page, 20)).stream()
+                .map(e -> modelMapper.map(e, ResortAdSimpleDisplayDTO.class))
                 .collect(Collectors.toSet());
     }
 

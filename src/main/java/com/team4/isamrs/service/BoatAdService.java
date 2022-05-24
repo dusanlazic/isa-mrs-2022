@@ -2,6 +2,7 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
+import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.BoatAdUpdationDTO;
 import com.team4.isamrs.model.boat.BoatAd;
@@ -43,9 +44,9 @@ public class BoatAdService {
                 .collect(Collectors.toSet());
     }
 
-    public Collection<BoatAdDisplayDTO> findTopTen() {
-        return boatAdRepository.findAll(PageRequest.of(0, 10)).stream()
-                .map(e -> modelMapper.map(e, BoatAdDisplayDTO.class))
+    public Collection<BoatAdSimpleDisplayDTO> findTopSix() {
+        return boatAdRepository.findAll(PageRequest.of(0, 6)).stream()
+                .map(e -> modelMapper.map(e, BoatAdSimpleDisplayDTO.class))
                 .collect(Collectors.toSet());
     }
 

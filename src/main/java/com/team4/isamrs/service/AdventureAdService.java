@@ -3,6 +3,7 @@ package com.team4.isamrs.service;
 import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.creation.HourlyPriceCreationDTO;
 import com.team4.isamrs.dto.display.AdventureAdDisplayDTO;
+import com.team4.isamrs.dto.display.AdventureAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
 import com.team4.isamrs.model.adventure.AdventureAd;
@@ -50,9 +51,9 @@ public class AdventureAdService {
                 .collect(Collectors.toSet());
     }
 
-    public Collection<AdventureAdDisplayDTO> findTopTen() {
-        return adventureAdRepository.findAll(PageRequest.of(0, 10)).stream()
-                .map(e -> modelMapper.map(e, AdventureAdDisplayDTO.class))
+    public Collection<AdventureAdSimpleDisplayDTO> findTopSix() {
+        return adventureAdRepository.findAll(PageRequest.of(0, 6)).stream()
+                .map(e -> modelMapper.map(e, AdventureAdSimpleDisplayDTO.class))
                 .collect(Collectors.toSet());
     }
 

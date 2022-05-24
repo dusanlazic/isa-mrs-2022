@@ -2,6 +2,7 @@ package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.creation.ResortAdCreationDTO;
 import com.team4.isamrs.dto.display.ResortAdDisplayDTO;
+import com.team4.isamrs.dto.display.ResortAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.updation.ResortAdUpdationDTO;
 import com.team4.isamrs.service.ResortAdService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +31,19 @@ public class ResortController {
         return new ResponseEntity<>(resortAdService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/top10")
-    public ResponseEntity<Collection<ResortAdDisplayDTO>> findTopTen() {
-        return new ResponseEntity<>(resortAdService.findTopTen(), HttpStatus.OK);
+    @GetMapping(value = "/top6")
+    public ResponseEntity<Collection<ResortAdSimpleDisplayDTO>> findTopSix() {
+        return new ResponseEntity<>(resortAdService.findTopSix(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<ResortAdDisplayDTO> findById(@PathVariable Long id) {
         return new ResponseEntity<>(resortAdService.findById(id), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/search")
+    public ResponseEntity<Collection<ResortAdSimpleDisplayDTO>> search(@RequestParam int page) {
+        return new ResponseEntity<>(resortAdService.search(page), HttpStatus.OK);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)

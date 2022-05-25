@@ -118,7 +118,7 @@ const RegistrationPage = () => {
 
   return (
     <div className="flex flex-col justify-center min-h-screen w-full h-full
-    first-letter:font-display bg-slate-500">
+    first-letter:font-display bg-slate-300">
       { /* used to be bg-slate-500 */}
       {!isRegistrationSuccessful && 
       <div className="flex flex-col justify-between h-160 sm:h-140 bg-white w-11/12 sm:w-5/6 md:w-120

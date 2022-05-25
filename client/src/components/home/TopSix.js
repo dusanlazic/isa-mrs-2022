@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 let called = [];
 
-const TopTens = () => {
+const TopSix = () => {
   const [current, setCurrent] = useState('resorts');
   const [data, setData] = useState(
     {
@@ -17,6 +17,9 @@ const TopTens = () => {
   const [currentData, setCurrentData] = useState(null);
 
   useEffect(() => {
+    called = [];
+  }, [])
+  useEffect(() => {
     if (!called.includes(current)) {
       getData();
     } else {
@@ -25,7 +28,7 @@ const TopTens = () => {
   }, [current])
 
   const getData = () => {
-    get(`/api/ads/${current}/top10`)
+    get(`/api/ads/${current}/top6`)
       .then((response) => {
         console.log(response.data);
         called.push(current);
@@ -37,9 +40,9 @@ const TopTens = () => {
   }
 
   const getPlaceholderImage = (what) => {
-    if (what === 'resorts') return '/images/cottage-2.jpg'
-    if (what === 'boats') return '/images/boat-1.jpg'
-    if (what === 'adventures') return '/images/fisherman-1.jpg'
+    if (what === 'resorts') return '/images/property-placeholder.jpg'
+    if (what === 'boats') return '/images/boat-placeholder.jpg'
+    if (what === 'adventures') return '/images/fish-placeholder.jpg'
   }
 
   if (!currentData) {
@@ -47,7 +50,7 @@ const TopTens = () => {
   }
 
   return ( 
-    <div className="py-11 w-full px-8 lg:px-28 xl:px-40
+    <div  className="py-11 w-full px-8 lg:px-28 xl:px-40
     text-left bg-gradient-to-b from-stone-50 to-white shadow-sm">
 
       <div className="flex justify-between">
@@ -87,7 +90,7 @@ const TopTens = () => {
 
           <div key={entity.id} className="w-full mx-auto">
             <Link to={`/${current.substring(0, current.length - 1)}/${entity.id}`}>
-              <img src={entity.photos.length > 0 ? `/api/${entity.photos[0].uri}` : getPlaceholderImage(current)} alt=""
+              <img src={entity.photo ? `/api/${entity.photo}` : getPlaceholderImage(current)} alt=""
               className="h-32 sm:h-40 w-full mx-auto object-cover rounded-lg"/>
             </Link>
 
@@ -113,4 +116,4 @@ const TopTens = () => {
    );
 }
  
-export default TopTens;
+export default TopSix;

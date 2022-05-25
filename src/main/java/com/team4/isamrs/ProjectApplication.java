@@ -2,6 +2,7 @@ package com.team4.isamrs;
 
 import com.team4.isamrs.service.AccountService;
 import com.team4.isamrs.service.PhotoService;
+import com.team4.isamrs.service.TestDataSupplierService;
 import com.team4.isamrs.util.StorageConfig;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,11 +19,13 @@ public class ProjectApplication {
 	}
 
 	@Bean
-	CommandLineRunner init(PhotoService photoService, AccountService accountService) {
+	CommandLineRunner init(PhotoService photoService, AccountService accountService,
+						   TestDataSupplierService testDataSupplierService) {
 		return (args) -> {
 			photoService.init();
 			accountService.initializeRoles();
 			accountService.createTestAccount();
+			testDataSupplierService.injectTestData();
 		};
 	}
 }

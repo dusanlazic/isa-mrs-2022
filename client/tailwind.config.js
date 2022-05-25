@@ -1,6 +1,11 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
+  mode: 'jit',
+  purge: [
+    './public/**/*.html',
+    './src/**/*.{js,jsx,ts,tsx,vue}',
+  ],
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
@@ -27,8 +32,8 @@ module.exports = {
         'light-pine': '#0E9594',
         'raisin-black': '#272635',
         'whitish-gray': '#DBDBDB',
-        'baby-green': '#ddf0c7',
-        'baby-green-darker': '#bad698',
+        'silver-accent': '#e2e6df',
+        'baby-green-darker': '#cbeda4',
         'gray-green': '#e9f2ef'
       }
     },

@@ -12,8 +12,10 @@ const RemovalRequestForm = ({id}) => {
 
 
   const openModal = (event) => {
-    event.preventDefault();
-    setShowModal(true);
+    if (reason !== '') {
+      event.preventDefault();
+      setShowModal(true);
+    }
   }
   
   const submitForm = () => {
@@ -42,11 +44,11 @@ const RemovalRequestForm = ({id}) => {
       </button>}
       
       {showForm &&
-      <form className="block">
+      <form className="block" onSubmit={openModal}>
 
         <div>
           <textarea placeholder="I would like for my account to be removed because..."
-                    rows={4} required onChange={event => setReason(event.target.value)} value={reason}
+                    rows={4} required="required" aria-required="true" onChange={event => setReason(event.target.value)} value={reason}
                     className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-sm sm:text-base py-1
                     focus:outline-none focus:border-gray-500 w-full caret-gray-700 resize-none
                     hidden-scrollbar"/>

@@ -45,7 +45,7 @@ const LoginPage = () => {
 
   return ( 
     <div className="flex flex-col justify-center min-h-screen w-full h-full
-    px-8 sm:px-44 md:px-32 lg:px-48 xl:px-84 font-display bg-baby-green">
+    px-8 sm:px-44 md:px-32 lg:px-48 xl:px-84 font-display bg-silver-accent">
       <div className="block md:grid grid-cols-2 grid-rows-1 bg-white rounded-lg overflow-hidden h-140 my-auto shadow-sm">
         
         <img src="/images/login-side-7.jpg" alt="" className="h-52 md:h-full w-full object-cover"/>

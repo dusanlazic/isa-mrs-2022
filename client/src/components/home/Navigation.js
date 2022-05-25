@@ -3,15 +3,11 @@ import { logout } from '../../util';
 import { Link } from "react-router-dom";
 import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
-const withoutNavbarRoutes = ["/"];
-
-const Navbar = () => {
+const Navigation = () => {
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [session, setSession] = useState(undefined);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const {pathname} = useLocation();
 
   useEffect(() => {
     setIsSessionActive(getToken() !== undefined ? true : false);
@@ -26,36 +22,33 @@ const Navbar = () => {
   const handleDropdown = () => {
     if (isDropdownOpen) {
       setIsDropdownOpen(false);
-      document.getElementById('dropdown-btn-nav-2').blur();
+      document.getElementById('dropdown-btn-nav-1').blur();
     } else {
       setIsDropdownOpen(true);
     }
   }
 
-
-  if (withoutNavbarRoutes.some((item) => pathname == item)) return null;
-
   if (isSessionActive && session === undefined) {
     return null;
   }
-
   return ( 
-    <div className='fixed top-0 z-50 w-full flex justify-between bg-raisin-black px-3'>
-      <Link to="/" className=' my-auto py-2'><img src='/images/logo-v1.png' alt='' className='h-10 my-auto' /></Link>
+    <div className='flex justify-between py-4 px-4'>
+      <Link to="/"><img src='/images/logo-v1.png' alt='' className='h-10' /></Link>
       <div className='flex'>
         {!isSessionActive &&
           <div className='my-auto'>
 
             <Link to="/register">
               <button className=' border-white
-              font-bold rounded-lg px-6 py-1 text-silver-accent hover:text-slate-300'>
+              font-bold rounded-lg px-6 py-1 bg-raisin-black
+              text-silver-accent hover:text-slate-300  shadow-md'>
                 Register
               </button>
             </Link>
 
             <Link to="/login">
               <button className=' border-white text-raisin-black ml-2
-              font-bold rounded-lg px-6 py-1 bg-silver-accent hover:bg-slate-300'>
+              font-bold rounded-lg px-6 py-1 bg-silver-accent hover:bg-slate-300  shadow-md'>
                 Login
               </button>
             </Link>
@@ -63,8 +56,8 @@ const Navbar = () => {
           </div>
         }
         {isSessionActive &&
-          <div className='dropdown dropdown-end my-auto'>
-            <label tabIndex="0" className='btn' id="dropdown-btn-nav-2" onClick={() => handleDropdown()}>
+          <div className='dropdown dropdown-end'>
+            <label tabIndex="0" className='btn' id="dropdown-btn-nav-1" onClick={() => handleDropdown()}>
               <Icon className="w-10 h-10 text-gray-600 bg-silver-accent rounded-full" icon="tabler:user-circle" inline={true} />
             </label>
             <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-silver-accent text-left rounded-box w-40">
@@ -102,4 +95,4 @@ const Navbar = () => {
    );
 }
  
-export default Navbar;
+export default Navigation;

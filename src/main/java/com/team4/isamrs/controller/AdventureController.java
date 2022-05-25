@@ -3,10 +3,13 @@ package com.team4.isamrs.controller;
 import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.creation.HourlyPriceCreationDTO;
 import com.team4.isamrs.dto.display.AdventureAdDisplayDTO;
+import com.team4.isamrs.dto.display.AdventureAdSimpleDisplayDTO;
+import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.HourlyPriceDisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
 import com.team4.isamrs.service.AdventureAdService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,14 +36,19 @@ public class AdventureController {
         return new ResponseEntity<>(adventureAdService.findAll(AdventureAdDisplayDTO.class), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/top10")
-    public ResponseEntity<Collection<AdventureAdDisplayDTO>> findTopTen() {
-        return new ResponseEntity<>(adventureAdService.findTopTen(), HttpStatus.OK);
-    }
-
     @GetMapping(value = "/{id}")
     public ResponseEntity<AdventureAdDisplayDTO> findById(@PathVariable Long id) {
         return new ResponseEntity<>(adventureAdService.findById(id, AdventureAdDisplayDTO.class), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/top6")
+    public ResponseEntity<Collection<AdventureAdSimpleDisplayDTO>> findTopSix() {
+        return new ResponseEntity<>(adventureAdService.findTopSix(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/search")
+    public Page<AdventureAdSimpleDisplayDTO> search(@RequestParam int page) {
+        return adventureAdService.search(page);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)

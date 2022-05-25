@@ -1,5 +1,6 @@
 import './App.css';
 import HomePage from './pages/HomePage';
+import SearchPage from './pages/SearchPage'
 import ProfilePage from './pages/ProfilePage';
 import ProfileEditorPage from './pages/ProfileEditorPage';
 import RegistrationPage from './pages/RegistrationPage';
@@ -15,6 +16,7 @@ import RegistrationRequestsPage from './pages/RegistrationRequestsPage';
 import RemovalRequestsPage from './pages/RemovalRequestsPage';
 import AdminPasswordPage from './pages/AdminPasswordPage';
 import RegisterAdminPage from './pages/RegisterAdminPage';
+import Navbar from './components/util/Navbar';
 
 import NotFound from './pages/NotFound';
 
@@ -25,9 +27,13 @@ function App() {
     <Router>
       <div className="App min-h-screen">
         {/* Navbar Component */}
+        <Navbar />
         <div className="h-full">
             <Routes>
               <Route path="/" exact element={<HomePage/>}/>
+              <Route path="/ads/resorts" exact element={<SearchPage/>}/>
+              <Route path="/ads/boats" exact element={<SearchPage/>}/>
+              <Route path="/ads/adventures" exact element={<SearchPage/>}/>
               <Route path="/adventure/new" exact element={<CreateAdventurePage/>}/>
               <Route path="/adventure/:id/edit" exact element={<UpdateAdventurePage/>}/>
               <Route path="/adventure/:id" exact element={<ProfilePage/>}/>

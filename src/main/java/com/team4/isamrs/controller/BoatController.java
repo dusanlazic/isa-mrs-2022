@@ -6,6 +6,7 @@ import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.updation.BoatAdUpdationDTO;
 import com.team4.isamrs.service.BoatAdService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,14 +32,19 @@ public class BoatController {
         return new ResponseEntity<>(boatAdService.findAll(BoatAdDisplayDTO.class), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<BoatAdDisplayDTO> findById(@PathVariable Long id) {
+        return new ResponseEntity<>(boatAdService.findById(id, BoatAdDisplayDTO.class), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/top6")
     public ResponseEntity<Collection<BoatAdSimpleDisplayDTO>> findTopSix() {
         return new ResponseEntity<>(boatAdService.findTopSix(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<BoatAdDisplayDTO> findById(@PathVariable Long id) {
-        return new ResponseEntity<>(boatAdService.findById(id, BoatAdDisplayDTO.class), HttpStatus.OK);
+    @GetMapping(value = "/search")
+    public Page<BoatAdSimpleDisplayDTO> search(@RequestParam int page) {
+        return boatAdService.search(page);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)

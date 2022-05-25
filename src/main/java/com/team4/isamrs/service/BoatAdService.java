@@ -4,6 +4,7 @@ import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
 import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
+import com.team4.isamrs.dto.display.ResortAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.updation.BoatAdUpdationDTO;
 import com.team4.isamrs.model.boat.BoatAd;
 import com.team4.isamrs.model.user.Advertiser;
@@ -13,6 +14,7 @@ import com.team4.isamrs.repository.NavigationalEquipmentRepository;
 import com.team4.isamrs.repository.TagRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -44,15 +46,21 @@ public class BoatAdService {
                 .collect(Collectors.toSet());
     }
 
+
+    public <T extends DisplayDTO> T findById(Long id, Class<T> returnType) {
+        BoatAd boatAd = boatAdRepository.findById(id).orElseThrow();
+        return modelMapper.map(boatAd, returnType);
+    }
+
     public Collection<BoatAdSimpleDisplayDTO> findTopSix() {
         return boatAdRepository.findAll(PageRequest.of(0, 6)).stream()
                 .map(e -> modelMapper.map(e, BoatAdSimpleDisplayDTO.class))
                 .collect(Collectors.toSet());
     }
 
-    public <T extends DisplayDTO> T findById(Long id, Class<T> returnType) {
-        BoatAd boatAd = boatAdRepository.findById(id).orElseThrow();
-        return modelMapper.map(boatAd, returnType);
+    public Page<BoatAdSimpleDisplayDTO> search(int page) {
+        return boatAdRepository.findAll(PageRequest.of(page, 20))
+                .map(e -> modelMapper.map(e, BoatAdSimpleDisplayDTO.class));
     }
 
     public BoatAd create(BoatAdCreationDTO dto, Authentication auth) {

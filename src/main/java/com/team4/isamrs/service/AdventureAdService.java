@@ -4,6 +4,7 @@ import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.creation.HourlyPriceCreationDTO;
 import com.team4.isamrs.dto.display.AdventureAdDisplayDTO;
 import com.team4.isamrs.dto.display.AdventureAdSimpleDisplayDTO;
+import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
 import com.team4.isamrs.model.adventure.AdventureAd;
@@ -17,6 +18,7 @@ import com.team4.isamrs.repository.HourlyPriceRepository;
 import com.team4.isamrs.repository.TagRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -51,16 +53,21 @@ public class AdventureAdService {
                 .collect(Collectors.toSet());
     }
 
-    public Collection<AdventureAdSimpleDisplayDTO> findTopSix() {
-        return adventureAdRepository.findAll(PageRequest.of(0, 6)).stream()
-                .map(e -> modelMapper.map(e, AdventureAdSimpleDisplayDTO.class))
-                .collect(Collectors.toSet());
-    }
 
     public <T extends DisplayDTO> T findById(Long id, Class<T> returnType) {
         AdventureAd adventureAd = adventureAdRepository.findById(id).orElseThrow();
 
         return modelMapper.map(adventureAd, returnType);
+    }
+
+    public Collection<AdventureAdSimpleDisplayDTO> findTopSix() {
+        return adventureAdRepository.findAll(PageRequest.of(0, 6)).stream()
+                .map(e -> modelMapper.map(e, AdventureAdSimpleDisplayDTO.class))
+                .collect(Collectors.toSet());
+    }
+    public Page<AdventureAdSimpleDisplayDTO> search(int page) {
+        return adventureAdRepository.findAll(PageRequest.of(page, 20))
+                .map(e -> modelMapper.map(e, AdventureAdSimpleDisplayDTO.class));
     }
 
     public AdventureAd create(AdventureAdCreationDTO dto, Authentication auth) {

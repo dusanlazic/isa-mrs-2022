@@ -32,14 +32,14 @@ public class ResortController {
         return new ResponseEntity<>(resortAdService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/top6")
-    public ResponseEntity<Collection<ResortAdSimpleDisplayDTO>> findTopSix() {
-        return new ResponseEntity<>(resortAdService.findTopSix(), HttpStatus.OK);
-    }
-
     @GetMapping(value = "/{id}")
     public ResponseEntity<ResortAdDisplayDTO> findById(@PathVariable Long id) {
         return new ResponseEntity<>(resortAdService.findById(id), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/top6")
+    public ResponseEntity<Collection<ResortAdSimpleDisplayDTO>> findTopSix() {
+        return new ResponseEntity<>(resortAdService.findTopSix(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/search")

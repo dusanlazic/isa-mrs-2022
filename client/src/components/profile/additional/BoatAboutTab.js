@@ -8,31 +8,32 @@ const BoatAbout = ({ data }) => {
 	return (
 		<div className="text-left text-gray-600">
 
-			<div className="grid grid-cols-1">
+      <div className="mb-5 text-xl text-black">Main features</div>
+			<div className="grid grid-cols-2 lg:grid-cols-3">
 
 				<div className="flex mb-2">
 					<Icon className="mr-2" icon="fluent:people-28-filled" inline={true} width="20" />
-					Capacity: {data.capacity}
+          <div className="break-all">Capacity: {data.capacity}</div>
 				</div>
 				<div className="flex mb-2">
 					<Icon className="mr-2" icon="ic:baseline-directions-boat-filled" inline={true} width="20" />
-					Type: {data.boatType}
+          <div className="break-all">Type: {data.boatType}</div>
 				</div>
 				<div className="flex mb-2">
 					<Icon className="mr-2" icon="bx:ruler" inline={true} width="20" />
-					Length: {data.boatLength}
+					<div className="break-all">Length: {data.boatLength}</div>
 				</div>
 				<div className="flex mb-2">
 					<Icon className="mr-2" icon="la:tachometer-alt" inline={true} width="20" />
-					Speed: {data.boatSpeed}
+          <div className="break-all">Speed: {data.boatSpeed}</div>
 				</div>
 				<div className="flex mb-2">
 					<Icon className="mr-2" icon="mdi:engine" inline={true} width="20" />
-					Engine number: {data.engineNumber}
+          <div className="break-all">Num. of engines: {data.engineNumber}</div>
 				</div>
 				<div className="flex mb-2">
 					<Icon className="mr-2" icon="bi:lightning-charge-fill" inline={true} width="20" />
-					Engine power: {data.enginePower}
+          <div className="break-all">Engine power: {data.enginePower}</div>
 				</div>
 
 			</div>

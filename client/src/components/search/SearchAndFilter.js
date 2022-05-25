@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react';
 import DatePicker from "react-datepicker";
 import moment from 'moment';
 
-const SearchAndFilter = ({whereProp, entityProp, guestsProp, startDateProp, endDateProp, searchResults}) => {
+const SearchAndFilter = ({whereProp, entityProp, guestsProp, startDateProp, endDateProp, totalElements}) => {
   
   const navigate = useNavigate();
 
@@ -112,7 +112,7 @@ const SearchAndFilter = ({whereProp, entityProp, guestsProp, startDateProp, endD
 
             <div className="pl-2 pr-3 my-auto">
               <input type="text" name="" id="" placeholder="Where are you going?"
-              className="outline-none w-28 sm:w-80 h-8 border-b border-dashed bg-transparent"
+              className="outline-none w-40 sm:w-80 h-8 border-b border-dashed bg-transparent"
               value={where} onChange={event => setWhere(event.target.value)}/>
             </div>
 
@@ -172,7 +172,7 @@ const SearchAndFilter = ({whereProp, entityProp, guestsProp, startDateProp, endD
           <div className='block'>
             <div className='text-xs text-gray-400 tracking-wide'>Searching results:</div>
               <div className='text-xl'>
-                <span className='text-slate-700 font-medium'>{searchResults} Result{searchResults === 1 ? '' : 's' } </span>
+                <span className='text-slate-700 font-medium'>{totalElements} Result{totalElements === 1 ? '' : 's' } </span>
                 <span className='text-gray-500'>{whereProp ? 'in ' + whereProp : ''}</span>
               </div>
             </div>

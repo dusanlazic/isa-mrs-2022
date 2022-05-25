@@ -6,6 +6,7 @@ import com.team4.isamrs.dto.display.ResortAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.updation.ResortAdUpdationDTO;
 import com.team4.isamrs.service.ResortAdService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,8 +43,8 @@ public class ResortController {
     }
 
     @GetMapping(value = "/search")
-    public ResponseEntity<Collection<ResortAdSimpleDisplayDTO>> search(@RequestParam int page) {
-        return new ResponseEntity<>(resortAdService.search(page), HttpStatus.OK);
+    public Page<ResortAdSimpleDisplayDTO> search(@RequestParam int page) {
+        return resortAdService.search(page);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)

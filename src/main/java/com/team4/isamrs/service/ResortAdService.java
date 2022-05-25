@@ -3,6 +3,8 @@ package com.team4.isamrs.service;
 import com.team4.isamrs.dto.creation.ResortAdCreationDTO;
 import com.team4.isamrs.dto.display.ResortAdDisplayDTO;
 import com.team4.isamrs.dto.display.ResortAdSimpleDisplayDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import com.team4.isamrs.dto.updation.ResortAdUpdationDTO;
 import com.team4.isamrs.model.resort.ResortAd;
@@ -11,6 +13,7 @@ import com.team4.isamrs.repository.ResortAdRepository;
 import com.team4.isamrs.repository.TagRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -46,10 +49,9 @@ public class ResortAdService {
                 .collect(Collectors.toSet());
     }
 
-    public Collection<ResortAdSimpleDisplayDTO> search(int page) {
-        return resortAdRepository.findAll(PageRequest.of(page, 20)).stream()
-                .map(e -> modelMapper.map(e, ResortAdSimpleDisplayDTO.class))
-                .collect(Collectors.toSet());
+    public Page<ResortAdSimpleDisplayDTO> search(int page) {
+        return resortAdRepository.findAll(PageRequest.of(page, 20))
+                .map(e -> modelMapper.map(e, ResortAdSimpleDisplayDTO.class));
     }
 
     public ResortAd create(ResortAdCreationDTO dto, Authentication auth) {

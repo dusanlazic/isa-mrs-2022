@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { put, post } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import ReactFlagsSelect from "react-flags-select";
+import Map from "../profile/additional/Map";
 
 const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
   const [title, setTitle] = useState(data.title);
@@ -28,6 +29,8 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
   const [photoPreviews, setPhotoPreviews] = useState(data.photos.map(item => "/api" + item.uri));
   const [photoIds, setPhotoIds] = useState(data.photos.map(item => item.id));
 
+  const [currentPosition, setCurrentPosition] = useState( {lat: data.address.latitude, lng: data.address.longitude} )
+
   const navigate = useNavigate();
 
   const updateAd = () => {
@@ -48,8 +51,8 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
         city: city,
         countryCode: countryCode,
         state: state,
-        latitude: "0.0",
-        longitude: "0.0"
+        latitude: currentPosition.lat,
+        longitude: currentPosition.lng
       },
       fishingEquipmentNames: fishingEquipment.split(/[\s,]+/),
       tagNames: tags.split(/[\s,]+/),
@@ -204,7 +207,7 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
               hover:outline-gray-600
             hover:border-gray-300 cursor-pointer">
 
-              <img id="image-preview" src={'/images/fish_guy_gray.jpg'}
+              <img alt="" id="image-preview" src={'/images/fish_guy_gray.jpg'}
               className="flex-none w-24 h-24 rounded-xl object-cover"/>
 
               <input type="file" accept="image/*" onChange={() => uploadImage()} id="image-input" 
@@ -222,7 +225,7 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
               hover:outline-red-600
             hover:border-gray-300 cursor-pointer">
   
-                <img id="image-preview" src={preview}
+                <img alt="" id="image-preview" src={preview}
                 className="flex-none w-24 h-24 rounded-xl object-cover" onClick={() => removeImage(index)}/>
   
               </label>
@@ -284,7 +287,7 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
 
       <div className="block text-left mt-4">
         <label className="text-s">Pinpoint location on a map</label>
-        <h2 className="text-xl text-left text-gray-400 italic font-sans mt-6">Map for pinpointing is under construction</h2>
+        <Map allowChange={true} coordinates={currentPosition} changeCoordinates={setCurrentPosition}/>
       </div>
 
       {/* Details */}

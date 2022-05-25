@@ -1,6 +1,5 @@
 package com.team4.isamrs.dto.display;
 
-import com.team4.isamrs.model.advertisement.Address;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -12,7 +11,7 @@ import java.util.Set;
 public class AdventureAdDisplayDTO implements DisplayDTO {
     private AccountDisplayDTO advertiser;
     private String title;
-    private Address address;
+    private AddressDisplayDTO address;
     private String description;
     private String instructorBio;
     private BigDecimal cancellationFee;

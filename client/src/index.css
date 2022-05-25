@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import '~leaflet/dist/leaflet.css';
+
 @font-face {
   font-family: 'Open Sans';
   src: url('../public/fonts/OpenSans-Regular.ttf') format('truetype');

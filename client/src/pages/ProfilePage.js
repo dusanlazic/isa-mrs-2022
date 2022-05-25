@@ -16,6 +16,7 @@ import ClientReservationHistory from '../components/profile/additional/ClientRes
 import About from '../components/profile/additional/AboutTab'
 import BoatAbout from '../components/profile/additional/BoatAboutTab'
 import Gallery from '../components/profile/additional/Gallery'
+import Map from '../components/profile/additional/Map'
 
 // sidebar components
 import LoyaltyProgramCard from '../components/profile/sidebar/LoyaltyProgramCard'
@@ -26,6 +27,7 @@ import Tags from '../components/profile/sidebar/Tags'
 
 import AdditionalInformation from '../components/profile/additional/AdditionalInformation'
 import Sidebar from '../components/profile/sidebar/Sidebar'
+
 
 
 
@@ -80,7 +82,7 @@ const ProfilePage = () => {
       { title: 'About', component: <About data={profileData} />},
       { title: 'Photos',  component: <Gallery data={profileData} />},
       { title: 'Reviews', component: <AdvertisementReviewList data={profileData} />},
-      //{ title: 'Location', component: <Map />},
+      { title: 'Location', component: <Map data={profileData} coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
     ];
   }
   else if (window.location.href.includes('boat')) {
@@ -90,7 +92,7 @@ const ProfilePage = () => {
       { title: 'About', component: <BoatAbout data={profileData} />},
       { title: 'Photos',  component: <Gallery data={profileData} />},
       { title: 'Reviews', component: <AdvertisementReviewList data={profileData} />},
-      //{ title: 'Location', component: <Map />},
+      { title: 'Location', component: <Map data={profileData} coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
     ];
   }
   else if (window.location.href.includes('adventure')) {
@@ -100,7 +102,7 @@ const ProfilePage = () => {
       { title: 'About', component: <About data={profileData} />},
       { title: 'Photos',  component: <Gallery data={profileData} />},
       { title: 'Reviews', component: <AdvertisementReviewList data={profileData} />},
-      //{ title: 'Location', component: <Map />},
+      { title: 'Location', component: <Map data={profileData} coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
     ];
   }
   else if (window.location.href.includes('client')) {

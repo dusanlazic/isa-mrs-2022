@@ -2,6 +2,7 @@ import { useState } from "react";
 import { post, put } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import ReactFlagsSelect from "react-flags-select";
+import Map from "../profile/additional/Map";
 
 const BoatInfoEditor = ({data, advertisementId}) => {
   const [title, setTitle] = useState(data.title);
@@ -33,6 +34,8 @@ const BoatInfoEditor = ({data, advertisementId}) => {
   const [checkOutTime, setCheckOutTime] = useState(data.checkOutTime);
   const [navigationalEquipment, setNavigationalEquipment] = useState(data.navigationalEquipment.map(item => item.name).join(", "));
 
+  const [currentPosition, setCurrentPosition] = useState( {lat: data.address.latitude, lng: data.address.longitude} )
+
   const navigate = useNavigate();
 
   const updateAd = () => {
@@ -50,8 +53,8 @@ const BoatInfoEditor = ({data, advertisementId}) => {
         city: city,
         countryCode: countryCode,
         state: state,
-        latitude: "0.0",
-        longitude: "0.0"
+        latitude: currentPosition.lat,
+        longitude: currentPosition.lng
       },
       fishingEquipmentNames: fishingEquipment.split(/[\s,]+/),
       navigationalEquipmentNames: navigationalEquipment.split(/[\s,]+/),
@@ -69,7 +72,7 @@ const BoatInfoEditor = ({data, advertisementId}) => {
     })
       .then((response) => {
         alert(response.data);
-        navigate(`/boat/${response.headers['location'].split("/").pop()}`);
+        navigate(`/boat/${advertisementId}`);
       })
       .catch((error) => {
         alert(error.response.data.message);
@@ -275,7 +278,7 @@ const BoatInfoEditor = ({data, advertisementId}) => {
 
       <div className="block text-left mt-4">
         <label className="text-s">Pinpoint location on a map</label>
-        <h2 className="text-xl text-left text-gray-400 italic font-sans mt-6">Map for pinpointing is under construction</h2>
+        <Map allowChange={true} coordinates={currentPosition} changeCoordinates={setCurrentPosition}/>
       </div>
 
       {/* Details */}

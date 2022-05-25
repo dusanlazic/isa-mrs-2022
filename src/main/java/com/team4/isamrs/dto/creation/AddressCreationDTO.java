@@ -27,10 +27,12 @@ public class AddressCreationDTO {
     @Size(max=30)
     private String postalCode;
 
+    @NotBlank
     @DecimalMin(value="-90")
     @DecimalMax(value="90")
     private String latitude;
 
+    @NotBlank
     @DecimalMin(value="-180")
     @DecimalMax(value="180")
     private String longitude;

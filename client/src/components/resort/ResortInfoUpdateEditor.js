@@ -2,6 +2,7 @@ import { useState } from "react";
 import { post, put } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import ReactFlagsSelect from "react-flags-select";
+import Map from "../profile/additional/Map";
 
 const ResortInfoEditor = ({ data, advertisementId }) => {
   const [title, setTitle] = useState(data.title);
@@ -9,7 +10,6 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
   const [rules, setRules] = useState(data.rules);
   const [currency, setCurrency] = useState(data.currency);
   const [numOfBeds, setNumOfBeds] = useState(data.numberOfBeds);
-  const [cancellationFee, setCancellationFee] = useState(data.cancellationFee);
   const [address, setAddress] = useState(data.address.address);
   const [countryCode, setCountryCode] = useState(data.address.countryCode);
   const [city, setCity] = useState(data.address.city);
@@ -26,12 +26,13 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
   const [checkInTime, setCheckInTime] = useState(data.checkInTime);
   const [checkOutTime, setCheckOutTime] = useState(data.checkOutTime);
 
+  const [currentPosition, setCurrentPosition] = useState( {lat: data.address.latitude, lng: data.address.longitude} )
+
   const navigate = useNavigate();
 
   const updateAd = () => {
     put(`/api/ads/resorts/${advertisementId}`, {
       description: description,
-      cancellationFee: cancellationFee,
       title: title,
       numberOfBeds: numOfBeds,
       currency: currency,
@@ -43,8 +44,8 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
         city: city,
         countryCode: countryCode,
         state: state,
-        latitude: "0.0",
-        longitude: "0.0"
+        latitude: currentPosition.lat,
+        longitude: currentPosition.lng
       },
       tagNames: tags.split(/[\s,]+/),
       options: Array.from([...optionsInputFields, ...newOptionsInputFields]),
@@ -262,7 +263,7 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
 
       <div className="block text-left mt-4">
         <label className="text-s">Pinpoint location on a map</label>
-        <h2 className="text-xl text-left text-gray-400 italic font-sans mt-6">Map for pinpointing is under construction</h2>
+        <Map allowChange={true} coordinates={currentPosition} changeCoordinates={setCurrentPosition}/>
       </div>
 
       {/* Details */}
@@ -457,7 +458,7 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
               </div>
 
               <div className="block col-span-4 text-left">
-                <input placeholder="hours required"
+                <input placeholder="days required"
                   name="minDays"
                   value={input.minDays}
                   onChange={event => handlePricesChange(index, event)}
@@ -482,7 +483,7 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
               </div>
 
               <div className="block col-span-4 text-left">
-                <input placeholder="hours required"
+                <input placeholder="days required"
                   name="minDays"
                   value={input.minDays}
                   onChange={event => handlePricesChange(index, event)}
@@ -515,7 +516,7 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
             </div>
 
             <div className="block col-span-4 text-left">
-              <input placeholder="hours required"
+              <input placeholder="days required"
                 name="minDays"
                 value={input.minDays}
                 onChange={event => handleNewPricesChange(index, event)}

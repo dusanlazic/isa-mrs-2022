@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { post } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import ReactFlagsSelect from "react-flags-select";
+import Map from "../profile/additional/Map";
 
 const AdventureInfoEditor = () => {
   const [title, setTitle] = useState(null);
@@ -26,6 +27,8 @@ const AdventureInfoEditor = () => {
   const [photoPreviews, setPhotoPreviews] = useState([])
   const [photoIds, setPhotoIds] = useState([])
 
+  const [currentPosition, setCurrentPosition] = useState( [45.2461818273899, 19.85138567223834] )
+
   const navigate = useNavigate();
 
   const createAd = () => {
@@ -46,8 +49,8 @@ const AdventureInfoEditor = () => {
         city: city,
         countryCode: countryCode,
         state: state,
-        latitude: "0.0",
-        longitude: "0.0"
+        latitude: currentPosition.lat,
+        longitude: currentPosition.lng
       },
       fishingEquipmentNames: fishingEquipment.split(/[\s,]+/),
       tagNames: tags.split(/[\s,]+/),
@@ -167,7 +170,7 @@ const AdventureInfoEditor = () => {
               hover:outline-gray-600
             hover:border-gray-300 cursor-pointer">
 
-              <img id="image-preview" src={'/images/fish_guy_gray.jpg'}
+              <img alt="" id="image-preview" src={'/images/fish_guy_gray.jpg'}
               className="flex-none w-24 h-24 rounded-xl object-cover"/>
 
               <input type="file" accept="image/*" onChange={() => uploadImage()} id="image-input" 
@@ -185,7 +188,7 @@ const AdventureInfoEditor = () => {
               hover:outline-red-600
             hover:border-gray-300 cursor-pointer">
   
-                <img id="image-preview" src={preview}
+                <img alt="" id="image-preview" src={preview}
                 className="flex-none w-24 h-24 rounded-xl object-cover" onClick={() => removeImage(index)}/>
   
               </label>
@@ -243,7 +246,7 @@ const AdventureInfoEditor = () => {
 
       <div className="block text-left mt-4">
         <label className="text-s">Pinpoint location on a map</label>
-        <h2 className="text-xl text-left text-gray-400 italic font-sans mt-6">Map for pinpointing is under construction</h2>
+        <Map allowChange={true} coordinates={currentPosition} changeCoordinates={setCurrentPosition}/>
       </div>
 
       {/* Details */}

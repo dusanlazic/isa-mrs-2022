@@ -43,10 +43,11 @@ public class ResortAdCreationDTO {
     @Size(min=3, max=10)
     private Set<String> tagNames;
 
-    @Size(max=10)
+    @Size(min=3, max=10)
     private Set<UUID> photoIds;
 
     @Valid
+    @Size(max=10)
     private List<OptionCreationDTO> options;
 
     @NotNull

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { post } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import ReactFlagsSelect from "react-flags-select";
+import Map from "../profile/additional/Map";
 
 const BoatInfoEditor = () => {
   const [title, setTitle] = useState(null);
@@ -33,6 +34,8 @@ const BoatInfoEditor = () => {
   const [checkOut, setCheckOut] = useState([null])
   const [navigationalEquipment, setNavigationalEquipment] = useState(null);
 
+  const [currentPosition, setCurrentPosition] = useState( [45.2461818273899, 19.85138567223834] )
+
   const navigate = useNavigate();
 
   const createAd = () => {
@@ -52,8 +55,8 @@ const BoatInfoEditor = () => {
         city: city,
         countryCode: countryCode,
         state: state,
-        latitude: "0.0",
-        longitude: "0.0"
+        latitude: currentPosition.lat,
+        longitude: currentPosition.lng
       },
       fishingEquipmentNames: fishingEquipment.split(/[\s,]+/),
       navigationalEquipmentNames: navigationalEquipment.split(/[\s,]+/),
@@ -102,7 +105,7 @@ const BoatInfoEditor = () => {
   }
 
   const addPriceField = () => {
-    let newField = { value: '', minHours: '' };
+    let newField = { value: '', minDays: '' };
     setPricesInputFields([...pricesInputFields, newField])
   }
 
@@ -172,7 +175,7 @@ const BoatInfoEditor = () => {
               hover:outline-gray-600
             hover:border-gray-300 cursor-pointer">
 
-              <img id="image-preview" src={'/images/fish_guy_gray.jpg'}
+              <img alt="" id="image-preview" src={'/images/fish_guy_gray.jpg'}
                 className="flex-none w-24 h-24 rounded-xl object-cover" />
 
               <input type="file" accept="image/*" onChange={() => uploadImage()} id="image-input"
@@ -190,7 +193,7 @@ const BoatInfoEditor = () => {
               hover:outline-red-600
             hover:border-gray-300 cursor-pointer">
 
-                  <img id="image-preview" src={preview}
+                  <img alt="" id="image-preview" src={preview}
                     className="flex-none w-24 h-24 rounded-xl object-cover" onClick={() => removeImage(index)} />
 
                 </label>
@@ -248,7 +251,7 @@ const BoatInfoEditor = () => {
 
       <div className="block text-left mt-4">
         <label className="text-s">Pinpoint location on a map</label>
-        <h2 className="text-xl text-left text-gray-400 italic font-sans mt-6">Map for pinpointing is under construction</h2>
+        <Map allowChange={true} coordinates={currentPosition} changeCoordinates={setCurrentPosition}/>
       </div>
 
       {/* Details */}

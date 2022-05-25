@@ -2,6 +2,7 @@ import { useState } from "react";
 import { post } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import ReactFlagsSelect from "react-flags-select";
+import Map from "../profile/additional/Map";
 
 const ResortInfoEditor = () => {
   const [title, setTitle] = useState(null);
@@ -26,6 +27,8 @@ const ResortInfoEditor = () => {
   const [checkInTime, setCheckInTime] = useState([null]);
   const [checkOutTime, setCheckOutTime] = useState([null]);
 
+  const [currentPosition, setCurrentPosition] = useState( [45.2461818273899, 19.85138567223834] )
+
   const navigate = useNavigate();
 
   const createAd = () => {
@@ -43,8 +46,8 @@ const ResortInfoEditor = () => {
         city: city,
         countryCode: countryCode,
         state: state,
-        latitude: "0.0",
-        longitude: "0.0"
+        latitude: currentPosition.lat,
+        longitude: currentPosition.lng
       },
       tagNames: tags.split(/[\s,]+/),
       options: Array.from(optionsInputFields),
@@ -123,14 +126,14 @@ const ResortInfoEditor = () => {
 
   return ( 
     <div className="block w-full">
-      <h1 className="text-2xl text-left text-gray-400 font-sans">Create a new resort for your adventure</h1>
+      <h1 className="text-2xl text-left text-gray-400 font-sans">Create a new profile for your resort</h1>
       
       {/* Basic info */}
       <h2 className="text-xl text-left text-gray-800 font-sans mt-4">Basic information ℹ️</h2>
 
         <div className="mt-2 text-left">
           <label className="text-xs">title</label>
-          <input placeholder="title"
+          <input placeholder="title" 
           onChange={(event) => {setTitle(event.target.value)}}
           className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
@@ -230,7 +233,7 @@ const ResortInfoEditor = () => {
 
       <div className="block text-left mt-4">
         <label className="text-s">Pinpoint location on a map</label>
-        <h2 className="text-xl text-left text-gray-400 italic font-sans mt-6">Map for pinpointing is under construction</h2>
+        <Map allowChange={true} coordinates={currentPosition} changeCoordinates={setCurrentPosition}/>
       </div>
 
       {/* Details */}

@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Setter
 public class BoatReservation extends Reservation {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resort_ad_id")
+    @JoinColumn(name = "boat_ad_id")
     private BoatAd advertisement;
 
     @Column(name = "start_date", nullable = false)

@@ -24,10 +24,6 @@ public class AdventureAdUpdationDTO {
     @Size(max=100)
     private String pricingDescription;
 
-    private LocalDateTime availableAfter;
-
-    private LocalDateTime availableUntil;
-
     @Size(max=500)
     private String rules;
 

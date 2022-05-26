@@ -137,6 +137,9 @@ INSERT INTO public.adventure_ad(
     address_id, advertiser_id, cancellation_fee, capacity, instructor_bio)
 VALUES (1013, now(), now(), '$', 'jako jako lepa', 'nema popusta', 'pravila neka','Pecamo zajedno',
 1002, 1002, 100, 20, 'bas jaki');
+INSERT INTO public.advertisement_photos(
+    advertisement_id, photos_id)
+VALUES (1013, 'ac29818c-5e95-438c-85ff-da0a25cd188c');
 
 INSERT INTO public.adventure_ad(
     id, available_after, available_until, currency, description, pricing_description, rules, title,
@@ -196,21 +199,12 @@ VALUES (3, 1);
 -- INSERT INTO public.role(id, authority) VALUES (4, 'BOAT_OWNER');
 -- INSERT INTO public.role(id, authority) VALUES (5, 'FISHING_INSTRUCTOR');
 
-INSERT INTO public.resort_reservation(
-    id, calculated_price, cancelled, created_at, customer_id, start_date, end_date, resort_ad_id)
-VALUES (1, 400, FALSE, '18-05-2022', 1001, '2022-11-10', '2022-11-15', 1001);
-INSERT INTO public.resort_reservation(
-    id, calculated_price, cancelled, created_at, customer_id, start_date, end_date, resort_ad_id)
-VALUES (2, 400, FALSE , '10-05-2022', 1001, '2022-11-25', '2022-12-15', 1001);
-INSERT INTO public.resort_reservation(
-    id, calculated_price, cancelled, created_at, customer_id, start_date, end_date, resort_ad_id)
-VALUES (3, 400, FALSE , '10-05-2022', 1001, '2022-11-01', '2022-12-02', 1001);
-INSERT INTO public.resort_reservation(
-    id, calculated_price, cancelled, created_at, customer_id, start_date, end_date, resort_ad_id)
-VALUES (5, 400, FALSE , '10-05-2022', 1001, '2022-12-20', '2022-12-25', 1001);
-INSERT INTO public.resort_reservation(
-    id, calculated_price, cancelled, created_at, customer_id, start_date, end_date, resort_ad_id)
-VALUES (6, 400, FALSE , '10-05-2022', 1001, '2022-11-01', '2022-11-02', 1001);
+INSERT INTO public.adventure_reservation(
+    id, calculated_price, cancelled, created_at, customer_id, end_date_time, start_date_time, adventure_ad_id)
+VALUES (1, 400, FALSE, '18-05-2022', 1001, '2022-11-15 12:00', '2022-11-15 12:00', 1013);
+INSERT INTO public.adventure_reservation(
+    id, calculated_price, cancelled, created_at, customer_id, end_date_time, start_date_time, adventure_ad_id)
+VALUES (6, 400, FALSE , '10-05-2022', 1001, '2022-11-01 12:00', '2022-11-01 12:00', 1013);
 /*
 INSERT INTO public.resort_reservation(
     id, calculated_price, cancelled, created_at, customer_id, start_date, end_date, resort_ad_id)

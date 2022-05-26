@@ -196,7 +196,7 @@ const BoatInfoEditor = ({ data, advertisementId }) => {
 
   return (
     <div className="block w-full">
-      <h1 className="text-2xl text-left text-gray-400 font-sans">Create a new advertisement for your boat</h1>
+      <h1 className="text-2xl text-left text-gray-400 font-sans">Edit your boat</h1>
 
       {/* Basic info */}
       <h2 className="flex text-xl text-left text-gray-800 font-sans mt-12">

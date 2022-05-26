@@ -1,10 +1,14 @@
-import { useState, useEffect } from "react";
-import { put, post } from "../../adapters/xhr";
+import { useState } from "react";
+import { put, post, del } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import ReactFlagsSelect from "react-flags-select";
+import DeletionModal from "../modals/DeletionModal"
 import { Icon } from '@iconify/react';
 
-const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
+const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
+  const [showModal, setShowModal] = useState(false);
+  const hide = () => setShowModal(false);
+
   const [title, setTitle] = useState(data.title);
   const [description, setDescription] = useState(data.description);
   const [availableAfter, setAvailableAfter] = useState(data.availableAfter);
@@ -30,6 +34,20 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
   const [photoIds, setPhotoIds] = useState(data.photos.map(item => item.id));
 
   const navigate = useNavigate();
+
+  const updateAvailability = () => {
+    put(`/api/ads/adventures/${advertisementId}/availability-period`, {
+      availableAfter: availableAfter === "" ? null : availableAfter,
+      availableUntil: availableUntil === "" ? null : availableUntil
+    })
+      .then((response) => {
+        alert(response.data);
+        navigate(`/adventure/${advertisementId}`);
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
+  }
 
   const updateAd = () => {
     put(`/api/ads/adventures/${advertisementId}`, {
@@ -57,14 +75,14 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
       options: Array.from([...optionsInputFields, ...newOptionsInputFields]),
       prices: Array.from([...pricesInputFields, ...newPricesInputFields]),
       photoIds: photoIds
-     })
-    .then((response) => {
-      alert(response.data);
-      navigate(`/adventure/${advertisementId}`);
     })
-    .catch((error) => {
-      alert(error.response.data.message);
-    });
+      .then((response) => {
+        alert(response.data);
+        navigate(`/adventure/${advertisementId}`);
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
   }
 
   const handleOptionsChange = (index, event) => {
@@ -80,7 +98,7 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
   }
 
   const addOptionField = () => {
-    let newField = {name: '', description: '', maxCount: ''}
+    let newField = { name: '', description: '', maxCount: '' }
     setNewOptionsInputFields([...newOptionsInputFields, newField]);
   }
 
@@ -92,11 +110,11 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
 
   const toggleOptionRemoval = (index) => {
     let option = optionsInputFields[index];
-    if (option.hasOwnProperty('delete')) 
+    if (option.hasOwnProperty('delete'))
       delete option.delete;
     else
       optionsInputFields[index].delete = true;
-    
+
     setOptionsInputFields([...optionsInputFields])
   }
 
@@ -113,7 +131,7 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
   }
 
   const addPriceField = () => {
-    let newField = {value: '', minHours: ''};
+    let newField = { value: '', minHours: '' };
     setNewPricesInputFields([...newPricesInputFields, newField])
   }
 
@@ -125,11 +143,11 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
 
   const togglePriceRemoval = (index) => {
     let price = pricesInputFields[index];
-    if (price.hasOwnProperty('delete')) 
+    if (price.hasOwnProperty('delete'))
       delete price.delete;
     else
       pricesInputFields[index].delete = true;
-    
+
     setPricesInputFields([...pricesInputFields])
   }
 
@@ -139,10 +157,10 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
     data.append('file', file);
 
     post(`/api/photos/upload`, data)
-    .then((response) => {
-      setPhotoIds([...photoIds, response.data.id])
-      setPhotoPreviews([...photoPreviews, "/api" + response.data.uri])
-    });
+      .then((response) => {
+        setPhotoIds([...photoIds, response.data.id])
+        setPhotoPreviews([...photoPreviews, "/api" + response.data.uri])
+      });
   }
 
   const removeImage = (index) => {
@@ -156,10 +174,18 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
     setPhotoPreviews(previews);
   }
 
-  return ( 
+  const deleteAdvertisement = () => {
+    del(`/api/ads/${advertisementId}`).then((response) => {
+      console.log(response);
+      setShowModal(false);
+      navigate("/");
+    });
+  }
+
+  return (
     <div className="block w-full">
-      <h1 className="text-2xl text-left text-gray-400 font-sans">Edit advertisement</h1>
-      
+      <h1 className="text-2xl text-left text-gray-400 font-sans">Edit your advertisement</h1>
+
       {/* Basic info */}
       <h2 className="flex text-xl text-left text-gray-800 font-sans mt-12">
         <Icon className="mr-2" icon="tabler:info-circle" inline={true} fontSize={30} />
@@ -170,9 +196,9 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
         <div className="block col-span-2 text-left">
           <label className="text-xs">title</label>
           <input placeholder="title"
-          value={title}
-          onChange={(event) => {setTitle(event.target.value)}}
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+            value={title}
+            onChange={(event) => { setTitle(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
       </div>
@@ -181,21 +207,21 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
         <div className="block col-span-2 text-left">
           <label className="text-xs">description</label>
           <textarea placeholder="tell the world about your offer"
-          value={description}
-          onChange={(event) => {setDescription(event.target.value)}}
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
+            value={description}
+            onChange={(event) => { setDescription(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"
-          rows="5"/>
+            rows="5" />
         </div>
 
         <div className="block col-span-1 text-left">
           <label className="text-xs">instructor bio</label>
           <textarea placeholder="... and about yourself"
-          value={instructorBio}
-          onChange={(event) => {setInstructorBio(event.target.value)}}
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
+            value={instructorBio}
+            onChange={(event) => { setInstructorBio(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"
-          rows="5"/>
+            rows="5" />
         </div>
       </div>
 
@@ -213,10 +239,10 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
             hover:border-gray-300 cursor-pointer">
 
               <img id="image-preview" src={'/images/fish_guy_gray.jpg'}
-              className="flex-none w-24 h-24 rounded-xl object-cover"/>
+                className="flex-none w-24 h-24 rounded-xl object-cover" />
 
-              <input type="file" accept="image/*" onChange={() => uploadImage()} id="image-input" 
-              className="opacity-0 hidden h-0 w-0"/>
+              <input type="file" accept="image/*" onChange={() => uploadImage()} id="image-input"
+                className="opacity-0 hidden h-0 w-0" />
 
             </label>
           </div>
@@ -224,18 +250,18 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
 
         {photoPreviews.map((preview, index) => {
           return (
-          <div key={index} className="block col-span-1">
-            <div className="flex rounded-lg w-full ml-1">
-              <label id="label-input" className="outline-dashed outline-2 outline-offset-2 outline-gray-400
+            <div key={index} className="block col-span-1">
+              <div className="flex rounded-lg w-full ml-1">
+                <label id="label-input" className="outline-dashed outline-2 outline-offset-2 outline-gray-400
               hover:outline-red-600
             hover:border-gray-300 cursor-pointer">
-  
-                <img id="image-preview" src={preview}
-                className="flex-none w-24 h-24 rounded-xl object-cover" onClick={() => removeImage(index)}/>
-  
-              </label>
+
+                  <img id="image-preview" src={preview}
+                    className="flex-none w-24 h-24 rounded-xl object-cover" onClick={() => removeImage(index)} />
+
+                </label>
+              </div>
             </div>
-          </div>
           )
         })}
       </div>
@@ -250,18 +276,18 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
         <div className="block col-span-2 text-left">
           <label className="text-xs">address</label>
           <input placeholder="address"
-          value={address}
-          onChange={(event) => {setAddress(event.target.value)}}
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+            value={address}
+            onChange={(event) => { setAddress(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
 
         <div className="block col-span-1 text-left">
           <label className="text-xs">city</label>
           <input placeholder="city"
-          value={city}
-          onChange={(event) => {setCity(event.target.value)}}
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+            value={city}
+            onChange={(event) => { setCity(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
       </div>
@@ -270,18 +296,18 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
         <div className="block col-span-1 text-left">
           <label className="text-xs">postal code</label>
           <input placeholder="postal code"
-          value={postalCode}
-          onChange={(event) => {setPostalCode(event.target.value)}}
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+            value={postalCode}
+            onChange={(event) => { setPostalCode(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
 
         <div className="block col-span-1 text-left">
           <label className="text-xs">state</label>
           <input placeholder="state"
-          value={state}
-          onChange={(event) => {setState(event.target.value)}}
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+            value={state}
+            onChange={(event) => { setState(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
 
@@ -309,20 +335,20 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
         <div className="block col-span-2 text-left">
           <label className="text-xs">rules of conduct</label>
           <textarea placeholder="rules of conduct"
-          value={rules}
-          onChange={(event) => {setRules(event.target.value)}}
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
+            value={rules}
+            onChange={(event) => { setRules(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"
-          rows="5"/>
+            rows="5" />
         </div>
 
         <div className="block col-span-1 text-left">
           <label className="text-xs">capacity</label>
           <input placeholder="capacity"
-          value={capacity}
-          onChange={(event) => {setCapacity(event.target.value)}}
-          type="number"
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+            value={capacity}
+            onChange={(event) => { setCapacity(event.target.value) }}
+            type="number"
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
       </div>
@@ -338,27 +364,27 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
             <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
               <div className="block col-span-4 text-left">
                 <input placeholder="option name"
-                name="name"
-                value={input.name}
-                className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
-                focus:outline-none w-full"readonly/>
+                  name="name"
+                  value={input.name}
+                  className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
+                focus:outline-none w-full"readonly />
               </div>
-  
+
               <div className="block col-span-5 text-left">
                 <input placeholder="description"
-                name="description"
-                value={input.description}
-                className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
-                focus:outline-none w-full"readonly/>
+                  name="description"
+                  value={input.description}
+                  className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
+                focus:outline-none w-full"readonly />
               </div>
-  
+
               <div className="block col-span-2 text-left">
                 <input placeholder="max count"
-                name="maxCount"
-                value={input.maxCount}
-                type="number"
-                className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
-                focus:outline-none w-full"readonly/>
+                  name="maxCount"
+                  value={input.maxCount}
+                  type="number"
+                  className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
+                focus:outline-none w-full"readonly />
               </div>
 
               <button onClick={() => toggleOptionRemoval(index)}>Undo</button>
@@ -369,32 +395,32 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
             <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
               <div className="block col-span-4 text-left">
                 <input placeholder="option name"
-                name="name"
-                value={input.name}
-                onChange={event => handleOptionsChange(index, event)}
-                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                  name="name"
+                  value={input.name}
+                  onChange={event => handleOptionsChange(index, event)}
+                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
                 focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
               </div>
-  
+
               <div className="block col-span-5 text-left">
                 <input placeholder="description"
-                name="description"
-                value={input.description}
-                onChange={event => handleOptionsChange(index, event)}
-                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                  name="description"
+                  value={input.description}
+                  onChange={event => handleOptionsChange(index, event)}
+                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
                 focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
               </div>
-  
+
               <div className="block col-span-2 text-left">
                 <input placeholder="max count"
-                name="maxCount"
-                value={input.maxCount}
-                onChange={event => handleOptionsChange(index, event)}
-                type="number"
-                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                  name="maxCount"
+                  value={input.maxCount}
+                  onChange={event => handleOptionsChange(index, event)}
+                  type="number"
+                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
                 focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
               </div>
-  
+
               <button onClick={() => toggleOptionRemoval(index)}>Remove</button>
             </div>
           )
@@ -411,29 +437,29 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
           <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
             <div className="block col-span-4 text-left">
               <input placeholder="option name"
-              name="name"
-              value={input.name}
-              onChange={event => handleNewOptionsChange(index, event)}
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                name="name"
+                value={input.name}
+                onChange={event => handleNewOptionsChange(index, event)}
+                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
               focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
             </div>
 
             <div className="block col-span-5 text-left">
               <input placeholder="description"
-              name="description"
-              value={input.description}
-              onChange={event => handleNewOptionsChange(index, event)}
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                name="description"
+                value={input.description}
+                onChange={event => handleNewOptionsChange(index, event)}
+                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
               focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
             </div>
 
             <div className="block col-span-2 text-left">
               <input placeholder="max count"
-              name="maxCount"
-              value={input.maxCount}
-              onChange={event => handleNewOptionsChange(index, event)}
-              type="number"
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                name="maxCount"
+                value={input.maxCount}
+                onChange={event => handleNewOptionsChange(index, event)}
+                type="number"
+                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
               focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
             </div>
 
@@ -450,18 +476,18 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
       <div className="block text-left mt-4">
         <label className="text-xs">tags</label>
         <input placeholder="tags separated by comma"
-        value={tags}
-        onChange={(event) => {setTags(event.target.value)}}
-        className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+          value={tags}
+          onChange={(event) => { setTags(event.target.value) }}
+          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
         focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
       </div>
 
       <div className="block text-left mt-4">
         <label className="text-xs">fishing equpiment</label>
         <input placeholder="fishing equipment separated by comma"
-        value={fishingEquipment}
-        onChange={(event) => {setFishingEquipment(event.target.value)}}
-        className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+          value={fishingEquipment}
+          onChange={(event) => { setFishingEquipment(event.target.value) }}
+          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
         focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
       </div>
 
@@ -470,24 +496,24 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
         <Icon className="mr-2" icon="tabler:coin" inline={true} fontSize={30} />
         <span>Pricing</span>
       </h2>
-      
+
       <div className="grid grid-cols-3 mt-1 gap-x-3">
         <div className="block col-span-1 text-left">
           <label className="text-xs">currency</label>
           <input placeholder="e.g. EUR, USD, RSD"
-          value={currency}
-          onChange={(event) => {setCurrency(event.target.value)}}
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+            value={currency}
+            onChange={(event) => { setCurrency(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
 
         <div className="block col-span-1 text-left">
           <label className="text-xs">cancellation fee</label>
           <input placeholder="cancellation fee"
-          value={cancellationFee}
-          onChange={(event) => {setCancellationFee(event.target.value)}}
-          type="number"
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+            value={cancellationFee}
+            onChange={(event) => { setCancellationFee(event.target.value) }}
+            type="number"
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
       </div>
@@ -496,11 +522,11 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
         <div className="block col-span-2 text-left">
           <label className="text-xs">pricing description</label>
           <textarea placeholder="additional info about prices"
-          value={pricingDescription}
-          onChange={(event) => {setPricingDescription(event.target.value)}}
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
+            value={pricingDescription}
+            onChange={(event) => { setPricingDescription(event.target.value) }}
+            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"
-          rows="3"/>
+            rows="3" />
         </div>
       </div>
 
@@ -514,20 +540,20 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
             <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
               <div className="block col-span-4 text-left">
                 <input placeholder="price"
-                name="value"
-                value={input.value}
-                onChange={event => handlePricesChange(index, event)}
-                className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
-                focus:outline-none w-full"readonly/>
+                  name="value"
+                  value={input.value}
+                  onChange={event => handlePricesChange(index, event)}
+                  className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
+                focus:outline-none w-full"readonly />
               </div>
 
               <div className="block col-span-4 text-left">
                 <input placeholder="hours required"
-                name="minHours"
-                value={input.minHours}
-                onChange={event => handlePricesChange(index, event)}
-                className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
-                focus:outline-none w-full"readonly/>
+                  name="minHours"
+                  value={input.minHours}
+                  onChange={event => handlePricesChange(index, event)}
+                  className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
+                focus:outline-none w-full"readonly />
               </div>
 
               <button className="block col-span-1" onClick={() => togglePriceRemoval(index)}>Undo</button>
@@ -538,28 +564,29 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
             <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
               <div className="block col-span-4 text-left">
                 <input placeholder="price"
-                name="value"
-                value={input.value}
-                onChange={event => handlePricesChange(index, event)}
-                type="number"
-                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                  name="value"
+                  value={input.value}
+                  onChange={event => handlePricesChange(index, event)}
+                  type="number"
+                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
                 focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
               </div>
 
               <div className="block col-span-4 text-left">
                 <input placeholder="hours required"
-                name="minHours"
-                value={input.minHours}
-                onChange={event => handlePricesChange(index, event)}
-                type="number"
-                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                  name="minHours"
+                  value={input.minHours}
+                  onChange={event => handlePricesChange(index, event)}
+                  type="number"
+                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
                 focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
               </div>
 
               <button className="block col-span-1" onClick={() => togglePriceRemoval(index)}>Remove</button>
             </div>
           )
-        }})}
+        }
+      })}
 
       <div className="block text-left mt-4">
         <label className="text-s">Add new prices</label>
@@ -570,21 +597,21 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
           <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
             <div className="block col-span-4 text-left">
               <input placeholder="price"
-              name="value"
-              value={input.value}
-              onChange={event => handleNewPricesChange(index, event)}
-              type="number"
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                name="value"
+                value={input.value}
+                onChange={event => handleNewPricesChange(index, event)}
+                type="number"
+                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
               focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
             </div>
 
             <div className="block col-span-4 text-left">
               <input placeholder="hours required"
-              name="minHours"
-              value={input.minHours}
-              onChange={event => handleNewPricesChange(index, event)}
-              type="number"
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+                name="minHours"
+                value={input.minHours}
+                onChange={event => handleNewPricesChange(index, event)}
+                type="number"
+                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
               focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
             </div>
 
@@ -597,48 +624,88 @@ const AdventureInfoUpdateEditor = ({data, advertisementId}) => {
         <button onClick={addPriceField}>Add price..</button>
       </div>
 
-      {/* Availability */}
-      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-6 pt-6 border-t border-gray-200">
-        <Icon className="mr-2" icon="tabler:calendar" inline={true} fontSize={30} />
-        <span>Availability</span>
-      </h2>
-      
-      <div className="grid grid-cols-3 mt-1 gap-x-3">
-        <div className="block col-span-1 text-left">
-          <label className="text-xs">available after</label>
-          <input
-          value={availableAfter}
-          onChange={(event) => {setAvailableAfter(event.target.value)}}
-          type="date"
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-          focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-        </div>
-
-        <div className="block col-span-1 text-left">
-          <label className="text-xs">available until</label>
-          <input
-          value={availableUntil}
-          onChange={(event) => {setAvailableUntil(event.target.value)}}
-          type="date"
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-          focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-        </div>
-      </div>
-
       {/* confirm button */}
       <div className="grid grid-cols-1 md:grid-cols-3 md:gap-x-6 mt-4">
         <div className="flex flex-col justify-end md:col-start-3 text-left w-full">
           <button className="bg-teal-600 hover:bg-teal-700 active:bg-teal-800 w-full drop-shadow-md
           text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
-          onClick={() => {updateAd()}}>
+            onClick={() => { updateAd() }}>
             Save changes
           </button>
         </div>
 
       </div>
 
+      {/* Availability */}
+      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-6 pt-6 border-t border-gray-200">
+        <Icon className="mr-2" icon="tabler:calendar" inline={true} fontSize={30} />
+        <span>Availability</span>
+      </h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 mt-1 gap-x-3">
+        <div className="col-1 text-left">
+          <label className="text-xs">available after</label>
+          <div className="flex gap-x-3">
+            <input value={availableAfter} type="date"
+              onChange={(event) => { setAvailableAfter(event.target.value) }}
+              className="rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+  focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+            <button className="rounded-lg border border-gray-300 px-3" onClick={() => { setAvailableAfter("") }}>
+              <Icon icon="tabler:rotate-clockwise" vFlip={true} fontSize={20} />
+            </button>
+          </div>
+        </div>
+        <div className="col-span-1 text-left">
+          <label className="text-xs">available until</label>
+          <div className="flex gap-x-3">
+            <input
+              value={availableUntil}
+              onChange={(event) => { setAvailableUntil(event.target.value) }}
+              type="date"
+              className="rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+            <button className="rounded-lg border border-gray-300 px-3" onClick={() => { setAvailableUntil("") }}>
+              <Icon icon="tabler:rotate-clockwise" vFlip={true} fontSize={20} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* confirm availability button */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 md:gap-x-3 mt-4">
+        <div className="flex flex-col justify-end lg:col-start-3 sm:col-start-2 text-left w-full">
+          <button className="bg-teal-600 hover:bg-teal-700 active:bg-teal-800 w-full drop-shadow-md
+text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
+            onClick={() => { updateAvailability() }}>
+            Change availability
+          </button>
+        </div>
+
+      </div>
+
+      {/* delete button */}
+      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-6 pt-6 border-t border-gray-200">
+        <Icon className="mr-2" icon="tabler:trash" inline={true} fontSize={30} />
+        <span>Delete</span>
+      </h2>
+
+      <div className="grid grid-cols-1 justify-end lg:grid-cols-3 sm:grid-cols-2 md:gap-x-3 mt-4">
+        <div className="flex flex-col lg:col-start-3 sm:col-start-2 text-left w-full">
+          <button className="bg-red-600 hover:bg-red-700 active:bg-red-800 w-full drop-shadow-md
+text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
+            onClick={() => { setShowModal(true) }}>
+            Delete
+          </button>
+        </div>
+      </div>
+
+      {showModal && <DeletionModal closeFunction={() => hide(false)}
+        deleteFunction={() => deleteAdvertisement()}
+        text={`Are you sure you want to permanently delete ${data.title}? This action cannot be undone.`}
+      />}
+
     </div>
    );
 }
- 
+
 export default AdventureInfoUpdateEditor;

@@ -3,53 +3,39 @@ import { Link } from "react-router-dom";
 import { get, del } from "../../../adapters/xhr";
 import DeletionModal from "../../modals/DeletionModal";
 
-const AdventureProfileMainInfo = ({data, advertisementId}) => {
+const AdventureProfileMainInfo = ({ data, advertisementId }) => {
 	let [showMore, setShowMore] = useState(false);
 	let description = data.description;
 	const [rating, setRating] = useState(null);
-	const [showModal, setShowModal] = useState(false);
-	const [showDeleteBtn, setShowDeleteBtn] = useState(false);
-	const show = () => setShowModal(true);
-	const hide = () => setShowModal(false);
+	const [showEditBtn, setShowEditBtn] = useState(false);
 
-	const deleteAd = () =>  {
-		del(`/api/ads/${advertisementId}`).then((response) => {
-			console.log(response);
-			setShowModal(false);
-			window.location.reload();
-		});
-	}
 
 	useEffect(() => {
 		get(`/api/ads/${advertisementId}/rating`).then((response) => {
 			setRating(response.data);
-		  });
-		}, [])
+		});
+	}, [])
 
 	useEffect(() => {
 		get(`/api/account/whoami`).then((response) => {
-			setShowDeleteBtn(response.data.id == data.advertiser.id);
-			});
-		}, [])
+			setShowEditBtn(response.data.id == data.advertiser.id);
+		});
+	}, [])
 
 
 	return (
 		<div className="block md:flex bg-gray-100 rounded-lg p-10">
 			<div className="block flex-none">
 				<img src={"/api/" + data.photos[0].uri} alt="" className="flex-none w-64 h-64 md:w-44 md:h-44 xl:w-52 xl:h-52 object-cover rounded-lg mx-auto" />
-				<Link className="text-gray-500
+
+				{showEditBtn &&
+					<Link className="text-gray-500
 					bg-gray-200 hover:bg-gray-300 hover:text-gray-800 active:bg-transparent
 					active:bg-gray-400 active:text-gray-50
 					rounded-b-lg px-4 h-min text-base md:text-sm xl:text-base"
-					to={`/adventure/${advertisementId}/edit`}>Edit</Link>
-				{ showDeleteBtn && 
-					<button className="text-gray-500
-					bg-gray-200 hover:bg-red-300 hover:text-red-800 active:bg-transparent
-					active:bg-red-400 active:text-red-50
-					rounded-b-lg px-4 h-min text-base md:text-sm xl:text-base" onClick={show}>
-						Delete</button> }
+						to={`/adventure/${advertisementId}/edit`}>Edit profile</Link>}
 			</div>
-				
+
 			<div className="flex flex-col flex-grow md:ml-4">
 
 				<div className="block md:flex w-full justify-between text-center md:text-left">
@@ -80,10 +66,6 @@ const AdventureProfileMainInfo = ({data, advertisementId}) => {
 				</div>
 
 			</div>
-			{showModal && <DeletionModal  closeFunction = {() => hide(false)}
-                                      deleteFunction = {() => deleteAd()}
-                                      text = {`Are you sure you want to permanently delete ${data.title }? This action cannot be undone.`}
-        	/>}
 		</div>
 	);
 }

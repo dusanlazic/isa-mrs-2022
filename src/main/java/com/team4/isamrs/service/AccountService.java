@@ -91,6 +91,7 @@ public class AccountService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.getAuthorities().add(roleRepository.findByName("ROLE_BOAT_OWNER").get());
         user.getAuthorities().add(roleRepository.findByName("ROLE_RESORT_OWNER").get());
+        user.getAuthorities().add(roleRepository.findByName("ROLE_FISHING_INSTRUCTOR").get());
         user.getAuthorities().add(roleRepository.findByName("ROLE_ADVERTISER").get());
         userRepository.save(user);
     }

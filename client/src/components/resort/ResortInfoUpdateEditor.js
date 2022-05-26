@@ -180,7 +180,7 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
 
   return (
     <div className="block w-full">
-      <h1 className="text-2xl text-left text-gray-400 font-sans">Edit resort</h1>
+      <h1 className="text-2xl text-left text-gray-400 font-sans">Edit your resort</h1>
 
       {/* Basic info */}
       <h2 className="flex text-xl text-left text-gray-800 font-sans mt-12">

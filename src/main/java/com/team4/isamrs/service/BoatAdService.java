@@ -5,13 +5,15 @@ import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
 import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.display.ResortAdSimpleDisplayDTO;
+import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.dto.updation.BoatAdUpdationDTO;
+import com.team4.isamrs.exception.IdenticalAvailabilityDatesException;
+import com.team4.isamrs.exception.ReservationsInUnavailabilityPeriodException;
 import com.team4.isamrs.model.boat.BoatAd;
+import com.team4.isamrs.model.boat.BoatReservation;
+import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
-import com.team4.isamrs.repository.BoatAdRepository;
-import com.team4.isamrs.repository.FishingEquipmentRepository;
-import com.team4.isamrs.repository.NavigationalEquipmentRepository;
-import com.team4.isamrs.repository.TagRepository;
+import com.team4.isamrs.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +39,9 @@ public class BoatAdService {
 
     @Autowired
     private NavigationalEquipmentRepository navigationalEquipmentRepository;
+
+    @Autowired
+    private BoatReservationRepository reservationRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -97,6 +103,49 @@ public class BoatAdService {
 
         fishingEquipmentRepository.saveAll(boatAd.getFishingEquipment());
         tagRepository.saveAll(boatAd.getTags());
+        boatAdRepository.save(boatAd);
+    }
+
+    public void updateAvailabilityPeriod(Long id, AvailabilityPeriodUpdationDTO dto, Authentication auth) {
+        if (dto.getAvailableUntil() != null && dto.getAvailableAfter() != null &&
+                dto.getAvailableUntil().equals(dto.getAvailableAfter()))
+            throw new IdenticalAvailabilityDatesException();
+
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        BoatAd boatAd = boatAdRepository.findBoatAdByIdAndAdvertiser(id, advertiser).orElseThrow();
+
+        if (!(dto.getAvailableUntil() == null && dto.getAvailableAfter() == null)) {
+            // only available until is defined
+            if (dto.getAvailableAfter() == null) {
+                Set<BoatReservation> reservations = reservationRepository.findReservationsByEndDateAfter(dto.getAvailableUntil());
+                if (!reservations.isEmpty())
+                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+            }
+            // only available after is defined
+            else if (dto.getAvailableUntil() == null) {
+                Set<BoatReservation> reservations = reservationRepository.findReservationsByStartDateBefore(dto.getAvailableAfter());
+                if (!reservations.isEmpty())
+                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+            }
+            // both are defined
+            // availability period
+            else if (dto.getAvailableAfter().isBefore(dto.getAvailableUntil())) {
+                Set<BoatReservation> reservations = reservationRepository.findReservationsByStartDateBeforeOrEndDateAfter(dto.getAvailableAfter(), dto.getAvailableUntil());
+                reservations.removeIf(Reservation::getCancelled);
+                if (!reservations.isEmpty())
+                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+            }
+            // unavailability period
+            else {
+                Set<BoatReservation> reservations = reservationRepository.findReservationsByStartDateBeforeAndEndDateAfter(dto.getAvailableAfter(), dto.getAvailableUntil());
+                reservations.removeIf(Reservation::getCancelled);
+                if (!reservations.isEmpty())
+                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+            }
+        }
+
+        boatAd.setAvailableAfter(dto.getAvailableAfter());
+        boatAd.setAvailableUntil(dto.getAvailableUntil());
         boatAdRepository.save(boatAd);
     }
 }

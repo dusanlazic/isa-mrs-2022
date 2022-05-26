@@ -3,6 +3,7 @@ package com.team4.isamrs.controller;
 import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
 import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
+import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.dto.updation.BoatAdUpdationDTO;
 import com.team4.isamrs.service.BoatAdService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,5 +67,12 @@ public class BoatController {
     public ResponseEntity<String> delete(@PathVariable Long id, Authentication auth) {
         boatAdService.delete(id, auth);
         return ResponseEntity.ok("Boat deleted.");
+    }
+
+    @PutMapping(value = "/{id}/availability-period", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('BOAT_OWNER')")
+    public ResponseEntity<String> updateAvailabilityPeriod(@PathVariable Long id, @Valid @RequestBody AvailabilityPeriodUpdationDTO dto, Authentication auth) {
+        boatAdService.updateAvailabilityPeriod(id, dto, auth);
+        return ResponseEntity.ok().body("Availability period updated.");
     }
 }

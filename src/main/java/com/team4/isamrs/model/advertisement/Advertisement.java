@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -41,10 +42,10 @@ public class Advertisement {
     private String pricingDescription;
 
     @Column(name = "available_after")
-    private LocalDateTime availableAfter;
+    private LocalDate availableAfter;
 
     @Column(name = "available_until")
-    private LocalDateTime availableUntil;
+    private LocalDate availableUntil;
 
     @Column(name = "rules", nullable = false)
     private String rules;

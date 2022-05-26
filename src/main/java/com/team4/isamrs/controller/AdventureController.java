@@ -7,6 +7,7 @@ import com.team4.isamrs.dto.display.AdventureAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.HourlyPriceDisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
+import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.service.AdventureAdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -100,5 +101,12 @@ public class AdventureController {
     public ResponseEntity<String> removePrice(@PathVariable Long id, @PathVariable Long priceId, Authentication auth) {
         adventureAdService.removePrice(id, priceId, auth);
         return ResponseEntity.ok().body("Hourly price deleted.");
+    }
+
+    @PutMapping(value = "/{id}/availability-period", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('RESORT_OWNER')")
+    public ResponseEntity<String> updateAvailabilityPeriod(@PathVariable Long id, @Valid @RequestBody AvailabilityPeriodUpdationDTO dto, Authentication auth) {
+        adventureAdService.updateAvailabilityPeriod(id, dto, auth);
+        return ResponseEntity.ok().body("Availability period updated.");
     }
 }

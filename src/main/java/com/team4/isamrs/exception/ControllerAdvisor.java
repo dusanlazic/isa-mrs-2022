@@ -126,4 +126,20 @@ public class ControllerAdvisor {
                 HttpStatus.FORBIDDEN.value(),
                 "Incorrect current password.");
     }
+    
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ReservationsInUnavailabilityPeriodException.class)
+    public ExceptionResponseBody handleReservationsInUnavailabilityPeriodException(ReservationsInUnavailabilityPeriodException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                "There are " + ex.getMessage() + " reservations in that unavailability period.");
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(IdenticalAvailabilityDatesException.class)
+    public ExceptionResponseBody handleIdenticalAvailabilityDatesException(IdenticalAvailabilityDatesException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                "Availability period dates should not be the same.");
+    }
 }

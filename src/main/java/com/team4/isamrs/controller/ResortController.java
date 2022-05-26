@@ -3,6 +3,7 @@ package com.team4.isamrs.controller;
 import com.team4.isamrs.dto.creation.ResortAdCreationDTO;
 import com.team4.isamrs.dto.display.ResortAdDisplayDTO;
 import com.team4.isamrs.dto.display.ResortAdSimpleDisplayDTO;
+import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.dto.updation.ResortAdUpdationDTO;
 import com.team4.isamrs.service.ResortAdService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,5 +67,12 @@ public class ResortController {
     public ResponseEntity<String> delete(@PathVariable Long id, Authentication auth) {
         resortAdService.delete(id, auth);
         return ResponseEntity.ok("Resort deleted.");
+    }
+
+    @PutMapping(value = "/{id}/availability-period", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('RESORT_OWNER')")
+    public ResponseEntity<String> updateAvailabilityPeriod(@PathVariable Long id, @Valid @RequestBody AvailabilityPeriodUpdationDTO dto, Authentication auth) {
+        resortAdService.updateAvailabilityPeriod(id, dto, auth);
+        return ResponseEntity.ok().body("Availability period updated.");
     }
 }

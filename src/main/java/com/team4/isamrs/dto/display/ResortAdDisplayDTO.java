@@ -1,5 +1,7 @@
 package com.team4.isamrs.dto.display;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.team4.isamrs.model.advertisement.Address;
 import com.team4.isamrs.model.user.Advertiser;
 import lombok.Data;
 
@@ -23,7 +25,9 @@ public class ResortAdDisplayDTO implements DisplayDTO {
     private Set<PhotoUploadDisplayDTO> photos;
     private Set<OptionDisplayDTO> options;
     private String numberOfBeds;
+    @JsonFormat(pattern="HH:mm")
     private LocalTime checkOutTime;
+    @JsonFormat(pattern="HH:mm")
     private LocalTime checkInTime;
     private Set<DailyPriceDisplayDTO> prices;
 }

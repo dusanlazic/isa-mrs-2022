@@ -2,6 +2,8 @@ package com.team4.isamrs.model.reservation;
 
 import com.team4.isamrs.model.advertisement.SelectedOption;
 import com.team4.isamrs.model.user.Customer;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -10,6 +12,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public class Reservation {
     @Id

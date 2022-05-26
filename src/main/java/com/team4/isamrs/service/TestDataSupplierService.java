@@ -10,6 +10,7 @@ import com.team4.isamrs.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -50,8 +51,8 @@ public class TestDataSupplierService {
             resort.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit." +
                     "Maecenas fringilla metus nec justo tempus venenatis. Etiam ut neque eget ipsum.");
             resort.setPricingDescription("200");
-            resort.setAvailableAfter(LocalDateTime.now());
-            resort.setAvailableUntil(LocalDateTime.now().plusMonths(3));
+            resort.setAvailableAfter(LocalDate.now());
+            resort.setAvailableUntil(LocalDate.now().plusMonths(3));
             resort.setRules("No smoking!");
             resort.setCurrency("€");
             resort.setNumberOfBeds(Long.toString(i % 3 + 2));

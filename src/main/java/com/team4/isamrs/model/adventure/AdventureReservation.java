@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Entity
 public class AdventureReservation extends Reservation {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resort_ad_id")
+    @JoinColumn(name = "adventure_ad_id")
     private AdventureAd advertisement;
 
     @Column(name = "start_date_time", nullable = false)

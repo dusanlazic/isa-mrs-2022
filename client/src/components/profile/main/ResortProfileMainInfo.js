@@ -1,64 +1,44 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from 'react-router-dom';
-import { get, del } from "../../../adapters/xhr";
-import DeletionModal from "../../modals/DeletionModal";
+import { get } from "../../../adapters/xhr";
 
 
-const ResortProfileMainInfo = ({data, advertisementId}) => {
+const ResortProfileMainInfo = ({ data, advertisementId }) => {
 	let [showMore, setShowMore] = useState(false);
 	let description = data.description;
 	const [rating, setRating] = useState(null);
-	const [showModal, setShowModal] = useState(false);
-	const [showManagingButtons, setShowManagingButtons] = useState(false);
-  const show = () => setShowModal(true);
-  const hide = () => setShowModal(false);
-	const navigate = useNavigate(); 
+	const [showEditBtn, setShowEditBtn] = useState(false);
+	const navigate = useNavigate();
 
-  const redirectToEdit = () =>{ 
-    navigate(`/resort/${advertisementId}/edit`);
-  }
-
-  const deleteFun = () =>  {
-		del(`/api/ads/${advertisementId}`).then((response) => {
-			console.log(response);
-      		setShowModal(false);
-			window.location.reload();
-		  });
-  }
+	const redirectToEdit = () => {
+		navigate(`/resort/${advertisementId}/edit`);
+	}
 
 	useEffect(() => {
 		get(`/api/ads/${data.id}/rating`).then((response) => {
 			setRating(response.data);
-		  });
-		}, [])
+		});
+	}, [])
+
 
 	useEffect(() => {
 		get(`/api/account/whoami`).then((response) => {
-			setShowManagingButtons(response.data.id === data.advertiser.id);
-		  });
-		}, [])
+			setShowEditBtn(response.data.id === data.advertiser.id);
+		});
+	}, [])
 
 	return (
 		<div className="block md:flex bg-gray-100 rounded-lg p-10">
 			<div className="block flex-none">
-				<img src={data.photos.length > 0 ? `/api/${data.photos[0].uri}` : "/images/property-placeholder.jpg"} alt=""
-        className="flex-none w-64 h-64 md:w-44 md:h-44 xl:w-52 xl:h-52
-        object-cover rounded-lg mx-auto" />
-				
-        { showManagingButtons && 
-        <button className="text-gray-500
+				<img src={data.photos.length > 0 ? `/api/${data.photos[0].uri}` : "/images/property-placeholder.jpg"} alt="" className="flex-none w-64 h-64 md:w-44 md:h-44 xl:w-52 xl:h-52 object-cover rounded-lg mx-auto" />
+
+				{showEditBtn &&
+					<button className="text-gray-500
 					bg-gray-200 hover:bg-gray-300 hover:text-gray-800 active:bg-transparent
 					active:bg-gray-400 active:text-gray-50
-					rounded-b-lg px-4 h-min text-base md:text-sm xl:text-base" onClick={redirectToEdit}>Edit</button>}
-					
-          { showManagingButtons && 
-					<button className="text-gray-500
-					bg-gray-200 hover:bg-red-200 hover:text-red-500 active:bg-transparent
-					active:bg-red-400 active:text-red-50
-					rounded-b-lg px-4 h-min text-base md:text-sm xl:text-base" onClick={show}>
-						Delete</button>}
+					rounded-b-lg px-4 h-min text-base md:text-sm xl:text-base" onClick={redirectToEdit}>Edit profile</button>}
 			</div>
-				
+
 			<div className="flex flex-col flex-grow md:ml-4">
 
 				<div className="block md:flex w-full justify-between text-center md:text-left">
@@ -89,10 +69,6 @@ const ResortProfileMainInfo = ({data, advertisementId}) => {
 				</div>
 
 			</div>
-			{showModal && <DeletionModal  closeFunction = {() => hide(false)}
-                                      deleteFunction = {() => deleteFun()}
-                                      text = {`Are you sure you want to permanently delete ${data.title }? This action cannot be undone.`}
-        />}
 		</div>
 	);
 }

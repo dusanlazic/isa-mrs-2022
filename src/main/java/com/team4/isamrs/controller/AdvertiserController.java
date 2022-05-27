@@ -40,8 +40,8 @@ public class AdvertiserController {
         return new ResponseEntity<>(advertiserService.findRating(id), HttpStatus.OK);
     }
 
-    @GetMapping(value="/all-reservations")
-    public Page<ReservationSimpleDisplayDTO> findAllReservations(@RequestParam int page, Authentication auth) {
-        return advertiserService.findAllReservations(PageRequest.of(page, 25), auth);
+    @GetMapping(value="/active-reservations")
+    public Page<ReservationSimpleDisplayDTO> findActiveReservations(@RequestParam int page, Authentication auth) {
+        return advertiserService.findActiveReservations(PageRequest.of(page, 25), auth);
     }
 }

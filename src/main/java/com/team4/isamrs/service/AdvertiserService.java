@@ -52,7 +52,7 @@ public class AdvertiserService {
         return Math.round(rating * 100.0) / 100.0;
     }
 
-    public Page<ReservationSimpleDisplayDTO> findAllReservations(Pageable pageable, Authentication auth) {
+    public Page<ReservationSimpleDisplayDTO> findActiveReservations(Pageable pageable, Authentication auth) {
         User user = (User) auth.getPrincipal();
         Advertiser advertiser = advertiserRepository.findById(user.getId()).orElseThrow();
 
@@ -61,10 +61,10 @@ public class AdvertiserService {
                 .filter(r -> !r.getCancelled() && r.getEndDateTime().isAfter(LocalDateTime.now()))
                 .map(r -> modelMapper.map(r, ReservationSimpleDisplayDTO.class))
                 .collect(Collectors.toList());
+        
+        int fromIndex = Math.min((int)pageable.getOffset(), reservations.size());
+        int toIndex = Math.min((fromIndex + pageable.getPageSize()), reservations.size());
 
-        final int toIndex = Math.min((pageable.getPageNumber() + 1) * pageable.getPageSize(),
-                reservations.size());
-        final int fromIndex = Math.max(toIndex - pageable.getPageSize(), 0);
         return new PageImpl<ReservationSimpleDisplayDTO>
                 (reservations.subList(fromIndex, toIndex), pageable, reservations.size());
     }

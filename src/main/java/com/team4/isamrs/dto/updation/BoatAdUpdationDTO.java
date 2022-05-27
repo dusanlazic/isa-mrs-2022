@@ -6,7 +6,6 @@ import lombok.Data;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
@@ -88,7 +87,6 @@ public class BoatAdUpdationDTO {
     @Valid
     private List<OptionUpdationDTO> options;
 
-    @NotEmpty
-    @Valid
-    private List<DailyPriceUpdationDTO> prices;
+    @NotBlank
+    private BigDecimal pricePerDay;
 }

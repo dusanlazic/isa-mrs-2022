@@ -1,5 +1,6 @@
 package com.team4.isamrs.model.reservation;
 
+import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.SelectedOption;
 import com.team4.isamrs.model.user.Customer;
 import lombok.Getter;
@@ -14,15 +15,22 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public class Reservation {
     @Id
-    @SequenceGenerator(name = "mySeqGenV3", sequenceName = "mySeqV3", initialValue = 1, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenV3")
     private Long id;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "start_date_time", nullable = false)
+    private LocalDateTime startDateTime;
+
+    @Column(name = "end_date_time", nullable = false)
+    private LocalDateTime endDateTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "advertisement_id")
+    private Advertisement advertisement;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)

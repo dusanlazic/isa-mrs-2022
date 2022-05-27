@@ -9,7 +9,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-public class Advertisement {
+public abstract class Advertisement {
     @Id
     @SequenceGenerator(name = "mySeqGenV2", sequenceName = "mySeqV2", initialValue = 1, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenV2")
@@ -52,6 +51,9 @@ public class Advertisement {
 
     @Column(name = "currency", nullable = false)
     private String currency;
+
+    @Column(name = "capacity", nullable = false)
+    private Integer capacity;
 
     /*
     e.g. WIFI, Pet friendly, TV

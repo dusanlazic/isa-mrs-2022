@@ -4,9 +4,11 @@ package com.team4.isamrs.dto.updation;
 import lombok.Data;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
@@ -58,7 +60,6 @@ public class ResortAdUpdationDTO {
     @NotNull
     private LocalTime checkInTime;
 
-    @NotEmpty
-    @Valid
-    private List<DailyPriceUpdationDTO> prices;
+    @NotBlank
+    private BigDecimal pricePerDay;
 }

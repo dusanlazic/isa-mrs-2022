@@ -1,8 +1,6 @@
 package com.team4.isamrs.dto.display;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.team4.isamrs.model.advertisement.Address;
-import com.team4.isamrs.model.advertisement.DailyPrice;
 import com.team4.isamrs.model.user.Advertiser;
 import lombok.Data;
 
@@ -27,7 +25,6 @@ public class BoatAdDisplayDTO implements DisplayDTO {
     private Set<String> tags;
     private Set<PhotoUploadDisplayDTO> photos;
     private Set<OptionDisplayDTO> options;
-
     @JsonFormat(pattern="HH:mm")
     private LocalTime CheckOutTime;
     @JsonFormat(pattern="HH:mm")
@@ -41,5 +38,5 @@ public class BoatAdDisplayDTO implements DisplayDTO {
     private Set<NavigationalEquipmentDisplayDTO> navigationalEquipment = new HashSet<>();
     private Integer capacity;
     private BigDecimal cancellationFee;
-    private Set<DailyPrice> prices = new HashSet<>();
+    private BigDecimal pricePerPerson;
 }

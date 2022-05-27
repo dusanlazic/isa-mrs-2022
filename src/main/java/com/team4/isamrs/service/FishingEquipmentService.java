@@ -2,7 +2,7 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.FishingEquipmentCreationDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
-import com.team4.isamrs.model.adventure.FishingEquipment;
+import com.team4.isamrs.model.advertisement.FishingEquipment;
 import com.team4.isamrs.repository.FishingEquipmentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

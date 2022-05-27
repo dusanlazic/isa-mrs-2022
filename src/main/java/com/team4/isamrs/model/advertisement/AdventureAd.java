@@ -1,15 +1,12 @@
-package com.team4.isamrs.model.adventure;
+package com.team4.isamrs.model.advertisement;
 
-import com.team4.isamrs.model.advertisement.Advertisement;
-import com.team4.isamrs.model.advertisement.HourlyPrice;
+import com.team4.isamrs.model.reservation.Reservation;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -18,9 +15,6 @@ import java.util.Set;
 public class AdventureAd extends Advertisement {
     @Column(name = "instructor_bio", nullable = false)
     private String instructorBio;
-
-    @Column(name = "capacity", nullable = false)
-    private Integer capacity;
 
     /*
     e.g. Fishing rods, Baits, Net
@@ -31,12 +25,11 @@ public class AdventureAd extends Advertisement {
     @Column(name = "cancellation_fee", nullable = false)
     private BigDecimal cancellationFee;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @OrderColumn
-    private List<HourlyPrice> prices = new ArrayList<>();
+    @Column(name = "price_per_person", nullable = false)
+    private BigDecimal pricePerPerson;
 
     @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY)
-    private Set<AdventureReservation> reservations = new HashSet<>();
+    private Set<Reservation> reservations = new HashSet<>();
 
     public void addFishingEquipment(FishingEquipment singleFishingEquipment) {
         fishingEquipment.add(singleFishingEquipment);
@@ -46,13 +39,5 @@ public class AdventureAd extends Advertisement {
     public void removeFishingEquipment(FishingEquipment singleFishingEquipment) {
         fishingEquipment.remove(singleFishingEquipment);
         singleFishingEquipment.getAdvertisements().remove(this);
-    }
-
-    public void addHourlyPrice(HourlyPrice hourlyPrice) {
-        prices.add(hourlyPrice);
-    }
-
-    public void removeHourlyPrice(HourlyPrice hourlyPrice) {
-        prices.remove(hourlyPrice);
     }
 }

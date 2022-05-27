@@ -1,19 +1,10 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
-import com.team4.isamrs.dto.creation.HourlyPriceCreationDTO;
-import com.team4.isamrs.dto.display.AdventureAdDisplayDTO;
 import com.team4.isamrs.dto.display.AdventureAdSimpleDisplayDTO;
-import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
-import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
-import com.team4.isamrs.exception.IdenticalAvailabilityDatesException;
-import com.team4.isamrs.exception.ReservationsInUnavailabilityPeriodException;
-import com.team4.isamrs.model.adventure.AdventureAd;
-import com.team4.isamrs.model.adventure.AdventureReservation;
-import com.team4.isamrs.model.advertisement.HourlyPrice;
-import com.team4.isamrs.model.reservation.Reservation;
+import com.team4.isamrs.model.advertisement.AdventureAd;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.*;
 import org.modelmapper.ModelMapper;
@@ -23,7 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,16 +24,10 @@ public class AdventureAdService {
     private AdventureAdRepository adventureAdRepository;
 
     @Autowired
-    private HourlyPriceRepository hourlyPriceRepository;
-
-    @Autowired
     private TagRepository tagRepository;
 
     @Autowired
     private FishingEquipmentRepository fishingEquipmentRepository;
-
-    @Autowired
-    private AdventureReservationRepository reservationRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -105,93 +90,5 @@ public class AdventureAdService {
         adventureAd.getTags().forEach(e -> e.getAdvertisements().remove(adventureAd));
 
         adventureAdRepository.delete(adventureAd);
-    }
-
-    public <T extends DisplayDTO> Collection<T> getPrices(Long id, Class<T> returnType) {
-        AdventureAd adventureAd = adventureAdRepository.findById(id).orElseThrow();
-
-        Collection<HourlyPrice> prices = adventureAd.getPrices();
-        return prices.stream()
-                .map(e -> modelMapper.map(e, returnType))
-                .collect(Collectors.toSet());
-    }
-
-    public HourlyPrice addPrice(Long id, HourlyPriceCreationDTO dto, Authentication auth) {
-        Advertiser advertiser = (Advertiser) auth.getPrincipal();
-        AdventureAd adventureAd = adventureAdRepository.findAdventureAdByIdAndAdvertiser(id, advertiser).orElseThrow();
-
-        HourlyPrice hourlyPrice = modelMapper.map(dto, HourlyPrice.class);
-        adventureAd.addHourlyPrice(hourlyPrice);
-
-        adventureAdRepository.save(adventureAd);
-        return hourlyPrice;
-    }
-
-    public void updatePrice(Long advertisementId, Long priceId, HourlyPriceCreationDTO dto, Authentication auth) {
-        Advertiser advertiser = (Advertiser) auth.getPrincipal();
-        AdventureAd adventureAd = adventureAdRepository.findAdventureAdByIdAndAdvertiser(advertisementId, advertiser).orElseThrow();
-        HourlyPrice hourlyPrice = hourlyPriceRepository.findById(priceId).orElseThrow();
-        if (!adventureAd.getPrices().contains(hourlyPrice))
-            throw new NoSuchElementException();
-
-        modelMapper.map(dto, hourlyPrice);
-
-        hourlyPriceRepository.save(hourlyPrice);
-    }
-
-    public void removePrice(Long advertisementId, Long priceId, Authentication auth) {
-        Advertiser advertiser = (Advertiser) auth.getPrincipal();
-        AdventureAd adventureAd = adventureAdRepository.findAdventureAdByIdAndAdvertiser(advertisementId, advertiser).orElseThrow();
-        HourlyPrice hourlyPrice = hourlyPriceRepository.findById(priceId).orElseThrow();
-        if (!adventureAd.getPrices().contains(hourlyPrice))
-            throw new NoSuchElementException();
-
-        adventureAd.removeHourlyPrice(hourlyPrice);
-
-        adventureAdRepository.save(adventureAd);
-        hourlyPriceRepository.delete(hourlyPrice); // might not be needed because of auto orphan removal
-    }
-
-    public void updateAvailabilityPeriod(Long id, AvailabilityPeriodUpdationDTO dto, Authentication auth) {
-        if (dto.getAvailableUntil() != null && dto.getAvailableAfter() != null &&
-                dto.getAvailableUntil().equals(dto.getAvailableAfter()))
-            throw new IdenticalAvailabilityDatesException();
-
-        Advertiser advertiser = (Advertiser) auth.getPrincipal();
-        AdventureAd adventureAd = adventureAdRepository.findAdventureAdByIdAndAdvertiser(id, advertiser).orElseThrow();
-
-        if (!(dto.getAvailableUntil() == null && dto.getAvailableAfter() == null)) {
-            // only available until is defined
-            if (dto.getAvailableAfter() == null) {
-                Set<AdventureReservation> reservations = reservationRepository.findReservationsByEndDateTimeAfter(dto.getAvailableUntil().atTime(23, 59));
-                if (!reservations.isEmpty())
-                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
-            }
-            // only available after is defined
-            else if (dto.getAvailableUntil() == null) {
-                Set<AdventureReservation> reservations = reservationRepository.findReservationsByStartDateTimeBefore(dto.getAvailableAfter().atTime(0,0));
-                if (!reservations.isEmpty())
-                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
-            }
-            // both are defined
-            // availability period
-            else if (dto.getAvailableAfter().isBefore(dto.getAvailableUntil())) {
-                Set<AdventureReservation> reservations = reservationRepository.findReservationsByStartDateTimeBeforeOrStartDateTimeAfter(dto.getAvailableAfter().atTime(0,0), dto.getAvailableUntil().atTime(23,59));
-                reservations.removeIf(Reservation::getCancelled);
-                if (!reservations.isEmpty())
-                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
-            }
-            // unavailability period
-            else {
-                Set<AdventureReservation> reservations = reservationRepository.findReservationsByStartDateTimeBeforeAndEndDateTimeAfter(dto.getAvailableAfter().atTime(0,0), dto.getAvailableUntil().atTime(23,59));
-                reservations.removeIf(Reservation::getCancelled);
-                if (!reservations.isEmpty())
-                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
-            }
-        }
-
-        adventureAd.setAvailableAfter(dto.getAvailableAfter());
-        adventureAd.setAvailableUntil(dto.getAvailableUntil());
-        adventureAdRepository.save(adventureAd);
     }
 }

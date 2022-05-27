@@ -1,6 +1,5 @@
 package com.team4.isamrs.dto.creation;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -91,8 +90,7 @@ public class BoatAdCreationDTO {
     @PositiveOrZero
     private BigDecimal cancellationFee;
 
-    @NotEmpty
-    @Valid
-    private Set<DailyPriceCreationDTO> prices;
+    @NotBlank
+    private BigDecimal pricePerDay;
 
 }

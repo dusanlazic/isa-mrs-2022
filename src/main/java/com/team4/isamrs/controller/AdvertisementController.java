@@ -3,6 +3,7 @@ package com.team4.isamrs.controller;
 import com.team4.isamrs.dto.creation.OptionCreationDTO;
 import com.team4.isamrs.dto.display.OptionDisplayDTO;
 import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
+import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.service.AdvertisementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -69,5 +70,12 @@ public class AdvertisementController {
     @GetMapping("/{id}/reviews")
     public ResponseEntity<Collection<ServiceReviewDisplayDTO>> getReviews(@PathVariable Long id) {
         return new ResponseEntity<>(advertisementService.getReviews(id), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{id}/availability-period", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADVERTISER')")
+    public ResponseEntity<String> updateAvailabilityPeriod(@PathVariable Long id, @Valid @RequestBody AvailabilityPeriodUpdationDTO dto, Authentication auth) {
+        advertisementService.updateAvailabilityPeriod(id, dto, auth);
+        return ResponseEntity.ok().body("Availability period updated.");
     }
 }

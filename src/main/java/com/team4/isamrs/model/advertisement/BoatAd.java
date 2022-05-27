@@ -1,18 +1,13 @@
-package com.team4.isamrs.model.boat;
+package com.team4.isamrs.model.advertisement;
 
-import com.team4.isamrs.model.advertisement.Advertisement;
-import com.team4.isamrs.model.advertisement.DailyPrice;
-import com.team4.isamrs.model.adventure.FishingEquipment;
-import com.team4.isamrs.model.user.Advertiser;
+import com.team4.isamrs.model.reservation.Reservation;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -20,10 +15,10 @@ import java.util.Set;
 @Setter
 public class BoatAd extends Advertisement {
     @Column(name = "check_out_time", nullable = false)
-    private LocalTime CheckOutTime; // e.g. 10:00
+    private LocalTime checkOutTime; // e.g. 10:00
 
     @Column(name = "check_in_time", nullable = false)
-    private LocalTime CheckInTime; // e.g. 13:00
+    private LocalTime checkInTime; // e.g. 13:00
 
     @Column(name = "boat_type")
     private String boatType;
@@ -52,17 +47,14 @@ public class BoatAd extends Advertisement {
     @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY)
     private Set<NavigationalEquipment> navigationalEquipment = new HashSet<>();
 
-    @Column(name = "capacity", nullable = false)
-    private Integer capacity;
-
     @Column(name = "cancellation_fee", nullable = false)
     private BigDecimal cancellationFee;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<DailyPrice> prices = new ArrayList<>();
+    @Column(name = "price_per_day", nullable = false)
+    private BigDecimal pricePerDay;
 
     @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY)
-    private Set<BoatReservation> reservations = new HashSet<>();
+    private Set<Reservation> reservations = new HashSet<>();
 
     public void addFishingEquipment(FishingEquipment singleFishingEquipment) {
         fishingEquipment.add(singleFishingEquipment);
@@ -73,10 +65,4 @@ public class BoatAd extends Advertisement {
         navigationalEquipment.add(singleNavigationalEquipment);
         singleNavigationalEquipment.getAdvertisements().add(this);
     }
-
-    public void addDailyPrice(DailyPrice dailyPrice) {
-        prices.add(dailyPrice);
-    }
-
-    public void removeDailyPrice(DailyPrice dailyPrice) { prices.remove(dailyPrice); }
 }

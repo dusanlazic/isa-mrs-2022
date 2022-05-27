@@ -1,7 +1,7 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.model.advertisement.Address;
-import com.team4.isamrs.model.resort.ResortAd;
+import com.team4.isamrs.model.advertisement.ResortAd;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.AdventureAdRepository;
 import com.team4.isamrs.repository.BoatAdRepository;
@@ -10,8 +10,8 @@ import com.team4.isamrs.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Service
@@ -58,6 +58,8 @@ public class TestDataSupplierService {
             resort.setNumberOfBeds(Long.toString(i % 3 + 2));
             resort.setCheckOutTime(LocalTime.parse("10:00"));
             resort.setCheckInTime(LocalTime.parse("14:00"));
+            resort.setCapacity(10);
+            resort.setPricePerDay(BigDecimal.valueOf(135));
 
             resortAdRepository.save(resort);
         }

@@ -5,6 +5,7 @@ import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
 import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.dto.updation.BoatAdUpdationDTO;
+import com.team4.isamrs.service.AdvertisementService;
 import com.team4.isamrs.service.BoatAdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,9 @@ public class BoatController {
 
     @Autowired
     private BoatAdService boatAdService;
+
+    @Autowired
+    private AdvertisementService advertisementService;
 
     @GetMapping(value = "")
     public ResponseEntity<Collection<BoatAdDisplayDTO>> findAll() {
@@ -72,7 +76,7 @@ public class BoatController {
     @PutMapping(value = "/{id}/availability-period", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('BOAT_OWNER')")
     public ResponseEntity<String> updateAvailabilityPeriod(@PathVariable Long id, @Valid @RequestBody AvailabilityPeriodUpdationDTO dto, Authentication auth) {
-        boatAdService.updateAvailabilityPeriod(id, dto, auth);
+        advertisementService.updateAvailabilityPeriod(id, dto, auth);
         return ResponseEntity.ok().body("Availability period updated.");
     }
 }

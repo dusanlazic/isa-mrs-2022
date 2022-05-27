@@ -60,8 +60,7 @@ public class ResortAdCreationDTO {
     @NotNull
     private LocalTime checkInTime;
 
-    @NotEmpty
-    @Valid
-    private Set<DailyPriceCreationDTO> prices;
+    @NotBlank
+    private BigDecimal pricePerDay;
 
 }

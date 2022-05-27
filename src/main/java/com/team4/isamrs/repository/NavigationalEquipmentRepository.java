@@ -1,6 +1,6 @@
 package com.team4.isamrs.repository;
 
-import com.team4.isamrs.model.boat.NavigationalEquipment;
+import com.team4.isamrs.model.advertisement.NavigationalEquipment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

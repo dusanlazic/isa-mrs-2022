@@ -111,6 +111,7 @@ public class AccountService {
         advertiser.setPhoneNumber("065-1337");
         userRepository.save(advertiser);
 
+
         User user = userRepository.findById(1002L).orElseThrow();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.getAuthorities().add(roleRepository.findByName("ROLE_BOAT_OWNER").get());

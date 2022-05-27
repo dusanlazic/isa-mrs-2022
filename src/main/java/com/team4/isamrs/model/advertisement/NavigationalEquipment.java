@@ -1,7 +1,5 @@
-package com.team4.isamrs.model.boat;
+package com.team4.isamrs.model.advertisement;
 
-import com.team4.isamrs.model.adventure.AdventureAd;
-import com.team4.isamrs.model.advertisement.Advertisement;
 import lombok.Getter;
 import lombok.Setter;
 

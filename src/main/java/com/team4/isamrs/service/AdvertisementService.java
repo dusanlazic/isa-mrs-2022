@@ -3,21 +3,25 @@ package com.team4.isamrs.service;
 import com.team4.isamrs.dto.creation.OptionCreationDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
-import com.team4.isamrs.model.adventure.AdventureAd;
+import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
+import com.team4.isamrs.exception.IdenticalAvailabilityDatesException;
+import com.team4.isamrs.exception.ReservationsInUnavailabilityPeriodException;
+import com.team4.isamrs.model.advertisement.AdventureAd;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.Option;
-import com.team4.isamrs.model.boat.BoatAd;
+import com.team4.isamrs.model.advertisement.BoatAd;
+import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.review.ServiceReview;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.AdvertisementRepository;
 import com.team4.isamrs.repository.OptionRepository;
+import com.team4.isamrs.repository.ReservationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,6 +34,9 @@ public class AdvertisementService {
 
     @Autowired
     private AdvertisementRepository advertisementRepository;
+
+    @Autowired
+    private ReservationRepository reservationRepository;
 
     @Autowired
     private OptionRepository optionRepository;
@@ -111,5 +118,48 @@ public class AdvertisementService {
         return advertisement.getReviews().stream()
                 .map(e -> modelMapper.map(e, ServiceReviewDisplayDTO.class))
                 .collect(Collectors.toSet());
+    }
+
+    public void updateAvailabilityPeriod(Long id, AvailabilityPeriodUpdationDTO dto, Authentication auth) {
+        if (dto.getAvailableUntil() != null && dto.getAvailableAfter() != null &&
+                dto.getAvailableUntil().equals(dto.getAvailableAfter()))
+            throw new IdenticalAvailabilityDatesException();
+
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        Advertisement advertisement = advertisementRepository.findAdvertisementByIdAndAdvertiser(id, advertiser).orElseThrow();
+
+        if (!(dto.getAvailableUntil() == null && dto.getAvailableAfter() == null)) {
+            // only available until is defined
+            if (dto.getAvailableAfter() == null) {
+                Set<Reservation> reservations = reservationRepository.findReservationsByEndDateTimeAfter(dto.getAvailableUntil().plusDays(1).atStartOfDay());
+                if (!reservations.isEmpty())
+                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+            }
+            // only available after is defined
+            else if (dto.getAvailableUntil() == null) {
+                Set<Reservation> reservations = reservationRepository.findReservationsByStartDateTimeBefore(dto.getAvailableAfter().atStartOfDay());
+                if (!reservations.isEmpty())
+                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+            }
+            // both are defined
+            // availability period
+            else if (dto.getAvailableAfter().isBefore(dto.getAvailableUntil())) {
+                Set<Reservation> reservations = reservationRepository.findReservationsByStartDateTimeBeforeOrEndDateTimeAfter(dto.getAvailableAfter().atStartOfDay(), dto.getAvailableUntil().plusDays(1).atStartOfDay());
+                reservations.removeIf(Reservation::getCancelled);
+                if (!reservations.isEmpty())
+                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+            }
+            // unavailability period
+            else {
+                Set<Reservation> reservations = reservationRepository.findReservationsByStartDateTimeBeforeAndEndDateTimeAfter(dto.getAvailableAfter().atStartOfDay(), dto.getAvailableUntil().plusDays(1).atStartOfDay());
+                reservations.removeIf(Reservation::getCancelled);
+                if (!reservations.isEmpty())
+                    throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
+            }
+        }
+
+        advertisement.setAvailableAfter(dto.getAvailableAfter());
+        advertisement.setAvailableUntil(dto.getAvailableUntil());
+        advertisementRepository.save(advertisement);
     }
 }

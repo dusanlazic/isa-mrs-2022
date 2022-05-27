@@ -1,14 +1,12 @@
 package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
-import com.team4.isamrs.dto.creation.HourlyPriceCreationDTO;
 import com.team4.isamrs.dto.display.AdventureAdDisplayDTO;
 import com.team4.isamrs.dto.display.AdventureAdSimpleDisplayDTO;
-import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
-import com.team4.isamrs.dto.display.HourlyPriceDisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.service.AdventureAdService;
+import com.team4.isamrs.service.AdvertisementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -31,6 +29,9 @@ public class AdventureController {
 
     @Autowired
     private AdventureAdService adventureAdService;
+
+    @Autowired
+    private AdvertisementService advertisementService;
 
     @GetMapping(value = "")
     public ResponseEntity<Collection<AdventureAdDisplayDTO>> findAll() {
@@ -73,40 +74,10 @@ public class AdventureController {
         return ResponseEntity.ok("Adventure ad deleted.");
     }
 
-    @GetMapping("/{id}/prices")
-    public ResponseEntity<Collection<HourlyPriceDisplayDTO>> getPrices(@PathVariable Long id) {
-        return new ResponseEntity<>(adventureAdService.getPrices(id, HourlyPriceDisplayDTO.class), HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/{id}/prices", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
-    public ResponseEntity<String> addPrice(@PathVariable Long id, @Valid @RequestBody HourlyPriceCreationDTO dto, Authentication auth) {
-        adventureAdService.addPrice(id, dto, auth);
-        return ResponseEntity.created(URI.create("/ads/adventures/" + id))
-                             .body("Hourly price created.");
-    }
-
-    @PutMapping(value = "/{id}/prices/{priceId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
-    public ResponseEntity<String> updatePrice(@PathVariable Long id,
-                                              @PathVariable Long priceId,
-                                              @Valid @RequestBody HourlyPriceCreationDTO dto,
-                                              Authentication auth) {
-        adventureAdService.updatePrice(id, priceId, dto, auth);
-        return ResponseEntity.ok().body("Hourly price updated.");
-    }
-
-    @DeleteMapping("/{id}/prices/{priceId}")
-    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
-    public ResponseEntity<String> removePrice(@PathVariable Long id, @PathVariable Long priceId, Authentication auth) {
-        adventureAdService.removePrice(id, priceId, auth);
-        return ResponseEntity.ok().body("Hourly price deleted.");
-    }
-
     @PutMapping(value = "/{id}/availability-period", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('RESORT_OWNER')")
     public ResponseEntity<String> updateAvailabilityPeriod(@PathVariable Long id, @Valid @RequestBody AvailabilityPeriodUpdationDTO dto, Authentication auth) {
-        adventureAdService.updateAvailabilityPeriod(id, dto, auth);
+        advertisementService.updateAvailabilityPeriod(id, dto, auth);
         return ResponseEntity.ok().body("Availability period updated.");
     }
 }

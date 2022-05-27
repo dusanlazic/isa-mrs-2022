@@ -1,5 +1,6 @@
 package com.team4.isamrs.model.reservation;
 
+import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.SelectedOption;
 
 import javax.persistence.*;
@@ -12,9 +13,11 @@ import java.util.Set;
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public class QuickReservation {
     @Id
-    @SequenceGenerator(name = "mySeqGenV4", sequenceName = "mySeqV4", initialValue = 1, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mySeqGenV4")
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ad_id")
+    private Advertisement advertisement;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -37,4 +40,16 @@ public class QuickReservation {
 
     @Column(name = "new_price", nullable = false)
     private BigDecimal newPrice;
+
+    @Column(name = "start_date_time", nullable = false)
+    private LocalDateTime startDateTime;
+
+    @Column(name = "end_date_time", nullable = false)
+    private LocalDateTime endDateTime;
+
+    @Column(name = "capacity", nullable = false)
+    private Integer capacity;
+
+    @Column(name = "taken", nullable = false)
+    private Boolean taken;
 }

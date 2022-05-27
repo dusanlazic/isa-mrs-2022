@@ -1,10 +1,9 @@
 package com.team4.isamrs.dto.display;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.team4.isamrs.model.advertisement.Address;
-import com.team4.isamrs.model.user.Advertiser;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
@@ -12,7 +11,7 @@ import java.util.Set;
 @Data
 public class ResortAdDisplayDTO implements DisplayDTO {
     private Long id;
-    private Advertiser advertiser;
+    private AccountDisplayDTO advertiser;
     private String title;
     private AddressDisplayDTO address;
     private String description;
@@ -29,5 +28,5 @@ public class ResortAdDisplayDTO implements DisplayDTO {
     private LocalTime checkOutTime;
     @JsonFormat(pattern="HH:mm")
     private LocalTime checkInTime;
-    private Set<DailyPriceDisplayDTO> prices;
+    private BigDecimal pricePerPerson;
 }

@@ -6,14 +6,14 @@ import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.creation.ResortAdCreationDTO;
 import com.team4.isamrs.dto.display.*;
 import com.team4.isamrs.dto.updation.*;
-import com.team4.isamrs.model.adventure.AdventureAd;
-import com.team4.isamrs.model.adventure.FishingEquipment;
+import com.team4.isamrs.model.advertisement.AdventureAd;
+import com.team4.isamrs.model.advertisement.FishingEquipment;
 import com.team4.isamrs.model.advertisement.*;
-import com.team4.isamrs.model.boat.BoatAd;
-import com.team4.isamrs.model.boat.NavigationalEquipment;
+import com.team4.isamrs.model.advertisement.BoatAd;
+import com.team4.isamrs.model.advertisement.NavigationalEquipment;
 import com.team4.isamrs.model.enumeration.AccountType;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
-import com.team4.isamrs.model.resort.ResortAd;
+import com.team4.isamrs.model.advertisement.ResortAd;
 import com.team4.isamrs.model.user.*;
 import com.team4.isamrs.repository.*;
 import org.modelmapper.Converter;
@@ -27,9 +27,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class DomainMapper {
-
-    @Autowired
-    private AdventureAdRepository adventureAdRepository;
 
     @Autowired
     private TagRepository tagRepository;
@@ -96,19 +93,6 @@ public class DomainMapper {
                 index++;
             }
             removedOptions.forEach(destination::removeOption);
-
-            // Delete prices marked for deletion
-            index = 0;
-            List<HourlyPrice> removedPrices = new LinkedList<>();
-            for (HourlyPriceUpdationDTO dto: source.getPrices()) {
-                if (dto.getDelete() != null) {
-                    HourlyPrice price = destination.getPrices().get(index);
-                    if (price != null)
-                        removedPrices.add(price);
-                }
-                index++;
-            }
-            removedPrices.forEach(destination::removeHourlyPrice);
 
             // Sync bidirectional relationships
             destination.getOptions().forEach(e -> e.setAdvertisement(destination));
@@ -184,18 +168,6 @@ public class DomainMapper {
                 index++;
             }
             removedOptions.forEach(destination::removeOption);
-
-            index = 0;
-            List<DailyPrice> removedPrices = new LinkedList<>();
-            for (DailyPriceUpdationDTO dto: source.getPrices()) {
-                if (dto.getDelete() != null) {
-                    DailyPrice price = destination.getPrices().get(index);
-                    if (price != null)
-                        removedPrices.add(price);
-                }
-                index++;
-            }
-            removedPrices.forEach(destination::removeDailyPrice);
 
             destination.getOptions().forEach(e -> e.setAdvertisement(destination));
 
@@ -295,18 +267,6 @@ public class DomainMapper {
                 index++;
             }
             removedOptions.forEach(destination::removeOption);
-
-            index = 0;
-            List<DailyPrice> removedPrices = new LinkedList<>();
-            for (DailyPriceUpdationDTO dto: source.getPrices()) {
-                if (dto.getDelete() != null) {
-                    DailyPrice price = destination.getPrices().get(index);
-                    if (price != null)
-                        removedPrices.add(price);
-                }
-                index++;
-            }
-            removedPrices.forEach(destination::removeDailyPrice);
 
             destination.getOptions().forEach(e -> e.setAdvertisement(destination));
 

@@ -1,7 +1,6 @@
 package com.team4.isamrs.repository;
 
-import com.team4.isamrs.model.boat.BoatAd;
-import com.team4.isamrs.model.resort.ResortAd;
+import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.user.Advertiser;
 import org.springframework.data.jpa.repository.JpaRepository;
 

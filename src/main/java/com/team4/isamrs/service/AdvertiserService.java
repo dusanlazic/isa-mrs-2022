@@ -58,10 +58,12 @@ public class AdvertiserService {
 
         List<ReservationSimpleDisplayDTO> reservations = advertiser.getAds().stream()
                 .flatMap(ad -> ad.getReservations().stream())
-                .filter(r -> !r.getCancelled() && r.getEndDateTime().isAfter(LocalDateTime.now()))
+                .filter(r -> !r.getCancelled()
+                        && r.getStartDateTime().isBefore(LocalDateTime.now())
+                        && r.getEndDateTime().isAfter(LocalDateTime.now()))
                 .map(r -> modelMapper.map(r, ReservationSimpleDisplayDTO.class))
                 .collect(Collectors.toList());
-        
+
         int fromIndex = Math.min((int)pageable.getOffset(), reservations.size());
         int toIndex = Math.min((fromIndex + pageable.getPageSize()), reservations.size());
 

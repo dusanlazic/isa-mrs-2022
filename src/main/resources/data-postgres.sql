@@ -201,7 +201,7 @@ VALUES (3, 1);
 
 INSERT INTO public.reservation(
     id, calculated_price, cancelled, created_at, customer_id, end_date_time, start_date_time, advertisement_id)
-VALUES (1, 400, FALSE, '05-18-2022 15:10', 1001, '2022-11-15 12:00', '2022-11-15 12:00', 1013);
+VALUES (1, 400, FALSE, '05-18-2022 15:10', 1001, '2022-05-28 12:00', '2022-05-27 12:00', 1013);
 INSERT INTO public.reservation(
     id, calculated_price, cancelled, created_at, customer_id, end_date_time, start_date_time, advertisement_id)
 VALUES (6, 400, FALSE , '10-05-2022 15:20', 1001, '2022-11-01 12:00', '2022-11-01 12:00', 1013);

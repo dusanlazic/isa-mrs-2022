@@ -53,9 +53,6 @@ public class BoatAd extends Advertisement {
     @Column(name = "price_per_day", nullable = false)
     private BigDecimal pricePerDay;
 
-    @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY)
-    private Set<Reservation> reservations = new HashSet<>();
-
     public void addFishingEquipment(FishingEquipment singleFishingEquipment) {
         fishingEquipment.add(singleFishingEquipment);
         singleFishingEquipment.getAdvertisements().add(this);

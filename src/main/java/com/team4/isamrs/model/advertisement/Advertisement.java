@@ -1,6 +1,7 @@
 package com.team4.isamrs.model.advertisement;
 
 import com.team4.isamrs.exception.PhotoNotFoundException;
+import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.review.ServiceReview;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
@@ -73,6 +74,9 @@ public abstract class Advertisement {
 
     @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY)
     private Set<ServiceReview> reviews = new HashSet<>();
+
+    @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY)
+    private Set<Reservation> reservations = new HashSet<>();
 
     public void addTag(Tag tag) {
         tags.add(tag);

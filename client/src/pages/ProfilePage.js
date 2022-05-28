@@ -20,15 +20,12 @@ import Map from '../components/profile/additional/Map'
 
 // sidebar components
 import LoyaltyProgramCard from '../components/profile/sidebar/LoyaltyProgramCard'
-import HourlyPriceCard from '../components/profile/sidebar/HourlyPriceCard'
-import DailyPriceCard from '../components/profile/sidebar/DailyPriceCard'
 import Equipment from '../components/profile/sidebar/Equipment'
 import Tags from '../components/profile/sidebar/Tags'
 
 import AdditionalInformation from '../components/profile/additional/AdditionalInformation'
 import Sidebar from '../components/profile/sidebar/Sidebar'
-
-
+import PriceCard from '../components/profile/sidebar/PriceCard'
 
 
 const clientMainComponent = UserProfileMainInfo;
@@ -76,7 +73,7 @@ const ProfilePage = () => {
   }
 
   if (window.location.href.includes('resort')) {
-    sidebarComponents = [<DailyPriceCard data={profileData} />, <Tags data={profileData} />];
+    sidebarComponents = [<PriceCard data={profileData} />, <Tags data={profileData} />];
     MainComponent = ResortProfileMainInfo;
     contentComponents = [
       { title: 'About', component: <About data={profileData} />},
@@ -86,7 +83,7 @@ const ProfilePage = () => {
     ];
   }
   else if (window.location.href.includes('boat')) {
-    sidebarComponents = [<DailyPriceCard data={profileData} />, <Tags data={profileData} />];
+    sidebarComponents = [<PriceCard data={profileData} />, <Tags data={profileData} />];
     MainComponent = boatMainComponent;
     contentComponents = [
       { title: 'About', component: <BoatAbout data={profileData} />},
@@ -96,7 +93,7 @@ const ProfilePage = () => {
     ];
   }
   else if (window.location.href.includes('adventure')) {
-    sidebarComponents = [<HourlyPriceCard data={profileData} />, <Tags data={profileData} />];
+    sidebarComponents = [<PriceCard data={profileData} />, <Tags data={profileData} />];
     MainComponent = adventureMainComponent;
     contentComponents = [
       { title: 'About', component: <About data={profileData} />},

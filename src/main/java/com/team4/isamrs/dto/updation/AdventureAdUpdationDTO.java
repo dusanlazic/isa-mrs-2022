@@ -61,6 +61,6 @@ public class AdventureAdUpdationDTO {
     @Valid
     private List<OptionUpdationDTO> options;
 
-    @NotBlank
+    @NotNull
     private BigDecimal pricePerPerson;
 }

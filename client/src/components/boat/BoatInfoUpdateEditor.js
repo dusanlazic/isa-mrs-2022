@@ -24,10 +24,9 @@ const BoatInfoEditor = ({ data, advertisementId }) => {
   const [tags, setTags] = useState(data.tags.join(", "));
   const [fishingEquipment, setFishingEquipment] = useState(data.fishingEquipment.map(item => item.name).join(", "));
   const [pricingDescription, setPricingDescription] = useState(data.pricingDescription);
+  const [pricePerDay, setPricePerDay] = useState(data.pricePerDay);
   const [optionsInputFields, setOptionsInputFields] = useState(data.options);
   const [newOptionsInputFields, setNewOptionsInputFields] = useState([])
-  const [pricesInputFields, setPricesInputFields] = useState(data.prices);
-  const [newPricesInputFields, setNewPricesInputFields] = useState([])
   const [photoPreviews, setPhotoPreviews] = useState(data.photos.map(item => "/api" + item.uri));
   const [photoIds, setPhotoIds] = useState(data.photos.map(item => item.id));
   const [boatType, setBoatType] = useState(data.boatType)
@@ -68,6 +67,7 @@ const BoatInfoEditor = ({ data, advertisementId }) => {
       currency: currency,
       rules: rules,
       pricingDescription: pricingDescription,
+      pricePerDay: pricePerDay,
       address: {
         address: address,
         postalCode: postalCode,
@@ -75,13 +75,12 @@ const BoatInfoEditor = ({ data, advertisementId }) => {
         countryCode: countryCode,
         state: state,
         latitude: currentPosition.lat,
-        longitude: currentPosition.lng
+        longitude: currentPosition.lng % 180
       },
       fishingEquipmentNames: fishingEquipment.split(/[\s,]+/),
       navigationalEquipmentNames: navigationalEquipment.split(/[\s,]+/),
       tagNames: tags.split(/[\s,]+/),
       options: Array.from([...optionsInputFields, ...newOptionsInputFields]),
-      prices: Array.from([...pricesInputFields, ...newPricesInputFields]),
       photoIds: photoIds,
       boatType: boatType,
       boatLength: boatLength,
@@ -131,39 +130,6 @@ const BoatInfoEditor = ({ data, advertisementId }) => {
       optionsInputFields[index].delete = true;
 
     setOptionsInputFields([...optionsInputFields])
-  }
-
-  const handlePricesChange = (index, event) => {
-    let data = [...pricesInputFields];
-    data[index][event.target.name] = event.target.value;
-    setPricesInputFields(data);
-  }
-
-  const handleNewPricesChange = (index, event) => {
-    let data = [...newPricesInputFields];
-    data[index][event.target.name] = event.target.value;
-    setNewPricesInputFields(data);
-  }
-
-  const addPriceField = () => {
-    let newField = { value: '', minDays: '' };
-    setNewPricesInputFields([...newPricesInputFields, newField])
-  }
-
-  const removePriceField = (index) => {
-    let data = [...newPricesInputFields];
-    data.splice(index, 1)
-    setNewPricesInputFields(data)
-  }
-
-  const togglePriceRemoval = (index) => {
-    let price = pricesInputFields[index];
-    if (price.hasOwnProperty('delete'))
-      delete price.delete;
-    else
-      pricesInputFields[index].delete = true;
-
-    setPricesInputFields([...pricesInputFields])
   }
 
   const uploadImage = () => {
@@ -534,23 +500,32 @@ const BoatInfoEditor = ({ data, advertisementId }) => {
         <span>Pricing</span>
       </h2>
 
-      <div className="grid grid-cols-2 mt-1 gap-x-3">
+      <div className="grid grid-cols-3 mt-1 gap-x-3">
+        <div className="block col-span-1 text-left">
+          <label className="text-xs">price per day</label>
+          <input placeholder="price per day"
+          value={pricePerDay}
+          onChange={(event) => {setPricePerDay(event.target.value)}}
+          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+          focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+        </div>
+
         <div className="block col-span-1 text-left">
           <label className="text-xs">currency</label>
           <input placeholder="e.g. EUR, USD, RSD"
-            value={currency}
-            onChange={(event) => { setCurrency(event.target.value) }}
-            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+          value={currency}
+          onChange={(event) => {setCurrency(event.target.value)}}
+          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
 
         <div className="block col-span-1 text-left">
           <label className="text-xs">cancellation fee</label>
           <input placeholder="cancellation fee"
-            value={cancellationFee}
-            onChange={(event) => { setCancellationFee(event.target.value) }}
-            type="number"
-            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+          value={cancellationFee}
+          onChange={(event) => {setCancellationFee(event.target.value)}}
+          type="number"
+          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
       </div>
@@ -565,101 +540,7 @@ const BoatInfoEditor = ({ data, advertisementId }) => {
           rows="3" />
       </div>
 
-      <div className="block text-left mt-4">
-        <label className="text-s">Prices list</label>
-      </div>
-
-      {pricesInputFields.map((input, index) => {
-        if (input.delete === true) {
-          return (
-            <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
-              <div className="block col-span-4 text-left">
-                <input placeholder="price"
-                  name="value"
-                  value={input.value}
-                  onChange={event => handlePricesChange(index, event)}
-                  className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
-                focus:outline-none w-full"readonly />
-              </div>
-
-              <div className="block col-span-4 text-left">
-                <input placeholder="days required"
-                  name="minDays"
-                  value={input.minDays}
-                  onChange={event => handlePricesChange(index, event)}
-                  className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
-                focus:outline-none w-full"readonly />
-              </div>
-
-              <button className="block col-span-1" onClick={() => togglePriceRemoval(index)}>Undo</button>
-            </div>
-          )
-        } else {
-          return (
-            <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
-              <div className="block col-span-4 text-left">
-                <input placeholder="price"
-                  name="value"
-                  value={input.value}
-                  onChange={event => handlePricesChange(index, event)}
-                  type="number"
-                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-                focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-              </div>
-
-              <div className="block col-span-4 text-left">
-                <input placeholder="days required"
-                  name="minDays"
-                  value={input.minDays}
-                  onChange={event => handlePricesChange(index, event)}
-                  type="number"
-                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-                focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-              </div>
-
-              <button className="block col-span-1" onClick={() => togglePriceRemoval(index)}>Remove</button>
-            </div>
-          )
-        }
-      })}
-
-      <div className="block text-left mt-4">
-        <label className="text-s">Add new prices</label>
-      </div>
-
-      {newPricesInputFields.map((input, index) => {
-        return (
-          <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
-            <div className="block col-span-4 text-left">
-              <input placeholder="price"
-                name="value"
-                value={input.value}
-                onChange={event => handleNewPricesChange(index, event)}
-                type="number"
-                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-            </div>
-
-            <div className="block col-span-4 text-left">
-              <input placeholder="days required"
-                name="minDays"
-                value={input.minDays}
-                onChange={event => handleNewPricesChange(index, event)}
-                type="number"
-                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-            </div>
-
-            <button className="block col-span-1" onClick={() => removePriceField(index)}>Remove</button>
-          </div>
-        )
-      })}
-
-      <div className="block mt-4">
-        <button onClick={addPriceField}>Add price..</button>
-      </div>
-
-      {/* Check in/out */}
+      {/* Check in and check out */}
       <h2 className="flex text-xl text-left text-gray-800 font-sans mt-12">
         <Icon className="mr-2" icon="tabler:clock" inline={true} fontSize={30} />
         <span>Check in and check out</span>

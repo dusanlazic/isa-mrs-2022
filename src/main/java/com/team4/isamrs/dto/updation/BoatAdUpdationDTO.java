@@ -87,6 +87,6 @@ public class BoatAdUpdationDTO {
     @Valid
     private List<OptionUpdationDTO> options;
 
-    @NotBlank
+    @NotNull
     private BigDecimal pricePerDay;
 }

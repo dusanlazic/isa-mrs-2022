@@ -90,7 +90,6 @@ public class BoatAdCreationDTO {
     @PositiveOrZero
     private BigDecimal cancellationFee;
 
-    @NotBlank
+    @NotNull
     private BigDecimal pricePerDay;
-
 }

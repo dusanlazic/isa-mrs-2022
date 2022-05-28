@@ -27,10 +27,9 @@ const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
   const [tags, setTags] = useState(data.tags.join(", "));
   const [fishingEquipment, setFishingEquipment] = useState(data.fishingEquipment.map(item => item.name).join(", "));
   const [pricingDescription, setPricingDescription] = useState(data.pricingDescription);
+  const [pricePerPerson, setPricePerPerson] = useState(data.pricePerPerson);
   const [optionsInputFields, setOptionsInputFields] = useState(data.options);
   const [newOptionsInputFields, setNewOptionsInputFields] = useState([])
-  const [pricesInputFields, setPricesInputFields] = useState(data.prices);
-  const [newPricesInputFields, setNewPricesInputFields] = useState([])
   const [photoPreviews, setPhotoPreviews] = useState(data.photos.map(item => "/api" + item.uri));
   const [photoIds, setPhotoIds] = useState(data.photos.map(item => item.id));
 
@@ -64,6 +63,7 @@ const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
       availableAfter: availableAfter,
       availableUntil: availableUntil,
       pricingDescription: pricingDescription,
+      pricePerPerson: pricePerPerson,
       address: {
         address: address,
         postalCode: postalCode,
@@ -71,12 +71,11 @@ const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
         countryCode: countryCode,
         state: state,
         latitude: currentPosition.lat,
-        longitude: currentPosition.lng
+        longitude: currentPosition.lng % 180
       },
       fishingEquipmentNames: fishingEquipment.split(/[\s,]+/),
       tagNames: tags.split(/[\s,]+/),
       options: Array.from([...optionsInputFields, ...newOptionsInputFields]),
-      prices: Array.from([...pricesInputFields, ...newPricesInputFields]),
       photoIds: photoIds
     })
       .then((response) => {
@@ -119,39 +118,6 @@ const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
       optionsInputFields[index].delete = true;
 
     setOptionsInputFields([...optionsInputFields])
-  }
-
-  const handlePricesChange = (index, event) => {
-    let data = [...pricesInputFields];
-    data[index][event.target.name] = event.target.value;
-    setPricesInputFields(data);
-  }
-
-  const handleNewPricesChange = (index, event) => {
-    let data = [...newPricesInputFields];
-    data[index][event.target.name] = event.target.value;
-    setNewPricesInputFields(data);
-  }
-
-  const addPriceField = () => {
-    let newField = { value: '', minHours: '' };
-    setNewPricesInputFields([...newPricesInputFields, newField])
-  }
-
-  const removePriceField = (index) => {
-    let data = [...newPricesInputFields];
-    data.splice(index, 1)
-    setNewPricesInputFields(data)
-  }
-
-  const togglePriceRemoval = (index) => {
-    let price = pricesInputFields[index];
-    if (price.hasOwnProperty('delete'))
-      delete price.delete;
-    else
-      pricesInputFields[index].delete = true;
-
-    setPricesInputFields([...pricesInputFields])
   }
 
   const uploadImage = () => {
@@ -502,6 +468,15 @@ const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
 
       <div className="grid grid-cols-3 mt-1 gap-x-3">
         <div className="block col-span-1 text-left">
+          <label className="text-xs">price per person</label>
+          <input placeholder="price per person"
+          value={pricePerPerson}
+          onChange={(event) => {setPricePerPerson(event.target.value)}}
+          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+          focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+        </div>
+
+        <div className="block col-span-1 text-left">
           <label className="text-xs">currency</label>
           <input placeholder="e.g. EUR, USD, RSD"
             value={currency}
@@ -533,100 +508,6 @@ const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
         </div>
       </div>
 
-      <div className="block text-left mt-4">
-        <label className="text-s">Prices list</label>
-      </div>
-
-      {pricesInputFields.map((input, index) => {
-        if (input.delete === true) {
-          return (
-            <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
-              <div className="block col-span-4 text-left">
-                <input placeholder="price"
-                  name="value"
-                  value={input.value}
-                  onChange={event => handlePricesChange(index, event)}
-                  className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
-                focus:outline-none w-full"readonly />
-              </div>
-
-              <div className="block col-span-4 text-left">
-                <input placeholder="hours required"
-                  name="minHours"
-                  value={input.minHours}
-                  onChange={event => handlePricesChange(index, event)}
-                  className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
-                focus:outline-none w-full"readonly />
-              </div>
-
-              <button className="block col-span-1" onClick={() => togglePriceRemoval(index)}>Undo</button>
-            </div>
-          )
-        } else {
-          return (
-            <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
-              <div className="block col-span-4 text-left">
-                <input placeholder="price"
-                  name="value"
-                  value={input.value}
-                  onChange={event => handlePricesChange(index, event)}
-                  type="number"
-                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-                focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-              </div>
-
-              <div className="block col-span-4 text-left">
-                <input placeholder="hours required"
-                  name="minHours"
-                  value={input.minHours}
-                  onChange={event => handlePricesChange(index, event)}
-                  type="number"
-                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-                focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-              </div>
-
-              <button className="block col-span-1" onClick={() => togglePriceRemoval(index)}>Remove</button>
-            </div>
-          )
-        }
-      })}
-
-      <div className="block text-left mt-4">
-        <label className="text-s">Add new prices</label>
-      </div>
-
-      {newPricesInputFields.map((input, index) => {
-        return (
-          <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
-            <div className="block col-span-4 text-left">
-              <input placeholder="price"
-                name="value"
-                value={input.value}
-                onChange={event => handleNewPricesChange(index, event)}
-                type="number"
-                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-            </div>
-
-            <div className="block col-span-4 text-left">
-              <input placeholder="hours required"
-                name="minHours"
-                value={input.minHours}
-                onChange={event => handleNewPricesChange(index, event)}
-                type="number"
-                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-            </div>
-
-            <button className="block col-span-1" onClick={() => removePriceField(index)}>Remove</button>
-          </div>
-        )
-      })}
-
-      <div className="block mt-4">
-        <button onClick={addPriceField}>Add price..</button>
-      </div>
-
       {/* confirm button */}
       <div className="grid grid-cols-1 md:grid-cols-3 md:gap-x-6 mt-4">
         <div className="flex flex-col justify-end md:col-start-3 text-left w-full">
@@ -636,7 +517,6 @@ const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
             Save changes
           </button>
         </div>
-
       </div>
 
       {/* Availability */}

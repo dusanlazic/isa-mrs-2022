@@ -84,6 +84,6 @@ public class AdventureAdCreationDTO {
     @Valid
     private List<OptionCreationDTO> options;
 
-    @NotBlank
+    @NotNull
     private BigDecimal pricePerPerson;
 }

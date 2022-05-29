@@ -1,17 +1,15 @@
 package com.team4.isamrs.controller;
 
+import com.team4.isamrs.dto.ResponseCreated;
 import com.team4.isamrs.dto.creation.TagCreationDTO;
 import com.team4.isamrs.dto.display.TagDisplayDTO;
 import com.team4.isamrs.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.Collection;
 
 @RestController
@@ -25,19 +23,18 @@ public class TagController {
     private TagService tagService;
 
     @GetMapping(value = "", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity<Collection<TagDisplayDTO>> findAll() {
-        return new ResponseEntity<>(tagService.findAll(TagDisplayDTO.class), HttpStatus.OK);
+    public Collection<TagDisplayDTO> findAll() {
+        return tagService.findAll(TagDisplayDTO.class);
     }
 
     @GetMapping(value = "/{id}", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity<TagDisplayDTO> findById(@PathVariable Long id) {
-        return new ResponseEntity<>(tagService.findById(id, TagDisplayDTO.class), HttpStatus.OK);
+    public TagDisplayDTO findById(@PathVariable Long id) {
+        return tagService.findById(id, TagDisplayDTO.class);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ADVERTISER') or hasRole('ADMIN')")
-    public ResponseEntity<?> create(@Valid @RequestBody TagCreationDTO dto) {
-        return ResponseEntity.created(URI.create("/tags/" + tagService.create(dto).getId()))
-                             .body("Tag created.");
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseCreated create(@Valid @RequestBody TagCreationDTO dto) {
+        return new ResponseCreated("Tag created.", tagService.create(dto).getId());
     }
 }

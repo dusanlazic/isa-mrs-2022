@@ -45,7 +45,7 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
       availableUntil: availableUntil === "" ? null : availableUntil
     })
       .then((response) => {
-        alert(response.data);
+        alert(response.data.message);
         navigate(`/resort/${advertisementId}`);
       })
       .catch((error) => {
@@ -79,7 +79,7 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
       checkOutTime: checkOutTime
     })
       .then((response) => {
-        alert(response.data);
+        alert(response.data.message);
         navigate(`/resort/${advertisementId}`);
       })
       .catch((error) => {

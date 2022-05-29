@@ -43,7 +43,7 @@ const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
       availableUntil: availableUntil === "" ? null : availableUntil
     })
       .then((response) => {
-        alert(response.data);
+        alert(response.data.message);
         navigate(`/adventure/${advertisementId}`);
       })
       .catch((error) => {
@@ -79,7 +79,7 @@ const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
       photoIds: photoIds
     })
       .then((response) => {
-        alert(response.data);
+        alert(response.data.message);
         navigate(`/adventure/${advertisementId}`);
       })
       .catch((error) => {

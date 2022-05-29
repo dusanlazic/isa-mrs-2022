@@ -74,8 +74,8 @@ const BoatInfoEditor = () => {
       checkOutTime: checkOut
     })
       .then((response) => {
-        alert(response.data);
-        navigate(`/boat/${response.headers['location'].split("/").pop()}`);
+        alert(response.data.message);
+        navigate(`/boat/${response.data.id}`);
       })
       .catch((error) => {
         alert(error.response.data.message);

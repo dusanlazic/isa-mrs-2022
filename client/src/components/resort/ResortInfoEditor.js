@@ -64,8 +64,8 @@ const ResortInfoEditor = () => {
       availableUntil: availableUntil
      })
     .then((response) => {
-      alert(response.data);
-      navigate(`/resort/${response.headers['location'].split("/").pop()}`);
+      alert(response.data.message);
+      navigate(`/resort/${response.data.id}`);
     })
     .catch((error) => {
       alert(error.response.data.message);

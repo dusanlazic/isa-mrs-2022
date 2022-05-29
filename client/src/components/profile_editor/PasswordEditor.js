@@ -20,7 +20,7 @@ const PasswordEditor = () => {
       passwordConfirmation: passwordConfirmation
     })
     .then((response) => {
-      alert(response.data);
+      alert(response.data.message);
     })
     .catch((error) => {
       if (error.response.data.errors !== undefined) {

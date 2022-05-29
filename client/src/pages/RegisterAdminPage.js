@@ -22,7 +22,7 @@ const RegisterAdminPage = () => {
       passwordConfirmation: passwordConfirmation
     })
     .then((response) => {
-      alert(response.data);
+      alert(response.data.message);
       navigate('/')
     })
     .catch((error) => {

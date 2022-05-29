@@ -60,8 +60,8 @@ const AdventureInfoEditor = () => {
       photoIds: photoIds
      })
     .then((response) => {
-      alert(response.data);
-      navigate(`/adventure/${response.headers['location'].split("/").pop()}`);
+      alert(response.data.message);
+      navigate(`/adventure/${response.data.id}`);
     })
     .catch((error) => {
       alert(error.response.data.message);

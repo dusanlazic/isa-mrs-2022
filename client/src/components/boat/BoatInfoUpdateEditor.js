@@ -50,7 +50,7 @@ const BoatInfoEditor = ({ data, advertisementId }) => {
       availableUntil: availableUntil === "" ? null : availableUntil
     })
       .then((response) => {
-        alert(response.data);
+        alert(response.data.message);
         navigate(`/boat/${advertisementId}`);
       })
       .catch((error) => {
@@ -91,7 +91,7 @@ const BoatInfoEditor = ({ data, advertisementId }) => {
       checkOutTime: checkOutTime
     })
       .then((response) => {
-        alert(response.data);
+        alert(response.data.message);
         navigate(`/boat/${advertisementId}`);
       })
       .catch((error) => {

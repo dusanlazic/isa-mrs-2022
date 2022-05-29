@@ -9,6 +9,8 @@ import com.team4.isamrs.service.AdvertisementService;
 import com.team4.isamrs.service.ResortAdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @RestController
@@ -48,8 +51,18 @@ public class ResortController {
     }
 
     @GetMapping(value = "/search")
-    public Page<ResortAdSimpleDisplayDTO> search(@RequestParam int page) {
-        return resortAdService.search(page);
+    public Page<ResortAdSimpleDisplayDTO> search(
+            @RequestParam(required = false, defaultValue = "") String where,
+            @RequestParam(required = false, defaultValue = "0") int guests,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @RequestParam int page) {
+        return resortAdService.search(
+                where,
+                guests,
+                startDate,
+                endDate,
+                PageRequest.of(page, 20));
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)

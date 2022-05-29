@@ -81,7 +81,7 @@ VALUES (1003, now(), now(), '$', 'Enjoy the sunset smoking the finest stones on 
 INSERT INTO public.resort_ad(
     id, available_after, available_until, currency, description, pricing_description,
     rules, title, address_id, advertiser_id, check_in_time, check_out_time, number_of_beds, capacity, price_per_day)
-VALUES (1004, now(), now(), '$', 'See the stars. All of them', 'nema popusta', 'pravila neka',
+VALUES (1004, timestamp '2022-01-01 00:00:00', timestamp '2022-12-31 00:00:00', '$', 'See the stars. All of them', 'nema popusta', 'pravila neka',
 'Cokehead''s Haven', 1004, 1002, now(), now(), 3, 10, 100);
 
 INSERT INTO public.resort_ad(
@@ -201,7 +201,18 @@ VALUES (3, 1);
 
 INSERT INTO public.reservation(
     id, calculated_price, cancelled, created_at, customer_id, end_date_time, start_date_time, advertisement_id)
-VALUES (1, 400, FALSE, '05-18-2022 15:10', 1001, '2022-05-28 12:00', '2022-05-27 12:00', 1013);
+VALUES (1001, 400, FALSE, '05-18-2022 15:10', 1001, '2022-06-10 14:00', '2022-06-01 12:00', 1004);
+INSERT INTO public.reservation(
+    id, calculated_price, cancelled, created_at, customer_id, end_date_time, start_date_time, advertisement_id)
+VALUES (1002, 400, FALSE, '05-18-2022 15:10', 1001, '2022-07-03 14:00', '2022-07-01 12:00', 1004);
+INSERT INTO public.reservation(
+    id, calculated_price, cancelled, created_at, customer_id, end_date_time, start_date_time, advertisement_id)
+VALUES (1003, 400, FALSE, '05-18-2022 15:10', 1001, '2022-07-05 14:00', '2022-07-04 12:00', 1004);
+INSERT INTO public.reservation(
+    id, calculated_price, cancelled, created_at, customer_id, end_date_time, start_date_time, advertisement_id)
+VALUES (1004, 400, FALSE, '05-18-2022 15:10', 1001, '2022-07-10 14:00', '2022-07-05 12:00', 1004);
+
+
 INSERT INTO public.reservation(
     id, calculated_price, cancelled, created_at, customer_id, end_date_time, start_date_time, advertisement_id)
 VALUES (6, 400, FALSE , '10-05-2022 15:20', 1001, '2022-11-01 12:00', '2022-11-01 12:00', 1013);

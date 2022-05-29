@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react';
 import DatePicker from "react-datepicker";
 import moment from 'moment';
 
-const SearchAndFilter = ({whereProp, entityProp, guestsProp, startDateProp, endDateProp, totalElements}) => {
+const SearchAndFilter = ({whereProp, entityProp, guestsProp, startDateProp, endDateProp, totalElements, getParams}) => {
   
   const navigate = useNavigate();
 
@@ -16,6 +16,14 @@ const SearchAndFilter = ({whereProp, entityProp, guestsProp, startDateProp, endD
 
   const [selectedEntity, setSelectedEntity] = useState(entityProp);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    getParams.current = sendParams; 
+  }, []);
+
+  const sendParams = () => {
+    return [where, startDate, endDate, guests];
+  }
 
   const handleDropdown = () => {
     if (isDropdownOpen && document.activeElement === document.getElementById('dropdown-btn-search')) {

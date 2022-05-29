@@ -50,9 +50,12 @@ public class AdvertisementService {
 
         // Update bidirectional relationships
         advertisement.getTags().forEach(e -> e.getAdvertisements().remove(advertisement));
-        if (advertisement instanceof AdventureAd adventureAd) {
+
+        if (advertisement instanceof AdventureAd) {
+            AdventureAd adventureAd = (AdventureAd) advertisement;
             adventureAd.getFishingEquipment().forEach(e -> e.getAdvertisements().remove(advertisement));
-        } else if (advertisement instanceof BoatAd boatAd) {
+        } else if (advertisement instanceof BoatAd) {
+            BoatAd boatAd = (BoatAd) advertisement;
             boatAd.getNavigationalEquipment().forEach(e -> e.getAdvertisements().remove(advertisement));
             boatAd.getFishingEquipment().forEach(e -> e.getAdvertisements().remove(advertisement));
         }

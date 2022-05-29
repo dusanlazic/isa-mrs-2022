@@ -3,12 +3,15 @@ package com.team4.isamrs.controller;
 import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.display.AdventureAdDisplayDTO;
 import com.team4.isamrs.dto.display.AdventureAdSimpleDisplayDTO;
+import com.team4.isamrs.dto.display.ResortAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.service.AdventureAdService;
 import com.team4.isamrs.service.AdvertisementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @RestController
@@ -49,8 +53,18 @@ public class AdventureController {
     }
 
     @GetMapping(value = "/search")
-    public Page<AdventureAdSimpleDisplayDTO> search(@RequestParam int page) {
-        return adventureAdService.search(page);
+    public Page<AdventureAdSimpleDisplayDTO> search(
+            @RequestParam(required = false, defaultValue = "") String where,
+            @RequestParam(required = false, defaultValue = "0") int guests,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @RequestParam int page) {
+        return adventureAdService.search(
+                where,
+                guests,
+                startDate,
+                endDate,
+                PageRequest.of(page, 20));
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)

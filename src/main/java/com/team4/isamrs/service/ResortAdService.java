@@ -5,17 +5,25 @@ import com.team4.isamrs.dto.display.ResortAdDisplayDTO;
 import com.team4.isamrs.dto.display.ResortAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.updation.ResortAdUpdationDTO;
 import com.team4.isamrs.model.advertisement.ResortAd;
+import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
+import com.team4.isamrs.repository.ReservationRepository;
 import com.team4.isamrs.repository.ResortAdRepository;
 import com.team4.isamrs.repository.TagRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +31,9 @@ public class ResortAdService {
 
     @Autowired
     private ResortAdRepository resortAdRepository;
+
+    @Autowired
+    private ReservationRepository reservationRepository;
 
     @Autowired
     private TagRepository tagRepository;
@@ -47,9 +58,146 @@ public class ResortAdService {
                 .collect(Collectors.toSet());
     }
 
-    public Page<ResortAdSimpleDisplayDTO> search(int page) {
-        return resortAdRepository.findAll(PageRequest.of(page, 20))
-                .map(e -> modelMapper.map(e, ResortAdSimpleDisplayDTO.class));
+    public Page<ResortAdSimpleDisplayDTO> search(String where, int guests, LocalDateTime startDate,
+                                                 LocalDateTime endDate, Pageable pageable) {
+        List<ResortAdSimpleDisplayDTO> finalResorts;
+        List<ResortAd> candidateResortAds = resortAdRepository.search(where, guests);
+        finalResorts = candidateResortAds.stream()
+                .filter(r -> isAvailable(r, startDate, endDate))
+                .map(r -> modelMapper.map(r, ResortAdSimpleDisplayDTO.class))
+                .collect(Collectors.toList());
+
+        int fromIndex = Math.min((int)pageable.getOffset(), finalResorts.size());
+        int toIndex = Math.min((fromIndex + pageable.getPageSize()), finalResorts.size());
+
+        return new PageImpl<ResortAdSimpleDisplayDTO>
+                (finalResorts.subList(fromIndex, toIndex), pageable, finalResorts.size());
+
+    }
+
+    private boolean isAvailable(ResortAd resortAd, LocalDateTime startDate, LocalDateTime endDate) {
+        if (startDate == null && endDate == null) return true;
+        if (startDate == null) startDate = LocalDateTime.now();
+        if (endDate == null) endDate = LocalDateTime.parse("2200-01-01T00:00");
+        LocalDateTime adjustedStartDate, adjustedEndDate;
+        LocalDate availableUntil = resortAd.getAvailableUntil();
+        LocalDate availableAfter = resortAd.getAvailableAfter();
+
+        if (availableUntil == null && availableAfter == null) {
+            adjustedStartDate = startDate;
+            adjustedEndDate = endDate;
+        }
+        else if (availableUntil != null && availableAfter == null) {
+            if (availableUntil.isBefore(startDate.toLocalDate())) {
+                return false;
+            }
+            else if (availableUntil.isEqual(endDate.toLocalDate()) || availableUntil.isAfter(endDate.toLocalDate())) {
+                adjustedStartDate = startDate;
+                adjustedEndDate = endDate;
+            }
+            else {
+                adjustedStartDate = startDate;
+                adjustedEndDate = availableUntil.atStartOfDay();
+            }
+        }
+        else if (availableUntil == null) {
+            if (availableAfter.isAfter(endDate.toLocalDate())) {
+                return false;
+            }
+            else if (availableAfter.isEqual(startDate.toLocalDate()) || availableAfter.isBefore(startDate.toLocalDate())) {
+                adjustedStartDate = startDate;
+                adjustedEndDate = endDate;
+            }
+            else {
+                adjustedStartDate = availableAfter.atStartOfDay();
+                adjustedEndDate = endDate;
+            }
+        }
+        else {
+            if (availableUntil.isAfter(endDate.toLocalDate())) {
+                if (availableAfter.isAfter(endDate.toLocalDate())) return false;
+                adjustedEndDate = endDate;
+            }
+            else if (availableUntil.isEqual(startDate.toLocalDate()) || availableUntil.isAfter(startDate.toLocalDate())) {
+                adjustedEndDate = availableUntil.atStartOfDay();
+            }
+            else {
+                if (availableAfter.isBefore(availableUntil)) {
+                    return false;
+                }
+                else if (availableAfter.isAfter(endDate.toLocalDate())) {
+                    return false;
+                }
+                else if (availableAfter.isBefore(startDate.toLocalDate())) {
+                    adjustedStartDate = startDate;
+                    adjustedEndDate = endDate;
+                }
+                else {
+                    adjustedStartDate = availableAfter.atStartOfDay();
+                    adjustedEndDate = endDate;
+                }
+            }
+
+            if (availableAfter.isBefore(startDate.toLocalDate())) {
+                if (availableUntil.isBefore(startDate.toLocalDate())) return false;
+                adjustedStartDate = startDate;
+            }
+            else if (availableAfter.isEqual(endDate.toLocalDate()) || availableAfter.isBefore(endDate.toLocalDate())) {
+                adjustedStartDate = availableAfter.atStartOfDay();
+            }
+            else {
+                if (availableAfter.isBefore(availableUntil)) {
+                    return false;
+                }
+                else if (availableUntil.isBefore(startDate.toLocalDate())) {
+                    return false;
+                }
+                else if (availableUntil.isAfter(endDate.toLocalDate())) {
+                    adjustedStartDate = startDate;
+                    adjustedEndDate = endDate;
+                }
+                else {
+                    adjustedStartDate = startDate;
+                    adjustedEndDate = availableUntil.atStartOfDay();
+                }
+            }
+
+            if (availableUntil.isAfter(startDate.toLocalDate().minus(1, ChronoUnit.DAYS))
+            && availableUntil.isBefore(endDate.toLocalDate().plus(1, ChronoUnit.DAYS)) &&
+            availableAfter.isAfter(startDate.toLocalDate().minus(1, ChronoUnit.DAYS))
+            && availableAfter.isBefore(endDate.toLocalDate().plus(1, ChronoUnit.DAYS))
+            && availableUntil.isBefore(availableAfter)) {
+                adjustedStartDate = startDate;
+                adjustedEndDate = endDate;
+            }
+        }
+
+        if (adjustedStartDate.isAfter(adjustedEndDate)) return false;
+
+
+        List<Reservation> reservations = reservationRepository
+                .getResortReservationsForRange(resortAd.getId(), adjustedStartDate, adjustedEndDate);
+
+        if (reservations.size() == 0) {
+            return true;
+        }
+        if ((adjustedStartDate.isBefore(reservations.get(0).getStartDateTime()) &&
+                adjustedStartDate.getDayOfYear() != reservations.get(0).getStartDateTime().getDayOfYear()) ||
+                reservations.get(reservations.size()-1).getEndDateTime().isBefore(adjustedEndDate) ||
+                reservations.get(reservations.size()-1).getEndDateTime().getDayOfYear() == adjustedEndDate.getDayOfYear()) {
+            return true;
+        }
+        if (!reservations.get(0).getStartDateTime().isAfter(adjustedStartDate) &&
+                reservations.get(0).getEndDateTime().isAfter(adjustedEndDate)) {
+            return false;
+        }
+        for (int i = 0; i < reservations.size() - 1; i++) {
+            if (reservations.get(i).getEndDateTime().getDayOfYear() !=
+                    reservations.get(i+1).getStartDateTime().getDayOfYear()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public ResortAd create(ResortAdCreationDTO dto, Authentication auth) {

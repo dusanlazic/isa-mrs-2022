@@ -58,7 +58,7 @@ public class TestDataSupplierService {
             resort.setNumberOfBeds(Long.toString(i % 3 + 2));
             resort.setCheckOutTime(LocalTime.parse("10:00"));
             resort.setCheckInTime(LocalTime.parse("14:00"));
-            resort.setCapacity(10);
+            resort.setCapacity(i*2);
             resort.setPricePerDay(BigDecimal.valueOf(135));
 
             resortAdRepository.save(resort);

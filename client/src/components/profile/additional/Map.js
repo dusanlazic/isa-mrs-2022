@@ -1,5 +1,3 @@
-
-
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
 import L from 'leaflet';
 
@@ -35,7 +33,8 @@ const Map = ({allowChange, data, coordinates, changeCoordinates }) => {
         <Marker position={coordinates}>
           {!allowChange && data != null &&
             <Popup minWidth={125}>
-              <img src={"/api/" + data.photos[0].uri} alt="" key={data.photos[0].uri} alt="" className='rounded-md mb-2' />
+              {data.photos.length > 0 &&
+              <img src={"/api/" + data.photos[0].uri} alt="" key={data.photos[0].uri} className='rounded-md mb-2' />}
               <p className='text-center'>{data.title}</p>
             </Popup>
             }

@@ -25,15 +25,23 @@ const EntityCard = ({entity, entityType}) => {
           <div className="ml-1 pt-0.5">4.75 (254)</div>
         </div>
 
-        <div className="text-sm mt-0.5">
+        <div className="text-sm font-medium text-raisin-black">
           <Link to={getEntityLink()}>
             {entity.title}
           </Link>
         </div>
-        
-        <div className="text-xs text-slate-500 mt-0.5">
-          {entity.description.length > 50 ? entity.description.substring(0, 50) + '...' : entity.description}
+
+        <div className="text-xs -mt-1 text-slate-400">
+          {entity.address.city}, {entity.address.countryCode}
         </div>
+
+        <div className="text-sm font-medium mt-1 text-green-700">
+        {entity.currency} {entityType === 'adventures' ? entity.pricePerPerson + '/person' : entity.pricePerDay + '/day'}
+        </div>
+        
+        {/* <div className="text-xs text-slate-500 mt-0.5">
+          {entity.description.length > 50 ? entity.description.substring(0, 50) + '...' : entity.description}
+        </div> */}
       </div>
    );
 }

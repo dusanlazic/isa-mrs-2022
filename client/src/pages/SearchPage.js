@@ -25,7 +25,6 @@ const SearchPage = () => {
   }, [location])
 
   useEffect(() => {
-    console.log(entity)
     const [where, startDate, endDate, guests] = getParams.current();
     const query = getQuery(where, startDate, endDate, guests);
     get(`/api/ads/${entity}/search?page=${currentPage}${query}`)
@@ -61,7 +60,7 @@ const SearchPage = () => {
   const guests = new URLSearchParams(location.search).get("guests");
 
   return ( 
-    <div key={location.key} className="py-20 px-2 sm:px-14 md:px-20 lg:px-40 xl:px-64 bg-silver-accent min-h-screen">
+    <div key={location.key} className="py-20 px-2 sm:px-14 md:px-20 lg:px-32 xl:px-60 bg-silver-accent min-h-screen">
       <SearchAndFilter whereProp={where ? where : ''} guestsProp={guests ? guests : ''} getParams={getParams}
       entityProp={entity} startDateProp={startDate} endDateProp={endDate} totalElements={totalElements}/>
       {entityList.length > 0 &&

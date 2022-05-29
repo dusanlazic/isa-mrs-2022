@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { post } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
+import { Icon } from '@iconify/react';
 import ReactFlagsSelect from "react-flags-select";
 import Map from "../profile/additional/Map";
 
@@ -22,8 +23,8 @@ const AdventureInfoEditor = () => {
   const [tags, setTags] = useState(null);
   const [fishingEquipment, setFishingEquipment] = useState(null);
   const [pricingDescription, setPricingDescription] = useState(null);
+  const [pricePerPerson, setPricePerPerson] = useState(null);
   const [optionsInputFields, setOptionsInputFields] = useState([{name: '', description: '', maxCount: ''}])
-  const [pricesInputFields, setPricesInputFields] = useState([{value: '', minHours: ''}])
   const [photoPreviews, setPhotoPreviews] = useState([])
   const [photoIds, setPhotoIds] = useState([])
 
@@ -43,6 +44,7 @@ const AdventureInfoEditor = () => {
       availableAfter: availableAfter,
       availableUntil: availableUntil,
       pricingDescription: pricingDescription,
+      pricePerPerson: pricePerPerson,
       address: {
         address: address,
         postalCode: postalCode,
@@ -50,17 +52,16 @@ const AdventureInfoEditor = () => {
         countryCode: countryCode,
         state: state,
         latitude: currentPosition.lat,
-        longitude: currentPosition.lng
+        longitude: currentPosition.lng % 180
       },
       fishingEquipmentNames: fishingEquipment.split(/[\s,]+/),
       tagNames: tags.split(/[\s,]+/),
       options: Array.from(optionsInputFields),
-      prices: Array.from(pricesInputFields),
       photoIds: photoIds
      })
     .then((response) => {
-      alert(response.data);
-      navigate(`/adventure/${response.headers['location'].split("/").pop()}`);
+      alert(response.data.message);
+      navigate(`/adventure/${response.data.id}`);
     })
     .catch((error) => {
       alert(error.response.data.message);
@@ -82,23 +83,6 @@ const AdventureInfoEditor = () => {
     let data = [...optionsInputFields];
     data.splice(index, 1);
     setOptionsInputFields(data);
-  }
-
-  const handlePricesChange = (index, event) => {
-    let data = [...pricesInputFields];
-    data[index][event.target.name] = event.target.value;
-    setPricesInputFields(data);
-  }
-
-  const addPriceField = () => {
-    let newField = {value: '', minHours: ''};
-    setPricesInputFields([...pricesInputFields, newField])
-  }
-
-  const removePriceField = (index) => {
-    let data = [...pricesInputFields];
-    data.splice(index, 1)
-    setPricesInputFields(data)
   }
 
   const uploadImage = () => {
@@ -129,7 +113,10 @@ const AdventureInfoEditor = () => {
       <h1 className="text-2xl text-left text-gray-400 font-sans">Create a new advertisement for your adventure</h1>
       
       {/* Basic info */}
-      <h2 className="text-xl text-left text-gray-800 font-sans mt-4">Basic information ℹ️</h2>
+      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-12">
+        <Icon className="mr-2" icon="tabler:info-circle" inline={true} fontSize={30} />
+        <span>Basic information</span>
+      </h2>
 
       <div className="grid grid-cols-3 mt-2">
         <div className="block col-span-2 text-left">
@@ -162,7 +149,11 @@ const AdventureInfoEditor = () => {
       </div>
 
       {/* Photos */}
-      <h2 className="text-xl text-left text-gray-800 font-sans mt-12">Photos 📸</h2>
+      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-12">
+        <Icon className="mr-2" icon="tabler:camera" inline={true} fontSize={30} />
+        <span>Photos</span>
+      </h2>
+
       <div className="grid grid-cols-10 gap-x-6 mt-4">
         <div className="block col-span-1">
           <div className="flex rounded-lg w-full ml-1">
@@ -199,7 +190,11 @@ const AdventureInfoEditor = () => {
       </div>
 
       {/* Location info */}
-      <h2 className="text-xl text-left text-gray-800 font-sans mt-12">Location 📍</h2>
+      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-12">
+        <Icon className="mr-2" icon="tabler:map-pin" inline={true} fontSize={30} />
+        <span>Location</span>
+      </h2>
+
       <div className="grid grid-cols-3 mt-2 gap-x-3">
         <div className="block col-span-2 text-left">
           <label className="text-xs">address</label>
@@ -250,7 +245,11 @@ const AdventureInfoEditor = () => {
       </div>
 
       {/* Details */}
-      <h2 className="text-xl text-left text-gray-800 font-sans mt-12">Details ✅</h2>
+      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-12">
+        <Icon className="mr-2" icon="tabler:list-details" inline={true} fontSize={30} />
+        <span>Details</span>
+      </h2>
+
       <div className="grid grid-cols-3 mt-2 gap-x-3">
         <div className="block col-span-2 text-left">
           <label className="text-xs">rules of conduct</label>
@@ -334,8 +333,20 @@ const AdventureInfoEditor = () => {
       </div>
 
       {/* Pricing */}
-      <h2 className="text-xl text-left text-gray-800 font-sans mt-12">Pricing 💵</h2>
+      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-12">
+        <Icon className="mr-2" icon="tabler:coin" inline={true} fontSize={30} />
+        <span>Pricing</span>
+      </h2>
+
       <div className="grid grid-cols-3 mt-1 gap-x-3">
+        <div className="block col-span-1 text-left">
+          <label className="text-xs">price per person</label>
+          <input placeholder="price per person"
+          onChange={(event) => {setPricePerPerson(event.target.value)}}
+          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+          focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+        </div>
+
         <div className="block col-span-1 text-left">
           <label className="text-xs">currency</label>
           <input placeholder="e.g. EUR, USD, RSD"
@@ -354,42 +365,6 @@ const AdventureInfoEditor = () => {
         </div>
       </div>
 
-      <div className="block text-left mt-4">
-        <label className="text-s">Prices list</label>
-      </div>
-
-      {pricesInputFields.map((input, index) => {
-        return (
-          <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
-            <div className="block col-span-4 text-left">
-              <input placeholder="price"
-              name="value"
-              value={input.value}
-              onChange={event => handlePricesChange(index, event)}
-              type="number"
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-            </div>
-
-            <div className="block col-span-4 text-left">
-              <input placeholder="hours required"
-              name="minHours"
-              value={input.minHours}
-              onChange={event => handlePricesChange(index, event)}
-              type="number"
-              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-            </div>
-
-            <button className="block col-span-1" onClick={() => removePriceField(index)}>Remove</button>
-          </div>
-        )
-      })}
-
-      <div className="block mt-4">
-        <button onClick={addPriceField}>Add price..</button>
-      </div>
-
       <div className="grid grid-cols-3 gap-x-3 mt-4">
         <div className="block col-span-2 text-left">
           <label className="text-xs">pricing description</label>
@@ -402,24 +377,37 @@ const AdventureInfoEditor = () => {
       </div>
 
       {/* Availability */}
-      <h2 className="text-xl text-left text-gray-800 font-sans mt-12">Availability 📅</h2>
-      <div className="grid grid-cols-3 mt-1 gap-x-3">
-        <div className="block col-span-1 text-left">
-          <label className="text-xs">available after</label>
-          <input
-          onChange={(event) => {setAvailableAfter(event.target.value)}}
-          type="date"
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-          focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-        </div>
+      <h2 className="flex text-xl text-left text-gray-800 font-sans mt-6 pt-6">
+        <Icon className="mr-2" icon="tabler:calendar" inline={true} fontSize={30} />
+        <span>Availability</span>
+      </h2>
 
-        <div className="block col-span-1 text-left">
+      <div className="grid grid-cols-1 sm:grid-cols-2 mt-1 gap-x-3">
+        <div className="col-1 text-left">
+          <label className="text-xs">available after</label>
+          <div className="flex gap-x-3">
+            <input value={availableAfter} type="date"
+              onChange={(event) => { setAvailableAfter(event.target.value) }}
+              className="rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+  focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+            <button className="rounded-lg border border-gray-300 px-3" onClick={() => { setAvailableAfter("") }}>
+              <Icon icon="tabler:rotate-clockwise" vFlip={true} fontSize={20} />
+            </button>
+          </div>
+        </div>
+        <div className="col-span-1 text-left">
           <label className="text-xs">available until</label>
-          <input
-          onChange={(event) => {setAvailableUntil(event.target.value)}}
-          type="date"
-          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-          focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+          <div className="flex gap-x-3">
+            <input
+              value={availableUntil}
+              onChange={(event) => { setAvailableUntil(event.target.value) }}
+              type="date"
+              className="rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+            <button className="rounded-lg border border-gray-300 px-3" onClick={() => { setAvailableUntil("") }}>
+              <Icon icon="tabler:rotate-clockwise" vFlip={true} fontSize={20} />
+            </button>
+          </div>
         </div>
       </div>
 

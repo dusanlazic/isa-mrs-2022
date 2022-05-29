@@ -7,9 +7,7 @@ import com.team4.isamrs.service.AdvertiserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,20 +22,19 @@ public class AdvertiserController {
     @Autowired
     private AdvertiserService advertiserService;
 
-
     @GetMapping(value = "/{id}/advertisements")
-    public ResponseEntity<Collection<AdvertisementDisplayDTO>> getAdvertisements(@PathVariable Long id) {
-        return new ResponseEntity<>(advertiserService.getAdvertisements(id), HttpStatus.OK);
+    public Collection<AdvertisementDisplayDTO> getAdvertisements(@PathVariable Long id) {
+        return advertiserService.getAdvertisements(id);
     }
 
     @GetMapping(value = "/{id}/reviews")
-    public ResponseEntity<Collection<ServiceReviewDisplayDTO>> getServiceProviderReview(@PathVariable Long id) {
-        return new ResponseEntity<>(advertiserService.getServiceProviderReview(id), HttpStatus.OK);
+    public Collection<ServiceReviewDisplayDTO> getServiceProviderReview(@PathVariable Long id) {
+        return advertiserService.getServiceProviderReview(id);
     }
 
     @GetMapping(value = "/{id}/rating")
-    public ResponseEntity<Double> findRating(@PathVariable Long id) {
-        return new ResponseEntity<>(advertiserService.findRating(id), HttpStatus.OK);
+    public Double findRating(@PathVariable Long id) {
+        return advertiserService.findRating(id);
     }
 
     @GetMapping(value="/active-reservations")

@@ -4,10 +4,7 @@ package com.team4.isamrs.dto.updation;
 import lombok.Data;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
@@ -27,6 +24,9 @@ public class ResortAdUpdationDTO {
     @NotBlank
     @Size(max=250)
     private String description;
+
+    @NotNull
+    private BigDecimal pricePerDay;
 
     @Size(max=100)
     private String pricingDescription;
@@ -50,16 +50,12 @@ public class ResortAdUpdationDTO {
     @Valid
     private List<OptionUpdationDTO> options;
 
-    @NotNull
-    @Positive
-    private Integer numberOfBeds;
+    @NotEmpty
+    private List<Integer> bedCountPerRoom;
 
     @NotNull
     private LocalTime checkOutTime;
 
     @NotNull
     private LocalTime checkInTime;
-
-    @NotBlank
-    private BigDecimal pricePerDay;
 }

@@ -13,8 +13,8 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
   const [title, setTitle] = useState(data.title);
   const [description, setDescription] = useState(data.description);
   const [rules, setRules] = useState(data.rules);
+  const [capacity, setCapacity] = useState(data.capacity);
   const [currency, setCurrency] = useState(data.currency);
-  const [numOfBeds, setNumOfBeds] = useState(data.numberOfBeds);
   const [address, setAddress] = useState(data.address.address);
   const [countryCode, setCountryCode] = useState(data.address.countryCode);
   const [city, setCity] = useState(data.address.city);
@@ -22,10 +22,9 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
   const [state, setState] = useState(data.address.state);
   const [tags, setTags] = useState(data.tags.join(", "));
   const [pricingDescription, setPricingDescription] = useState(data.pricingDescription);
+  const [pricePerDay, setPricePerDay] = useState(data.pricePerDay);
   const [optionsInputFields, setOptionsInputFields] = useState(data.options);
   const [newOptionsInputFields, setNewOptionsInputFields] = useState([])
-  const [pricesInputFields, setPricesInputFields] = useState(data.prices);
-  const [newPricesInputFields, setNewPricesInputFields] = useState([])
   const [photoPreviews, setPhotoPreviews] = useState(data.photos.map(item => "/api" + item.uri));
   const [photoIds, setPhotoIds] = useState(data.photos.map(item => item.id));
   const [checkInTime, setCheckInTime] = useState(data.checkInTime);
@@ -35,6 +34,9 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
 
   const [currentPosition, setCurrentPosition] = useState( {lat: data.address.latitude, lng: data.address.longitude} )
 
+  const [numberOfRooms, setNumberOfRooms] = useState(data.bedCountPerRoom.length);
+  const [bedCountPerRoom, setBedCountPerRoom] = useState(data.bedCountPerRoom)
+
   const navigate = useNavigate();
 
   const updateAvailability = () => {
@@ -43,7 +45,7 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
       availableUntil: availableUntil === "" ? null : availableUntil
     })
       .then((response) => {
-        alert(response.data);
+        alert(response.data.message);
         navigate(`/resort/${advertisementId}`);
       })
       .catch((error) => {
@@ -55,10 +57,12 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
     put(`/api/ads/resorts/${advertisementId}`, {
       description: description,
       title: title,
-      numberOfBeds: numOfBeds,
+      capacity: capacity,
+      bedCountPerRoom: bedCountPerRoom,
       currency: currency,
       rules: rules,
       pricingDescription: pricingDescription,
+      pricePerDay: pricePerDay,
       address: {
         address: address,
         postalCode: postalCode,
@@ -66,17 +70,16 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
         countryCode: countryCode,
         state: state,
         latitude: currentPosition.lat,
-        longitude: currentPosition.lng
+        longitude: currentPosition.lng % 180
       },
       tagNames: tags.split(/[\s,]+/),
       options: Array.from([...optionsInputFields, ...newOptionsInputFields]),
-      prices: Array.from([...pricesInputFields, ...newPricesInputFields]),
       photoIds: photoIds,
       checkInTime: checkInTime,
       checkOutTime: checkOutTime
     })
       .then((response) => {
-        alert(response.data);
+        alert(response.data.message);
         navigate(`/resort/${advertisementId}`);
       })
       .catch((error) => {
@@ -117,37 +120,24 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
     setOptionsInputFields([...optionsInputFields])
   }
 
-  const handlePricesChange = (index, event) => {
-    let data = [...pricesInputFields];
-    data[index][event.target.name] = event.target.value;
-    setPricesInputFields(data);
+  const updateNumberOfRooms = (newNumber) => {
+    let oldNumber = bedCountPerRoom.length;
+    let data = [...bedCountPerRoom]
+
+    if (newNumber > oldNumber) {
+      data = data.concat(Array(newNumber - oldNumber).fill(0))
+    } else {
+      data = data.slice(0, newNumber);
+    }
+
+    setNumberOfRooms(newNumber);
+    setBedCountPerRoom(data);
   }
 
-  const handleNewPricesChange = (index, event) => {
-    let data = [...newPricesInputFields];
-    data[index][event.target.name] = event.target.value;
-    setNewPricesInputFields(data);
-  }
-
-  const addPriceField = () => {
-    let newField = { value: '', minDays: '' };
-    setNewPricesInputFields([...newPricesInputFields, newField])
-  }
-
-  const removePriceField = (index) => {
-    let data = [...newPricesInputFields];
-    data.splice(index, 1)
-    setNewPricesInputFields(data)
-  }
-
-  const togglePriceRemoval = (index) => {
-    let price = pricesInputFields[index];
-    if (price.hasOwnProperty('delete'))
-      delete price.delete;
-    else
-      pricesInputFields[index].delete = true;
-
-    setPricesInputFields([...pricesInputFields])
+  const handleBedCountPerRoomChange = (index, event) => {
+    let data = [...bedCountPerRoom]
+    data[index] = event.target.value;
+    setBedCountPerRoom(data);
   }
 
   const uploadImage = () => {
@@ -311,29 +301,62 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
         <Icon className="mr-2" icon="tabler:list-details" inline={true} fontSize={30} />
         <span>Details</span>
       </h2>
+      
+      <div className="block col-span-2 text-left">
+        <label className="text-xs">rules of conduct</label>
+        <textarea placeholder="rules of conduct"
+        value={rules}
+        onChange={(event) => {setRules(event.target.value)}}
+        className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
+        focus:outline-none focus:border-gray-500 w-full caret-gray-700"
+        rows="5"/>
+      </div>
 
       <div className="grid grid-cols-3 mt-2 gap-x-3">
-        <div className="block col-span-2 text-left">
-          <label className="text-xs">rules of conduct</label>
-          <textarea placeholder="rules of conduct" value={rules}
-            onChange={(event) => { setRules(event.target.value) }}
-            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
-          focus:outline-none focus:border-gray-500 w-full caret-gray-700"
-            rows="5" />
+        <div className="block col-span-1 text-left">
+          <label className="text-xs">capacity</label>
+          <input placeholder="number of guests allowed"
+          value={capacity}
+          onChange={(event) => {setCapacity(event.target.value)}}
+          type="number"
+          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+          focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
 
         <div className="block col-span-1 text-left">
-          <label className="text-xs">number of beds</label>
-          <input placeholder="capacity" value={numOfBeds}
-            onChange={(event) => { setNumOfBeds(event.target.value) }}
-            type="number" min={0}
-            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+          <label className="text-xs">number of rooms</label>
+          <input placeholder="number of rooms"
+          value={numberOfRooms}
+          onChange={(event) => { updateNumberOfRooms(event.target.value) }}
+          type="number"
+          min="1"
+          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
       </div>
 
+      <div className="block text-left mt-8">
+        <label className="text-s">Bed count in each room</label>
+      </div>
+
+      <div className="grid grid-cols-12 mt-2 gap-3">
+        {bedCountPerRoom.map((input, index) => {
+          return (
+            <div key={index} className="block col-span-1 text-left">
+              <input placeholder="beds"
+              value={input}
+              type="number"
+              min="0"
+              onChange={event => handleBedCountPerRoomChange(index, event)}
+              className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
+            </div>
+          )
+        })}
+      </div>
+
       {/* Options */}
-      <div className="block text-left mt-4">
+      <div className="block text-left mt-8">
         <label className="text-s">Options</label>
       </div>
 
@@ -465,120 +488,35 @@ const ResortInfoEditor = ({ data, advertisementId }) => {
         <Icon className="mr-2" icon="tabler:coin" inline={true} fontSize={30} />
         <span>Pricing</span>
       </h2>
-      
-      <div className="grid grid-cols-3 mt-2 gap-x-3 mt-4">
-        <div className="block col-span-2 text-left">
-          <label className="text-xs">pricing description</label>
-          <textarea placeholder="additional info about prices"
-            value={pricingDescription}
-            onChange={(event) => { setPricingDescription(event.target.value) }}
-            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
-          focus:outline-none focus:border-gray-500 w-full caret-gray-700"
-            rows="3" />
+
+      <div className="grid grid-cols-3 mt-1 gap-x-3">
+        <div className="block col-span-1 text-left">
+          <label className="text-xs">price per day</label>
+          <input placeholder="price per day"
+          value={pricePerDay}
+          onChange={(event) => {setPricePerDay(event.target.value)}}
+          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+          focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
 
         <div className="block col-span-1 text-left">
           <label className="text-xs">currency</label>
           <input placeholder="e.g. EUR, USD, RSD"
-            value={currency}
-            onChange={(event) => { setCurrency(event.target.value) }}
-            className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
+          value={currency}
+          onChange={(event) => {setCurrency(event.target.value)}}
+          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
           focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
       </div>
 
-      <div className="block text-left mt-4">
-        <label className="text-s">Prices list</label>
-      </div>
-
-      {pricesInputFields.map((input, index) => {
-        if (input.delete === true) {
-          return (
-            <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
-              <div className="block col-span-4 text-left">
-                <input placeholder="price"
-                  name="value"
-                  value={input.value}
-                  onChange={event => handlePricesChange(index, event)}
-                  className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
-                focus:outline-none w-full"readonly />
-              </div>
-
-              <div className="block col-span-4 text-left">
-                <input placeholder="days required"
-                  name="minDays"
-                  value={input.minDays}
-                  onChange={event => handlePricesChange(index, event)}
-                  className="block rounded-lg px-3 border text-gray-300 border-gray-300 text-base py-2
-                focus:outline-none w-full"readonly />
-              </div>
-
-              <button className="block col-span-1" onClick={() => togglePriceRemoval(index)}>Undo</button>
-            </div>
-          )
-        } else {
-          return (
-            <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
-              <div className="block col-span-4 text-left">
-                <input placeholder="price"
-                  name="value"
-                  value={input.value}
-                  onChange={event => handlePricesChange(index, event)}
-                  type="number" min={0}
-                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-                focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-              </div>
-
-              <div className="block col-span-4 text-left">
-                <input placeholder="days required"
-                  name="minDays"
-                  value={input.minDays}
-                  onChange={event => handlePricesChange(index, event)}
-                  type="number" min={0}
-                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-                focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-              </div>
-
-              <button className="block col-span-1" onClick={() => togglePriceRemoval(index)}>Remove</button>
-            </div>
-          )
-        }
-      })}
-
-      <div className="block text-left mt-4">
-        <label className="text-s">Add new prices</label>
-      </div>
-
-      {newPricesInputFields.map((input, index) => {
-        return (
-          <div key={index} className="grid grid-cols-12 mt-1 gap-x-3">
-            <div className="block col-span-4 text-left">
-              <input placeholder="price"
-                name="value"
-                value={input.value}
-                onChange={event => handleNewPricesChange(index, event)}
-                type="number" min={0}
-                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-            </div>
-
-            <div className="block col-span-4 text-left">
-              <input placeholder="days required"
-                name="minDays"
-                value={input.minDays}
-                onChange={event => handleNewPricesChange(index, event)}
-                type="number" min={0}
-                className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
-              focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
-            </div>
-
-            <button className="block col-span-1" onClick={() => removePriceField(index)}>Remove</button>
-          </div>
-        )
-      })}
-
-      <div className="block mt-4">
-        <button onClick={addPriceField}>Add price..</button>
+      <div className="block col-span-2 text-left">
+        <label className="text-xs">pricing description</label>
+        <textarea placeholder="additional info about prices"
+          value={pricingDescription}
+          onChange={(event) => { setPricingDescription(event.target.value) }}
+          className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
+          focus:outline-none focus:border-gray-500 w-full caret-gray-700"
+          rows="3" />
       </div>
 
       {/* Check in/out */}

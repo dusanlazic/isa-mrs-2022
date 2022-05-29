@@ -33,7 +33,7 @@ const AdminPasswordPage = () => {
       passwordConfirmation: passwordConfirmation
     })
     .then((response) => {
-      alert(response.data);
+      alert(response.data.message);
       logout();
       navigate(`/login`);
     })

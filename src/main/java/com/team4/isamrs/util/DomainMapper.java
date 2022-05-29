@@ -5,17 +5,18 @@ import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.creation.ResortAdCreationDTO;
 import com.team4.isamrs.dto.display.*;
-import com.team4.isamrs.dto.updation.*;
-import com.team4.isamrs.model.advertisement.AdventureAd;
-import com.team4.isamrs.model.advertisement.FishingEquipment;
+import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
+import com.team4.isamrs.dto.updation.BoatAdUpdationDTO;
+import com.team4.isamrs.dto.updation.OptionUpdationDTO;
+import com.team4.isamrs.dto.updation.ResortAdUpdationDTO;
 import com.team4.isamrs.model.advertisement.*;
-import com.team4.isamrs.model.advertisement.BoatAd;
-import com.team4.isamrs.model.advertisement.NavigationalEquipment;
 import com.team4.isamrs.model.enumeration.AccountType;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
-import com.team4.isamrs.model.advertisement.ResortAd;
 import com.team4.isamrs.model.user.*;
-import com.team4.isamrs.repository.*;
+import com.team4.isamrs.repository.FishingEquipmentRepository;
+import com.team4.isamrs.repository.NavigationalEquipmentRepository;
+import com.team4.isamrs.repository.PhotoRepository;
+import com.team4.isamrs.repository.TagRepository;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,6 +200,7 @@ public class DomainMapper {
             mapTagNames(source.getTagNames()).forEach(destination::addTag);
 
             source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
+            destination.setNumberOfBeds(source.getBedCountPerRoom().stream().map(Object::toString).collect(Collectors.joining(",")));
 
             destination.getOptions().forEach(e -> e.setAdvertisement(destination));
 
@@ -210,6 +212,7 @@ public class DomainMapper {
             ResortAdDisplayDTO destination = context.getDestination();
 
             destination.setTags(source.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
+            destination.setBedCountPerRoom(Arrays.stream(source.getNumberOfBeds().split(",")).map(Integer::parseInt).collect(Collectors.toList()));
 
             return destination;
         };
@@ -255,6 +258,7 @@ public class DomainMapper {
             ResortAd destination = context.getDestination();
 
             source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
+            destination.setNumberOfBeds(source.getBedCountPerRoom().stream().map(Object::toString).collect(Collectors.joining(",")));
 
             int index = 0;
             List<Option> removedOptions = new LinkedList<>();

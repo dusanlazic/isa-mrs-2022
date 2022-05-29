@@ -1,5 +1,6 @@
 package com.team4.isamrs.controller;
 
+import com.team4.isamrs.dto.ResponseOK;
 import com.team4.isamrs.dto.creation.CustomerCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.creation.RemovalRequestCreationDTO;
@@ -8,9 +9,7 @@ import com.team4.isamrs.dto.updation.AccountUpdationDTO;
 import com.team4.isamrs.dto.updation.PasswordUpdationDTO;
 import com.team4.isamrs.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,48 +25,48 @@ public class AccountController {
     private AccountService accountService;
 
     @GetMapping(value = "/whoami")
-    public ResponseEntity<AccountDisplayDTO> whoAmI(Authentication auth) {
-        return new ResponseEntity<>(accountService.whoAmI(auth), HttpStatus.OK);
+    public AccountDisplayDTO whoAmI(Authentication auth) {
+        return accountService.whoAmI(auth);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<AccountDisplayDTO> findById(@PathVariable Long id) {
-        return new ResponseEntity<>(accountService.findById(id, AccountDisplayDTO.class), HttpStatus.OK);
+    public AccountDisplayDTO findById(@PathVariable Long id) {
+        return accountService.findById(id, AccountDisplayDTO.class);
     }
 
     @PutMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateAccount(@Valid @RequestBody AccountUpdationDTO dto, Authentication auth) {
+    public ResponseOK updateAccount(@Valid @RequestBody AccountUpdationDTO dto, Authentication auth) {
         accountService.updateAccount(dto, auth);
-        return ResponseEntity.ok().body("Account updated.");
+        return new ResponseOK("Account updated.");
     }
 
     @PatchMapping("/password")
-    public ResponseEntity<String> changePassword(@Valid @RequestBody PasswordUpdationDTO dto, Authentication auth) {
+    public ResponseOK changePassword(@Valid @RequestBody PasswordUpdationDTO dto, Authentication auth) {
         accountService.changePassword(dto, auth);
-        return ResponseEntity.ok().body("Password updated.");
+        return new ResponseOK("Password updated.");
     }
 
     @DeleteMapping("")
-    public ResponseEntity<String> delete(@Valid @RequestBody RemovalRequestCreationDTO removalRequest, Authentication auth) {
+    public ResponseOK delete(@Valid @RequestBody RemovalRequestCreationDTO removalRequest, Authentication auth) {
         accountService.createRemovalRequest(removalRequest, auth);
-        return ResponseEntity.ok("Request sent.");
+        return new ResponseOK("Request sent.");
     }
 
     @PostMapping("/register/advertiser")
-    public ResponseEntity<String> registerAdvertiser(@Valid @RequestBody RegistrationRequestCreationDTO registrationRequest) {
+    public ResponseOK registerAdvertiser(@Valid @RequestBody RegistrationRequestCreationDTO registrationRequest) {
         accountService.createRegistrationRequest(registrationRequest);
-        return ResponseEntity.ok().body("Registration request created.");
+        return new ResponseOK("Registration request created.");
     }
 
     @PostMapping("/register/customer")
-    public ResponseEntity<String> registerClient(@Valid @RequestBody CustomerCreationDTO customer) {
+    public ResponseOK registerClient(@Valid @RequestBody CustomerCreationDTO customer) {
         accountService.createClient(customer);
-        return ResponseEntity.ok().body("Registration confirmation sent.");
+        return new ResponseOK("Registration confirmation sent.");
     }
 
     @GetMapping("/register/confirm/{token}")
-    public ResponseEntity<String> confirmRegistration(@PathVariable String token) {
+    public ResponseOK confirmRegistration(@PathVariable String token) {
         accountService.confirmRegistration(token);
-        return ResponseEntity.ok().body("Registration confirmed.");
+        return new ResponseOK("Registration confirmed.");
     }
 }

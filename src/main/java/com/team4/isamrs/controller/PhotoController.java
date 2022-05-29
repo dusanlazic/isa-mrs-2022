@@ -5,7 +5,6 @@ import com.team4.isamrs.dto.display.PhotoUploadDisplayDTO;
 import com.team4.isamrs.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,8 +24,8 @@ public class PhotoController {
     private PhotoService photoService;
 
     @GetMapping("metadata/{id}")
-    public ResponseEntity<PhotoBriefDisplayDTO> findById(@PathVariable UUID id) {
-        return new ResponseEntity<>(photoService.findById(id, PhotoBriefDisplayDTO.class), HttpStatus.OK);
+    public PhotoBriefDisplayDTO findById(@PathVariable UUID id) {
+        return photoService.findById(id, PhotoBriefDisplayDTO.class);
     }
 
     @GetMapping(value = "/{filename}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})

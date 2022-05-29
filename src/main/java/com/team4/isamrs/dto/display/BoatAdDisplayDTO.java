@@ -13,7 +13,7 @@ import java.util.Set;
 @Data
 public class BoatAdDisplayDTO implements DisplayDTO {
     private Long id;
-    private Advertiser advertiser;
+    private AccountDisplayDTO advertiser;
     private String title;
     private AddressDisplayDTO address;
     private String description;
@@ -38,5 +38,5 @@ public class BoatAdDisplayDTO implements DisplayDTO {
     private Set<NavigationalEquipmentDisplayDTO> navigationalEquipment = new HashSet<>();
     private Integer capacity;
     private BigDecimal cancellationFee;
-    private BigDecimal pricePerPerson;
+    private BigDecimal pricePerDay;
 }

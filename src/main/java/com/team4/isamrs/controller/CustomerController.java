@@ -1,13 +1,10 @@
 package com.team4.isamrs.controller;
 
-import com.team4.isamrs.dto.display.BoatAdDisplayDTO;
 import com.team4.isamrs.dto.display.CustomerDisplayDTO;
 import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
 import com.team4.isamrs.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -22,12 +19,12 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<CustomerDisplayDTO> findById(@PathVariable Long id) {
-        return new ResponseEntity<>(customerService.findById(id, CustomerDisplayDTO.class), HttpStatus.OK);
+    public CustomerDisplayDTO findById(@PathVariable Long id) {
+        return customerService.findById(id, CustomerDisplayDTO.class);
     }
 
     @GetMapping("/{id}/reviews")
-    public ResponseEntity<Collection<ServiceReviewDisplayDTO>> getReviews(@PathVariable Long id) {
-        return new ResponseEntity<>(customerService.getReviews(id), HttpStatus.OK);
+    public Collection<ServiceReviewDisplayDTO> getReviews(@PathVariable Long id) {
+        return customerService.getReviews(id);
     }
 }

@@ -25,6 +25,9 @@ public class ResortAdCreationDTO {
     @Size(max=250)
     private String description;
 
+    @NotNull
+    private BigDecimal pricePerDay;
+
     @Size(max=100)
     private String pricingDescription;
 
@@ -34,6 +37,10 @@ public class ResortAdCreationDTO {
 
     @Size(max=500)
     private String rules;
+
+    @NotNull
+    @Positive
+    private Integer capacity;
 
     @NotBlank
     @Size(max=5)
@@ -50,17 +57,12 @@ public class ResortAdCreationDTO {
     @Size(max=10)
     private List<OptionCreationDTO> options;
 
-    @NotNull
-    @Positive
-    private Integer numberOfBeds;
+    @NotEmpty
+    private List<Integer> bedCountPerRoom;
 
     @NotNull
     private LocalTime checkOutTime;
 
     @NotNull
     private LocalTime checkInTime;
-
-    @NotBlank
-    private BigDecimal pricePerDay;
-
 }

@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Set;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    Set<Reservation> findReservationsByStartDateTimeBeforeOrEndDateTimeAfter(LocalDateTime from, LocalDateTime to);
-    Set<Reservation> findReservationsByStartDateTimeBeforeAndEndDateTimeAfter(LocalDateTime to, LocalDateTime from);
-    Set<Reservation> findReservationsByEndDateTimeAfter(LocalDateTime to);
-    Set<Reservation> findReservationsByStartDateTimeBefore(LocalDateTime from);
+    Set<Reservation> findReservationsByStartDateTimeBeforeOrEndDateTimeAfterAndCancelledIsFalse(LocalDateTime from, LocalDateTime to);
+    Set<Reservation> findReservationsByStartDateTimeBeforeAndEndDateTimeAfterAndCancelledIsFalse(LocalDateTime to, LocalDateTime from);
+    Set<Reservation> findReservationsByEndDateTimeAfterAndCancelledIsFalse(LocalDateTime to);
+    Set<Reservation> findReservationsByStartDateTimeBeforeAndCancelledIsFalse(LocalDateTime from);
 
     @Query(value = "SELECT r FROM Reservation r JOIN r.advertisement a WHERE :adId = a.id AND " +
             "(:startDate < r.startDateTime AND :endDate > r.startDateTime) OR " +

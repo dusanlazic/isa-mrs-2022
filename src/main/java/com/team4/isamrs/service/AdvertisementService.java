@@ -134,28 +134,26 @@ public class AdvertisementService {
         if (!(dto.getAvailableUntil() == null && dto.getAvailableAfter() == null)) {
             // only available until is defined
             if (dto.getAvailableAfter() == null) {
-                Set<Reservation> reservations = reservationRepository.findReservationsByEndDateTimeAfter(dto.getAvailableUntil().plusDays(1).atStartOfDay());
+                Set<Reservation> reservations = reservationRepository.findReservationsByEndDateTimeAfterAndCancelledIsFalse(dto.getAvailableUntil().atStartOfDay());
                 if (!reservations.isEmpty())
                     throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
             }
             // only available after is defined
             else if (dto.getAvailableUntil() == null) {
-                Set<Reservation> reservations = reservationRepository.findReservationsByStartDateTimeBefore(dto.getAvailableAfter().atStartOfDay());
+                Set<Reservation> reservations = reservationRepository.findReservationsByStartDateTimeBeforeAndCancelledIsFalse(dto.getAvailableAfter().atStartOfDay());
                 if (!reservations.isEmpty())
                     throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
             }
             // both are defined
             // availability period
             else if (dto.getAvailableAfter().isBefore(dto.getAvailableUntil())) {
-                Set<Reservation> reservations = reservationRepository.findReservationsByStartDateTimeBeforeOrEndDateTimeAfter(dto.getAvailableAfter().atStartOfDay(), dto.getAvailableUntil().plusDays(1).atStartOfDay());
-                reservations.removeIf(Reservation::getCancelled);
+                Set<Reservation> reservations = reservationRepository.findReservationsByStartDateTimeBeforeOrEndDateTimeAfterAndCancelledIsFalse(dto.getAvailableAfter().atStartOfDay(), dto.getAvailableUntil().atStartOfDay());
                 if (!reservations.isEmpty())
                     throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
             }
             // unavailability period
             else {
-                Set<Reservation> reservations = reservationRepository.findReservationsByStartDateTimeBeforeAndEndDateTimeAfter(dto.getAvailableAfter().atStartOfDay(), dto.getAvailableUntil().plusDays(1).atStartOfDay());
-                reservations.removeIf(Reservation::getCancelled);
+                Set<Reservation> reservations = reservationRepository.findReservationsByStartDateTimeBeforeAndEndDateTimeAfterAndCancelledIsFalse(dto.getAvailableAfter().atStartOfDay(), dto.getAvailableUntil().atStartOfDay());
                 if (!reservations.isEmpty())
                     throw new ReservationsInUnavailabilityPeriodException(Integer.toString(reservations.size()));
             }

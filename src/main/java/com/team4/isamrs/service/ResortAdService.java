@@ -18,11 +18,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,13 +62,19 @@ public class ResortAdService {
     }
 
     public Page<ResortAdSimpleDisplayDTO> search(String where, int guests, LocalDateTime startDate,
-                                                 LocalDateTime endDate, Pageable pageable) {
+                                                 LocalDateTime endDate, Pageable pageable,
+                                                 String sorting, boolean descending) {
         List<ResortAdSimpleDisplayDTO> finalResorts;
         List<ResortAd> candidateResortAds = resortAdRepository.search(where, guests);
         finalResorts = candidateResortAds.stream()
                 .filter(r -> isAvailable(r, startDate, endDate))
                 .map(r -> modelMapper.map(r, ResortAdSimpleDisplayDTO.class))
                 .collect(Collectors.toList());
+
+        if (sorting.equals("price"))
+            finalResorts.sort(Comparator.comparing(ResortAdSimpleDisplayDTO::getPricePerDay));
+        // else sort by average rating
+        if (descending) Collections.reverse(finalResorts);
 
         int fromIndex = Math.min((int)pageable.getOffset(), finalResorts.size());
         int toIndex = Math.min((fromIndex + pageable.getPageSize()), finalResorts.size());

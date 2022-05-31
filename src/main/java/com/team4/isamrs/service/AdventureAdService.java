@@ -2,6 +2,7 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.display.AdventureAdSimpleDisplayDTO;
+import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
 import com.team4.isamrs.model.advertisement.AdventureAd;
@@ -21,6 +22,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,13 +65,19 @@ public class AdventureAdService {
     }
 
     public Page<AdventureAdSimpleDisplayDTO> search(String where, int guests, LocalDateTime startDate,
-                                                 LocalDateTime endDate, Pageable pageable) {
+                                                    LocalDateTime endDate, Pageable pageable,
+                                                    String sorting, boolean descending) {
         List<AdventureAdSimpleDisplayDTO> finalAdventures;
         List<AdventureAd> candidateAdventureAds = adventureAdRepository.search(where, guests);
         finalAdventures = candidateAdventureAds.stream()
                 .filter(a -> isAvailable(a, startDate, endDate))
                 .map(a -> modelMapper.map(a, AdventureAdSimpleDisplayDTO.class))
                 .collect(Collectors.toList());
+
+        if (sorting.equals("price"))
+            finalAdventures.sort(Comparator.comparing(AdventureAdSimpleDisplayDTO::getPricePerPerson));
+        // else sort by average rating
+        if (descending) Collections.reverse(finalAdventures);
 
         int fromIndex = Math.min((int)pageable.getOffset(), finalAdventures.size());
         int toIndex = Math.min((fromIndex + pageable.getPageSize()), finalAdventures.size());

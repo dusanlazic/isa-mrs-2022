@@ -54,13 +54,9 @@ public class ResortController {
             @RequestParam(required = false, defaultValue = "0") int guests,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-            @RequestParam int page) {
-        return resortAdService.search(
-                where,
-                guests,
-                startDate,
-                endDate,
-                PageRequest.of(page, 20));
+            @RequestParam int page, @RequestParam String sorting, @RequestParam boolean descending) {
+        return resortAdService.search(where, guests, startDate, endDate,
+                PageRequest.of(page, 20), sorting, descending);
     }
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)

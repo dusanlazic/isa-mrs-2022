@@ -17,15 +17,10 @@ const EntityList = ({data, entityType, currentPage, setPage, totalPages, getSort
     return [sorting, descending];
   }
 
-  const updateSorting = (value) => {
-    setSorting(value);
+  useEffect(() => {
+    getSorting.current = sendSorting; 
     refreshList(true);
-  }
-
-  const updateOrder = () => {
-    setDescending(!descending);
-    refreshList(true);
-  }
+  }, [sorting, descending]);
 
   const handlePageClick = (event) => {
     setPage(event.selected);
@@ -40,7 +35,7 @@ const EntityList = ({data, entityType, currentPage, setPage, totalPages, getSort
 
             {/* choose order */}
             <div>
-              <button onClick={() => updateOrder()} className='py-1'>
+              <button onClick={() => setDescending(!descending)} className='py-1'>
                 {descending &&
                   <Icon className='my-auto mx-auto h-6 w-6 '
                   icon='tabler:sort-descending'/> 
@@ -54,14 +49,14 @@ const EntityList = ({data, entityType, currentPage, setPage, totalPages, getSort
 
             {/* choose sorting */}
             <div className='flex justify-center h-8 my-auto'>
-              <button onClick={() => updateSorting('price')}
+              <button onClick={() => setSorting('price')}
               className={`w-20 py-1 rounded-l-lg text-sm font-bold
               ${sorting === 'price' ? 'text-slate-100 bg-slate-800' : 'bg-slate-100 text-slate-800\
               border-2 border-r-0 border-slate-800'}`}>
                 PRICE
               </button>
 
-              <button onClick={() => updateSorting('rating')}
+              <button onClick={() => setSorting('rating')}
               className={`w-20 py-1 rounded-r-lg text-sm font-bold
               ${sorting === 'rating' ? 'text-slate-100 bg-slate-800' : 'bg-slate-100 text-slate-800\
               border-2 border-l-0  border-slate-800'}`}>

@@ -35,31 +35,31 @@ VALUES (1002, TRUE , 'Mise Dimitrijevica 1', 'Novi Sad', 'SR', 'maja@gmail.com',
 
 INSERT INTO public.address(
     id, address, city, country_code, latitude, longitude, postal_code, state)
-VALUES (1001, 'Gogoljeva 2', 'Novi Sad', 'RS', '1111.1', '1334.2', '21000', 'Srbija');
+VALUES (1001, 'Gogoljeva 2', 'Novi Sad', 'RS', '0.0', '0.0', '21000', 'Srbija');
 
 INSERT INTO public.address(
     id, address, city, country_code, latitude, longitude, postal_code, state)
-VALUES (1002, 'Gogoljeva 2', 'Novi Sad', 'RS', '1111.1', '1334.2', '21000', 'Srbija');
+VALUES (1002, 'Gogoljeva 2', 'Novi Sad', 'RS', '0.0', '0.0', '21000', 'Srbija');
 
 INSERT INTO public.address(
     id, address, city, country_code, latitude, longitude, postal_code, state)
-VALUES (1003, 'Gogoljeva 2', 'Novi Sad', 'RS', '1111.1', '1334.2', '21000', 'Srbija');
+VALUES (1003, 'Gogoljeva 2', 'Novi Sad', 'RS', '0.0', '0.0', '21000', 'Srbija');
 
 INSERT INTO public.address(
     id, address, city, country_code, latitude, longitude, postal_code, state)
-VALUES (1004, 'Gogoljeva 2', 'Novi Sad', 'RS', '1111.1', '1334.2', '21000', 'Srbija');
+VALUES (1004, 'Gogoljeva 2', 'Novi Sad', 'RS', '0.0', '0.0', '21000', 'Srbija');
 
 INSERT INTO public.address(
     id, address, city, country_code, latitude, longitude, postal_code, state)
-VALUES (1005, 'Gogoljeva 2', 'Novi Sad', 'RS', '1111.1', '1334.2', '21000', 'Srbija');
+VALUES (1005, 'Gogoljeva 2', 'Novi Sad', 'RS', '0.0', '0.0', '21000', 'Srbija');
 
 INSERT INTO public.address(
     id, address, city, country_code, latitude, longitude, postal_code, state)
-VALUES (1006, 'Gogoljeva 2', 'Novi Sad', 'RS', '1111.1', '1334.2', '21000', 'Srbija');
+VALUES (1006, 'Gogoljeva 2', 'Novi Sad', 'RS', '0.0', '0.0', '21000', 'Srbija');
 
 INSERT INTO public.address(
     id, address, city, country_code, latitude, longitude, postal_code, state)
-VALUES (1007, 'Gogoljeva 2', 'Novi Sad', 'RS', '1111.1', '1334.2', '21000', 'Srbija');
+VALUES (1007, 'Gogoljeva 2', 'Novi Sad', 'RS', '0.0', '0.0', '21000', 'Srbija');
 
 
 INSERT INTO public.resort_ad(

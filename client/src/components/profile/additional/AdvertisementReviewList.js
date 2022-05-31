@@ -12,16 +12,17 @@ const AdvertisementReviewList = ({data}) => {
 		  });
 		}, [])
 
-    
-  if (reviews === null) {
-    return null;
-  }
-
   return ( 
     <div className="flex flex-col gap-y-6">
-      {reviews.map((review, index) => 
-        <ClientReview review={review} key={index}/>
-      )}
+      {(reviews === null || reviews.length === 0) &&
+        <h1 className="text-xl font-medium text-gray-900">This advertisement hasn't been reviewed yet.</h1>
+      }
+      {
+        reviews !== null && reviews.length > 0 &&
+        reviews.map((review, index) => 
+          <ClientReview review={review} key={index}/>
+        )
+      }
     </div>
    );
 }

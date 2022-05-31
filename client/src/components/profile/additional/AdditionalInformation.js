@@ -1,9 +1,7 @@
 import { useState } from 'react'
 
 const AdditionalInformation = ({options}) => {
-  
   const [selectedOption, setSelectedOption] = useState(options[0]);
- 
   return ( 
     <div>
       {/* Mini navigation */}
@@ -13,7 +11,7 @@ const AdditionalInformation = ({options}) => {
         hover:text-gray-800 cursor-pointer rounded-lg sm:rounded-none
         ${options.indexOf(option) === 0 ? 'sm:rounded-l-lg' : ''}
         ${options.indexOf(option) === options.length - 1 ? 'sm:rounded-r-lg' : ''}
-        ${option === selectedOption ? 'bg-white text-gray-800' : ''}
+        ${option.title === selectedOption.title ? 'bg-white text-gray-800' : ''}
         `} onClick={() => setSelectedOption(option)}
         >
           {option.title}

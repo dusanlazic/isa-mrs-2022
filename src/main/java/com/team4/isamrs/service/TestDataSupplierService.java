@@ -59,7 +59,7 @@ public class TestDataSupplierService {
             resort.setCheckOutTime(LocalTime.parse("10:00"));
             resort.setCheckInTime(LocalTime.parse("14:00"));
             resort.setCapacity(i*2);
-            resort.setPricePerDay(BigDecimal.valueOf(135));
+            resort.setPricePerDay(BigDecimal.valueOf(100+i*5));
 
             resortAdRepository.save(resort);
         }

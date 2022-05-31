@@ -19,23 +19,30 @@ const SearchPage = () => {
   const [currentPage, setCurrentPage] = useState(0);
 
   const getParams = useRef(null);
+  const getSorting = useRef(null);
 
   useEffect(() => {
     setEntityList([]);
   }, [location])
 
   useEffect(() => {
+    fetchData();
+  }, [location, currentPage])
+
+  const fetchData = (resetPage=false) => {
+    setCurrentPage(resetPage ? 0 : currentPage);
     const [where, startDate, endDate, guests] = getParams.current();
-    const query = getQuery(where, startDate, endDate, guests);
+    const [sorting, descending] = getSorting.current === null ? ['price', true] : getSorting.current();
+    const query = getQuery(where, startDate, endDate, guests, sorting, descending);
     get(`/api/ads/${entity}/search?page=${currentPage}${query}`)
     .then(response => {
       setEntityList(response.data.content);
       setTotalPages(response.data.totalPages);
       setTotalElements(response.data.totalElements);
-    })
-  }, [location, currentPage])
+    });
+  }
 
-  const getQuery = (where, startDate, endDate, guests) => {
+  const getQuery = (where, startDate, endDate, guests, sorting, descending) => {
     let query = '';
     if (where.trim() !== '' || guests.trim() !== '' || startDate || endDate) {
       query += '&';
@@ -51,7 +58,8 @@ const SearchPage = () => {
         query += end ? `${query !== '?' ? '&' : ''}endDate=` + end : '';
       }
     }
-    return query
+    query += `&sorting=${sorting}&descending=${descending}`;
+    return query;
   }
 
   const where = new URLSearchParams(location.search).get("where");
@@ -65,7 +73,8 @@ const SearchPage = () => {
       entityProp={entity} startDateProp={startDate} endDateProp={endDate} totalElements={totalElements}/>
       {entityList.length > 0 &&
       <div className="mt-6">
-        <EntityList data={entityList} entityType={entity} currentPage={currentPage} setPage={setCurrentPage} totalPages={totalPages}/>
+        <EntityList data={entityList} entityType={entity} currentPage={currentPage}
+        setPage={setCurrentPage} totalPages={totalPages} getSorting={getSorting} refreshList={fetchData}/>
       </div>}
     </div>
    );

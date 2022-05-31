@@ -1,7 +1,31 @@
+import { useState, useEffect } from 'react';
+import { Icon } from '@iconify/react';
+
 import EntityCard from "./EntityCard";
 import ReactPaginate from "react-paginate";
 
-const EntityList = ({data, entityType, currentPage,setPage, totalPages }) => {
+const EntityList = ({data, entityType, currentPage, setPage, totalPages, getSorting, refreshList }) => {
+
+  const [sorting, setSorting] = useState('price');
+  const [descending, setDescending] = useState(true);
+
+  useEffect(() => {
+    getSorting.current = sendSorting; 
+  }, []);
+
+  const sendSorting = () => {
+    return [sorting, descending];
+  }
+
+  const updateSorting = (value) => {
+    setSorting(value);
+    refreshList(true);
+  }
+
+  const updateOrder = () => {
+    setDescending(!descending);
+    refreshList(true);
+  }
 
   const handlePageClick = (event) => {
     setPage(event.selected);
@@ -10,6 +34,43 @@ const EntityList = ({data, entityType, currentPage,setPage, totalPages }) => {
   return ( 
     <div className="w-full text-left">
       <div className="bg-white rounded-xl shadow-sm p-6">
+
+        <div className="flex justify-end mb-4">
+          <div className="flex justify-between gap-x-3">
+
+            {/* choose order */}
+            <div>
+              <button onClick={() => updateOrder()} className='py-1'>
+                {descending &&
+                  <Icon className='my-auto mx-auto h-6 w-6 '
+                  icon='tabler:sort-descending'/> 
+                }
+                {!descending &&
+                  <Icon className='my-auto mx-auto h-6 w-6'
+                  icon='tabler:sort-ascending'/>
+                }
+              </button>
+            </div>
+
+            {/* choose sorting */}
+            <div className='flex justify-center h-8 my-auto'>
+              <button onClick={() => updateSorting('price')}
+              className={`w-20 py-1 rounded-l-lg text-sm font-bold
+              ${sorting === 'price' ? 'text-slate-100 bg-slate-800' : 'bg-slate-100 text-slate-800\
+              border-2 border-r-0 border-slate-800'}`}>
+                PRICE
+              </button>
+
+              <button onClick={() => updateSorting('rating')}
+              className={`w-20 py-1 rounded-r-lg text-sm font-bold
+              ${sorting === 'rating' ? 'text-slate-100 bg-slate-800' : 'bg-slate-100 text-slate-800\
+              border-2 border-l-0  border-slate-800'}`}>
+                RATING
+              </button>
+            </div>
+
+          </div>
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-4">
           {data.map(entity => 
             <div key={entity.id}>

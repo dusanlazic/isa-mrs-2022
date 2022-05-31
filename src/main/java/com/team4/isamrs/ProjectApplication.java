@@ -1,6 +1,7 @@
 package com.team4.isamrs;
 
 import com.team4.isamrs.service.AccountService;
+import com.team4.isamrs.service.LoyaltyProgramService;
 import com.team4.isamrs.service.PhotoService;
 import com.team4.isamrs.service.TestDataSupplierService;
 import com.team4.isamrs.util.StorageConfig;
@@ -20,11 +21,12 @@ public class ProjectApplication {
 
 	@Bean
 	CommandLineRunner init(PhotoService photoService, AccountService accountService,
-						   TestDataSupplierService testDataSupplierService) {
+						   TestDataSupplierService testDataSupplierService, LoyaltyProgramService loyaltyProgramService) {
 		return (args) -> {
 			photoService.init();
 			accountService.initializeRoles();
 			accountService.createTestAccount();
+			loyaltyProgramService.init();
 			testDataSupplierService.injectTestData();
 		};
 	}

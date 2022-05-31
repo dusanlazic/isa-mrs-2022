@@ -2,12 +2,13 @@ package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.ResponseOK;
 import com.team4.isamrs.dto.creation.AdminCreationDTO;
+import com.team4.isamrs.dto.display.LoyaltyProgramCategoryDetailedDisplayDTO;
+import com.team4.isamrs.dto.display.LoyaltyProgramSettingsDisplayDTO;
 import com.team4.isamrs.dto.display.RegistrationRequestDisplayDTO;
 import com.team4.isamrs.dto.display.RemovalRequestDisplayDTO;
-import com.team4.isamrs.dto.updation.InitialPasswordUpdationDTO;
-import com.team4.isamrs.dto.updation.RegistrationRequestUpdationDTO;
-import com.team4.isamrs.dto.updation.RemovalRequestUpdationDTO;
+import com.team4.isamrs.dto.updation.*;
 import com.team4.isamrs.service.AccountService;
+import com.team4.isamrs.service.LoyaltyProgramService;
 import com.team4.isamrs.service.RegistrationRequestService;
 import com.team4.isamrs.service.RemovalRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/admin",
@@ -33,6 +35,9 @@ public class AdminController {
 
     @Autowired
     private RemovalRequestService removalRequestService;
+
+    @Autowired
+    private LoyaltyProgramService loyaltyProgramService;
 
     @PostMapping("/register")
     @PreAuthorize("hasRole('SUPERUSER')")
@@ -73,4 +78,32 @@ public class AdminController {
         removalRequestService.respondToRequest(id, dto);
         return new ResponseOK("Request resolved.");
     }
+
+    @GetMapping(value = "/loyalty-program/settings", consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public LoyaltyProgramSettingsDisplayDTO getLoyaltyProgramSettings() {
+        return loyaltyProgramService.getSettings();
+    }
+
+    @PutMapping(value = "/loyalty-program/settings", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseOK updateLoyaltyProgramSettings(@Valid @RequestBody LoyaltyProgramSettingsUpdationDTO dto) {
+        loyaltyProgramService.updateSettings(dto);
+        return new ResponseOK("Settings saved.");
+    }
+
+    @GetMapping(value = "/loyalty-program/categories", consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<LoyaltyProgramCategoryDetailedDisplayDTO> getLoyaltyProgramCategories() {
+        return loyaltyProgramService.getCategories();
+    }
+
+    @PutMapping(value = "/loyalty-program/categories", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseOK updateLoyaltyProgramCategories(@Valid @RequestBody LoyaltyProgramCategoriesUpdationDTO dto) {
+        loyaltyProgramService.updateCategories(dto);
+        return new ResponseOK("Categories saved.");
+    }
+
+
 }

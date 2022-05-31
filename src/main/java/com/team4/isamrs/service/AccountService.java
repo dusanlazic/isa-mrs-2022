@@ -64,6 +64,11 @@ public class AccountService {
         return modelMapper.map(userRepository.findById(id).orElseThrow(), returnType);
     }
 
+    public AccountDisplayDTO whoAmI(Authentication auth) {
+        User user = (User) auth.getPrincipal();
+        return modelMapper.map(user, AccountDisplayDTO.class);
+    }
+
     public void updateAccount(AccountUpdationDTO dto, Authentication auth) {
         User user = (User) auth.getPrincipal();
 
@@ -96,7 +101,6 @@ public class AccountService {
     }
 
     public void createTestAccount() {
-
         Advertiser advertiser = new Advertiser();
         advertiser.setEnabled(true);
         advertiser.setAddress("Kod mene kući BB");
@@ -109,8 +113,23 @@ public class AccountService {
         advertiser.getAuthorities().add(roleRepository.findByName("ROLE_SUPERUSER").get());
         advertiser.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
         advertiser.setPhoneNumber("065-1337");
+        advertiser.setPoints(150);
         userRepository.save(advertiser);
 
+        Customer customer = new Customer();
+        customer.setEnabled(true);
+        customer.setAddress("Kod mene kući BB");
+        customer.setCity("Novi Sad");
+        customer.setCountryCode("RS");
+        customer.setUsername("stevade@test.rs");
+        customer.setFirstName("Stevan");
+        customer.setLastName("Dejan");
+        customer.setPassword(passwordEncoder.encode("cascaded"));
+        customer.getAuthorities().add(roleRepository.findByName("ROLE_CUSTOMER").get());
+        customer.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
+        customer.setPhoneNumber("4369911628747");
+        customer.setPoints(110);
+        userRepository.save(customer);
 
         User user = userRepository.findById(1002L).orElseThrow();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -161,6 +180,7 @@ public class AccountService {
         Customer customer = modelMapper.map(customerDTO, Customer.class);
         customer.setPassword(passwordEncoder.encode(customerDTO.getPassword()));
         customer.setEnabled(false);
+        customer.setPoints(0);
         customer.getAuthorities().add(roleRepository.findByName("ROLE_CUSTOMER").orElseThrow());
         customerRepository.save(customer);
 
@@ -210,10 +230,5 @@ public class AccountService {
         } catch (TokenExpiredException e) {
             throw new ConfirmationLinkExpiredException("Confirmation link expired.");
         }
-    }
-
-    public AccountDisplayDTO whoAmI(Authentication auth) {
-        User user = (User) auth.getPrincipal();
-        return modelMapper.map(user, AccountDisplayDTO.class);
     }
 }

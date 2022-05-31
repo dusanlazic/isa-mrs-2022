@@ -29,4 +29,7 @@ public class Customer extends User {
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private Set<ServiceReview> reviews = new HashSet<ServiceReview>();
+    
+    @Column(name = "points", nullable = false)
+    private Integer points;
 }

@@ -15,6 +15,9 @@ public class LoyaltyProgramCategory {
     @Column(name = "title", nullable = false)
     private String title;
 
+    @Column(name = "color")
+    private String color;
+
     @Column(name = "targeted_account_type", nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private TargetedAccountType targetedAccountType;
@@ -32,8 +35,9 @@ public class LoyaltyProgramCategory {
 
     }
 
-    public LoyaltyProgramCategory(String title, TargetedAccountType targetedAccountType, Integer pointsLowerBound, Integer pointsUpperBound, BigDecimal multiply) {
+    public LoyaltyProgramCategory(String title, String color, TargetedAccountType targetedAccountType, Integer pointsLowerBound, Integer pointsUpperBound, BigDecimal multiply) {
         this.title = title;
+        this.color = color;
         this.targetedAccountType = targetedAccountType;
         this.pointsLowerBound = pointsLowerBound;
         this.pointsUpperBound = pointsUpperBound;

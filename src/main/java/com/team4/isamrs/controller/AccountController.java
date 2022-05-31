@@ -5,11 +5,14 @@ import com.team4.isamrs.dto.creation.CustomerCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.creation.RemovalRequestCreationDTO;
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
+import com.team4.isamrs.dto.display.PointsDisplayDTO;
 import com.team4.isamrs.dto.updation.AccountUpdationDTO;
 import com.team4.isamrs.dto.updation.PasswordUpdationDTO;
 import com.team4.isamrs.service.AccountService;
+import com.team4.isamrs.service.LoyaltyProgramService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +27,18 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private LoyaltyProgramService loyaltyProgramService;
+
     @GetMapping(value = "/whoami")
     public AccountDisplayDTO whoAmI(Authentication auth) {
         return accountService.whoAmI(auth);
+    }
+
+    @GetMapping(value = "/loyalty")
+    @PreAuthorize("hasRole('CUSTOMER') or hasRole('ADVERTISER')")
+    public PointsDisplayDTO getPoints(Authentication auth) {
+        return loyaltyProgramService.getCurrentUsersPoints(auth);
     }
 
     @GetMapping(value = "/{id}")

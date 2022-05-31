@@ -70,6 +70,7 @@ public class RegistrationRequestService {
         advertiser.setPhoneNumber(registrationRequest.getPhoneNumber());
         advertiser.setPassword(registrationRequest.getPasswordHash());
         advertiser.setEnabled(true);
+        advertiser.setPoints(0);
 
         if (registrationRequest.getAccountType().equals(AccountType.BOAT_OWNER))
             advertiser.getAuthorities().add(roleRepository.findByName("ROLE_BOAT_OWNER").orElseThrow());

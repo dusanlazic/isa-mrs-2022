@@ -40,6 +40,7 @@ const ProfilePage = () => {
 
   let { id } = useParams();
   const [profileData, setProfileData] = useState(null);
+  const [loyaltyProgramData, setLoyaltyProgramData] = useState(null);
 
   if (window.location.href.includes('resort')) {
     endpoint = '/ads/resorts'
@@ -66,6 +67,16 @@ const ProfilePage = () => {
     .catch((error) => {
       navigate('/notfound');
     });
+
+    get('/api/account/loyalty')
+    .then((response) => {
+      if (response.data.category.multiply < 1) {
+        setLoyaltyProgramData(response.data);
+      }
+    })
+    .catch((error) => {
+      setLoyaltyProgramData(null);
+    });
   }, [])
 
   if (profileData === null) {
@@ -73,7 +84,7 @@ const ProfilePage = () => {
   }
 
   if (window.location.href.includes('resort')) {
-    sidebarComponents = [<PriceCard data={profileData} />, <Tags data={profileData} />];
+    sidebarComponents = [<PriceCard profileData={profileData} loyaltyProgramData={loyaltyProgramData} />, <Tags data={profileData} />];
     MainComponent = ResortProfileMainInfo;
     contentComponents = [
       { title: 'About', component: <About data={profileData} />},
@@ -83,7 +94,7 @@ const ProfilePage = () => {
     ];
   }
   else if (window.location.href.includes('boat')) {
-    sidebarComponents = [<PriceCard data={profileData} />, <Tags data={profileData} />];
+    sidebarComponents = [<PriceCard profileData={profileData} loyaltyProgramData={loyaltyProgramData} />, <Tags data={profileData} />];
     MainComponent = boatMainComponent;
     contentComponents = [
       { title: 'About', component: <BoatAbout data={profileData} />},
@@ -93,7 +104,7 @@ const ProfilePage = () => {
     ];
   }
   else if (window.location.href.includes('adventure')) {
-    sidebarComponents = [<PriceCard data={profileData} />, <Tags data={profileData} />];
+    sidebarComponents = [<PriceCard profileData={profileData} loyaltyProgramData={loyaltyProgramData} />, <Tags data={profileData} />];
     MainComponent = adventureMainComponent;
     contentComponents = [
       { title: 'About', component: <About data={profileData} />},

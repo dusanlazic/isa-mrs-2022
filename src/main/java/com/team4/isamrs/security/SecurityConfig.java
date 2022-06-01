@@ -85,7 +85,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/ads/**",
                 "/fishing-equipment/**",
                 "/tags/*",
-                "/account/register/**");
+                "/account/register/**",
+                "/advertisers/**");
 
         web.ignoring().antMatchers(HttpMethod.GET,
                 "/",

@@ -135,7 +135,14 @@ const ProfilePage = ({me}) => {
       { title: 'Location', component: <Map data={profileData} coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
     ];
   }
-  else if (self.accountType === 'CUSTOMER') {
+  else if (window.location.href.includes('advertiser')) {
+    sidebarComponents = [];
+    MainComponent = clientMainComponent;
+    contentComponents = [
+      { title: 'Advertisements', component: <AdvertisementList advertiserId={profileData.id} /> },
+    ];
+  }
+  else if (self !== null && self.accountType === 'CUSTOMER') {
     sidebarComponents = [<LoyaltyProgramCard/>];
     MainComponent = clientMainComponent;
     contentComponents = [
@@ -143,7 +150,7 @@ const ProfilePage = ({me}) => {
       { title: 'Reservation History',  component: <ClientReservationHistory/> },
     ];
   }
-  else if (self.accountType === 'ADVERTISER') {
+  else if (self !== null && self.accountType === 'ADVERTISER') {
     sidebarComponents = [<LoyaltyProgramCard/>];
     MainComponent = clientMainComponent;
     contentComponents = [

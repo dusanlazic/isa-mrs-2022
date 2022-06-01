@@ -1,9 +1,9 @@
-import { data } from 'autoprefixer';
 import { useState, useEffect } from 'react';
 import { get } from '../../../adapters/xhr';
 
 import AdvertisementCard from './AdvertisementCard'
 
+let dataReceived = false;
 const AdvertisementList = ({advertiserId}) => {
   const [advertisements, setAdvertisements] = useState([]);
 
@@ -11,12 +11,16 @@ const AdvertisementList = ({advertiserId}) => {
 		get(`/api/advertisers/${advertiserId}/advertisements`)
     .then(response => {
 			setAdvertisements(response.data);
+      dataReceived = true;
 		  });
 		}, [])
 
   return ( 
     <div>
-      {advertisements.length === 0 &&
+      {advertisements.length === 0 && !dataReceived &&
+        <h1 className="text-xl font-medium text-gray-900">Loading...</h1>
+      }
+      {advertisements.length === 0 && dataReceived &&
         <h1 className="text-xl font-medium text-gray-900">Advertiser has not posted any ads.</h1>
       }
       {advertisements.length > 0 &&

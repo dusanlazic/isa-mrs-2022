@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import { Icon } from '@iconify/react';
+import { getSession } from '../../../contexts';
 
 const UserProfileMainInfo = ({data}) => {
   return ( 
-    <div className="block md:flex bg-gray-100 rounded-lg p-10 pb-6">
+    <div className="block md:flex bg-gray-100 rounded-lg p-10 pb-10">
       <div>
         <img src='/images/fish_guy.jpg' alt="" className="flex-none w-64 h-64 md:w-44 md:h-44 xl:w-52
         xl:h-52 object-cover rounded-lg mx-auto" />
+        {data.id === getSession().id &&
         <Link to='/account'>
           <button className="text-gray-500
           bg-gray-200 hover:bg-gray-300 hover:text-gray-800 active:bg-transparent
@@ -15,6 +17,7 @@ const UserProfileMainInfo = ({data}) => {
             Edit Profile
           </button>
         </Link>
+        }
       </div>
 
       <div className="flex flex-col justify-between flex-grow md:ml-4">

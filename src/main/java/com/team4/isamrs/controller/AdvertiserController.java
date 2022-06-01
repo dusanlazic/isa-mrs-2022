@@ -1,9 +1,6 @@
 package com.team4.isamrs.controller;
 
-import com.team4.isamrs.dto.display.AdvertisementDisplayDTO;
-import com.team4.isamrs.dto.display.AdvertisementSimpleDisplayDTO;
-import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
-import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
+import com.team4.isamrs.dto.display.*;
 import com.team4.isamrs.service.AdvertiserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +19,11 @@ public class AdvertiserController {
 
     @Autowired
     private AdvertiserService advertiserService;
+
+    @GetMapping(value = "/{id}")
+    public AccountDisplayDTO getAdvertiser(@PathVariable Long id) {
+        return advertiserService.findById(id);
+    }
 
     @GetMapping(value = "/{id}/advertisements")
     public Collection<AdvertisementSimpleDisplayDTO> getAdvertisements(@PathVariable Long id) {

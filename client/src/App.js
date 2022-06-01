@@ -41,9 +41,10 @@ function App() {
               <Route path="/resort/:id" exact element={<ProfilePage key={2}/>}/>
               <Route path="/resort/:id/edit" exact element={<UpdateResortPage/>}/>
               <Route path="/boat/new" exact element={<CreateBoatPage/>}/>
-              <Route path="/boat/:id" exact element={<ProfilePage key={4}/>}/>
+              <Route path="/boat/:id" exact element={<ProfilePage key={3}/>}/>
               <Route path="/boat/:id/edit" exact element={<UpdateBoatPage/>}/>
-              <Route path="/me" exact element={<ProfilePage me={true} key={3}/>}/>
+              <Route path="/advertiser/:id" exact element={<ProfilePage key={4}/>}/>
+              <Route path="/me" exact element={<ProfilePage me={true} key={5}/>}/>
               <Route path="/account" exact element={<ProfileEditorPage/>}/>
               <Route path="/register" exact element={<RegistrationPage/>}/>
               <Route path="/login" exact element={<LoginPage/>}/>

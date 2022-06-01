@@ -22,7 +22,7 @@ public class AdventureAdDisplayDTO implements DisplayDTO {
     private String currency;
     private Integer capacity;
     private Set<String> tags;
-    private Set<PhotoUploadDisplayDTO> photos;
+    private List<PhotoBriefDisplayDTO> photos;
     private List<OptionDisplayDTO> options;
     private Set<FishingEquipmentDisplayDTO> fishingEquipment;
     private BigDecimal pricePerPerson;

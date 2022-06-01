@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -22,7 +23,7 @@ public class BoatAdDisplayDTO implements DisplayDTO {
     private String rules;
     private String currency;
     private Set<String> tags;
-    private Set<PhotoUploadDisplayDTO> photos;
+    private List<PhotoBriefDisplayDTO> photos;
     private Set<OptionDisplayDTO> options;
     @JsonFormat(pattern="HH:mm")
     private LocalTime CheckOutTime;

@@ -63,7 +63,8 @@ public abstract class Advertisement {
     private Set<Tag> tags = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY)
-    private Set<Photo> photos = new HashSet<>();
+    @OrderColumn
+    private List<Photo> photos = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @OrderColumn

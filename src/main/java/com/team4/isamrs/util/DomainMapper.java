@@ -80,6 +80,7 @@ public class DomainMapper {
             AdventureAd destination = context.getDestination();
 
             // Lookup IDs and fill the collections
+            destination.setPhotos(new ArrayList<>());
             source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
 
             // Delete options marked for deletion
@@ -120,11 +121,6 @@ public class DomainMapper {
             return context.getDestination();
         };
 
-        Converter<Photo, PhotoUploadDisplayDTO> PhotoToUploadDisplayDtoConverter = context -> {
-            context.getDestination().setUri("/photos/" + context.getSource().getStoredFilename());
-            return context.getDestination();
-        };
-
         Converter<BoatAdCreationDTO, BoatAd> CreationDtoToBoatAdConverter = context -> {
             BoatAdCreationDTO source = context.getSource();
             BoatAd destination = context.getDestination();
@@ -156,6 +152,7 @@ public class DomainMapper {
             BoatAdUpdationDTO source = context.getSource();
             BoatAd destination = context.getDestination();
 
+            destination.setPhotos(new ArrayList<>());
             source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
 
             int index = 0;
@@ -294,6 +291,7 @@ public class DomainMapper {
             ResortAdUpdationDTO source = context.getSource();
             ResortAd destination = context.getDestination();
 
+            destination.setPhotos(new ArrayList<>());
             source.getPhotoIds().forEach(id -> destination.addPhoto(photoRepository.findById(id).get()));
             destination.setNumberOfBeds(source.getBedCountPerRoom().stream().map(Object::toString).collect(Collectors.joining(",")));
 
@@ -402,7 +400,6 @@ public class DomainMapper {
         modelMapper.createTypeMap(AdventureAdUpdationDTO.class, AdventureAd.class).setPostConverter(UpdationDtoToAdventureAdConverter);
         modelMapper.createTypeMap(AdventureAd.class, AdventureAdDisplayDTO.class).setPostConverter(AdventureAdToDisplayDtoConverter);
         modelMapper.createTypeMap(Photo.class, PhotoBriefDisplayDTO.class).setPostConverter(PhotoToDisplayDtoConverter);
-        modelMapper.createTypeMap(Photo.class, PhotoUploadDisplayDTO.class).setPostConverter(PhotoToUploadDisplayDtoConverter);
         modelMapper.createTypeMap(BoatAdCreationDTO.class, BoatAd.class).setPostConverter(CreationDtoToBoatAdConverter);
         modelMapper.createTypeMap(BoatAdUpdationDTO.class, BoatAd.class).setPostConverter(UpdationDtoToBoatAdConverter);
         modelMapper.createTypeMap(BoatAd.class, BoatAdDisplayDTO.class).setPostConverter(BoatAdToDisplayDtoConverter);

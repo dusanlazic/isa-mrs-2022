@@ -4,6 +4,7 @@ import com.team4.isamrs.model.user.Advertiser;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -19,6 +20,6 @@ public class AdvertisementDisplayDTO implements DisplayDTO {
     private String rules;
     private String currency;
     private Set<String> tags;
-    private Set<PhotoBriefDisplayDTO> photos;
+    private List<PhotoBriefDisplayDTO> photos;
     private Set<OptionDisplayDTO> options;
 }

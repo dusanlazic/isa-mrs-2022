@@ -12,7 +12,7 @@ const AdvertisementCard = ({data}) => {
   return ( 
     <div className="w-full mx-auto text-left">
         <Link to={`/${data.advertisementType}/${data.id}`}>
-          <img src={data.photo ? `/api/${data.photo}` : getPlaceholderImage()} alt=""
+          <img src={data.photo ? `/api/${data.photo.uri}` : getPlaceholderImage()} alt=""
           className="h-32 sm:h-40 w-full mx-auto object-cover rounded-lg"/>
         </Link>
 

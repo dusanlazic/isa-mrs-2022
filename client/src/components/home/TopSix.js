@@ -89,7 +89,7 @@ const TopSix = () => {
 
           <div key={entity.id} className="w-full mx-auto">
             <Link to={`/${current.substring(0, current.length - 1)}/${entity.id}`}>
-              <img src={entity.photo ? `/api/${entity.photo}` : getPlaceholderImage(current)} alt=""
+              <img src={entity.photo ? `/api/${entity.photo.uri}` : getPlaceholderImage(current)} alt=""
               className="h-32 sm:h-40 w-full mx-auto object-cover rounded-lg"/>
             </Link>
 

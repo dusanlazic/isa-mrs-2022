@@ -24,7 +24,7 @@ public class ResortAdDisplayDTO implements DisplayDTO {
     private String rules;
     private String currency;
     private Set<String> tags;
-    private Set<PhotoUploadDisplayDTO> photos;
+    private List<PhotoBriefDisplayDTO> photos;
     private Set<OptionDisplayDTO> options;
     private List<Integer> bedCountPerRoom;
     @JsonFormat(pattern="HH:mm")

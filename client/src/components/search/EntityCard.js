@@ -16,7 +16,7 @@ const EntityCard = ({entity, entityType}) => {
   return ( 
       <div className="w-full mx-auto">
         <Link to={getEntityLink()}>
-          <img src={entity.photo ? `/api/${entity.photo}` : getPlaceholderImage(entityType)} alt=""
+          <img src={entity.photo ? `/api/${entity.photo.uri}` : getPlaceholderImage(entityType)} alt=""
           className="h-32 sm:h-40 w-full mx-auto object-cover rounded-lg"/>
         </Link>
 

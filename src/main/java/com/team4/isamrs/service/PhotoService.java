@@ -1,7 +1,7 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.display.DisplayDTO;
-import com.team4.isamrs.dto.display.PhotoUploadDisplayDTO;
+import com.team4.isamrs.dto.display.PhotoBriefDisplayDTO;
 import com.team4.isamrs.exception.PhotoNotFoundException;
 import com.team4.isamrs.exception.PhotoPathTraversalException;
 import com.team4.isamrs.exception.PhotoStorageException;
@@ -70,7 +70,7 @@ public class PhotoService {
         return modelMapper.map(photo, returnType);
     }
 
-    public PhotoUploadDisplayDTO store(MultipartFile file, Authentication auth) {
+    public PhotoBriefDisplayDTO store(MultipartFile file, Authentication auth) {
         User uploader = (User) auth.getPrincipal();
 
         String contentType = detectContentType(file);
@@ -85,7 +85,7 @@ public class PhotoService {
             throw new PhotoStorageException("Failed to store file.", e);
         }
 
-        return modelMapper.map(photo, PhotoUploadDisplayDTO.class);
+        return modelMapper.map(photo, PhotoBriefDisplayDTO.class);
     }
 
     public ResponseEntity<Resource> serve(String filename) throws IOException {

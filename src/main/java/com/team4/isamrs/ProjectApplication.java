@@ -25,7 +25,6 @@ public class ProjectApplication {
 		return (args) -> {
 			photoService.init();
 			accountService.initializeRoles();
-			accountService.createTestAccount();
 			loyaltyProgramService.init();
 			testDataSupplierService.injectTestData();
 		};

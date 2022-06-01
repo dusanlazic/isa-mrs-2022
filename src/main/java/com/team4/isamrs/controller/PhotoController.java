@@ -1,7 +1,6 @@
 package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.display.PhotoBriefDisplayDTO;
-import com.team4.isamrs.dto.display.PhotoUploadDisplayDTO;
 import com.team4.isamrs.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -35,7 +34,7 @@ public class PhotoController {
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file, Authentication authentication) {
-        PhotoUploadDisplayDTO response = photoService.store(file, authentication);
+        PhotoBriefDisplayDTO response = photoService.store(file, authentication);
         return ResponseEntity.created(URI.create(response.getUri()))
                              .body(response);
     }

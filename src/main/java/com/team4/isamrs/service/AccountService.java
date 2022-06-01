@@ -105,46 +105,6 @@ public class AccountService {
         userRepository.save(user);
     }
 
-    public void createTestAccount() {
-        Advertiser advertiser = new Advertiser();
-        advertiser.setEnabled(true);
-        advertiser.setAddress("Kod mene kući BB");
-        advertiser.setCity("Novi Sad");
-        advertiser.setCountryCode("RS");
-        advertiser.setUsername("contact@dusanlazic.com");
-        advertiser.setFirstName("Dusan");
-        advertiser.setLastName("Lazic");
-        advertiser.setPassword(passwordEncoder.encode("13371337"));
-        advertiser.getAuthorities().add(roleRepository.findByName("ROLE_SUPERUSER").get());
-        advertiser.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
-        advertiser.setPhoneNumber("065-1337");
-        advertiser.setPoints(150);
-        userRepository.save(advertiser);
-
-        Customer customer = new Customer();
-        customer.setEnabled(true);
-        customer.setAddress("Kod mene kući BB");
-        customer.setCity("Novi Sad");
-        customer.setCountryCode("RS");
-        customer.setUsername("stevade@test.rs");
-        customer.setFirstName("Stevan");
-        customer.setLastName("Dejan");
-        customer.setPassword(passwordEncoder.encode("cascaded"));
-        customer.getAuthorities().add(roleRepository.findByName("ROLE_CUSTOMER").get());
-        customer.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
-        customer.setPhoneNumber("4369911628747");
-        customer.setPoints(110);
-        userRepository.save(customer);
-
-        User user = userRepository.findById(1002L).orElseThrow();
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.getAuthorities().add(roleRepository.findByName("ROLE_BOAT_OWNER").get());
-        user.getAuthorities().add(roleRepository.findByName("ROLE_RESORT_OWNER").get());
-        user.getAuthorities().add(roleRepository.findByName("ROLE_FISHING_INSTRUCTOR").get());
-        user.getAuthorities().add(roleRepository.findByName("ROLE_ADVERTISER").get());
-        userRepository.save(user);
-    }
-
     public void initializeRoles() {
         roleRepository.save(new Role("ROLE_SUPERUSER"));
         roleRepository.save(new Role("ROLE_ADMIN"));

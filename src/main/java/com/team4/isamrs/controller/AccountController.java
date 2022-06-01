@@ -5,6 +5,7 @@ import com.team4.isamrs.dto.creation.CustomerCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.creation.RemovalRequestCreationDTO;
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
+import com.team4.isamrs.dto.display.SessionDisplayDTO;
 import com.team4.isamrs.dto.display.PointsDisplayDTO;
 import com.team4.isamrs.dto.updation.AccountUpdationDTO;
 import com.team4.isamrs.dto.updation.PasswordUpdationDTO;
@@ -31,7 +32,7 @@ public class AccountController {
     private LoyaltyProgramService loyaltyProgramService;
 
     @GetMapping(value = "/whoami")
-    public AccountDisplayDTO whoAmI(Authentication auth) {
+    public SessionDisplayDTO whoAmI(Authentication auth) {
         return accountService.whoAmI(auth);
     }
 
@@ -41,9 +42,9 @@ public class AccountController {
         return loyaltyProgramService.getCurrentUsersPoints(auth);
     }
 
-    @GetMapping(value = "/{id}")
-    public AccountDisplayDTO findById(@PathVariable Long id) {
-        return accountService.findById(id, AccountDisplayDTO.class);
+    @GetMapping(value = "")
+    public AccountDisplayDTO getAccount(Authentication auth) {
+        return accountService.getAccount(auth, AccountDisplayDTO.class);
     }
 
     @PutMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)

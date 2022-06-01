@@ -1,7 +1,6 @@
 package com.team4.isamrs.dto.display;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.team4.isamrs.model.user.Advertiser;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -13,7 +12,7 @@ import java.util.Set;
 @Data
 public class BoatAdDisplayDTO implements DisplayDTO {
     private Long id;
-    private AccountDisplayDTO advertiser;
+    private SessionDisplayDTO advertiser;
     private String title;
     private AddressDisplayDTO address;
     private String description;

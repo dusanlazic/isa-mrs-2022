@@ -1,6 +1,7 @@
 package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.display.AdvertisementDisplayDTO;
+import com.team4.isamrs.dto.display.AdvertisementSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
 import com.team4.isamrs.service.AdvertiserService;
@@ -23,7 +24,7 @@ public class AdvertiserController {
     private AdvertiserService advertiserService;
 
     @GetMapping(value = "/{id}/advertisements")
-    public Collection<AdvertisementDisplayDTO> getAdvertisements(@PathVariable Long id) {
+    public Collection<AdvertisementSimpleDisplayDTO> getAdvertisements(@PathVariable Long id) {
         return advertiserService.getAdvertisements(id);
     }
 

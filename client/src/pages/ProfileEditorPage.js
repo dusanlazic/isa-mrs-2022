@@ -1,4 +1,3 @@
-import { getSession } from '../contexts/'
 import { useState, useEffect } from "react";
 import { get } from "../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
@@ -10,21 +9,23 @@ import RemovalRequestForm from '../components/profile_editor/RemovalRequestForm'
 
 const ProfileEditorPage = () => {
   const [accountData, setAccountData] = useState(null);
-  const session = getSession();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // get(`/api${endpoint}/${id}`)
-    get(`/api/account/${session.id}`)
+    getAccountData();
+  }, [])
+
+  const getAccountData = () => {
+    get(`/api/account`)
     .then((response) => {
       setAccountData(response.data);
     })
     .catch((error) => {
       navigate('/');
     });
-  }, [session.id])
+  }
 
-  if (accountData === null || session === undefined) {
+  if (accountData === null) {
     return null;
   }
 
@@ -33,7 +34,7 @@ const ProfileEditorPage = () => {
 
       <div className="flex flex-col divide-y divide-dashed
        h-full border-0.5 rounded-lg gap-y-4">
-        <MainProfileInfoEditor data={accountData}/>
+        <MainProfileInfoEditor data={accountData} refreshData={getAccountData}/>
         <PasswordEditor/>
         <RemovalRequestForm id={accountData.id}/>
       </div>

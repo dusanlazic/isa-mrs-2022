@@ -12,7 +12,7 @@ import java.util.Set;
 @Data
 public class ResortAdDisplayDTO implements DisplayDTO {
     private Long id;
-    private AccountDisplayDTO advertiser;
+    private SessionDisplayDTO advertiser;
     private String title;
     private AddressDisplayDTO address;
     private Integer capacity;

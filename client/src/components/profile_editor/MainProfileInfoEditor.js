@@ -3,7 +3,9 @@ import ReactFlagsSelect from "react-flags-select";
 import { put } from "../../adapters/xhr";
 import { getWhoAmI } from "../../adapters/login";
 
-const MainProfileInfoEditor = ({data}) => {
+import MessageModal from "../modals/MessageModal";
+
+const MainProfileInfoEditor = ({data, refreshData}) => {
 
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
@@ -14,6 +16,8 @@ const MainProfileInfoEditor = ({data}) => {
   const [address, setAddress] = useState(data.address);
   const [selectedCountry, setSelectedCountry] = useState(data.countryCode);
 
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageModalText, setMessageModalText] = useState('');
 
   const uploadImage = () => {
     const [file] = document.getElementById('image-input').files;
@@ -26,11 +30,15 @@ const MainProfileInfoEditor = ({data}) => {
   const updateAccount = () => {
     put(`/api/account`, {id: data.id, firstName, lastName, phoneNumber, city, address,
       countryCode: selectedCountry, emailAddress:data.emailAddress})
-    .then((response) => {
+    .then(response => {
       getWhoAmI();
-      alert("Changes saved");
-      window.location.reload();
-      console.log(response);
+      setMessageModalText('Changes saved successfully!');
+      setShowMessageModal(true);
+      refreshData();
+    })
+    .catch(error => {
+      setMessageModalText(error.response.data.message);
+      setShowMessageModal(true);
     });
   }
 
@@ -136,6 +144,10 @@ const MainProfileInfoEditor = ({data}) => {
         </div>
 
       </div>
+
+      {showMessageModal && <MessageModal  closeFunction = {() => setShowMessageModal(false)}
+                                    text = { messageModalText }
+        	/>}
 
     </div>
    );

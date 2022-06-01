@@ -61,7 +61,7 @@ const Navigation = () => {
               <Icon className="w-10 h-10 text-gray-600 bg-silver-accent rounded-full" icon="tabler:user-circle" inline={true} />
             </label>
             <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-silver-accent text-left rounded-box w-40">
-              <Link to={`/client/${session.id}`}>
+              <Link to={`/me`}>
                 <li>
                   <div className='flex text-lg rounded-lg hover:bg-gray-500 hover:bg-opacity-10 px-1'>
                     <Icon className='w-6 h-6 text-gray-600' icon="tabler:user" inline={true} />

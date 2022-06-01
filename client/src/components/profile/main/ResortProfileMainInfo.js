@@ -20,7 +20,6 @@ const ResortProfileMainInfo = ({ data, advertisementId }) => {
 		});
 	}, [])
 
-
 	useEffect(() => {
 		get(`/api/account/whoami`).then((response) => {
 			setShowEditBtn(response.data.id === data.advertiser.id);

@@ -1,6 +1,7 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.display.AdvertisementDisplayDTO;
+import com.team4.isamrs.dto.display.AdvertisementSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
 import com.team4.isamrs.model.review.ServiceProviderReview;
@@ -29,10 +30,10 @@ public class AdvertiserService {
     private ModelMapper modelMapper;
 
 
-    public Set<AdvertisementDisplayDTO> getAdvertisements(Long id) {
+    public Set<AdvertisementSimpleDisplayDTO> getAdvertisements(Long id) {
         Advertiser advertiser = advertiserRepository.findById(id).orElseThrow();
         return advertiser.getAds().stream()
-                .map(e -> modelMapper.map(e, AdvertisementDisplayDTO.class))
+                .map(e -> modelMapper.map(e, AdvertisementSimpleDisplayDTO.class))
                 .collect(Collectors.toSet());
     }
 

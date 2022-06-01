@@ -7,4 +7,8 @@ public class AdvertisementSimpleDisplayDTO {
     private Long id;
     private String title;
     private PhotoBriefDisplayDTO photo;
+    private String description;
+    private String currency;
+    private AddressSimpleDisplayDTO address;
+    private String advertisementType;
 }

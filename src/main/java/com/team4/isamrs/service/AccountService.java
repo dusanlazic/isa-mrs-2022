@@ -6,7 +6,7 @@ import com.team4.isamrs.dto.creation.AdminCreationDTO;
 import com.team4.isamrs.dto.creation.CustomerCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.creation.RemovalRequestCreationDTO;
-import com.team4.isamrs.dto.display.AccountDisplayDTO;
+import com.team4.isamrs.dto.display.SessionDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AccountUpdationDTO;
 import com.team4.isamrs.dto.updation.InitialPasswordUpdationDTO;
@@ -64,9 +64,14 @@ public class AccountService {
         return modelMapper.map(userRepository.findById(id).orElseThrow(), returnType);
     }
 
-    public AccountDisplayDTO whoAmI(Authentication auth) {
+    public SessionDisplayDTO whoAmI(Authentication auth) {
         User user = (User) auth.getPrincipal();
-        return modelMapper.map(user, AccountDisplayDTO.class);
+        return modelMapper.map(user, SessionDisplayDTO.class);
+    }
+
+    public <T extends DisplayDTO> T getAccount(Authentication auth, Class<T> returnType) {
+        User user = (User) auth.getPrincipal();
+        return modelMapper.map(user, returnType);
     }
 
     public void updateAccount(AccountUpdationDTO dto, Authentication auth) {

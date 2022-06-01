@@ -30,7 +30,6 @@ const TopSix = () => {
   const getData = () => {
     get(`/api/ads/${current}/top6`)
       .then((response) => {
-        console.log(response.data);
         called.push(current);
         let new_data = data;
         new_data[current] = response.data;

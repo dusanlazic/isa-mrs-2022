@@ -9,8 +9,10 @@ public class CustomerDisplayDTO implements DisplayDTO {
     private String firstName;
     private String lastName;
     private String username;
+    private String address;
     private String city;
     private String countryCode;
     private String phoneNumber;
+    private String accountType;
     private Boolean active;
 }

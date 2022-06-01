@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class RemovalRequestDisplayDTO implements DisplayDTO {
     private Long id;
     private LocalDateTime createdAt;
-    private AccountDisplayDTO user;
+    private SessionDisplayDTO user;
     private String explanation;
     private ApprovalStatus approvalStatus;
     private String rejectionReason;

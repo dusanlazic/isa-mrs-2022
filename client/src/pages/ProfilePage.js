@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { get } from "../adapters/xhr"
-import NotFound from './NotFound'
 
 // main components
 import UserProfileMainInfo from '../components/profile/main/UserProfileMainInfo'
@@ -26,6 +25,7 @@ import Tags from '../components/profile/sidebar/Tags'
 import AdditionalInformation from '../components/profile/additional/AdditionalInformation'
 import Sidebar from '../components/profile/sidebar/Sidebar'
 import PriceCard from '../components/profile/sidebar/PriceCard'
+import AdvertisementList from '../components/profile/additional/AdvertisementList'
 
 
 const clientMainComponent = UserProfileMainInfo;
@@ -34,11 +34,11 @@ const boatMainComponent = BoatProfileMainInfo;
 
 const adventureMainComponent = AdventureProfileMainInfo;
 
-const ProfilePage = () => {
-
+const ProfilePage = ({me}) => {
   let sidebarComponents, MainComponent, contentComponents, endpoint;
 
   let { id } = useParams();
+  const [self, setSelf] = useState(null);
   const [profileData, setProfileData] = useState(null);
   const [loyaltyProgramData, setLoyaltyProgramData] = useState(null);
 
@@ -51,33 +51,55 @@ const ProfilePage = () => {
   else if (window.location.href.includes('boat')) {
     endpoint = '/ads/boats';
   }
-  else if (window.location.href.includes('client')) {
-    endpoint = '/customers';
+  else if (window.location.href.includes('advertiser')) {
+    endpoint = '/advertisers';
   }
 
   const navigate = useNavigate();
 
   // main api call
   useEffect(() => {
-    get(`/api${endpoint}/${id}`)
-    .then((response) => {
-      console.log(response.data)
+    setProfileData(null);
+    if (me) {
+      get(`/api/account/whoami`)
+      .then(response => {
+        setSelf(response.data);
+        getMyAccountData();
+      })
+      .catch(error => {
+        navigate('/notfound');
+      });
+
+      get('/api/account/loyalty')
+      .then(response => {
+        if (response.data.category.multiply < 1) {
+          setLoyaltyProgramData(response.data);
+        }
+      })
+      .catch(error => {
+        setLoyaltyProgramData(null);
+      });
+
+    } else {
+      get(`/api${endpoint}/${id}`)
+      .then(response => {
+        setProfileData(response.data);
+      })
+      .catch(error => {
+        navigate('/notfound');
+      });
+    }
+  }, [])
+
+  const getMyAccountData = () => {
+    get(`/api/account`)
+    .then(response => {
       setProfileData(response.data);
     })
-    .catch((error) => {
+    .catch(error => {
       navigate('/notfound');
     });
-
-    get('/api/account/loyalty')
-    .then((response) => {
-      if (response.data.category.multiply < 1) {
-        setLoyaltyProgramData(response.data);
-      }
-    })
-    .catch((error) => {
-      setLoyaltyProgramData(null);
-    });
-  }, [])
+  }
 
   if (profileData === null) {
     return null;
@@ -113,12 +135,19 @@ const ProfilePage = () => {
       { title: 'Location', component: <Map data={profileData} coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
     ];
   }
-  else if (window.location.href.includes('client')) {
+  else if (self.accountType === 'CUSTOMER') {
     sidebarComponents = [<LoyaltyProgramCard/>];
     MainComponent = clientMainComponent;
     contentComponents = [
       { title: 'Reviews', component: <ClientReviewList data = {profileData} /> },
       { title: 'Reservation History',  component: <ClientReservationHistory/> },
+    ];
+  }
+  else if (self.accountType === 'ADVERTISER') {
+    sidebarComponents = [<LoyaltyProgramCard/>];
+    MainComponent = clientMainComponent;
+    contentComponents = [
+      { title: 'Advertisements', component: <AdvertisementList advertiserId={profileData.id} /> },
     ];
   }
 

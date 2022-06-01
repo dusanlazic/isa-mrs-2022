@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
+import { Icon } from '@iconify/react';
 
 const UserProfileMainInfo = ({data}) => {
-  console.log(data)
   return ( 
     <div className="block md:flex bg-gray-100 rounded-lg p-10 pb-6">
       <div>
@@ -33,12 +33,23 @@ const UserProfileMainInfo = ({data}) => {
           </div>
 
           {/* Basic info */}
-          <div className="grid mt-10 md:mt-4 grid-cols-1 text-center md:text-left text-gray-600">
-            {/* <p>[ ] Address, City</p> */}
-            <p>[ ] {data.city}, {data.countryCode}</p>
-            <p>[ ] {data.phoneNumber}</p>
-            <p>[ ] {data.emailAddress}</p>
+          <div className='flex justify-center md:justify-start mt-10 md:mt-4 '>
+            <div className="flex flex-col grid-cols-1 text-center md:text-left text-gray-600 gap-y-0.5">
+              <div className='flex gap-x-2'>
+                <Icon className='my-auto text-2xl text-gray-500' icon="tabler:map-pin" inline={true} />
+                <p className='my-auto'>{data.city}, {data.countryCode}</p>
+              </div>
+              <div className='flex gap-x-2'>
+                <Icon className='my-auto text-2xl text-gray-500' icon="tabler:phone" inline={true} />
+                <p className='my-auto'>{data.phoneNumber}</p>
+              </div>
+              <div className='flex gap-x-2'>
+                <Icon className='my-auto text-2xl text-gray-500' icon="tabler:mail" inline={true} />
+                <p className='my-auto'>{data.username}</p>
+              </div>
+            </div>
           </div>
+
         </div>
 
       </div>

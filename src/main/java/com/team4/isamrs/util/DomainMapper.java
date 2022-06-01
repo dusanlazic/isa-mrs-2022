@@ -253,6 +253,43 @@ public class DomainMapper {
             return destination;
         };
 
+        Converter<ResortAd, AdvertisementSimpleDisplayDTO> ResortAdToAdvertisementSimpleDisplayDtoConverter = context -> {
+            ResortAd source = context.getSource();
+            AdvertisementSimpleDisplayDTO destination = context.getDestination();
+            destination.setAdvertisementType("resort");
+            destination.setPhoto(source.getPhotos().isEmpty() ?
+                    null :
+                    modelMapper.map(source.getPhotos().stream().findFirst().orElse(null),
+                            PhotoBriefDisplayDTO.class));
+
+            return destination;
+        };
+
+        Converter<BoatAd, AdvertisementSimpleDisplayDTO> BoatAdToAdvertisementSimpleDisplayDtoConverter = context -> {
+            BoatAd source = context.getSource();
+            AdvertisementSimpleDisplayDTO destination = context.getDestination();
+            destination.setAdvertisementType("boat");
+            destination.setPhoto(source.getPhotos().isEmpty() ?
+                    null :
+                    modelMapper.map(source.getPhotos().stream().findFirst().orElse(null),
+                            PhotoBriefDisplayDTO.class));
+
+            return destination;
+        };
+
+        Converter<AdventureAd, AdvertisementSimpleDisplayDTO> AdventureAdToAdvertisementSimpleDisplayDtoConverter = context -> {
+            AdventureAd source = context.getSource();
+            AdvertisementSimpleDisplayDTO destination = context.getDestination();
+            destination.setAdvertisementType("adventure");
+            destination.setPhoto(source.getPhotos().isEmpty() ?
+                    null :
+                    modelMapper.map(source.getPhotos().stream().findFirst().orElse(null),
+                            PhotoBriefDisplayDTO.class));
+
+            return destination;
+        };
+
+
         Converter<ResortAdUpdationDTO, ResortAd> UpdationDtoToResortAdConverter = context -> {
             ResortAdUpdationDTO source = context.getSource();
             ResortAd destination = context.getDestination();
@@ -276,6 +313,42 @@ public class DomainMapper {
 
             destination.setTags(new HashSet<Tag>());
             mapTagNames(source.getTagNames()).forEach(destination::addTag);
+
+            return destination;
+        };
+
+        Converter<Advertiser, SessionDisplayDTO> AdvertiserToSessionDisplayDtoConverter = context -> {
+            User source = context.getSource();
+            SessionDisplayDTO destination = context.getDestination();
+
+            destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
+
+            return destination;
+        };
+
+        Converter<Administrator, SessionDisplayDTO> AdministratorToSessionDisplayDtoConverter = context -> {
+            User source = context.getSource();
+            SessionDisplayDTO destination = context.getDestination();
+
+            destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
+
+            return destination;
+        };
+
+        Converter<Customer, SessionDisplayDTO> CustomerToSessionDisplayDtoConverter = context -> {
+            User source = context.getSource();
+            SessionDisplayDTO destination = context.getDestination();
+
+            destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
+
+            return destination;
+        };
+
+        Converter<User, SessionDisplayDTO> UserToSessionDisplayDtoConverter = context -> {
+            User source = context.getSource();
+            SessionDisplayDTO destination = context.getDestination();
+
+            destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
 
             return destination;
         };
@@ -320,7 +393,7 @@ public class DomainMapper {
             RemovalRequest source = context.getSource();
             RemovalRequestDisplayDTO destination = context.getDestination();
 
-            destination.setUser(modelMapper.map(source.getUser(), AccountDisplayDTO.class));
+            destination.setUser(modelMapper.map(source.getUser(), SessionDisplayDTO.class));
 
             return destination;
         };
@@ -337,14 +410,24 @@ public class DomainMapper {
         modelMapper.createTypeMap(ResortAdCreationDTO.class, ResortAd.class).setPostConverter(CreationDtoToResortAdConverter);
         modelMapper.createTypeMap(ResortAdUpdationDTO.class, ResortAd.class).setPostConverter(UpdationDtoToResortAdConverter);
         modelMapper.createTypeMap(ResortAd.class, ResortAdDisplayDTO.class).setPostConverter(ResortAdToDisplayDtoConverter);
+
+        modelMapper.createTypeMap(Advertiser.class, SessionDisplayDTO.class).setPostConverter(AdvertiserToSessionDisplayDtoConverter);
+        modelMapper.createTypeMap(Administrator.class, SessionDisplayDTO.class).setPostConverter(AdministratorToSessionDisplayDtoConverter);
+        modelMapper.createTypeMap(Customer.class, SessionDisplayDTO.class).setPostConverter(CustomerToSessionDisplayDtoConverter);
+        modelMapper.createTypeMap(User.class, SessionDisplayDTO.class).setPostConverter(UserToSessionDisplayDtoConverter);
         modelMapper.createTypeMap(Advertiser.class, AccountDisplayDTO.class).setPostConverter(AdvertiserToAccountDisplayDtoConverter);
         modelMapper.createTypeMap(Administrator.class, AccountDisplayDTO.class).setPostConverter(AdministratorToAccountDisplayDtoConverter);
         modelMapper.createTypeMap(Customer.class, AccountDisplayDTO.class).setPostConverter(CustomerToAccountDisplayDtoConverter);
         modelMapper.createTypeMap(User.class, AccountDisplayDTO.class).setPostConverter(UserToAccountDisplayDtoConverter);
+
         modelMapper.createTypeMap(RemovalRequest.class, RemovalRequestDisplayDTO.class).setPostConverter(RemovalRequestToDisplayDtoConverter);
         modelMapper.createTypeMap(ResortAd.class, ResortAdSimpleDisplayDTO.class).setPostConverter(ResortAdToSimpleDisplayDtoConverter);
         modelMapper.createTypeMap(BoatAd.class, BoatAdSimpleDisplayDTO.class).setPostConverter(BoatAdToSimpleDisplayDtoConverter);
         modelMapper.createTypeMap(AdventureAd.class, AdventureAdSimpleDisplayDTO.class).setPostConverter(AdventureAdToSimpleDisplayDtoConverter);
+
+        modelMapper.createTypeMap(ResortAd.class, AdvertisementSimpleDisplayDTO.class).setPostConverter(ResortAdToAdvertisementSimpleDisplayDtoConverter);
+        modelMapper.createTypeMap(BoatAd.class, AdvertisementSimpleDisplayDTO.class).setPostConverter(BoatAdToAdvertisementSimpleDisplayDtoConverter);
+        modelMapper.createTypeMap(AdventureAd.class, AdvertisementSimpleDisplayDTO.class).setPostConverter(AdventureAdToAdvertisementSimpleDisplayDtoConverter);
     }
 
     private HashSet<Tag> mapTagNames(Set<String> tagNames) {

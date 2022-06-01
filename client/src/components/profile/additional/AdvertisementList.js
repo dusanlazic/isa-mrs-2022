@@ -8,6 +8,7 @@ const AdvertisementList = ({advertiserId}) => {
   const [advertisements, setAdvertisements] = useState([]);
 
 	useEffect(() => {
+    dataReceived = false;
 		get(`/api/advertisers/${advertiserId}/advertisements`)
     .then(response => {
 			setAdvertisements(response.data);
@@ -17,7 +18,7 @@ const AdvertisementList = ({advertiserId}) => {
 
   return ( 
     <div>
-      {advertisements.length === 0 && !dataReceived &&
+      {!dataReceived &&
         <h1 className="text-xl font-medium text-gray-900">Loading...</h1>
       }
       {advertisements.length === 0 && dataReceived &&

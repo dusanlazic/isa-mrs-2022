@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom";
 import { get, del } from "../../../adapters/xhr";
-import DeletionModal from "../../modals/DeletionModal";
 
 const AdventureProfileMainInfo = ({ data, advertisementId }) => {
 	let [showMore, setShowMore] = useState(false);
@@ -38,18 +37,29 @@ const AdventureProfileMainInfo = ({ data, advertisementId }) => {
 
 			<div className="flex flex-col flex-grow md:ml-4">
 
-				<div className="block md:flex w-full justify-between text-center md:text-left">
+        <div className="block md:flex w-full justify-between text-center md:text-left">
 					<h1 className="text-3xl md:text-2xl xl:text-3xl mt-4 mb-1 lg:mb-2 md:mt-1 tracking-tight my-auto">{data.title}</h1>
-					<div className="block md:hidden text-lg text-center -mt-2">
-						<div className="md:text-left -mt-1 text-sm text-gray-500">{data.advertiser.firstName} {data.advertiser.lastName}</div>
-						{rating} <span className="text-yellow-500 text-xl">&#9733;</span>
+					<div className="md:hidden text-lg text-center -mt-4">
+            <Link to={`/advertiser/${data.advertiser.id}`}>
+              <p className="inline-block text-center md:text-left -mt-1 text-sm text-gray-500">
+                {data.advertiser.firstName} {data.advertiser.lastName}
+              </p>
+            </Link>
+            <div className="block">
+              {rating} <span className="text-yellow-500 text-xl">&#9733;</span>
+            </div>
 					</div>
 				</div>
 
-
-				<div className="hidden md:block text-lg text-left">
-					<div className="md:text-left -mt-3 text-sm text-gray-500">{data.advertiser.firstName} {data.advertiser.lastName}</div>
-					{rating} <span className="text-yellow-500 text-xl">&#9733;</span>
+				<div className="hidden md:block text-lg text-left -mt-4">
+          <Link to={`/advertiser/${data.advertiser.id}`} className="inline-block">
+            <p className="md:text-left text-sm text-gray-500">
+              {data.advertiser.firstName} {data.advertiser.lastName}
+            </p>
+          </Link>
+          <div className="block">
+					  {rating} <span className="text-yellow-500 text-xl">&#9733;</span>
+          </div>
 				</div>
 
 				{/* Description */}

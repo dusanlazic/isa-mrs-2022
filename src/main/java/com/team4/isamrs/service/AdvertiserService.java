@@ -40,6 +40,7 @@ public class AdvertiserService {
     public Set<ServiceReviewDisplayDTO> getServiceProviderReview(Long id) {
         Advertiser advertiser = advertiserRepository.findById(id).orElseThrow();
         return advertiser.getAds().stream()
+                .flatMap(ad -> ad.getReviews().stream())
                 .map(e -> modelMapper.map(e, ServiceReviewDisplayDTO.class))
                 .collect(Collectors.toSet());
     }

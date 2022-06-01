@@ -26,6 +26,7 @@ import AdditionalInformation from '../components/profile/additional/AdditionalIn
 import Sidebar from '../components/profile/sidebar/Sidebar'
 import PriceCard from '../components/profile/sidebar/PriceCard'
 import AdvertisementList from '../components/profile/additional/AdvertisementList'
+import AdvertiserReviewList from '../components/profile/additional/AdvertiserReviewList'
 
 
 const clientMainComponent = UserProfileMainInfo;
@@ -140,6 +141,7 @@ const ProfilePage = ({me}) => {
     MainComponent = clientMainComponent;
     contentComponents = [
       { title: 'Advertisements', component: <AdvertisementList advertiserId={profileData.id} /> },
+      { title: 'Reviews', component: <AdvertiserReviewList advertiserId={profileData.id} /> },
     ];
   }
   else if (self !== null && self.accountType === 'CUSTOMER') {
@@ -155,6 +157,7 @@ const ProfilePage = ({me}) => {
     MainComponent = clientMainComponent;
     contentComponents = [
       { title: 'Advertisements', component: <AdvertisementList advertiserId={profileData.id} /> },
+      { title: 'Reviews', component: <AdvertiserReviewList advertiserId={profileData.id} /> },
     ];
   }
 

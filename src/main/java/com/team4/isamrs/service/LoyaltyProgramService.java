@@ -1,11 +1,11 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.display.LoyaltyProgramCategoryBriefDisplayDTO;
+import com.team4.isamrs.dto.display.LoyaltyProgramCategoryDetailedDisplayDTO;
+import com.team4.isamrs.dto.display.LoyaltyProgramSettingsDisplayDTO;
 import com.team4.isamrs.dto.display.PointsDisplayDTO;
 import com.team4.isamrs.dto.updation.LoyaltyProgramCategoriesUpdationDTO;
 import com.team4.isamrs.dto.updation.LoyaltyProgramCategoryUpdationDTO;
-import com.team4.isamrs.dto.display.LoyaltyProgramCategoryDetailedDisplayDTO;
-import com.team4.isamrs.dto.display.LoyaltyProgramSettingsDisplayDTO;
 import com.team4.isamrs.dto.updation.LoyaltyProgramSettingsUpdationDTO;
 import com.team4.isamrs.exception.NoSuchGlobalSettingException;
 import com.team4.isamrs.model.config.GlobalSetting;
@@ -45,49 +45,49 @@ public class LoyaltyProgramService {
         globalSettingRepository.save(advertiserScorePerReservation);
 
         LoyaltyProgramCategory cRegular = new LoyaltyProgramCategory(
-                "Regular", "black",
+                "Regular", "#000000",
                 TargetedAccountType.CUSTOMER,
                 0, 99,
                 BigDecimal.ONE);
 
         LoyaltyProgramCategory cBronze = new LoyaltyProgramCategory(
-                "Bronze", "yellow-600",
+                "Bronze", "#806f40",
                 TargetedAccountType.CUSTOMER,
                 100, 299,
                 BigDecimal.valueOf(0.95));
 
         LoyaltyProgramCategory cSilver = new LoyaltyProgramCategory(
-                "Silver", "slate-500",
+                "Silver", "#a6a6a6",
                 TargetedAccountType.CUSTOMER,
                 300, 499,
                 BigDecimal.valueOf(0.9));
 
         LoyaltyProgramCategory cGold = new LoyaltyProgramCategory(
-                "Gold", "amber-500",
+                "Gold", "#e6d222",
                 TargetedAccountType.CUSTOMER,
                 500, Integer.MAX_VALUE,
                 BigDecimal.valueOf(0.8));
 
         LoyaltyProgramCategory aRegular = new LoyaltyProgramCategory(
-                "Regular", "black",
+                "Regular", "#000000",
                 TargetedAccountType.ADVERTISER,
                 0, 99,
                 BigDecimal.ONE);
 
         LoyaltyProgramCategory aBronze = new LoyaltyProgramCategory(
-                "Bronze", "yellow-600",
+                "Bronze", "#806f40",
                 TargetedAccountType.ADVERTISER,
                 100, 299,
                 BigDecimal.valueOf(1.05));
 
         LoyaltyProgramCategory aSilver = new LoyaltyProgramCategory(
-                "Silver", "slate-500",
+                "Silver", "#a6a6a6",
                 TargetedAccountType.ADVERTISER,
                 300, 499,
                 BigDecimal.valueOf(1.1));
 
         LoyaltyProgramCategory aGold = new LoyaltyProgramCategory(
-                "Gold", "amber-500",
+                "Gold", "#e6d222",
                 TargetedAccountType.ADVERTISER,
                 500, Integer.MAX_VALUE,
                 BigDecimal.valueOf(1.2));
@@ -146,26 +146,39 @@ public class LoyaltyProgramService {
                 .collect(Collectors.toList());
     }
 
+    public List<LoyaltyProgramCategoryDetailedDisplayDTO> getCategories(String type) {
+        if (type == null)
+            return getCategories();
+
+        try {
+            TargetedAccountType targetedAccountType = TargetedAccountType.valueOf(type.toUpperCase());
+            return loyaltyProgramCategoryRepository.findByTargetedAccountType(targetedAccountType).stream()
+                    .map(e -> modelMapper.map(e, LoyaltyProgramCategoryDetailedDisplayDTO.class))
+                    .sorted(Comparator.comparing(LoyaltyProgramCategoryDetailedDisplayDTO::getPointsLowerBound))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new NoSuchElementException();
+        }
+    }
+
     public void updateCategories(LoyaltyProgramCategoriesUpdationDTO dto) {
         List<LoyaltyProgramCategory> categories = new LinkedList<>();
         List<LoyaltyProgramCategory> deletedCategories = new LinkedList<>();
 
         for (LoyaltyProgramCategoryUpdationDTO categoryDTO : dto.getCategories()) {
-            Optional<LoyaltyProgramCategory> category = loyaltyProgramCategoryRepository.findByTitleAndTargetedAccountType(
-                    categoryDTO.getTitle(),
-                    TargetedAccountType.valueOf(categoryDTO.getTargetedAccountType()));
-
-            if (category.isPresent() && categoryDTO.getDelete() != null) {
-                deletedCategories.add(category.get());
-            } else if (category.isPresent()) {
-                modelMapper.map(categoryDTO, category.get());
-                categories.add(category.get());
-            } else {
+            if (categoryDTO.getId() == null && !existsWithTitleAndType(categoryDTO.getTitle(), categoryDTO.getTargetedAccountType())) {
                 categories.add(modelMapper.map(categoryDTO, LoyaltyProgramCategory.class));
+            } else {
+                LoyaltyProgramCategory category = loyaltyProgramCategoryRepository.findById(categoryDTO.getId()).orElseThrow();
+                modelMapper.map(categoryDTO, category);
+                categories.add(category);
             }
         }
 
-        adjustLowestAndHighestBound(categories);
+        for (Long id : dto.getDelete()) {
+            Optional<LoyaltyProgramCategory> delete = loyaltyProgramCategoryRepository.findById(id);
+            delete.ifPresent(deletedCategories::add);
+        }
 
         loyaltyProgramCategoryRepository.saveAll(categories);
         loyaltyProgramCategoryRepository.deleteAll(deletedCategories);
@@ -182,5 +195,11 @@ public class LoyaltyProgramService {
 
         Collections.min(customerCategories, Comparator.comparing(LoyaltyProgramCategory::getPointsLowerBound)).setPointsLowerBound(0);
         Collections.max(customerCategories, Comparator.comparing(LoyaltyProgramCategory::getPointsUpperBound)).setPointsUpperBound(Integer.MAX_VALUE);
+    }
+
+    private boolean existsWithTitleAndType(String title, String accountType) {
+        return loyaltyProgramCategoryRepository.existsByTitleAndTargetedAccountType(
+                title,
+                TargetedAccountType.valueOf(accountType));
     }
 }

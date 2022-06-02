@@ -80,39 +80,39 @@ public class AdminController {
         return new ResponseOK("Request resolved.");
     }
 
-    @GetMapping(value = "/loyalty-program/settings", consumes = MediaType.ALL_VALUE)
+    @GetMapping(value = "/system/loyalty/settings", consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public LoyaltyProgramSettingsDisplayDTO getLoyaltyProgramSettings() {
         return loyaltyProgramService.getSettings();
     }
 
-    @PutMapping(value = "/loyalty-program/settings", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/system/loyalty/settings", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseOK updateLoyaltyProgramSettings(@Valid @RequestBody LoyaltyProgramSettingsUpdationDTO dto) {
         loyaltyProgramService.updateSettings(dto);
         return new ResponseOK("Settings saved.");
     }
 
-    @GetMapping(value = "/loyalty-program/categories", consumes = MediaType.ALL_VALUE)
+    @GetMapping(value = "/system/loyalty/categories", consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public List<LoyaltyProgramCategoryDetailedDisplayDTO> getLoyaltyProgramCategories() {
-        return loyaltyProgramService.getCategories();
+    public List<LoyaltyProgramCategoryDetailedDisplayDTO> getLoyaltyProgramCategories(@RequestParam(required = false) String type) {
+        return loyaltyProgramService.getCategories(type);
     }
 
-    @PutMapping(value = "/loyalty-program/categories", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/system/loyalty/categories", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseOK updateLoyaltyProgramCategories(@Valid @RequestBody LoyaltyProgramCategoriesUpdationDTO dto) {
         loyaltyProgramService.updateCategories(dto);
         return new ResponseOK("Categories saved.");
     }
 
-    @GetMapping(value = "/settings/commission-rate", consumes = MediaType.ALL_VALUE)
+    @GetMapping(value = "/system/commission-rate", consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public GlobalSetting getCommisssionRate() {
+    public GlobalSetting getCommissionRate() {
         return globalSettingsService.getComissionRate();
     }
 
-    @PutMapping(value = "/settings/commission-rate", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/system/commission-rate", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseOK updateCommissionRate(@Valid @RequestBody CommissionRateUpdationDTO dto) {
         globalSettingsService.updateCommissionRate(dto);

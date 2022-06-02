@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 public class LoyaltyProgramCategoryDetailedDisplayDTO implements DisplayDTO {
+    private Long id;
     private String title;
     private String color;
     private TargetedAccountType targetedAccountType;

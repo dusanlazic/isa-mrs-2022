@@ -6,7 +6,7 @@ import DeletionModal from "../modals/DeletionModal"
 import { Icon } from '@iconify/react';
 import Map from "../profile/additional/Map";
 
-const ResortInfoEditor = ({ data, advertisementId }) => {
+const ResortInfoUpdateEditor = ({ data, advertisementId }) => {
   const [showModal, setShowModal] = useState(false);
   const hide = () => setShowModal(false);
 
@@ -630,4 +630,4 @@ focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
   );
 }
 
-export default ResortInfoEditor;
+export default ResortInfoUpdateEditor;

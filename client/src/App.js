@@ -7,11 +7,9 @@ import RegistrationPage from './pages/RegistrationPage';
 import LoginPage from './pages/LoginPage';
 import RegistrationConfirmation from './pages/RegistrationConfirmationPage';
 import CreateAdventurePage from './pages/CreateAdventurePage';
-import UpdateAdventurePage from './pages/UpdateAdventurePage';
 import CreateBoatPage from './pages/CreateBoatPage';
-import UpdateBoatPage from './pages/UpdateBoatPage';
 import CreateResortPage from './pages/CreateResortPage';
-import UpdateResortPage from './pages/UpdateResortPage';
+import UpdateAdvertisementPage from './pages/UpdateAdvertisementPage';
 import RegistrationRequestsPage from './pages/RegistrationRequestsPage';
 import RemovalRequestsPage from './pages/RemovalRequestsPage';
 import AdminPasswordPage from './pages/AdminPasswordPage';
@@ -35,15 +33,15 @@ function App() {
               <Route path="/ads/boats" exact element={<SearchPage/>}/>
               <Route path="/ads/adventures" exact element={<SearchPage/>}/>
               <Route path="/adventure/new" exact element={<CreateAdventurePage/>}/>
-              <Route path="/adventure/:id/edit" exact element={<UpdateAdventurePage/>}/>
+              <Route path="/adventure/:id/edit" exact element={<UpdateAdvertisementPage/>}/>
               <Route path="/adventure/:id" exact element={<ProfilePage key={1}/>}/>
               <Route path="/resort/new" exact element={<CreateResortPage/>}/>
               <Route path="/resort/:id" exact element={<ProfilePage key={2}/>}/>
-              <Route path="/resort/:id/edit" exact element={<UpdateResortPage/>}/>
+              <Route path="/resort/:id/edit" exact element={<UpdateAdvertisementPage/>}/>
               <Route path="/boat/new" exact element={<CreateBoatPage/>}/>
               <Route path="/boat/:id" exact element={<ProfilePage key={3}/>}/>
-              <Route path="/boat/:id/edit" exact element={<UpdateBoatPage/>}/>
-              <Route path="/advertiser/:id" exact element={<ProfilePage key={4}/>}/>
+              <Route path="/boat/:id/edit" exact element={<UpdateAdvertisementPage/>}/>
+              <Route path="/advertiser/:id" exact element={<ProfilePage key={4} me={false}/>}/>
               <Route path="/me" exact element={<ProfilePage me={true} key={5}/>}/>
               <Route path="/account" exact element={<ProfileEditorPage/>}/>
               <Route path="/register" exact element={<RegistrationPage/>}/>

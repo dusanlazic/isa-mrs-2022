@@ -6,7 +6,7 @@ import DeletionModal from "../modals/DeletionModal"
 import { Icon } from '@iconify/react';
 import Map from "../profile/additional/Map";
 
-const BoatInfoEditor = ({ data, advertisementId }) => {
+const BoatInfoUpdateEditor = ({ data, advertisementId }) => {
   const [showModal, setShowModal] = useState(false);
   const hide = () => setShowModal(false);
 
@@ -651,4 +651,4 @@ text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
   );
 }
 
-export default BoatInfoEditor;
+export default BoatInfoUpdateEditor;

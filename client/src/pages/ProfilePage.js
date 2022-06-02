@@ -94,6 +94,7 @@ const ProfilePage = ({me}) => {
   const getMyAccountData = () => {
     get(`/api/account`)
     .then(response => {
+      console.log(response.data)
       setProfileData(response.data);
     })
     .catch(error => {
@@ -151,7 +152,7 @@ const ProfilePage = ({me}) => {
       { title: 'Reservation History',  component: <ClientReservationHistory/> },
     ];
   }
-  else if (self !== null && self.accountType === 'ADVERTISER') {
+  else if (self !== null) {
     sidebarComponents = [<LoyaltyProgramCard/>];
     MainComponent = clientMainComponent;
     contentComponents = [

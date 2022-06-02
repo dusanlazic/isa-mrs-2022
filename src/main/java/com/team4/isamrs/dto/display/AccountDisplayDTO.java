@@ -14,5 +14,5 @@ public class AccountDisplayDTO implements DisplayDTO {
     private String countryCode;
     private String phoneNumber;
     private String accountType;
-    private Boolean active;
+    private Boolean enabled;
 }

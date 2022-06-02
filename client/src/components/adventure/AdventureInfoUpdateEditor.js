@@ -200,15 +200,16 @@ const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
         <span>Photos</span>
       </h2>
 
-      <div className="grid grid-cols-10 gap-x-6 mt-4">
+      <div className="flex flex-wrap gap-x-4 gap-y-4 mt-4">
         <div className="block col-span-1">
           <div className="flex rounded-lg w-full ml-1">
             <label id="label-input" className="outline-dashed outline-2 outline-offset-2 outline-gray-400
               hover:outline-gray-600
             hover:border-gray-300 cursor-pointer">
 
-              <img alt="" id="image-preview" src={'/images/fish_guy_gray.jpg'}
-              className="flex-none w-24 h-24 rounded-xl object-cover"/>
+              <div className="flex flex-col justify-center w-24 h-24 rounded-xl object-cover">
+                <Icon icon="tabler:plus" className="mx-auto h-10 w-10"/>
+              </div>
 
               <input type="file" accept="image/*" onChange={() => uploadImage()} id="image-input"
                 className="opacity-0 hidden h-0 w-0" />

@@ -46,7 +46,7 @@ const PriceCard = ({profileData, loyaltyProgramData}) => {
             <span>{window.location.href.includes('adventure') ? "/person" : "/day"}</span>
           </div>
           <div className="text-xs leading-5">
-              As a <span className={'font-bold text-'+loyaltyProgramData.category.color}>{loyaltyProgramData.category.title}</span> user you get
+              As a <span className='font-bold' style={{color: loyaltyProgramData.category.color}}>{loyaltyProgramData.category.title}</span> user you get
               <span className="font-bold"> {((1 - loyaltyProgramData.category.multiply)*100).toFixed(0)}% </span>
                discount
           </div>

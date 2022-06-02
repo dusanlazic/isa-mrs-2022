@@ -9,9 +9,14 @@ import java.math.BigDecimal;
 @Data
 @MultiplicationFactor
 public class LoyaltyProgramCategoryUpdationDTO {
+    private Long id;
+
     @NotBlank
     @Size(min = 2, max = 30)
     private String title;
+
+    @NotBlank
+    private String color;
 
     @NotNull
     @Pattern(regexp = "CUSTOMER|ADVERTISER", message = "Value must be 'CUSTOMER' or 'ADVERTISER'")
@@ -28,5 +33,4 @@ public class LoyaltyProgramCategoryUpdationDTO {
     @NotNull
     private BigDecimal multiply;
 
-    private Boolean delete;
 }

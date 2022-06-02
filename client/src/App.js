@@ -14,6 +14,7 @@ import RegistrationRequestsPage from './pages/RegistrationRequestsPage';
 import RemovalRequestsPage from './pages/RemovalRequestsPage';
 import AdminPasswordPage from './pages/AdminPasswordPage';
 import RegisterAdminPage from './pages/RegisterAdminPage';
+import ManageLoyaltyProgramPage from './pages/ManageLoyaltyProgramPage';
 import Navbar from './components/util/Navbar';
 
 import NotFound from './pages/NotFound';
@@ -50,6 +51,7 @@ function App() {
               <Route path="/admin/registration-requests" exact element={<RegistrationRequestsPage/>}/>
               <Route path="/admin/removal-requests" exact element={<RemovalRequestsPage/>}/>
               <Route path="/admin/register" exact element={<RegisterAdminPage/>}/>
+              <Route path="/admin/system/loyalty" exact element={<ManageLoyaltyProgramPage/>}/>
               <Route path="/admin/setup" exact element={<AdminPasswordPage/>}/>
               <Route path="*" element={<NotFound/>}/>
             </Routes>

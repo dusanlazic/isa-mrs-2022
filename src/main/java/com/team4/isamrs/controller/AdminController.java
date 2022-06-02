@@ -7,10 +7,8 @@ import com.team4.isamrs.dto.display.LoyaltyProgramSettingsDisplayDTO;
 import com.team4.isamrs.dto.display.RegistrationRequestDisplayDTO;
 import com.team4.isamrs.dto.display.RemovalRequestDisplayDTO;
 import com.team4.isamrs.dto.updation.*;
-import com.team4.isamrs.service.AccountService;
-import com.team4.isamrs.service.LoyaltyProgramService;
-import com.team4.isamrs.service.RegistrationRequestService;
-import com.team4.isamrs.service.RemovalRequestService;
+import com.team4.isamrs.model.config.GlobalSetting;
+import com.team4.isamrs.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,6 +36,9 @@ public class AdminController {
 
     @Autowired
     private LoyaltyProgramService loyaltyProgramService;
+
+    @Autowired
+    private GlobalSettingsService globalSettingsService;
 
     @PostMapping("/register")
     @PreAuthorize("hasRole('SUPERUSER')")
@@ -105,5 +106,16 @@ public class AdminController {
         return new ResponseOK("Categories saved.");
     }
 
+    @GetMapping(value = "/settings/commission-rate", consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public GlobalSetting getCommisssionRate() {
+        return globalSettingsService.getComissionRate();
+    }
 
+    @PutMapping(value = "/settings/commission-rate", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseOK updateCommissionRate(@Valid @RequestBody CommissionRateUpdationDTO dto) {
+        globalSettingsService.updateCommissionRate(dto);
+        return new ResponseOK("Commission rate updated.");
+    }
 }

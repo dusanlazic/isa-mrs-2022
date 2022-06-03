@@ -70,15 +70,6 @@ const ProfilePage = ({me}) => {
       .catch(error => {
         navigate('/notfound');
       });
-      get('/api/account/loyalty')
-      .then(response => {
-        if (response.data.category.multiply < 1) {
-          setLoyaltyProgramData(response.data);
-        }
-      })
-      .catch(error => {
-        setLoyaltyProgramData(null);
-      });
     } else {
       get(`/api${endpoint}/${id}`)
       .then(response => {
@@ -88,6 +79,16 @@ const ProfilePage = ({me}) => {
         navigate('/notfound');
       });
     }
+
+    get('/api/account/loyalty')
+    .then(response => {
+      if (response.data.category.multiply < 1 || me) {
+        setLoyaltyProgramData(response.data);
+      }
+    })
+    .catch(error => {
+      setLoyaltyProgramData(null);
+    });
   }, [])
 
   const getMyAccountData = () => {
@@ -143,7 +144,7 @@ const ProfilePage = ({me}) => {
     ];
   }
   else if (self !== null && self.accountType === 'CUSTOMER') {
-    sidebarComponents = [<LoyaltyProgramCard/>];
+    sidebarComponents = [<LoyaltyProgramCard data={loyaltyProgramData} />];
     MainComponent = clientMainComponent;
     contentComponents = [
       { title: 'Reviews', component: <ClientReviewList data = {profileData} /> },
@@ -151,7 +152,7 @@ const ProfilePage = ({me}) => {
     ];
   }
   else if (self !== null) {
-    sidebarComponents = [<LoyaltyProgramCard/>];
+    sidebarComponents = [<LoyaltyProgramCard data={loyaltyProgramData}/>];
     MainComponent = clientMainComponent;
     contentComponents = [
       { title: 'Advertisements', component: <AdvertisementList advertiserId={profileData.id} /> },

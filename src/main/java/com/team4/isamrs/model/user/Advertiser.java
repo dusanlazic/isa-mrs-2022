@@ -1,7 +1,6 @@
 package com.team4.isamrs.model.user;
 
 import com.team4.isamrs.model.advertisement.Advertisement;
-import com.team4.isamrs.model.review.ServiceProviderReview;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -19,9 +18,6 @@ public class Advertiser extends User {
      */
     @OneToMany(mappedBy = "advertiser", fetch = FetchType.LAZY)
     private Set<Advertisement> ads = new HashSet<Advertisement>();
-
-    @OneToMany(mappedBy = "advertiser", fetch = FetchType.LAZY)
-    private Set<ServiceProviderReview> reviews = new HashSet<ServiceProviderReview>();
 
     @Column(name = "points", nullable = false)
     private Integer points;

@@ -1,6 +1,8 @@
 package com.team4.isamrs.security;
 
+import com.team4.isamrs.dto.updation.ComplaintResponseDTO;
 import com.team4.isamrs.model.advertisement.Advertisement;
+import com.team4.isamrs.model.complaint.Complaint;
 import com.team4.isamrs.model.reservation.ReservationReport;
 import com.team4.isamrs.model.user.*;
 import lombok.AllArgsConstructor;
@@ -125,6 +127,38 @@ public class EmailSender {
 
         sendEmail("report/rejection-customer.html", variables, "You did not get a penalty", customer.getUsername());
         sendEmail("report/rejection-advertiser.html", variables, "Your customer did not get a penalty", advertiser.getUsername());
+    }
+
+    public void sendComplaintResponseToBothParties(Complaint complaint, ComplaintResponseDTO dto) {
+        sendComplaintResponseToCustomer(complaint, dto);
+        sendComplaintResponseToAdvertiser(complaint, dto);
+    }
+
+    private void sendComplaintResponseToAdvertiser(Complaint complaint, ComplaintResponseDTO dto) {
+        Advertisement advertisement = complaint.getAdvertisement();
+        Advertiser advertiser = advertisement.getAdvertiser();
+
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("name", advertiser.getFirstName());
+        variables.put("customer_name", complaint.getCustomer().getFirstName());
+        variables.put("ad_title", advertisement.getTitle());
+        variables.put("complaint", complaint.getComment());
+        variables.put("response", dto.getMessageToAdvertiser());
+
+        sendEmail("complaint/advertiser.html", variables, "You got a complaint", advertiser.getUsername());
+    }
+
+    private void sendComplaintResponseToCustomer(Complaint complaint, ComplaintResponseDTO dto) {
+        Advertisement advertisement = complaint.getAdvertisement();
+        Customer customer = complaint.getCustomer();
+
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("name", customer.getFirstName());
+        variables.put("ad_title", advertisement.getTitle());
+        variables.put("complaint", complaint.getComment());
+        variables.put("response", dto.getMessageToCustomer());
+
+        sendEmail("complaint/customer.html", variables, "Admin response to your complaint", customer.getUsername());
     }
 
     private String buildEmailFromTemplate(String filename, HashMap<String, String> variables) throws IOException {

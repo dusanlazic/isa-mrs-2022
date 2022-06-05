@@ -1,6 +1,8 @@
 package com.team4.isamrs.repository;
 
+import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.reservation.Reservation;
+import com.team4.isamrs.model.user.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +25,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("adId") Long adId,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
+
+    Boolean existsByAdvertisementEqualsAndCustomerEqualsAndCancelledIsFalseAndEndDateTimeBefore(Advertisement advertisement, Customer customer, LocalDateTime endDateTime);
 }

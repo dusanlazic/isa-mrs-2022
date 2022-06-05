@@ -2,7 +2,7 @@ package com.team4.isamrs.model.advertisement;
 
 import com.team4.isamrs.exception.PhotoNotFoundException;
 import com.team4.isamrs.model.reservation.Reservation;
-import com.team4.isamrs.model.review.ServiceReview;
+import com.team4.isamrs.model.review.Review;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
 import lombok.Getter;
@@ -74,7 +74,7 @@ public abstract class Advertisement {
     private Set<Customer> subscribers = new HashSet<>();
 
     @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY)
-    private Set<ServiceReview> reviews = new HashSet<>();
+    private Set<Review> reviews = new HashSet<>();
 
     @OneToMany(mappedBy = "advertisement", fetch = FetchType.LAZY)
     private Set<Reservation> reservations = new HashSet<>();

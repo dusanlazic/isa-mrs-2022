@@ -2,7 +2,7 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.ReservationReportCreationDTO;
 import com.team4.isamrs.dto.display.ReservationReportDisplayDTO;
-import com.team4.isamrs.dto.updation.ReservationReportUpdationDTO;
+import com.team4.isamrs.dto.updation.ReservationReportResponseDTO;
 import com.team4.isamrs.exception.ReservationIsNotCompletedException;
 import com.team4.isamrs.exception.ReservationReportAlreadyExistsException;
 import com.team4.isamrs.exception.ReservationReportAlreadyResolvedException;
@@ -89,7 +89,7 @@ public class ReservationReportService {
                 .collect(Collectors.toList());
     }
 
-    public void respondToReport(Long id, ReservationReportUpdationDTO dto) {
+    public void respondToReport(Long id, ReservationReportResponseDTO dto) {
         ReservationReport report = reservationReportRepository.findById(id).orElseThrow();
         if (!report.getApprovalStatus().equals(ApprovalStatus.PENDING))
             throw new ReservationReportAlreadyResolvedException();

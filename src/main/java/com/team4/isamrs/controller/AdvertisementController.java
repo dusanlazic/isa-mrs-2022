@@ -1,11 +1,13 @@
 package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.ResponseOK;
+import com.team4.isamrs.dto.creation.ComplaintCreationDTO;
 import com.team4.isamrs.dto.creation.OptionCreationDTO;
 import com.team4.isamrs.dto.display.OptionDisplayDTO;
 import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.service.AdvertisementService;
+import com.team4.isamrs.service.ComplaintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +28,9 @@ public class AdvertisementController {
 
     @Autowired
     private AdvertisementService advertisementService;
+
+    @Autowired
+    private ComplaintService complaintService;
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADVERTISER')")
@@ -78,5 +83,12 @@ public class AdvertisementController {
     public ResponseOK updateAvailabilityPeriod(@PathVariable Long id, @Valid @RequestBody AvailabilityPeriodUpdationDTO dto, Authentication auth) {
         advertisementService.updateAvailabilityPeriod(id, dto, auth);
         return new ResponseOK("Availability period updated.");
+    }
+
+    @PostMapping(value = "/{id}/complaint", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseOK createComplaint(@PathVariable Long id, @Valid @RequestBody ComplaintCreationDTO dto, Authentication auth) {
+        complaintService.create(id, dto, auth);
+        return new ResponseOK("Complaint created.");
     }
 }

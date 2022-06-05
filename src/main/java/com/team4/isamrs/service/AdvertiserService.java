@@ -3,7 +3,6 @@ package com.team4.isamrs.service;
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
 import com.team4.isamrs.dto.display.AdvertisementSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
-import com.team4.isamrs.model.review.ServiceProviderReview;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.AdvertiserRepository;
 import com.team4.isamrs.repository.ReservationReportRepository;
@@ -46,11 +45,14 @@ public class AdvertiserService {
     }
 
     public double findRating(Long id) {
+        return 3.5;
+        /*
         Advertiser advertiser = advertiserRepository.findById(id).orElseThrow();
-        Set<ServiceProviderReview> advertisements = advertiser.getReviews();
+        Set<Review> advertisements = advertiser.getReviews();
         double rating = 0;
         if (advertisements.size() > 0)
-            rating = advertisements.stream().mapToDouble(ServiceProviderReview::getRating).sum() / advertisements.size();
+            rating = advertisements.stream().mapToDouble(Review::getRating).sum() / advertisements.size();
         return Math.round(rating * 100.0) / 100.0;
+         */
     }
 }

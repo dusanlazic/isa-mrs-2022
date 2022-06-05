@@ -166,4 +166,21 @@ public class ControllerAdvisor {
                 HttpStatus.CONFLICT.value(),
                 "Cannot respond to the reservation report since it is already resolved.");
     }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ActionNotAllowedException.class)
+    public ExceptionResponseBody handleActionNotAllowedException(ActionNotAllowedException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ComplaintAlreadyResolvedException.class)
+    public ExceptionResponseBody handleComplaintAlreadyResolvedException(ComplaintAlreadyResolvedException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                "Cannot respond to the complaint since it is already resolved.");
+    }
+
 }

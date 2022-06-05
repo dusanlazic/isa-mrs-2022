@@ -1,7 +1,7 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.display.DisplayDTO;
-import com.team4.isamrs.dto.updation.RemovalRequestUpdationDTO;
+import com.team4.isamrs.dto.updation.RemovalRequestResponseDTO;
 import com.team4.isamrs.exception.RegistrationRequestAlreadyResolvedException;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.user.RemovalRequest;
@@ -41,7 +41,7 @@ public class RemovalRequestService {
                 .collect(Collectors.toList());
     }
 
-    public void respondToRequest(Long id, RemovalRequestUpdationDTO dto) {
+    public void respondToRequest(Long id, RemovalRequestResponseDTO dto) {
         RemovalRequest request = removalRequestRepository.findById(id).orElseThrow();
         if (!request.getApprovalStatus().equals(ApprovalStatus.PENDING))
             throw new RegistrationRequestAlreadyResolvedException();

@@ -2,7 +2,7 @@ package com.team4.isamrs.model.user;
 
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.reservation.Reservation;
-import com.team4.isamrs.model.review.ServiceReview;
+import com.team4.isamrs.model.review.Review;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +28,7 @@ public class Customer extends User {
     private Set<Advertisement> subscriptions = new HashSet<Advertisement>();
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
-    private Set<ServiceReview> reviews = new HashSet<ServiceReview>();
+    private Set<Review> reviews = new HashSet<Review>();
     
     @Column(name = "points", nullable = false)
     private Integer points;

@@ -35,6 +35,9 @@ public class AdminController {
     private ReservationReportService reservationReportService;
 
     @Autowired
+    private ComplaintService complaintService;
+
+    @Autowired
     private LoyaltyProgramService loyaltyProgramService;
 
     @Autowired
@@ -62,7 +65,7 @@ public class AdminController {
 
     @PatchMapping(value = "/registration-requests/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseOK respondToRegistrationRequest(@PathVariable Long id, @Valid @RequestBody RegistrationRequestUpdationDTO dto) {
+    public ResponseOK respondToRegistrationRequest(@PathVariable Long id, @Valid @RequestBody RegistrationRequestResponseDTO dto) {
         registrationRequestService.respondToRequest(id, dto);
         return new ResponseOK("Request resolved.");
     }
@@ -75,7 +78,7 @@ public class AdminController {
 
     @PatchMapping(value = "/removal-requests/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseOK respondToRemovalRequest(@PathVariable Long id, @Valid @RequestBody RemovalRequestUpdationDTO dto) {
+    public ResponseOK respondToRemovalRequest(@PathVariable Long id, @Valid @RequestBody RemovalRequestResponseDTO dto) {
         removalRequestService.respondToRequest(id, dto);
         return new ResponseOK("Request resolved.");
     }
@@ -88,9 +91,22 @@ public class AdminController {
 
     @PatchMapping(value = "/reservation-reports/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseOK respondToReservationReport(@PathVariable Long id, @Valid @RequestBody ReservationReportUpdationDTO dto) {
+    public ResponseOK respondToReservationReport(@PathVariable Long id, @Valid @RequestBody ReservationReportResponseDTO dto) {
         reservationReportService.respondToReport(id, dto);
-        return new ResponseOK("Report resolved");
+        return new ResponseOK("Report resolved.");
+    }
+
+    @GetMapping(value = "/complaints", consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public Collection<ComplaintDisplayDTO> findAllPendingComplaints() {
+        return complaintService.findAllPending();
+    }
+
+    @PatchMapping(value = "/complaints/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseOK respondToComplaint(@PathVariable Long id, @Valid @RequestBody ComplaintResponseDTO dto) {
+        complaintService.respondToComplaint(id, dto);
+        return new ResponseOK("Complaint resolved.");
     }
 
     @GetMapping(value = "/system/loyalty/settings", consumes = MediaType.ALL_VALUE)

@@ -1,7 +1,7 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.display.DisplayDTO;
-import com.team4.isamrs.dto.updation.RegistrationRequestUpdationDTO;
+import com.team4.isamrs.dto.updation.RegistrationRequestResponseDTO;
 import com.team4.isamrs.exception.RegistrationRequestAlreadyResolvedException;
 import com.team4.isamrs.model.enumeration.AccountType;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
@@ -42,7 +42,7 @@ public class RegistrationRequestService {
                 .collect(Collectors.toList());
     }
 
-    public void respondToRequest(Long id, RegistrationRequestUpdationDTO dto) {
+    public void respondToRequest(Long id, RegistrationRequestResponseDTO dto) {
         RegistrationRequest request = registrationRequestRepository.findById(id).orElseThrow();
         if (!request.getApprovalStatus().equals(ApprovalStatus.PENDING))
             throw new RegistrationRequestAlreadyResolvedException();

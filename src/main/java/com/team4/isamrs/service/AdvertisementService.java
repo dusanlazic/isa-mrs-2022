@@ -8,10 +8,10 @@ import com.team4.isamrs.exception.IdenticalAvailabilityDatesException;
 import com.team4.isamrs.exception.ReservationsInUnavailabilityPeriodException;
 import com.team4.isamrs.model.advertisement.AdventureAd;
 import com.team4.isamrs.model.advertisement.Advertisement;
-import com.team4.isamrs.model.advertisement.Option;
 import com.team4.isamrs.model.advertisement.BoatAd;
+import com.team4.isamrs.model.advertisement.Option;
 import com.team4.isamrs.model.reservation.Reservation;
-import com.team4.isamrs.model.review.ServiceReview;
+import com.team4.isamrs.model.review.Review;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.AdvertisementRepository;
 import com.team4.isamrs.repository.OptionRepository;
@@ -109,10 +109,10 @@ public class AdvertisementService {
     }
 
     public double findRating(Long id) {
-        Set<ServiceReview> serviceReviews = advertisementRepository.findById(id).orElseThrow().getReviews();
+        Set<Review> reviews = advertisementRepository.findById(id).orElseThrow().getReviews();
         double rating = 0;
-        if (serviceReviews.size() > 0)
-            rating = serviceReviews.stream().mapToDouble(ServiceReview::getRating).sum() / serviceReviews.size();
+        if (reviews.size() > 0)
+            rating = reviews.stream().mapToDouble(Review::getRating).sum() / reviews.size();
         return Math.round(rating * 100.0) / 100.0;
     }
 

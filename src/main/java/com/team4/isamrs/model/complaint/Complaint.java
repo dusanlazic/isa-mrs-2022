@@ -1,18 +1,16 @@
-package com.team4.isamrs.model.review;
+package com.team4.isamrs.model.complaint;
 
 import com.team4.isamrs.model.advertisement.Advertisement;
+import com.team4.isamrs.model.enumeration.ResponseStatus;
 import com.team4.isamrs.model.user.Customer;
-import com.team4.isamrs.model.enumeration.ApprovalStatus;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Setter
-public class ServiceReview {
+@Data
+public class Complaint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,13 +26,10 @@ public class ServiceReview {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column(name = "rating", nullable = false)
-    private Double rating;
-
-    @Column(name = "comment")
+    @Column(name = "comment", nullable = false)
     private String comment;
 
-    @Column(name = "approvalStatus", nullable = false)
+    @Column(name = "response_status", nullable = false)
     @Enumerated(EnumType.ORDINAL)
-    private ApprovalStatus approvalStatus;
+    private ResponseStatus responseStatus;
 }

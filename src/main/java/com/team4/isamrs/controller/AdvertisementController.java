@@ -4,6 +4,7 @@ import com.team4.isamrs.dto.ResponseOK;
 import com.team4.isamrs.dto.creation.ComplaintCreationDTO;
 import com.team4.isamrs.dto.creation.OptionCreationDTO;
 import com.team4.isamrs.dto.creation.ReviewCreationDTO;
+import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
 import com.team4.isamrs.dto.display.OptionDisplayDTO;
 import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
@@ -87,14 +88,14 @@ public class AdvertisementController {
         return new ResponseOK("Complaint created.");
     }
 
-    @GetMapping(value = "/{id}/rating")
-    public Double findRating(@PathVariable Long id) {
-        return advertisementService.findRating(id);
-    }
-
     @GetMapping("/{id}/reviews")
     public Collection<ReviewPublicDisplayDTO> getReviews(@PathVariable Long id) {
         return advertisementService.getApprovedReviews(id);
+    }
+
+    @GetMapping(value = "/{id}/reviews/average")
+    public AverageRatingDisplayDTO getAverageRating(@PathVariable Long id) {
+        return advertisementService.getAverageRating(id);
     }
 
     @PostMapping(value = "/{id}/reviews", consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -2,7 +2,7 @@ package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
 import com.team4.isamrs.dto.display.AdvertisementSimpleDisplayDTO;
-import com.team4.isamrs.dto.display.ReviewAdminDisplayDTO;
+import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
 import com.team4.isamrs.service.AdvertiserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -29,8 +29,8 @@ public class AdvertiserController {
         return advertiserService.getAdvertisements(id);
     }
 
-    @GetMapping(value = "/{id}/rating")
-    public Double findRating(@PathVariable Long id) {
-        return advertiserService.findRating(id);
+    @GetMapping(value = "/{id}/reviews/average")
+    public AverageRatingDisplayDTO getAverageRating(@PathVariable Long id) {
+        return advertiserService.getAverageRating(id);
     }
 }

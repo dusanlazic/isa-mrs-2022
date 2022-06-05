@@ -183,4 +183,13 @@ public class ControllerAdvisor {
                 "Cannot respond to the complaint since it is already resolved.");
     }
 
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ReviewAlreadyResolvedException.class)
+    public ExceptionResponseBody handleReviewAlreadyResolvedException(ReviewAlreadyResolvedException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                "Cannot respond to the review since it is already resolved.");
+    }
+
+
 }

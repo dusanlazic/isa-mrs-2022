@@ -2,7 +2,7 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
 import com.team4.isamrs.dto.display.AdvertisementSimpleDisplayDTO;
-import com.team4.isamrs.dto.display.ReviewAdminDisplayDTO;
+import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.AdvertiserRepository;
 import com.team4.isamrs.repository.ReservationReportRepository;
@@ -36,15 +36,10 @@ public class AdvertiserService {
                 .collect(Collectors.toSet());
     }
 
-    public double findRating(Long id) {
-        return 3.5;
-        /*
+    public AverageRatingDisplayDTO getAverageRating(Long id) {
         Advertiser advertiser = advertiserRepository.findById(id).orElseThrow();
-        Set<Review> advertisements = advertiser.getReviews();
-        double rating = 0;
-        if (advertisements.size() > 0)
-            rating = advertisements.stream().mapToDouble(Review::getRating).sum() / advertisements.size();
-        return Math.round(rating * 100.0) / 100.0;
-         */
+        Double value = advertiserRepository.findAverageRatingForAdvertiser(advertiser).orElse(0.0);
+
+        return new AverageRatingDisplayDTO(Math.round(value * 100.0) / 100.0);
     }
 }

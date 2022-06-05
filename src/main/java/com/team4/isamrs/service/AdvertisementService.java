@@ -1,8 +1,8 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.OptionCreationDTO;
+import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
-import com.team4.isamrs.dto.display.ReviewAdminDisplayDTO;
 import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.exception.IdenticalAvailabilityDatesException;
@@ -13,7 +13,6 @@ import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.advertisement.Option;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.reservation.Reservation;
-import com.team4.isamrs.model.review.Review;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.AdvertisementRepository;
 import com.team4.isamrs.repository.OptionRepository;
@@ -110,12 +109,11 @@ public class AdvertisementService {
         optionRepository.delete(option); // might not be needed because of auto orphan removal
     }
 
-    public double findRating(Long id) {
-        Set<Review> reviews = advertisementRepository.findById(id).orElseThrow().getReviews();
-        double rating = 0;
-        if (reviews.size() > 0)
-            rating = reviews.stream().mapToDouble(Review::getRating).sum() / reviews.size();
-        return Math.round(rating * 100.0) / 100.0;
+    public AverageRatingDisplayDTO getAverageRating(Long id) {
+        Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
+        Double value = advertisementRepository.findAverageRatingForAdvertisement(advertisement).orElse(0.0);
+
+        return new AverageRatingDisplayDTO(Math.round(value * 100.0) / 100.0);
     }
 
     public Collection<ReviewPublicDisplayDTO> getApprovedReviews(Long id) {

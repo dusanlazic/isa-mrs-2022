@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class ServiceReviewDisplayDTO {
+public class ReviewAdminDisplayDTO {
     private Long id;
     private LocalDateTime createdAt;
     private AdvertisementDisplayDTO advertisement;

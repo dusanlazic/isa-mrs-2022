@@ -3,11 +3,13 @@ package com.team4.isamrs.controller;
 import com.team4.isamrs.dto.ResponseOK;
 import com.team4.isamrs.dto.creation.ComplaintCreationDTO;
 import com.team4.isamrs.dto.creation.OptionCreationDTO;
+import com.team4.isamrs.dto.creation.ReviewCreationDTO;
 import com.team4.isamrs.dto.display.OptionDisplayDTO;
-import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
+import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.service.AdvertisementService;
 import com.team4.isamrs.service.ComplaintService;
+import com.team4.isamrs.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,6 +33,9 @@ public class AdvertisementController {
 
     @Autowired
     private ComplaintService complaintService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADVERTISER')")
@@ -68,16 +73,6 @@ public class AdvertisementController {
         return new ResponseOK("Option deleted.");
     }
 
-    @GetMapping(value = "/{id}/rating")
-    public Double findRating(@PathVariable Long id) {
-        return advertisementService.findRating(id);
-    }
-
-    @GetMapping("/{id}/reviews")
-    public Collection<ServiceReviewDisplayDTO> getReviews(@PathVariable Long id) {
-        return advertisementService.getReviews(id);
-    }
-
     @PutMapping(value = "/{id}/availability-period", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADVERTISER')")
     public ResponseOK updateAvailabilityPeriod(@PathVariable Long id, @Valid @RequestBody AvailabilityPeriodUpdationDTO dto, Authentication auth) {
@@ -85,10 +80,27 @@ public class AdvertisementController {
         return new ResponseOK("Availability period updated.");
     }
 
-    @PostMapping(value = "/{id}/complaint", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{id}/complaints", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseOK createComplaint(@PathVariable Long id, @Valid @RequestBody ComplaintCreationDTO dto, Authentication auth) {
         complaintService.create(id, dto, auth);
         return new ResponseOK("Complaint created.");
+    }
+
+    @GetMapping(value = "/{id}/rating")
+    public Double findRating(@PathVariable Long id) {
+        return advertisementService.findRating(id);
+    }
+
+    @GetMapping("/{id}/reviews")
+    public Collection<ReviewPublicDisplayDTO> getReviews(@PathVariable Long id) {
+        return advertisementService.getApprovedReviews(id);
+    }
+
+    @PostMapping(value = "/{id}/reviews", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseOK createReview(@PathVariable Long id, @Valid @RequestBody ReviewCreationDTO dto, Authentication auth) {
+        reviewService.create(id, dto, auth);
+        return new ResponseOK("Review created.");
     }
 }

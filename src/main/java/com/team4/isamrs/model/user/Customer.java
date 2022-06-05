@@ -26,9 +26,6 @@ public class Customer extends User {
             joinColumns = @JoinColumn(name = "customer_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "advertisement_id", referencedColumnName = "id"))
     private Set<Advertisement> subscriptions = new HashSet<Advertisement>();
-
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
-    private Set<Review> reviews = new HashSet<Review>();
     
     @Column(name = "points", nullable = false)
     private Integer points;

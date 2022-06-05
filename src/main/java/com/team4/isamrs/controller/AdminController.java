@@ -38,6 +38,9 @@ public class AdminController {
     private ComplaintService complaintService;
 
     @Autowired
+    private ReviewService reviewService;
+
+    @Autowired
     private LoyaltyProgramService loyaltyProgramService;
 
     @Autowired
@@ -83,13 +86,13 @@ public class AdminController {
         return new ResponseOK("Request resolved.");
     }
 
-    @GetMapping(value = "/reservation-reports", consumes = MediaType.ALL_VALUE)
+    @GetMapping(value = "/reports", consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public Collection<ReservationReportDisplayDTO> findAllPendingReservationReports() {
         return reservationReportService.findAllPending();
     }
 
-    @PatchMapping(value = "/reservation-reports/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/reports/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseOK respondToReservationReport(@PathVariable Long id, @Valid @RequestBody ReservationReportResponseDTO dto) {
         reservationReportService.respondToReport(id, dto);
@@ -107,6 +110,19 @@ public class AdminController {
     public ResponseOK respondToComplaint(@PathVariable Long id, @Valid @RequestBody ComplaintResponseDTO dto) {
         complaintService.respondToComplaint(id, dto);
         return new ResponseOK("Complaint resolved.");
+    }
+
+    @GetMapping(value = "/reviews", consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public Collection<ReviewAdminDisplayDTO> findAllPendingReviews() {
+        return reviewService.findAllPending();
+    }
+
+    @PatchMapping(value = "/reviews/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseOK respondToReview(@PathVariable Long id, @Valid @RequestBody ReviewResponseDTO dto) {
+        reviewService.respondToReview(id, dto);
+        return new ResponseOK("Review resolved.");
     }
 
     @GetMapping(value = "/system/loyalty/settings", consumes = MediaType.ALL_VALUE)

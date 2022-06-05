@@ -1,6 +1,5 @@
 package com.team4.isamrs.dto.display;
 
-import com.team4.isamrs.model.user.Advertiser;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -10,7 +9,7 @@ import java.util.Set;
 @Data
 public class AdvertisementDisplayDTO implements DisplayDTO {
     private Long id;
-    private Advertiser advertiser;
+    private AccountDisplayDTO advertiser;
     private String title;
     private AddressDisplayDTO address;
     private String description;

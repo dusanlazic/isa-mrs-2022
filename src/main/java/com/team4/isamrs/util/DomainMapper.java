@@ -396,6 +396,11 @@ public class DomainMapper {
             return destination;
         };
 
+        Converter<Customer, CustomerPublicDisplayDTO> CustomerToPublicDisplayDtoConverter = context -> {
+            context.getDestination().setAvatar("/photos/" + context.getSource().getAvatar().getStoredFilename());
+            return context.getDestination();
+        };
+
         modelMapper.createTypeMap(AdventureAdCreationDTO.class, AdventureAd.class).setPostConverter(CreationDtoToAdventureAdConverter);
         modelMapper.createTypeMap(AdventureAdUpdationDTO.class, AdventureAd.class).setPostConverter(UpdationDtoToAdventureAdConverter);
         modelMapper.createTypeMap(AdventureAd.class, AdventureAdDisplayDTO.class).setPostConverter(AdventureAdToDisplayDtoConverter);
@@ -411,6 +416,7 @@ public class DomainMapper {
         modelMapper.createTypeMap(Advertiser.class, SessionDisplayDTO.class).setPostConverter(AdvertiserToSessionDisplayDtoConverter);
         modelMapper.createTypeMap(Administrator.class, SessionDisplayDTO.class).setPostConverter(AdministratorToSessionDisplayDtoConverter);
         modelMapper.createTypeMap(Customer.class, SessionDisplayDTO.class).setPostConverter(CustomerToSessionDisplayDtoConverter);
+        modelMapper.createTypeMap(Customer.class, CustomerPublicDisplayDTO.class).setPostConverter(CustomerToPublicDisplayDtoConverter);
         modelMapper.createTypeMap(User.class, SessionDisplayDTO.class).setPostConverter(UserToSessionDisplayDtoConverter);
         modelMapper.createTypeMap(Advertiser.class, AccountDisplayDTO.class).setPostConverter(AdvertiserToAccountDisplayDtoConverter);
         modelMapper.createTypeMap(Administrator.class, AccountDisplayDTO.class).setPostConverter(AdministratorToAccountDisplayDtoConverter);

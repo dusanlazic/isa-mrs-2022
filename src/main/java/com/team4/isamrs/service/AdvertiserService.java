@@ -2,7 +2,7 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
 import com.team4.isamrs.dto.display.AdvertisementSimpleDisplayDTO;
-import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
+import com.team4.isamrs.dto.display.ReviewAdminDisplayDTO;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.AdvertiserRepository;
 import com.team4.isamrs.repository.ReservationReportRepository;
@@ -33,14 +33,6 @@ public class AdvertiserService {
         Advertiser advertiser = advertiserRepository.findById(id).orElseThrow();
         return advertiser.getAds().stream()
                 .map(e -> modelMapper.map(e, AdvertisementSimpleDisplayDTO.class))
-                .collect(Collectors.toSet());
-    }
-
-    public Set<ServiceReviewDisplayDTO> getServiceProviderReview(Long id) {
-        Advertiser advertiser = advertiserRepository.findById(id).orElseThrow();
-        return advertiser.getAds().stream()
-                .flatMap(ad -> ad.getReviews().stream())
-                .map(e -> modelMapper.map(e, ServiceReviewDisplayDTO.class))
                 .collect(Collectors.toSet());
     }
 

@@ -2,7 +2,8 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.OptionCreationDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
-import com.team4.isamrs.dto.display.ServiceReviewDisplayDTO;
+import com.team4.isamrs.dto.display.ReviewAdminDisplayDTO;
+import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.exception.IdenticalAvailabilityDatesException;
 import com.team4.isamrs.exception.ReservationsInUnavailabilityPeriodException;
@@ -10,6 +11,7 @@ import com.team4.isamrs.model.advertisement.AdventureAd;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.advertisement.Option;
+import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.review.Review;
 import com.team4.isamrs.model.user.Advertiser;
@@ -116,10 +118,11 @@ public class AdvertisementService {
         return Math.round(rating * 100.0) / 100.0;
     }
 
-    public Collection<ServiceReviewDisplayDTO> getReviews(Long id) {
+    public Collection<ReviewPublicDisplayDTO> getApprovedReviews(Long id) {
         Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
         return advertisement.getReviews().stream()
-                .map(e -> modelMapper.map(e, ServiceReviewDisplayDTO.class))
+                .filter(e -> e.getApprovalStatus().equals(ApprovalStatus.APPROVED))
+                .map(e -> modelMapper.map(e, ReviewPublicDisplayDTO.class))
                 .collect(Collectors.toSet());
     }
 

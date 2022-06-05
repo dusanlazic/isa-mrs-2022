@@ -4,6 +4,7 @@ import com.team4.isamrs.dto.updation.ComplaintResponseDTO;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.complaint.Complaint;
 import com.team4.isamrs.model.reservation.ReservationReport;
+import com.team4.isamrs.model.review.Review;
 import com.team4.isamrs.model.user.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
@@ -159,6 +160,23 @@ public class EmailSender {
         variables.put("response", dto.getMessageToCustomer());
 
         sendEmail("complaint/customer.html", variables, "Admin response to your complaint", customer.getUsername());
+    }
+
+
+    public void sendNewReviewEmail(Review review, Double totalRating) {
+        Advertisement advertisement = review.getAdvertisement();
+        Advertiser advertiser = advertisement.getAdvertiser();
+        Customer customer = review.getCustomer();
+
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("name", advertiser.getFirstName());
+        variables.put("customer_name", customer.getFirstName());
+        variables.put("ad_title", advertisement.getTitle());
+        variables.put("rating", review.getRating().toString());
+        variables.put("comment", review.getComment());
+        variables.put("total_rating", totalRating.toString());
+
+        sendEmail("review/new.html", variables, "You got a review!", advertiser.getUsername());
     }
 
     private String buildEmailFromTemplate(String filename, HashMap<String, String> variables) throws IOException {

@@ -1,17 +1,12 @@
 package com.team4.isamrs.model.advertisement;
 
-import com.team4.isamrs.model.reservation.Reservation;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Getter

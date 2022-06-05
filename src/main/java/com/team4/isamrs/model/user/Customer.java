@@ -2,7 +2,6 @@ package com.team4.isamrs.model.user;
 
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.reservation.Reservation;
-import com.team4.isamrs.model.review.Review;
 import lombok.Getter;
 import lombok.Setter;
 

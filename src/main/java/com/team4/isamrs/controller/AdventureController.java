@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -83,7 +84,7 @@ public class AdventureController {
     }
 
     @PutMapping(value = "/{id}/availability-period", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('RESORT_OWNER')")
+    @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
     public ResponseOK updateAvailabilityPeriod(@PathVariable Long id, @Valid @RequestBody AvailabilityPeriodUpdationDTO dto, Authentication auth) {
         advertisementService.updateAvailabilityPeriod(id, dto, auth);
         return new ResponseOK("Availability period updated.");

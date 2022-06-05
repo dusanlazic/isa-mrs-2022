@@ -2,13 +2,15 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.AdventureAdCreationDTO;
 import com.team4.isamrs.dto.display.AdventureAdSimpleDisplayDTO;
-import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
 import com.team4.isamrs.model.advertisement.AdventureAd;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
-import com.team4.isamrs.repository.*;
+import com.team4.isamrs.repository.AdventureAdRepository;
+import com.team4.isamrs.repository.FishingEquipmentRepository;
+import com.team4.isamrs.repository.ReservationRepository;
+import com.team4.isamrs.repository.TagRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -3,7 +3,10 @@ package com.team4.isamrs.dto.creation;
 import com.team4.isamrs.validation.CountryCode;
 import lombok.Data;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Data
 public class AccountCreationDTO {

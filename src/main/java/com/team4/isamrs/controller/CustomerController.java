@@ -1,13 +1,10 @@
 package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.display.CustomerDisplayDTO;
-import com.team4.isamrs.dto.display.ReviewAdminDisplayDTO;
 import com.team4.isamrs.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collection;
 
 @RestController
 @RequestMapping(value = "/customers",

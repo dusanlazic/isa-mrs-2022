@@ -2,7 +2,6 @@ package com.team4.isamrs.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 

@@ -1,8 +1,6 @@
 package com.team4.isamrs.service;
 
-import com.team4.isamrs.dto.creation.OptionCreationDTO;
 import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
-import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.exception.IdenticalAvailabilityDatesException;
@@ -10,7 +8,6 @@ import com.team4.isamrs.exception.ReservationsInUnavailabilityPeriodException;
 import com.team4.isamrs.model.advertisement.AdventureAd;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.BoatAd;
-import com.team4.isamrs.model.advertisement.Option;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
@@ -23,7 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -62,51 +58,6 @@ public class AdvertisementService {
         }
 
         advertisementRepository.delete(advertisement);
-    }
-
-    public <T extends DisplayDTO> Collection<T> getOptions(Long id, Class<T> returnType) {
-        Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
-
-        Collection<Option> options = advertisement.getOptions();
-        return options.stream()
-                .map(e -> modelMapper.map(e, returnType))
-                .collect(Collectors.toSet());
-    }
-
-    public void addOption(Long id, OptionCreationDTO dto, Authentication auth) {
-        Advertiser advertiser = (Advertiser) auth.getPrincipal();
-        Advertisement advertisement = advertisementRepository.findAdvertisementByIdAndAdvertiser(id, advertiser).orElseThrow();
-
-        Option option = modelMapper.map(dto, Option.class);
-        advertisement.addOption(option);
-
-        advertisementRepository.save(advertisement);
-    }
-
-    public void updateOption(Long advertisementId, Long priceId, OptionCreationDTO dto, Authentication auth) {
-        Advertiser advertiser = (Advertiser) auth.getPrincipal();
-        Advertisement advertisement = advertisementRepository.findAdvertisementByIdAndAdvertiser(advertisementId, advertiser).orElseThrow();
-
-        Option option = optionRepository.findById(priceId).orElseThrow();
-        if (!option.getAdvertisement().equals(advertisement))
-            throw new NoSuchElementException();
-
-        modelMapper.map(dto, option);
-
-        optionRepository.save(option);
-    }
-
-    public void removeOption(Long advertisementId, Long optionId, Authentication auth) {
-        Advertiser advertiser = (Advertiser) auth.getPrincipal();
-        Advertisement advertisement = advertisementRepository.findAdvertisementByIdAndAdvertiser(advertisementId, advertiser).orElseThrow();
-        Option option = optionRepository.findById(optionId).orElseThrow();
-        if (!option.getAdvertisement().equals(advertisement))
-            throw new NoSuchElementException();
-
-        advertisement.removeOption(option);
-
-        advertisementRepository.save(advertisement);
-        optionRepository.delete(option); // might not be needed because of auto orphan removal
     }
 
     public AverageRatingDisplayDTO getAverageRating(Long id) {

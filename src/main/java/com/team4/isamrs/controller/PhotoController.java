@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/photos")
@@ -21,11 +20,6 @@ public class PhotoController {
 
     @Autowired
     private PhotoService photoService;
-
-    @GetMapping("metadata/{id}")
-    public PhotoBriefDisplayDTO findById(@PathVariable UUID id) {
-        return photoService.findById(id, PhotoBriefDisplayDTO.class);
-    }
 
     @GetMapping(value = "/{filename}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
     public ResponseEntity<Resource> serve(@PathVariable String filename) throws IOException {

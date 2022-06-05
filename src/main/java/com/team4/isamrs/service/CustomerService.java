@@ -1,15 +1,11 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.display.DisplayDTO;
-import com.team4.isamrs.dto.display.ReviewAdminDisplayDTO;
 import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.repository.CustomerRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomerService {

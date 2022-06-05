@@ -5,7 +5,6 @@ import com.team4.isamrs.dto.display.ComplaintDisplayDTO;
 import com.team4.isamrs.dto.updation.ComplaintResponseDTO;
 import com.team4.isamrs.exception.ActionNotAllowedException;
 import com.team4.isamrs.exception.ComplaintAlreadyResolvedException;
-import com.team4.isamrs.exception.ReservationReportAlreadyResolvedException;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.complaint.Complaint;
 import com.team4.isamrs.model.enumeration.ResponseStatus;

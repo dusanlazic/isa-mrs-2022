@@ -3,7 +3,6 @@ package com.team4.isamrs.service;
 import com.team4.isamrs.dto.creation.BoatAdCreationDTO;
 import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
-import com.team4.isamrs.dto.display.ResortAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.updation.BoatAdUpdationDTO;
 import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.reservation.Reservation;

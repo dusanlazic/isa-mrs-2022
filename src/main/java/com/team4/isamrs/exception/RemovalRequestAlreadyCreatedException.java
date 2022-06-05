@@ -1,4 +1,4 @@
-package com.team4.isamrs.exception.error;
+package com.team4.isamrs.exception;
 
 public class RemovalRequestAlreadyCreatedException extends RuntimeException {
     public RemovalRequestAlreadyCreatedException() {

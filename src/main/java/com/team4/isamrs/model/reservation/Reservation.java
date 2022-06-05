@@ -17,6 +17,7 @@ import java.util.Set;
 @Setter
 public class Reservation {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "created_at", nullable = false)

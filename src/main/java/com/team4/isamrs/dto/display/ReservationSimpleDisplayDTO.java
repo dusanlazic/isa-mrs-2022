@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class ReservationSimpleDisplayDTO {
+    private Long id;
     private LocalDateTime createdAt;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;

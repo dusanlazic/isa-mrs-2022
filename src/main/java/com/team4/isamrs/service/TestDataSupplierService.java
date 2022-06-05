@@ -1,6 +1,7 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.model.advertisement.*;
+import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Administrator;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
@@ -16,15 +17,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collections;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class TestDataSupplierService {
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    CustomerRepository customerRepository;
 
     @Autowired
     ResortAdRepository resortAdRepository;
@@ -45,7 +48,12 @@ public class TestDataSupplierService {
     TagRepository tagRepository;
 
     @Autowired
+    ReservationRepository reservationRepository;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
+
+    Random random = new Random();
 
     @Transactional
     public void injectTestData() {
@@ -132,8 +140,6 @@ public class TestDataSupplierService {
     }
 
     private void addResorts() {
-        Random random = new Random();
-
         Advertiser advertiser = (Advertiser) userRepository.findByUsername("maja@gmail.com").get();
 
         Tag tag1 = new Tag("TV");
@@ -189,6 +195,8 @@ public class TestDataSupplierService {
             resort.addTag(tag1);
             resort.addTag(tag2);
             resort.addTag(tag3);
+
+            addReservations(resort, customerRepository.findAll());
 
             photoRepository.saveAll(resort.getPhotos());
             resortAdRepository.save(resort);
@@ -331,4 +339,51 @@ public class TestDataSupplierService {
         }
     }
 
+    private void addReservations(Advertisement ad, List<Customer> customers) {
+        List<Reservation> reservations = new ArrayList<>();
+
+        // past
+        for (int i = 0; i < 5; i++) {
+            Reservation reservation = new Reservation();
+            reservation.setCreatedAt(LocalDateTime.now());
+            reservation.setStartDateTime(LocalDateTime.now().minusDays(10).plusHours(random.nextInt(24)));
+            reservation.setEndDateTime(LocalDateTime.now().minusDays(15).plusHours(random.nextInt(24)));
+            reservation.setAdvertisement(ad);
+            reservation.setCustomer(customers.get(random.nextInt(customers.size())));
+            reservation.setCalculatedPrice(BigDecimal.valueOf(1337));
+            reservation.setCancelled(false);
+
+            reservations.add(reservation);
+        }
+
+        // active
+        for (int i = 0; i < 5; i++) {
+            Reservation reservation = new Reservation();
+            reservation.setCreatedAt(LocalDateTime.now());
+            reservation.setStartDateTime(LocalDateTime.now().minusDays(5).plusHours(random.nextInt(24)));
+            reservation.setEndDateTime(LocalDateTime.now().plusDays(5).plusHours(random.nextInt(24)));
+            reservation.setAdvertisement(ad);
+            reservation.setCustomer(customers.get(random.nextInt(customers.size())));
+            reservation.setCalculatedPrice(BigDecimal.valueOf(1337));
+            reservation.setCancelled(false);
+
+            reservations.add(reservation);
+        }
+
+        // future
+        for (int i = 0; i < 5; i++) {
+            Reservation reservation = new Reservation();
+            reservation.setCreatedAt(LocalDateTime.now());
+            reservation.setStartDateTime(LocalDateTime.now().plusDays(10).plusHours(random.nextInt(24)));
+            reservation.setEndDateTime(LocalDateTime.now().plusDays(15).plusHours(random.nextInt(24)));
+            reservation.setAdvertisement(ad);
+            reservation.setCustomer(customers.get(random.nextInt(customers.size())));
+            reservation.setCalculatedPrice(BigDecimal.valueOf(1337));
+            reservation.setCancelled(false);
+
+            reservations.add(reservation);
+        }
+
+        reservationRepository.saveAll(reservations);
+    }
 }

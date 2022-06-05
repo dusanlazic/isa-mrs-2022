@@ -142,4 +142,20 @@ public class ControllerAdvisor {
                 HttpStatus.CONFLICT.value(),
                 "Availability period dates should not be the same.");
     }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ReservationReportAlreadyExistsException.class)
+    public ExceptionResponseBody handleReservationReportAlreadyExistsException(ReservationReportAlreadyExistsException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                "Report for this reservation already exists.");
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ReservationIsNotCompletedException.class)
+    public ExceptionResponseBody handleReservationIsNotCompletedException(ReservationIsNotCompletedException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                "Cannot create report for a reservation that is not completed.");
+    }
 }

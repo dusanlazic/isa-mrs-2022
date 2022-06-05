@@ -6,13 +6,12 @@ import com.team4.isamrs.dto.creation.AdminCreationDTO;
 import com.team4.isamrs.dto.creation.CustomerCreationDTO;
 import com.team4.isamrs.dto.creation.RegistrationRequestCreationDTO;
 import com.team4.isamrs.dto.creation.RemovalRequestCreationDTO;
-import com.team4.isamrs.dto.display.SessionDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
+import com.team4.isamrs.dto.display.SessionDisplayDTO;
 import com.team4.isamrs.dto.updation.AccountUpdationDTO;
 import com.team4.isamrs.dto.updation.InitialPasswordUpdationDTO;
 import com.team4.isamrs.dto.updation.PasswordUpdationDTO;
 import com.team4.isamrs.exception.*;
-import com.team4.isamrs.exception.error.RemovalRequestAlreadyCreatedException;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.user.*;
 import com.team4.isamrs.repository.*;
@@ -25,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 public class AccountService {

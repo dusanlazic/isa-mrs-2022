@@ -1,11 +1,13 @@
 package com.team4.isamrs.model.reservation;
 
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Data
 public class ReservationReport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,8 +2,10 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.ReservationReportCreationDTO;
 import com.team4.isamrs.dto.display.ReservationReportDisplayDTO;
+import com.team4.isamrs.dto.updation.ReservationReportUpdationDTO;
 import com.team4.isamrs.exception.ReservationIsNotCompletedException;
 import com.team4.isamrs.exception.ReservationReportAlreadyExistsException;
+import com.team4.isamrs.exception.ReservationReportAlreadyResolvedException;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.reservation.ReservationReport;
@@ -12,13 +14,16 @@ import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.repository.CustomerRepository;
 import com.team4.isamrs.repository.ReservationReportRepository;
 import com.team4.isamrs.repository.ReservationRepository;
+import com.team4.isamrs.security.EmailSender;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationReportService {
@@ -31,6 +36,9 @@ public class ReservationReportService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private EmailSender emailSender;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -58,7 +66,7 @@ public class ReservationReportService {
 
         if (dto.getCustomerWasLate()) {
             Customer customer = reservation.getCustomer();
-            customer.setPoints(customer.getPoints() + 1);
+            customer.setPenalties(customer.getPenalties() + 1);
             customerRepository.save(customer);
         }
 
@@ -73,5 +81,30 @@ public class ReservationReportService {
 
         ReservationReport report = reservationReportRepository.findByReservation(reservation).orElseThrow();
         return modelMapper.map(report, ReservationReportDisplayDTO.class);
+    }
+
+    public Collection<ReservationReportDisplayDTO> findAllPending() {
+        return reservationReportRepository.findByApprovalStatusEquals(ApprovalStatus.PENDING)
+                .stream().map(report -> modelMapper.map(report, ReservationReportDisplayDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    public void respondToReport(Long id, ReservationReportUpdationDTO dto) {
+        ReservationReport report = reservationReportRepository.findById(id).orElseThrow();
+        if (!report.getApprovalStatus().equals(ApprovalStatus.PENDING))
+            throw new ReservationReportAlreadyResolvedException();
+
+        if (dto.getApprove()) {
+            Customer customer = report.getReservation().getCustomer();
+            customer.setPenalties(customer.getPenalties() + 1);
+            report.setApprovalStatus(ApprovalStatus.APPROVED);
+            customerRepository.save(customer);
+            emailSender.sendReportApprovalEmail(report);
+        } else {
+            report.setApprovalStatus(ApprovalStatus.REJECTED);
+            emailSender.sendReportRejectionEmail(report);
+        }
+
+        reservationReportRepository.save(report);
     }
 }

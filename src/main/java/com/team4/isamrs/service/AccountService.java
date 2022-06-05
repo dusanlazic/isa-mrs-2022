@@ -144,6 +144,7 @@ public class AccountService {
         customer.setPassword(passwordEncoder.encode(customerDTO.getPassword()));
         customer.setEnabled(false);
         customer.setPoints(0);
+        customer.setPenalties(0);
         customer.getAuthorities().add(roleRepository.findByName("ROLE_CUSTOMER").orElseThrow());
         customerRepository.save(customer);
 

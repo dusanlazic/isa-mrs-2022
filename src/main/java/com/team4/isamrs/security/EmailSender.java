@@ -1,9 +1,8 @@
 package com.team4.isamrs.security;
 
-import com.team4.isamrs.model.user.Administrator;
-import com.team4.isamrs.model.user.Customer;
-import com.team4.isamrs.model.user.RegistrationRequest;
-import com.team4.isamrs.model.user.RemovalRequest;
+import com.team4.isamrs.model.advertisement.Advertisement;
+import com.team4.isamrs.model.reservation.ReservationReport;
+import com.team4.isamrs.model.user.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -94,6 +93,38 @@ public class EmailSender {
         variables.put("reason", removalRequest.getRejectionReason());
 
         sendEmail("removal/rejection.html", variables, "Your request for account removal has been REJECTED", removalRequest.getUser().getUsername());
+    }
+
+    public void sendReportApprovalEmail(ReservationReport report) {
+        Customer customer = report.getReservation().getCustomer();
+        Advertisement advertisement = report.getReservation().getAdvertisement();
+        Advertiser advertiser = report.getReservation().getAdvertisement().getAdvertiser();
+
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("customer_name", customer.getFirstName());
+        variables.put("ad_title", advertisement.getTitle());
+        variables.put("advertiser_name", advertiser.getFirstName());
+        variables.put("comment", report.getComment());
+        variables.put("penalties", customer.getPenalties().toString());
+
+        sendEmail("report/approval-customer.html", variables, "You got a penalty!", customer.getUsername());
+        sendEmail("report/approval-advertiser.html", variables, "Your customer got a penalty!", advertiser.getUsername());
+    }
+
+    public void sendReportRejectionEmail(ReservationReport report) {
+        Customer customer = report.getReservation().getCustomer();
+        Advertisement advertisement = report.getReservation().getAdvertisement();
+        Advertiser advertiser = report.getReservation().getAdvertisement().getAdvertiser();
+
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("customer_name", customer.getFirstName());
+        variables.put("ad_title", advertisement.getTitle());
+        variables.put("advertiser_name", advertiser.getFirstName());
+        variables.put("comment", report.getComment());
+        variables.put("penalties", customer.getPenalties().toString());
+
+        sendEmail("report/rejection-customer.html", variables, "You did not get a penalty", customer.getUsername());
+        sendEmail("report/rejection-advertiser.html", variables, "Your customer did not get a penalty", advertiser.getUsername());
     }
 
     private String buildEmailFromTemplate(String filename, HashMap<String, String> variables) throws IOException {

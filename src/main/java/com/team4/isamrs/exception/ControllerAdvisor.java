@@ -158,4 +158,12 @@ public class ControllerAdvisor {
                 HttpStatus.CONFLICT.value(),
                 "Cannot create report for a reservation that is not completed.");
     }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ReservationReportAlreadyResolvedException.class)
+    public ExceptionResponseBody handleReservationReportAlreadyResolvedException(ReservationReportAlreadyResolvedException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                "Cannot respond to the reservation report since it is already resolved.");
+    }
 }

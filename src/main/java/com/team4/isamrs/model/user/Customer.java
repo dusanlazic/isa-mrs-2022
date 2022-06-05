@@ -32,4 +32,7 @@ public class Customer extends User {
     
     @Column(name = "points", nullable = false)
     private Integer points;
+
+    @Column(name = "penalties", nullable = false)
+    private Integer penalties;
 }

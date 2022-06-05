@@ -2,10 +2,7 @@ package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.ResponseOK;
 import com.team4.isamrs.dto.creation.AdminCreationDTO;
-import com.team4.isamrs.dto.display.LoyaltyProgramCategoryDetailedDisplayDTO;
-import com.team4.isamrs.dto.display.LoyaltyProgramSettingsDisplayDTO;
-import com.team4.isamrs.dto.display.RegistrationRequestDisplayDTO;
-import com.team4.isamrs.dto.display.RemovalRequestDisplayDTO;
+import com.team4.isamrs.dto.display.*;
 import com.team4.isamrs.dto.updation.*;
 import com.team4.isamrs.model.config.GlobalSetting;
 import com.team4.isamrs.service.*;
@@ -33,6 +30,9 @@ public class AdminController {
 
     @Autowired
     private RemovalRequestService removalRequestService;
+
+    @Autowired
+    private ReservationReportService reservationReportService;
 
     @Autowired
     private LoyaltyProgramService loyaltyProgramService;
@@ -78,6 +78,19 @@ public class AdminController {
     public ResponseOK respondToRemovalRequest(@PathVariable Long id, @Valid @RequestBody RemovalRequestUpdationDTO dto) {
         removalRequestService.respondToRequest(id, dto);
         return new ResponseOK("Request resolved.");
+    }
+
+    @GetMapping(value = "/reservation-reports", consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public Collection<ReservationReportDisplayDTO> findAllPendingReservationReports() {
+        return reservationReportService.findAllPending();
+    }
+
+    @PatchMapping(value = "/reservation-reports/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseOK respondToReservationReport(@PathVariable Long id, @Valid @RequestBody ReservationReportUpdationDTO dto) {
+        reservationReportService.respondToReport(id, dto);
+        return new ResponseOK("Report resolved");
     }
 
     @GetMapping(value = "/system/loyalty/settings", consumes = MediaType.ALL_VALUE)

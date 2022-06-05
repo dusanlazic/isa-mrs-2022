@@ -55,6 +55,19 @@ public class TestDataSupplierService {
 
     Random random = new Random();
 
+
+    String adminEmail = "admin@pecaj.ga";
+    String resortOwnerEmail = "maja@gmail.com";
+    String fishingInstructorEmail = "lazard@test.rs";
+    String boatOwnerEmail = "draganb@test.rs";
+    String customerEmail = "stevade@test.rs";
+
+
+    /*
+    String resortOwnerEmail = "hbnezzcpxznszsnunt@kvhrs.com";
+    String customerEmail = "suasfrfgzdgijgjxdd@kvhrw.com";
+     */
+
     @Transactional
     public void injectTestData() {
         createTestAccounts();
@@ -69,7 +82,7 @@ public class TestDataSupplierService {
         administrator.setAddress("Kod mene kući BB");
         administrator.setCity("Novi Sad");
         administrator.setCountryCode("RS");
-        administrator.setUsername("admin@pecaj.ga");
+        administrator.setUsername(adminEmail);
         administrator.setFirstName("Dusan");
         administrator.setLastName("Lazic");
         administrator.setPassword(passwordEncoder.encode("cascaded"));
@@ -83,7 +96,7 @@ public class TestDataSupplierService {
         resortOwner.setAddress("Kod mene kući BB");
         resortOwner.setCity("Novi Sad");
         resortOwner.setCountryCode("RS");
-        resortOwner.setUsername("maja@gmail.com");
+        resortOwner.setUsername(resortOwnerEmail);
         resortOwner.setFirstName("Maja");
         resortOwner.setLastName("Majic");
         resortOwner.setPassword(passwordEncoder.encode("cascaded"));
@@ -98,7 +111,7 @@ public class TestDataSupplierService {
         boatOwner.setAddress("Kod mene kući BB");
         boatOwner.setCity("Novi Sad");
         boatOwner.setCountryCode("RS");
-        boatOwner.setUsername("draganb@test.rs");
+        boatOwner.setUsername(boatOwnerEmail);
         boatOwner.setFirstName("Dragan");
         boatOwner.setLastName("Bjelogrlić");
         boatOwner.setPassword(passwordEncoder.encode("cascaded"));
@@ -113,7 +126,7 @@ public class TestDataSupplierService {
         fishingInstructor.setAddress("Kod mene kući BB");
         fishingInstructor.setCity("Novi Sad");
         fishingInstructor.setCountryCode("RS");
-        fishingInstructor.setUsername("lazard@test.rs");
+        fishingInstructor.setUsername(fishingInstructorEmail);
         fishingInstructor.setFirstName("Lazar");
         fishingInstructor.setLastName("Dušanić");
         fishingInstructor.setPassword(passwordEncoder.encode("cascaded"));
@@ -128,7 +141,7 @@ public class TestDataSupplierService {
         customer.setAddress("Kod mene kući BB");
         customer.setCity("Novi Sad");
         customer.setCountryCode("RS");
-        customer.setUsername("stevade@test.rs");
+        customer.setUsername(customerEmail);
         customer.setFirstName("Stevan");
         customer.setLastName("Dejan");
         customer.setPassword(passwordEncoder.encode("cascaded"));
@@ -136,11 +149,12 @@ public class TestDataSupplierService {
         customer.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
         customer.setPhoneNumber("4369911628747");
         customer.setPoints(110);
+        customer.setPenalties(0);
         userRepository.save(customer);
     }
 
     private void addResorts() {
-        Advertiser advertiser = (Advertiser) userRepository.findByUsername("maja@gmail.com").get();
+        Advertiser advertiser = (Advertiser) userRepository.findByUsername(resortOwnerEmail).get();
 
         Tag tag1 = new Tag("TV");
         Tag tag2 = new Tag("Wi-Fi");
@@ -207,7 +221,7 @@ public class TestDataSupplierService {
     private void addBoats() {
         Random random = new Random();
 
-        Advertiser advertiser = (Advertiser) userRepository.findByUsername("draganb@test.rs").get();
+        Advertiser advertiser = (Advertiser) userRepository.findByUsername(boatOwnerEmail).get();
 
         Tag tag1 = new Tag("Bar");
         Tag tag2 = new Tag("Bed");
@@ -278,7 +292,7 @@ public class TestDataSupplierService {
     private void addAdventures() {
         Random random = new Random();
 
-        Advertiser advertiser = (Advertiser) userRepository.findByUsername("lazard@test.rs").get();
+        Advertiser advertiser = (Advertiser) userRepository.findByUsername(fishingInstructorEmail).get();
 
         Tag tag1 = new Tag("Boat");
         Tag tag2 = new Tag("Fishing nets");

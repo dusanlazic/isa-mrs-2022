@@ -22,14 +22,15 @@ INSERT INTO photo(id, original_filename, stored_filename,
 VALUES ('ac29818c-5e95-438c-85ff-da0a25cd188c',
 'seveneightnine.png', '789789789.png', 1335053);
 
+/*
 INSERT INTO customer(id, avatar_id, first_name, last_name,
 username, address, city, country_code, phone_number,
-password, enabled, points) VALUES
+password, enabled, points, penalties) VALUES
 (1001, '2d74b08c-b270-4d7a-ae26-c278bd13816c', 'John', 'Smith',
 'smith25@email.com', 'Karadjordjeva bb', 'Novi Sad',
-'RS', '0696969696', 'password', true, 0);
+'RS', '0696969696', 'password', true, 0, 0);
 
-/*
+
 INSERT INTO public.advertiser(
     id, enabled, address, city, country_code, username, first_name, last_name, password, phone_number, avatar_id, points)
 VALUES (1002, TRUE , 'Mise Dimitrijevica 1', 'Novi Sad', 'SR', 'maja@gmail.com', 'Maja', 'Majic', 'majamaja', '12345678', 'ac29818c-5e95-438c-85ff-da0a25cd188c', 0);

@@ -5,6 +5,7 @@ import ReactFlagsSelect from "react-flags-select";
 import DeletionModal from "../modals/DeletionModal"
 import { Icon } from '@iconify/react';
 import Map from "../profile/additional/Map";
+import MessageModal from "../modals/MessageModal";
 
 const BoatInfoUpdateEditor = ({ data, advertisementId }) => {
   const [showModal, setShowModal] = useState(false);
@@ -42,6 +43,9 @@ const BoatInfoUpdateEditor = ({ data, advertisementId }) => {
 
   const [currentPosition, setCurrentPosition] = useState( {lat: data.address.latitude, lng: data.address.longitude} )
 
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageModalText, setMessageModalText] = useState('');
+
   const navigate = useNavigate();
 
   const updateAvailability = () => {
@@ -50,11 +54,11 @@ const BoatInfoUpdateEditor = ({ data, advertisementId }) => {
       availableUntil: availableUntil === "" ? null : availableUntil
     })
       .then((response) => {
-        alert(response.data.message);
         navigate(`/boat/${advertisementId}`);
       })
       .catch((error) => {
-        alert(error.response.data.message);
+        setMessageModalText(error.response.data.message);
+        setShowMessageModal(true);
       });
   }
 
@@ -91,11 +95,11 @@ const BoatInfoUpdateEditor = ({ data, advertisementId }) => {
       checkOutTime: checkOutTime
     })
       .then((response) => {
-        alert(response.data.message);
         navigate(`/boat/${advertisementId}`);
       })
       .catch((error) => {
-        alert(error.response.data.message);
+        setMessageModalText(error.response.data.message);
+        setShowMessageModal(true);
       });
   }
 

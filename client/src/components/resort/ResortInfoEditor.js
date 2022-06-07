@@ -6,6 +6,8 @@ import ReactFlagsSelect from "react-flags-select";
 import Map from "../profile/additional/Map";
 import { date } from "yup";
 
+import MessageModal from "../modals/MessageModal";
+
 const ResortInfoEditor = () => {
   const [title, setTitle] = useState(null);
   const [description, setDescription] = useState(null);
@@ -32,6 +34,9 @@ const ResortInfoEditor = () => {
   const [currentPosition, setCurrentPosition] = useState( [45.2461818273899, 19.85138567223834] )
 
   const [bedCountPerRoom, setBedCountPerRoom] = useState([0])
+
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageModalText, setMessageModalText] = useState('');
 
   const navigate = useNavigate();
 
@@ -64,11 +69,11 @@ const ResortInfoEditor = () => {
       availableUntil: availableUntil
      })
     .then((response) => {
-      alert(response.data.message);
       navigate(`/resort/${response.data.id}`);
     })
     .catch((error) => {
-      alert(error.response.data.message);
+      setMessageModalText(error.response.data.message);
+      setShowMessageModal(true);
     });
   }
 
@@ -398,7 +403,7 @@ const ResortInfoEditor = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 mt-2 gap-x-3 mt-4">
+      <div className="grid grid-cols-2 mt-2 gap-x-3">
         <div className="block col-span-2 text-left">
           <label className="text-xs">Pricing description</label>
           <textarea placeholder="additional info about prices"
@@ -481,6 +486,10 @@ focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
 
       </div>
 
+      {showMessageModal &&
+      <MessageModal  closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+      />}
+      
     </div>
    );
 }

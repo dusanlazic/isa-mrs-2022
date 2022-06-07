@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import ReactFlagsSelect from "react-flags-select";
 import Map from "../profile/additional/Map";
+import MessageModal from "../modals/MessageModal";
 
 const AdventureInfoEditor = () => {
   const [title, setTitle] = useState(null);
@@ -29,6 +30,9 @@ const AdventureInfoEditor = () => {
   const [photoIds, setPhotoIds] = useState([])
 
   const [currentPosition, setCurrentPosition] = useState( [45.2461818273899, 19.85138567223834] )
+
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageModalText, setMessageModalText] = useState('');
 
   const navigate = useNavigate();
 
@@ -60,11 +64,11 @@ const AdventureInfoEditor = () => {
       photoIds: photoIds
      })
     .then((response) => {
-      alert(response.data.message);
       navigate(`/adventure/${response.data.id}`);
     })
     .catch((error) => {
-      alert(error.response.data.message);
+      setMessageModalText(error.response.data.message);
+      setShowMessageModal(true);
     });
   }
 
@@ -423,6 +427,10 @@ focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
 
       </div>
+
+      {showMessageModal &&
+      <MessageModal  closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+      />}
 
     </div>
    );

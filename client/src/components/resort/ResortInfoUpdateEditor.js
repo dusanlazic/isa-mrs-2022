@@ -5,6 +5,7 @@ import ReactFlagsSelect from "react-flags-select";
 import DeletionModal from "../modals/DeletionModal"
 import { Icon } from '@iconify/react';
 import Map from "../profile/additional/Map";
+import MessageModal from "../modals/MessageModal";
 
 const ResortInfoUpdateEditor = ({ data, advertisementId }) => {
   const [showModal, setShowModal] = useState(false);
@@ -37,6 +38,9 @@ const ResortInfoUpdateEditor = ({ data, advertisementId }) => {
   const [numberOfRooms, setNumberOfRooms] = useState(data.bedCountPerRoom.length);
   const [bedCountPerRoom, setBedCountPerRoom] = useState(data.bedCountPerRoom)
 
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageModalText, setMessageModalText] = useState('');
+
   const navigate = useNavigate();
 
   const updateAvailability = () => {
@@ -45,11 +49,11 @@ const ResortInfoUpdateEditor = ({ data, advertisementId }) => {
       availableUntil: availableUntil === "" ? null : availableUntil
     })
       .then((response) => {
-        alert(response.data.message);
         navigate(`/resort/${advertisementId}`);
       })
       .catch((error) => {
-        alert(error.response.data.message);
+        setMessageModalText(error.response.data.message);
+        setShowMessageModal(true);
       });
   }
 
@@ -79,11 +83,11 @@ const ResortInfoUpdateEditor = ({ data, advertisementId }) => {
       checkOutTime: checkOutTime
     })
       .then((response) => {
-        alert(response.data.message);
         navigate(`/resort/${advertisementId}`);
       })
       .catch((error) => {
-        alert(error.response.data.message);
+        setMessageModalText(error.response.data.message);
+        setShowMessageModal(true);
       });
   }
 
@@ -621,10 +625,14 @@ focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
       </div>
 
-			{showModal && <DeletionModal  closeFunction = {() => hide(false)}
-                                      deleteFunction = {() => deleteAdvertisement()}
-                                      text = {`Are you sure you want to permanently delete ${ data.title }? This action cannot be undone.`}
-        />}
+			{showModal &&
+      <DeletionModal  closeFunction = {() => hide(false)}
+        deleteFunction = {() => deleteAdvertisement()}
+        text = {`Are you sure you want to permanently delete ${ data.title }? This action cannot be undone.`}
+      />}
+      {showMessageModal &&
+      <MessageModal  closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+      />}
 
     </div>
   );

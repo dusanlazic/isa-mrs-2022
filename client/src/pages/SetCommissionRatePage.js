@@ -3,11 +3,16 @@ import { get, put } from "../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import { Icon } from "@iconify/react";
 
+import MessageModal from "../components/modals/MessageModal";
+
 const SetCommissionRatePage = () => {
   const [value, setValue] = useState(null);
   
   const navigate = useNavigate();
   const [errors, setErrors] = useState(null);
+
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageModalText, setMessageModalText] = useState('');
 
   useEffect(() => {
     get(`/api/admin/system/commission-rate`)
@@ -24,11 +29,13 @@ const SetCommissionRatePage = () => {
       value: value,
     })
     .then((response) => {
-      alert(response.data.message);
+      setMessageModalText(response.data.message);
+      setShowMessageModal(true);
     })
     .catch((error) => {
       setErrors(error.response.data.errors);
-      alert(error.response.data.message);
+      setMessageModalText(error.response.data.message);
+      setShowMessageModal(true);
     });
   }
 
@@ -74,6 +81,10 @@ const SetCommissionRatePage = () => {
           </div>
         </div>
       </div>
+
+      {showMessageModal &&
+      <MessageModal  closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+      />}
 
     </div>
    );

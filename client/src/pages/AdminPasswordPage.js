@@ -33,7 +33,6 @@ const AdminPasswordPage = () => {
       passwordConfirmation: passwordConfirmation
     })
     .then((response) => {
-      alert(response.data.message);
       logout();
       navigate(`/login`);
     })
@@ -93,7 +92,7 @@ const AdminPasswordPage = () => {
 
             <div className="flex justify-end mt-16 md:mt-6"> 
               <input type="submit" value="Log out" className="inline-flex justify-center rounded-md shadow-sm
-              px-6 py-2 bg-pine text-base font-medium text-gray-700 bg-gray-300 hover:bg-gray-400 active:bg-gray-500 cursor-pointer
+              px-6 py-2 text-base font-medium text-gray-700 bg-gray-300 hover:bg-gray-400 active:bg-gray-500 cursor-pointer
               focus:outline-none w-full mr-3 md:w-auto sm:text-sm"
               onClick={logUserOut}/>
               <input type="submit" value="Change password" className="inline-flex justify-center rounded-md shadow-sm

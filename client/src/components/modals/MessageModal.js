@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 
-export default function DeletionModal ({ closeFunction, text })  {
+export default function MessageModal ({ closeFunction, text })  {
   const [open, setOpen] = useState(true)
 
   const hide = () => {

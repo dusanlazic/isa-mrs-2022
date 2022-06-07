@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import ReactFlagsSelect from "react-flags-select";
 import Map from "../profile/additional/Map";
+import MessageModal from "../modals/MessageModal";
 
 const BoatInfoEditor = () => {
   const [title, setTitle] = useState(null);
@@ -36,6 +37,9 @@ const BoatInfoEditor = () => {
   const [navigationalEquipment, setNavigationalEquipment] = useState(null);
 
   const [currentPosition, setCurrentPosition] = useState( [45.2461818273899, 19.85138567223834] )
+
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageModalText, setMessageModalText] = useState('');
 
   const navigate = useNavigate();
 
@@ -74,11 +78,11 @@ const BoatInfoEditor = () => {
       checkOutTime: checkOut
     })
       .then((response) => {
-        alert(response.data.message);
         navigate(`/boat/${response.data.id}`);
       })
       .catch((error) => {
-        alert(error.response.data.message);
+      setMessageModalText(error.response.data.message);
+      setShowMessageModal(true);
       });
   }
 
@@ -414,7 +418,7 @@ const BoatInfoEditor = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 mt-2 gap-x-3 mt-4">
+      <div className="grid grid-cols-2 gap-x-3 mt-4">
         <div className="block col-span-2 text-left">
           <label className="text-xs">Pricing description</label>
           <textarea placeholder="additional info about prices"
@@ -496,6 +500,10 @@ focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>
         </div>
 
       </div>
+      
+      {showMessageModal &&
+      <MessageModal  closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+      />}
 
     </div>
   );

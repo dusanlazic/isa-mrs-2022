@@ -157,9 +157,9 @@ const MainProfileInfoEditor = ({data, refreshData}) => {
 
       </div>
 
-      {showMessageModal && <MessageModal  closeFunction = {() => setShowMessageModal(false)}
-                                    text = { messageModalText }
-        	/>}
+      {showMessageModal &&
+      <MessageModal  closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+      />}
 
     </div>
    );

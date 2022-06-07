@@ -5,6 +5,7 @@ import ReactFlagsSelect from "react-flags-select";
 import DeletionModal from "../modals/DeletionModal"
 import { Icon } from '@iconify/react';
 import Map from "../profile/additional/Map";
+import MessageModal from "../modals/MessageModal";
 
 const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
   const [showModal, setShowModal] = useState(false);
@@ -35,6 +36,9 @@ const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
 
   const [currentPosition, setCurrentPosition] = useState( {lat: data.address.latitude, lng: data.address.longitude} )
 
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageModalText, setMessageModalText] = useState('');
+
   const navigate = useNavigate();
 
   const updateAvailability = () => {
@@ -43,11 +47,11 @@ const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
       availableUntil: availableUntil === "" ? null : availableUntil
     })
       .then((response) => {
-        alert(response.data.message);
         navigate(`/adventure/${advertisementId}`);
       })
       .catch((error) => {
-        alert(error.response.data.message);
+        setMessageModalText(error.response.data.message);
+        setShowMessageModal(true);
       });
   }
 
@@ -79,11 +83,11 @@ const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
       photoIds: photoIds
     })
       .then((response) => {
-        alert(response.data.message);
         navigate(`/adventure/${advertisementId}`);
       })
       .catch((error) => {
-        alert(error.response.data.message);
+        setMessageModalText(error.response.data.message);
+        setShowMessageModal(true);
       });
   }
 
@@ -497,7 +501,7 @@ const AdventureInfoUpdateEditor = ({ data, advertisementId }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 mt-2 gap-x-3 mt-4">
+      <div className="grid grid-cols-3 gap-x-3 mt-4">
         <div className="block col-span-2 text-left">
           <label className="text-xs">pricing description</label>
           <textarea placeholder="additional info about prices"
@@ -583,9 +587,13 @@ text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base mb-1.5 mt-3 md:mt-0"
         </div>
       </div>
 
-      {showModal && <DeletionModal closeFunction={() => hide(false)}
+      {showModal && 
+      <DeletionModal closeFunction={() => hide(false)}
         deleteFunction={() => deleteAdvertisement()}
         text={`Are you sure you want to permanently delete ${data.title}? This action cannot be undone.`}
+      />}
+      {showMessageModal &&
+      <MessageModal  closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
       />}
 
     </div>

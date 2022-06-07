@@ -3,6 +3,8 @@ import { get, put, post } from "../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import { Icon } from "@iconify/react";
 
+import MessageModal from "../components/modals/MessageModal";
+
 const ManageLoyaltyProgramPage = () => {
   const [clientScorePerReservation, setClientScorePerReservation] = useState(null);
   const [advertiserScorePerReservation, setAdvertiserScorePerReservation] = useState(null);
@@ -13,6 +15,10 @@ const ManageLoyaltyProgramPage = () => {
   const [errors, setErrors] = useState(null);
 
   const [deleteCategories, setDeleteCategories] = useState([])
+
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageModalText, setMessageModalText] = useState('');
+  
   
   useEffect(() => {
     get(`/api/admin/system/loyalty/settings`)
@@ -147,10 +153,12 @@ const ManageLoyaltyProgramPage = () => {
       delete: deleteCategories
     })
     .then((response) => {
-      alert(response.data.message);
+      setMessageModalText('Categories successfully updated!');
+      setShowMessageModal(true);
     })
     .catch((error) => {
-      alert(error.response.data.message);
+      setMessageModalText(`Error: ${error.response.data.message}`);
+      setShowMessageModal(true);
     });
   }
 
@@ -160,10 +168,12 @@ const ManageLoyaltyProgramPage = () => {
       advertiserScorePerReservation: advertiserScorePerReservation
     })
     .then((response) => {
-      alert(response.data.message);
+      setMessageModalText('Scores successfully updated!');
+      setShowMessageModal(true);
     })
     .catch((error) => {
-      alert(error.response.data.message);
+      setMessageModalText(`Error: ${error.response.data.message}`);
+      setShowMessageModal(true);
     });
   }
 
@@ -401,6 +411,10 @@ const ManageLoyaltyProgramPage = () => {
           </div>
         </div>
       </div>
+
+      {showMessageModal &&
+      <MessageModal  closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+      />}
 
     </div>
    );

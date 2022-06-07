@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import { patch } from "../../adapters/xhr";
 
+import MessageModal from "../modals/MessageModal";
+
 const PasswordEditor = () => {
   const [currentPassword, setCurrentPassword] = useState(null);
   const [newPassword, setNewPassword] = useState(null);
   const [passwordConfirmation, setPasswordConfirmation] = useState(null);
   const [passwordConfirmationChanged, setPasswordConfirmationChanged] = useState(false)
+
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageModalText, setMessageModalText] = useState('');
 
   const [errors, setErrors] = useState(null);
 
@@ -20,7 +25,8 @@ const PasswordEditor = () => {
       passwordConfirmation: passwordConfirmation
     })
     .then((response) => {
-      alert(response.data.message);
+      setMessageModalText('Password successfully changed!');
+      setShowMessageModal(true);
     })
     .catch((error) => {
       if (error.response.data.errors !== undefined) {
@@ -88,6 +94,11 @@ const PasswordEditor = () => {
           </div>
         </div>    
       </div>
+      
+      {showMessageModal &&
+      <MessageModal  closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+      />}
+      
     </div>
    );
 }

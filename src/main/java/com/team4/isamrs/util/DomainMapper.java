@@ -356,7 +356,7 @@ public class DomainMapper {
             AccountDisplayDTO destination = context.getDestination();
 
             destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
-
+            destination.setAvatar(modelMapper.map(source.getAvatar(), PhotoBriefDisplayDTO.class));
             return destination;
         };
 
@@ -365,7 +365,7 @@ public class DomainMapper {
             AccountDisplayDTO destination = context.getDestination();
 
             destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
-
+            destination.setAvatar(modelMapper.map(source.getAvatar(), PhotoBriefDisplayDTO.class));
             return destination;
         };
 
@@ -374,7 +374,7 @@ public class DomainMapper {
             AccountDisplayDTO destination = context.getDestination();
 
             destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
-
+            destination.setAvatar(modelMapper.map(source.getAvatar(), PhotoBriefDisplayDTO.class));
             return destination;
         };
 
@@ -383,7 +383,7 @@ public class DomainMapper {
             AccountDisplayDTO destination = context.getDestination();
 
             destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
-
+            destination.setAvatar(modelMapper.map(source.getAvatar(), PhotoBriefDisplayDTO.class));
             return destination;
         };
 

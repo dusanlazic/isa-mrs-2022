@@ -74,8 +74,11 @@ public class AccountService {
 
     public void updateAccount(AccountUpdationDTO dto, Authentication auth) {
         User user = (User) auth.getPrincipal();
-
         modelMapper.map(dto, user);
+
+        if (dto.getPhoto() != null)
+            user.setAvatar(photoRepository.findById(dto.getPhoto()).orElseThrow());
+
         userRepository.save(user);
     }
 

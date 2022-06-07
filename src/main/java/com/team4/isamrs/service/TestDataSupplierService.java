@@ -57,13 +57,13 @@ public class TestDataSupplierService {
 
 
     String adminEmail = "admin@pecaj.ga";
-    // String resortOwnerEmail = "maja@gmail.com";
+    String resortOwnerEmail = "maja@gmail.com";
     String fishingInstructorEmail = "lazard@test.rs";
     String boatOwnerEmail = "draganb@test.rs";
-    // String customerEmail = "stevade@test.rs";
+    String customerEmail = "stevade@test.rs";
 
-    String resortOwnerEmail = "lqhlapvekltucfsyiq@nthrw.com";
-    String customerEmail = "unwrhnjzxusichfqip@bvhrk.com";
+//    String resortOwnerEmail = "lqhlapvekltucfsyiq@nthrw.com";
+//    String customerEmail = "unwrhnjzxusichfqip@bvhrk.com";
 
 
     @Transactional

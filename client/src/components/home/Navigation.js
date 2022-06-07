@@ -57,7 +57,8 @@ const Navigation = () => {
         }
         {isSessionActive &&
           <div className='dropdown dropdown-end'>
-            <label tabIndex="0" className='btn' id="dropdown-btn-nav-1" onClick={() => handleDropdown()}>
+            <label tabIndex="0" className='btn' id="dropdown-btn-nav-1" onClick={() => handleDropdown()}
+            onBlur={e => setIsDropdownOpen(false)}>
               <Icon className="w-10 h-10 text-gray-600 bg-silver-accent rounded-full" icon="tabler:user-circle" inline={true} />
             </label>
             <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-silver-accent text-left rounded-box w-40">

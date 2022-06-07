@@ -33,6 +33,6 @@ public class AccountCreationDTO {
     private String countryCode;
 
     @NotBlank
-    @Pattern(regexp = "[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}")
+    @Pattern(regexp = "[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}", message="Invalid phone number.")
     private String phoneNumber;
 }

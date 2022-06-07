@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ReactFlagsSelect from "react-flags-select";
-import { put } from "../../adapters/xhr";
+import { post, put } from "../../adapters/xhr";
 import { getWhoAmI } from "../../adapters/login";
 
 import MessageModal from "../modals/MessageModal";
@@ -9,6 +9,7 @@ const MainProfileInfoEditor = ({data, refreshData}) => {
 
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [avatar, setAvatar] = useState(data.avatar.uri);
   const [firstName, setFirstName] = useState(data.firstName);
   const [lastName, setLastName] = useState(data.lastName);
   const [phoneNumber, setPhoneNumber] = useState(data.phoneNumber);
@@ -25,11 +26,17 @@ const MainProfileInfoEditor = ({data, refreshData}) => {
       setImageFile(file);
       setImage(URL.createObjectURL(file));
     }
+    const data = new FormData();
+    data.append('file', file);
+    post(`/api/photos/upload`, data)
+      .then((response) => {
+        setAvatar(response.data)
+      });
   }
 
   const updateAccount = () => {
     put(`/api/account`, {id: data.id, firstName, lastName, phoneNumber, city, address,
-      countryCode: selectedCountry, emailAddress:data.emailAddress})
+      countryCode: selectedCountry, emailAddress:data.emailAddress, photo: avatar == null ? null : avatar.id})
     .then(response => {
       getWhoAmI();
       setMessageModalText('Changes saved successfully!');
@@ -37,7 +44,12 @@ const MainProfileInfoEditor = ({data, refreshData}) => {
       refreshData();
     })
     .catch(error => {
-      setMessageModalText(error.response.data.message);
+      if (error.response.data.errors != null) {
+        if (Object.keys(error.response.data.errors).length > 0)
+        setMessageModalText(error.response.data.errors[Object.keys(error.response.data.errors)[0]]);
+      }
+      else
+        setMessageModalText(error.response.data.message);
       setShowMessageModal(true);
     });
   }
@@ -53,7 +65,7 @@ const MainProfileInfoEditor = ({data, refreshData}) => {
             hover:outline-gray-600
           hover:border-gray-300 cursor-pointer">
 
-            <img id="image-preview" src={image != null ? image : 'images/fish_guy.jpg'}
+            <img id="image-preview" src={data.avatar.uri !== null ? `/api${data.avatar.uri}` : '/images/fish_guy.jpg'}
             className="flex-none w-24 h-24 rounded-xl object-cover"/>
 
             <input type="file" accept="image/*" onChange={() => uploadImage()} id="image-input" 

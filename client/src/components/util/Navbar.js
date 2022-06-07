@@ -16,7 +16,7 @@ const Navbar = () => {
   useEffect(() => {
     setIsSessionActive(getToken() !== undefined ? true : false);
     setSession(getSession());
-  }, [])
+  }, [getSession()])
 
   const logUserOut = () => {
     logout();
@@ -64,7 +64,8 @@ const Navbar = () => {
         }
         {isSessionActive &&
           <div className='dropdown dropdown-end my-auto'>
-            <label tabIndex="0" className='btn' id="dropdown-btn-nav-2" onClick={() => handleDropdown()}>
+            <label tabIndex="0" className='btn' id="dropdown-btn-nav-2" onClick={() => handleDropdown()}
+            onBlur={e => setIsDropdownOpen(false)}>
               <Icon className="w-10 h-10 text-gray-600 bg-silver-accent rounded-full" icon="tabler:user-circle" inline={true} />
             </label>
             <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-silver-accent text-left rounded-box w-40">

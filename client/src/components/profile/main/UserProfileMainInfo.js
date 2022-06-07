@@ -6,7 +6,7 @@ const UserProfileMainInfo = ({data}) => {
   return ( 
     <div className="block md:flex bg-gray-100 rounded-lg p-10 pb-10">
       <div>
-        <img src={data.avatar.uri ? `/api/${data.avatar.uri}` : '/images/fish_guy.jpg'} alt="" className="flex-none w-64 h-64 md:w-44 md:h-44 xl:w-52
+        <img src={data.avatar.uri !== null ? `/api${data.avatar.uri}` : '/images/fish_guy.jpg'} alt="" className="flex-none w-64 h-64 md:w-44 md:h-44 xl:w-52
         xl:h-52 object-cover rounded-lg mx-auto" />
         {getSession() != null && data.id === getSession().id &&
         <Link to='/account'>

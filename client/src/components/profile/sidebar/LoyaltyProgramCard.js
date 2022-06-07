@@ -7,17 +7,17 @@ const LoyaltyProgramCard = ({data}) => {
     <div className="block border border-gray-100 rounded-lg text-left
     shadow-sm py-3 px-5 tracking-wide">
       <h1 className="text-xl font-medium text-gray-900">Loyalty Program</h1>
-      <div class="text-4xl">
+      <div className="text-4xl">
         <span className="font-bold" style={{color: data.category.color}}>{data.category.title}</span>
       </div>
 
       { data.category.pointsUpperBound === 2147483647
       ? <div>
-          <div class="text-2xl">
+          <div className="text-2xl">
             <span className="font-bold">{data.points}</span>
           </div>
 
-          <div class="w-full bg-gray-200 h-2 mt-2">
+          <div className="w-full bg-gray-200 h-2 mt-2">
             <div className="h-2" style={{
               backgroundColor: data.category.color, 
               width: "100%"
@@ -26,12 +26,12 @@ const LoyaltyProgramCard = ({data}) => {
           </div>
         </div>
       : <div>
-          <div class="text-2xl">
+          <div className="text-2xl">
             <span className="font-bold">{data.points}</span>
             <span className="text-gray-400">/{data.category.pointsUpperBound + 1}</span>
           </div>
 
-          <div class="w-full bg-gray-200 h-2 mt-2">
+          <div className="w-full bg-gray-200 h-2 mt-2">
             <div className="h-2" style={{
               backgroundColor: data.category.color, 
               width: percentage + "%"

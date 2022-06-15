@@ -21,6 +21,7 @@ module.exports = {
         'opensans': ['Open Sans', ...defaultTheme.fontFamily.serif],   
       },
       spacing: {
+        '68': '17rem',
         '84': '21rem',
         '108': '27rem',
         '120': '30rem',

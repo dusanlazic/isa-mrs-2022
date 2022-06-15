@@ -74,6 +74,14 @@ const SearchAndFilter = ({whereProp, entityProp, guestsProp, startDateProp, endD
     navigate(`/ads/${selectedEntity}${query}`);
   }
 
+  const handleSetGuests = (guests) => {
+    if (guests.length === 0) {
+      setGuests(guests);
+      return;
+    }
+    guests < 1 ? setGuests(1) : setGuests(guests);
+  }
+
   return ( 
     <div className="w-full text-left">
       <div className="bg-white rounded-xl shadow-sm p-6">
@@ -130,7 +138,7 @@ const SearchAndFilter = ({whereProp, entityProp, guestsProp, startDateProp, endD
             {guests &&
             <div className='absolute top-0.5 text-xs w-20 text-center font-thin text-slate-400 z-10'>guests:</div>}
             <input
-              onChange={(e) => setGuests(e.target.value)}
+              onChange={(e) => handleSetGuests(e.target.value)}
               placeholder="Guests"
               value={guests}
               type="number"

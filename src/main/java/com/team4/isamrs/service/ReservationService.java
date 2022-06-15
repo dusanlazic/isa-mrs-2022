@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.LockModeType;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -139,7 +140,7 @@ public class ReservationService {
     @Transactional
     public void create(Long id, ReservationCreationDTO dto, Authentication auth) {
         Customer customer = (Customer) auth.getPrincipal();
-        Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
+        Advertisement advertisement = advertisementRepository.findOneById(id).orElseThrow();
 
         if (dto.getEndDate().isBefore(dto.getStartDate()))
             throw new EndDateBeforeStartDateException("End date cannot be before start date.");

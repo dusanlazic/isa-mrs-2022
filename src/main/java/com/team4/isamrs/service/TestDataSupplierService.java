@@ -186,6 +186,17 @@ public class TestDataSupplierService {
             resort.setCapacity(i*2);
             resort.setPricePerDay(BigDecimal.valueOf(100+i*5));
 
+            List<Option> options = new ArrayList<>();
+            for (int j = 1; j <= 10; j++) {
+                Option option = new Option();
+                option.setName("Option " + j);
+                option.setMaxCount(j);
+                option.setAdvertisement(resort);
+                option.setDescription("Option description " + j);
+                options.add(option);
+            }
+            resort.setOptions(options);
+
             int galleryNumber = random.nextInt((4+1) - 1) + 1;
             for (int j = 1; j <= 3; j++) {
                 UUID uuid = UUID.randomUUID();

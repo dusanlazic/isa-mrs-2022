@@ -58,6 +58,7 @@ const ReservationDatePicker = ({data, type, selectionRange, setSelectionRange })
           fixedHeight={true}
           onShownDateChange={(x) => handleShownDateChange(x)}
           direction="horizontal"
+          rangeColors={['#0e7490', '#0e7490', '#0e7490']}
           className="h-min w-min border rounded-lg overflow-hidden"
         />
         </div>

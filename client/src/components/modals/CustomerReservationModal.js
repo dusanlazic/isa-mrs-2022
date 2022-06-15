@@ -28,7 +28,6 @@ const CustomerReservationModal = ({data, close}) => {
       else
         initOptions[option.id] = false;
     }
-    console.log(initOptions);
     setOptions(initOptions);
   }
 

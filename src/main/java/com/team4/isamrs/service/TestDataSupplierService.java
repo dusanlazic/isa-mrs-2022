@@ -318,6 +318,8 @@ public class TestDataSupplierService {
             adventure.setAvailableAfter(LocalDate.now());
             adventure.setAvailableUntil(LocalDate.now().plusMonths(3));
             adventure.setRules("No smoking!");
+            adventure.setCheckOutTime(LocalTime.parse("10:00"));
+            adventure.setCheckInTime(LocalTime.parse("14:00"));
             adventure.setCurrency("€");
             adventure.setCapacity(i*2);
             adventure.setPricePerPerson(BigDecimal.valueOf(40+i*3));
@@ -358,8 +360,8 @@ public class TestDataSupplierService {
         for (int i = 0; i < 5; i++) {
             Reservation reservation = new Reservation();
             reservation.setCreatedAt(LocalDateTime.now());
-            reservation.setStartDateTime(LocalDateTime.now().minusDays(10).plusHours(random.nextInt(24)));
-            reservation.setEndDateTime(LocalDateTime.now().minusDays(15).plusHours(random.nextInt(24)));
+            reservation.setStartDateTime(LocalDateTime.now().minusDays(15).plusHours(random.nextInt(24)));
+            reservation.setEndDateTime(LocalDateTime.now().minusDays(10).plusHours(random.nextInt(24)));
             reservation.setAdvertisement(ad);
             reservation.setCustomer(customers.get(random.nextInt(customers.size())));
             reservation.setCalculatedPrice(BigDecimal.valueOf(1337));

@@ -79,6 +79,38 @@ public class ControllerAdvisor {
                 ex.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ExceededOptionMaxCountValueException.class)
+    public ExceptionResponseBody handleExceededOptionMaxCountValueException(ExceededOptionMaxCountValueException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EndDateBeforeStartDateException.class)
+    public ExceptionResponseBody handleEndDateBeforeStartDateException(EndDateBeforeStartDateException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ExceededMaxAttendeesException.class)
+    public ExceptionResponseBody handleExceededMaxAttendeesException(ExceededMaxAttendeesException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ReservationPeriodUnavailableException.class)
+    public ExceptionResponseBody handleReservationPeriodUnavailableException(ReservationPeriodUnavailableException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ExceptionResponseBody handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {

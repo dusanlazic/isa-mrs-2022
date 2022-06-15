@@ -1,8 +1,11 @@
 package com.team4.isamrs.model.advertisement;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
+@Data
 public class SelectedOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

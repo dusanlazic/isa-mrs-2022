@@ -19,12 +19,6 @@ public class ResortAd extends Advertisement {
     @Column(name = "number_of_beds", nullable = false)
     private String numberOfBeds;
 
-    @Column(name = "check_out_time", nullable = false)
-    private LocalTime checkOutTime; // e.g. 10:00
-
-    @Column(name = "check_in_time", nullable = false)
-    private LocalTime checkInTime; // e.g. 13:00
-
     @Column(name = "price_per_day", nullable = false)
     private BigDecimal pricePerDay;
 }

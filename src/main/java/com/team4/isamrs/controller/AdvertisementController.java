@@ -2,12 +2,15 @@ package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.ResponseOK;
 import com.team4.isamrs.dto.creation.ComplaintCreationDTO;
+import com.team4.isamrs.dto.creation.ReservationCreationDTO;
+import com.team4.isamrs.dto.creation.ReservationReportCreationDTO;
 import com.team4.isamrs.dto.creation.ReviewCreationDTO;
 import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
 import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.service.AdvertisementService;
 import com.team4.isamrs.service.ComplaintService;
+import com.team4.isamrs.service.ReservationService;
 import com.team4.isamrs.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,7 +19,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.Collection;
+import java.util.Date;
 
 @RestController
 @RequestMapping(
@@ -34,6 +40,9 @@ public class AdvertisementController {
     @Autowired
     private ReviewService reviewService;
 
+    @Autowired
+    private ReservationService reservationService;
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADVERTISER')")
     public ResponseOK delete(@PathVariable Long id, Authentication auth) {
@@ -46,6 +55,13 @@ public class AdvertisementController {
     public ResponseOK updateAvailabilityPeriod(@PathVariable Long id, @Valid @RequestBody AvailabilityPeriodUpdationDTO dto, Authentication auth) {
         advertisementService.updateAvailabilityPeriod(id, dto, auth);
         return new ResponseOK("Availability period updated.");
+    }
+
+    @GetMapping(value="/{id}/unavailable-dates")
+    public Collection<LocalDate> getUnavailableDates(@PathVariable Long id,
+                                                     @RequestParam String year,
+                                                     @RequestParam String month) {
+        return advertisementService.getUnavailableDates(id, year, month);
     }
 
     @PostMapping(value = "/{id}/complaints", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -70,5 +86,12 @@ public class AdvertisementController {
     public ResponseOK createReview(@PathVariable Long id, @Valid @RequestBody ReviewCreationDTO dto, Authentication auth) {
         reviewService.create(id, dto, auth);
         return new ResponseOK("Review created.");
+    }
+
+    @PostMapping(value = "/{id}/reservations", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseOK createReportForReservation(@PathVariable Long id, @Valid @RequestBody ReservationCreationDTO dto, Authentication auth) {
+        reservationService.create(id, dto, auth);
+        return new ResponseOK("Reservation created.");
     }
 }

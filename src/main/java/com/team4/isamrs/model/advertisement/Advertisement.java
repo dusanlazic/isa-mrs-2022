@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -55,6 +56,12 @@ public abstract class Advertisement {
 
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
+
+    @Column(name = "check_out_time", nullable = false)
+    private LocalTime checkOutTime; // e.g. 10:00
+
+    @Column(name = "check_in_time", nullable = false)
+    private LocalTime checkInTime; // e.g. 13:00
 
     /*
     e.g. WIFI, Pet friendly, TV

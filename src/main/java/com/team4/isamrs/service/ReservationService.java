@@ -1,12 +1,19 @@
 package com.team4.isamrs.service;
 
+import com.team4.isamrs.dto.creation.ReservationCreationDTO;
 import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
+import com.team4.isamrs.exception.EndDateBeforeStartDateException;
+import com.team4.isamrs.exception.ExceededMaxAttendeesException;
+import com.team4.isamrs.exception.ExceededOptionMaxCountValueException;
+import com.team4.isamrs.exception.ReservationPeriodUnavailableException;
+import com.team4.isamrs.model.advertisement.*;
+import com.team4.isamrs.model.loyalty.LoyaltyProgramCategory;
+import com.team4.isamrs.model.loyalty.TargetedAccountType;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
+import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.model.user.User;
-import com.team4.isamrs.repository.AdvertiserRepository;
-import com.team4.isamrs.repository.ReservationReportRepository;
-import com.team4.isamrs.repository.ReservationRepository;
+import com.team4.isamrs.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,10 +22,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.time.Month;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +42,12 @@ public class ReservationService {
 
     @Autowired
     private AdvertiserRepository advertiserRepository;
+
+    @Autowired
+    private AdvertisementRepository advertisementRepository;
+
+    @Autowired
+    private LoyaltyProgramCategoryRepository loyaltyProgramCategoryRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -116,5 +132,132 @@ public class ReservationService {
         int toIndex = Math.min((fromIndex + pageable.getPageSize()), reservations.size());
 
         return new PageImpl<>(reservations.subList(fromIndex, toIndex), pageable, reservations.size());
+    }
+
+    public void create(Long id, ReservationCreationDTO dto, Authentication auth) {
+        Customer customer = (Customer) auth.getPrincipal();
+        Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
+
+        if (dto.getEndDate().isBefore(dto.getStartDate()))
+            throw new EndDateBeforeStartDateException("End date cannot be before start date.");
+
+        if (advertisement.getCapacity() < dto.getAttendees())
+            throw new ExceededMaxAttendeesException("Exceeded maximum number of attendees (" +
+                    advertisement.getCapacity() + ")");
+
+        if (!isAvailableForReservation(advertisement, dto.getStartDate(), dto.getEndDate()))
+            throw new ReservationPeriodUnavailableException("Unable to make reservation. Requested period is unavailable.");
+
+        Reservation reservation = new Reservation();
+        reservation.setCustomer(customer);
+        reservation.setAdvertisement(advertisement);
+        reservation.setCreatedAt(LocalDateTime.now());
+        reservation.setStartDateTime(dto.getStartDate().atTime(advertisement.getCheckInTime()));
+        reservation.setEndDateTime(dto.getEndDate().atTime(advertisement.getCheckOutTime()));
+        reservation.setCancelled(false);
+        reservation.setSelectedOptions(generateSelectedOptions(dto, advertisement));
+        reservation.setCalculatedPrice(calculateReservationPrice(dto, advertisement, customer));
+        reservationRepository.save(reservation);
+    }
+
+    private Set<SelectedOption> generateSelectedOptions(ReservationCreationDTO dto, Advertisement advertisement) {
+        return dto.getSelectedOptions()
+                .stream()
+                .map(selectedOptionDto -> {
+                    Option option = advertisement
+                            .getOptions()
+                            .stream()
+                            .filter(x -> x.getId().equals(selectedOptionDto.getOptionId()))
+                            .findFirst()
+                            .orElseThrow();
+                    if (selectedOptionDto.getCount() > option.getMaxCount()) {
+                        throw new ExceededOptionMaxCountValueException(
+                                "Selected value (" + selectedOptionDto.getCount() + ") for " + option.getName() +
+                                        " exceeds max value of " + option.getMaxCount());
+                    }
+                    SelectedOption selectedOption = new SelectedOption();
+                    selectedOption.setOption(option);
+                    selectedOption.setCount(selectedOptionDto.getCount());
+                    return selectedOption;
+                })
+                .collect(Collectors.toSet());
+    }
+
+    private BigDecimal calculateReservationPrice(ReservationCreationDTO dto, Advertisement advertisement,
+                                                 Customer customer) {
+        LoyaltyProgramCategory category = loyaltyProgramCategoryRepository
+                .findByPointsAndAccountType(customer.getPoints(), TargetedAccountType.CUSTOMER).orElseThrow();
+        BigDecimal pricePerThing = new BigDecimal(0);
+        if (advertisement instanceof ResortAd) {
+            ResortAd ad = (ResortAd) advertisement;
+            pricePerThing = ad.getPricePerDay();
+        }
+        else if (advertisement instanceof BoatAd) {
+            BoatAd ad = (BoatAd) advertisement;
+            pricePerThing = ad.getPricePerDay();
+        }
+        else if (advertisement instanceof AdventureAd){
+            AdventureAd ad = (AdventureAd) advertisement;
+            pricePerThing = ad.getPricePerPerson();
+        }
+        long days = dto.getStartDate().until(dto.getEndDate(), ChronoUnit.DAYS)+1;
+        return BigDecimal.valueOf(days)
+                .multiply(pricePerThing)
+                .multiply(category.getMultiply())
+                .setScale(2, RoundingMode.UP);
+    }
+
+    public boolean isAvailableForReservation(Advertisement advertisement, LocalDate startDate, LocalDate endDate) {
+
+        Set<LocalDate> unavailableDates = new HashSet<LocalDate>();
+
+        if (startDate.isBefore(LocalDate.now())) return false;
+
+        startDate.datesUntil(endDate).forEach(date -> {
+            if (!isWithinAvailabilityPeriod(advertisement, date)) unavailableDates.add(date);
+        });
+
+        advertisement.getReservations()
+                .stream()
+                .filter(reservation -> !reservation.getCancelled())
+                .forEach(reservation -> {
+                    if (reservation.getStartDateTime().getDayOfYear() == reservation.getEndDateTime().getDayOfYear()) {
+                        unavailableDates.add(reservation.getStartDateTime().toLocalDate());
+                    }
+                    else {
+                        reservation.getStartDateTime().toLocalDate()
+                                .datesUntil(reservation.getEndDateTime().toLocalDate())
+                                .forEach(unavailableDates::add);
+                    }
+                });
+
+        unavailableDates.forEach(x -> System.out.println(x.toString()));
+
+        return startDate
+                .datesUntil(endDate)
+                .filter(date ->
+                        unavailableDates
+                                .stream()
+                                .anyMatch(x -> x.isEqual(date))).toList().size() == 0;
+    }
+
+    private boolean isWithinAvailabilityPeriod(Advertisement ad, LocalDate date) {
+        LocalDate availableAfter = ad.getAvailableAfter();
+        LocalDate availableUntil = ad.getAvailableUntil();
+        if (availableAfter == null && availableUntil == null) return false;
+        else if (availableAfter != null && availableUntil == null) {
+            return date.isAfter(availableAfter);
+        }
+        else if (availableAfter == null) {
+            return date.isBefore(availableUntil);
+        }
+        else {
+            if (availableAfter.isBefore(availableUntil))
+                return date.isAfter(availableAfter) && date.isBefore(availableUntil);
+            else if (availableUntil.isBefore(availableAfter))
+                return date.isBefore(availableUntil) || date.isAfter(availableAfter);
+            else
+                return !date.isEqual(availableAfter);
+        }
     }
 }

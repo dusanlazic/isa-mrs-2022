@@ -16,12 +16,6 @@ import java.util.Set;
 @Getter
 @Setter
 public class BoatAd extends Advertisement {
-    @Column(name = "check_out_time", nullable = false)
-    private LocalTime checkOutTime; // e.g. 10:00
-
-    @Column(name = "check_in_time", nullable = false)
-    private LocalTime checkInTime; // e.g. 13:00
-
     @Column(name = "boat_type")
     private String boatType;
 

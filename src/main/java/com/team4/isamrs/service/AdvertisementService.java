@@ -14,13 +14,15 @@ import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.AdvertisementRepository;
 import com.team4.isamrs.repository.OptionRepository;
 import com.team4.isamrs.repository.ReservationRepository;
+import org.apache.tomcat.jni.Local;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Set;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,6 +60,57 @@ public class AdvertisementService {
         }
 
         advertisementRepository.delete(advertisement);
+    }
+
+    public Collection<LocalDate> getUnavailableDates(Long id, String year, String month) {
+        Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
+        LocalDate startDate = LocalDate.of(Integer.parseInt(year), Month.valueOf(month).ordinal() + 1,1);
+        LocalDate endDate = LocalDate.of(Integer.parseInt(year), Month.valueOf(month).ordinal() + 1,
+                Month.valueOf(month).length(Integer.parseInt(year) % 4 == 0));
+
+        Set<LocalDate> unavailableDates = new HashSet<LocalDate>();
+        // if startDate and endDate are same, it still returns one date (start)
+        startDate.datesUntil(endDate.plusDays(1)).forEach(date -> {
+            if (!isWithinAvailabilityPeriod(advertisement, date)) unavailableDates.add(date);
+        });
+
+        advertisement.getReservations()
+                .stream()
+                .filter(reservation -> !reservation.getCancelled() &&
+                        (reservation.getStartDateTime().getMonth() == Month.valueOf(month) ||
+                        reservation.getEndDateTime().getMonth() == Month.valueOf(month)))
+                .forEach(reservation -> {
+                    if (reservation.getStartDateTime().getDayOfYear() == reservation.getEndDateTime().getDayOfYear()) {
+                        unavailableDates.add(reservation.getStartDateTime().toLocalDate());
+                    }
+                    else {
+                        reservation.getStartDateTime().toLocalDate()
+                                .datesUntil(reservation.getEndDateTime().toLocalDate())
+                                .forEach(unavailableDates::add);
+                    }
+                });
+
+        return unavailableDates;
+    }
+
+    private boolean isWithinAvailabilityPeriod(Advertisement ad, LocalDate date) {
+        LocalDate availableAfter = ad.getAvailableAfter();
+        LocalDate availableUntil = ad.getAvailableUntil();
+        if (availableAfter == null && availableUntil == null) return false;
+        else if (availableAfter != null && availableUntil == null) {
+            return date.isAfter(availableAfter);
+        }
+        else if (availableAfter == null) {
+            return date.isBefore(availableUntil);
+        }
+        else {
+            if (availableAfter.isBefore(availableUntil))
+                return date.isAfter(availableAfter) && date.isBefore(availableUntil);
+            else if (availableUntil.isBefore(availableAfter))
+                return date.isBefore(availableUntil) || date.isAfter(availableAfter);
+            else
+                return !date.isEqual(availableAfter);
+        }
     }
 
     public AverageRatingDisplayDTO getAverageRating(Long id) {

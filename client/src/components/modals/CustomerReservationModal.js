@@ -60,7 +60,6 @@ const CustomerReservationModal = ({data, close}) => {
   }
 
   const handleSetOption = (option, value) => {
-    console.log(options)
     let newOptions = {...options};
     if (value.length === 0) {
       newOptions[option.id] = value;
@@ -104,7 +103,7 @@ const CustomerReservationModal = ({data, close}) => {
                 <div key={option.id} className="py-1">
                   {option.maxCount === 1 &&
                     <div className="flex gap-x-2">
-                      <Checkbox className="my-auto" onChange={(e) => handleSetOption(option, e.target.value)}
+                      <Checkbox className="my-auto w-10 h-4 accent-cyan-700" onChange={(e) => handleSetOption(option, e.target.value)}
                       checked={Object.keys(options).length > 0 ? options[option.id] : ""}/>
 
                       <div className="block">
@@ -116,10 +115,11 @@ const CustomerReservationModal = ({data, close}) => {
                   {option.maxCount > 1 &&
                     <div className="flex w-full gap-x-2">
                       <input type="number" placeholder={option.name}
-                      value={Object.keys(options).length > 0 ? options[option.id]+5 : ""}
+                      value={Object.keys(options).length > 0 ? options[option.id] : ""}
                         onChange={(e) => handleSetOption(option, e.target.value)}
-                        className="block rounded-lg px-2.5 text-center border text-gray-700 border-gray-300 py-1
-                        focus:outline-none focus:border-gray-500 w-10 caret-gray-700 shrink h-10"/>
+                        className={`block rounded-lg px-2.5 text-center border text-gray-700 border-gray-300 py-1
+                        focus:outline-none focus:border-gray-500 w-10 caret-gray-700 shrink h-10
+                        ${options[option.id] > 0 ? 'border-cyan-700 border-2' : ''}`}/>
 
                         <div className="block">
                           <p className="my-auto break-all">{option.name} (max {option.maxCount})</p>

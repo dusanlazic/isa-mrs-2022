@@ -187,7 +187,7 @@ public class TestDataSupplierService {
             resort.setPricePerDay(BigDecimal.valueOf(100+i*5));
 
             List<Option> options = new ArrayList<>();
-            for (int j = 1; j <= 10; j++) {
+            for (int j = 1; j <= 4; j++) {
                 Option option = new Option();
                 option.setName("Option " + j);
                 option.setMaxCount(j);

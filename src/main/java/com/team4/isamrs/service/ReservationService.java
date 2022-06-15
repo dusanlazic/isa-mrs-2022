@@ -21,6 +21,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -134,6 +136,7 @@ public class ReservationService {
         return new PageImpl<>(reservations.subList(fromIndex, toIndex), pageable, reservations.size());
     }
 
+    @Transactional
     public void create(Long id, ReservationCreationDTO dto, Authentication auth) {
         Customer customer = (Customer) auth.getPrincipal();
         Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
@@ -230,8 +233,6 @@ public class ReservationService {
                                 .forEach(unavailableDates::add);
                     }
                 });
-
-        unavailableDates.forEach(x -> System.out.println(x.toString()));
 
         return startDate
                 .datesUntil(endDate)

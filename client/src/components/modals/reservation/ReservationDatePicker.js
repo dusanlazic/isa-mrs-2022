@@ -8,7 +8,7 @@ const monthStrings = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
 let queriedMonths = [];
 let unavailableDates = [];
 
-const ReservationDatePicker = ({data, type, selectionRange, setSelectionRange }) => {
+const ReservationDatePicker = ({data, type, selectionRange, setSelectionRange, selectedDate, setSelectedDate }) => {
   const [, update] = useState({});
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const ReservationDatePicker = ({data, type, selectionRange, setSelectionRange })
     getUnavailableDates(
       ((new Date()).getMonth() + 1) % 12 < (new Date()).getMonth() ? (new Date()).getFullYear() + 1 : (new Date()).getFullYear(),
       monthStrings[((new Date()).getMonth() + 1) % 12]);
-  }, []);
+  }, [data, data.id]);
 
   const handleShownDateChange = (x) => {
     getUnavailableDates(x.getFullYear(), monthStrings[x.getMonth()]);
@@ -60,11 +60,25 @@ const ReservationDatePicker = ({data, type, selectionRange, setSelectionRange })
           direction="horizontal"
           rangeColors={['#0e7490', '#0e7490', '#0e7490']}
           className="h-min w-min border rounded-lg overflow-hidden"
-        />
+          />
         </div>
       }
       { type === 'adventure' &&
-        <Calendar/>
+        <Calendar
+        
+        date={selectedDate}
+        showSelectionPreview={true}
+        onChange={item => setSelectedDate(item)}
+        minDate={new Date()}
+        editableDateInputs={false}
+        disabledDates={unavailableDates}
+        weekStartsOn={1}
+        fixedHeight={true}
+        onShownDateChange={(x) => handleShownDateChange(x)}
+        direction="horizontal"
+        rangeColors={['#0e7490', '#0e7490', '#0e7490']}
+        className="h-min w-min border rounded-lg overflow-hidden"
+        />
       }
     </div>
    );

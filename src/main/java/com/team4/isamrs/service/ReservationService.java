@@ -50,6 +50,15 @@ public class ReservationService {
     private AdvertisementRepository advertisementRepository;
 
     @Autowired
+    private ResortAdRepository resortAdRepository;
+
+    @Autowired
+    private BoatAdRepository boatAdRepository;
+
+    @Autowired
+    private AdventureAdRepository adventureAdRepository;
+
+    @Autowired
     private LoyaltyProgramCategoryRepository loyaltyProgramCategoryRepository;
 
     @Autowired
@@ -140,7 +149,18 @@ public class ReservationService {
     @Transactional
     public void create(Long id, ReservationCreationDTO dto, Authentication auth) {
         Customer customer = (Customer) auth.getPrincipal();
-        Advertisement advertisement = advertisementRepository.findOneById(id).orElseThrow();
+        Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
+        if (advertisement instanceof ResortAd) {
+            advertisement = resortAdRepository.lockGetById(id).orElseThrow();
+            dto.setEndDate(dto.getEndDate().plusDays(1));
+        }
+        else if (advertisement instanceof BoatAd) {
+            advertisement = boatAdRepository.lockGetById(id).orElseThrow();
+            dto.setEndDate(dto.getEndDate().plusDays(1));
+        }
+        else if (advertisement instanceof AdventureAd) {
+            advertisement = adventureAdRepository.lockGetById(id).orElseThrow();
+        }
 
         if (dto.getEndDate().isBefore(dto.getStartDate()))
             throw new EndDateBeforeStartDateException("End date cannot be before start date.");
@@ -237,10 +257,12 @@ public class ReservationService {
 
         return startDate
                 .datesUntil(endDate)
-                .filter(date ->
-                        unavailableDates
-                                .stream()
-                                .anyMatch(x -> x.isEqual(date))).toList().size() == 0;
+                .filter(date -> {
+                    for (LocalDate d : unavailableDates) {
+                        if (d.equals(date)) return true;
+                    }
+                    return false;
+                        }).toList().size() == 0;
     }
 
     private boolean isWithinAvailabilityPeriod(Advertisement ad, LocalDate date) {

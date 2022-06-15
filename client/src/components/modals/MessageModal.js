@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 
-export default function MessageModal ({ closeFunction, text })  {
+export default function MessageModal ({ closeFunction, text, okayFunction })  {
   const [open, setOpen] = useState(true)
 
   const hide = () => {
@@ -11,7 +11,7 @@ export default function MessageModal ({ closeFunction, text })  {
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={hide}>
+      <Dialog as="div" className="relative z-40" onClose={hide}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -60,7 +60,7 @@ export default function MessageModal ({ closeFunction, text })  {
                     className="w-full inline-flex justify-center rounded-md border border-gray-300 
                     shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 
                     sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                    onClick={hide}
+                    onClick={() => {hide(); if (okayFunction) okayFunction();}}
                   >
                     Okay
                   </button>

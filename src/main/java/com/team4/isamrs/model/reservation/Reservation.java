@@ -37,7 +37,7 @@ public class Reservation {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @ManyToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "reservation_selected_option",
         joinColumns = @JoinColumn(name = "reservation_id"),

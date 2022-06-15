@@ -9,6 +9,7 @@ import java.util.Set;
 
 @Data
 public class AdventureAdDisplayDTO implements DisplayDTO {
+    private Long id;
     private SessionDisplayDTO advertiser;
     private String title;
     private AddressDisplayDTO address;

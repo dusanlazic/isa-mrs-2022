@@ -1,5 +1,5 @@
 import { useState } from "react";
-import CustomerReservationModal from "../../modals/CustomerReservationModal";
+import CustomerReservationModal from "../../modals/reservation/CustomerReservationModal";
 
 const ReservationButton = ({data}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

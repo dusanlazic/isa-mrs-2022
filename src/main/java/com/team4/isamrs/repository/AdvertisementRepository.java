@@ -17,9 +17,4 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
 
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.approvalStatus = 1 AND r.advertisement = ?1")
     Optional<Double> findAverageRatingForAdvertisement(Advertisement advertisement);
-
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT a FROM Advertisement a WHERE a.id = :id")
-    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "0")})
-    Optional<Advertisement> findOneById(Long id);
 }

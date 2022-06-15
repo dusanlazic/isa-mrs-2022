@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import { Checkbox } from "react-daisyui";
-import ReservationDatePicker from "./util/ReservationDatePicker";
+import { post } from "../../../adapters/xhr";
+import ReservationDatePicker from "./ReservationDatePicker";
+import MessageModal from "../MessageModal";
+import moment from "moment";
 
 const CustomerReservationModal = ({data, close}) => {
   const [advertisementType, setAdvertisementType] = useState("");
@@ -13,11 +15,58 @@ const CustomerReservationModal = ({data, close}) => {
       key: 'selection'
     }
   )
+  const [selectedDate, setSelectedDate] = useState(new Date())
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageModalText, setMessageModalText] = useState('');
 
   useEffect(() => {
     decideType();
     fillOptions();
   }, []);
+
+  const makeReservation = () => {
+    const selectedOptions = getSelectedOptions();
+    const startDate = getStartDate();
+    const endDate = getEndDate();
+    
+    post(`/api/ads/${data.id}/reservations`, {
+      startDate: startDate,
+      endDate: endDate,
+      attendees: attendees,
+      selectedOptions: selectedOptions
+    })
+    .then(response => {
+      setMessageModalText('Reservation made successfully!');
+      setShowMessageModal(true);
+    })
+    .catch(error => {
+      setMessageModalText(error.response.data.message);
+      setShowMessageModal(true);
+    })
+  }
+
+  const getStartDate = () => {
+    if (advertisementType === 'resort' || advertisementType === 'boat') return moment(selectionRange.startDate).add(5, "hours").toISOString();
+    else return moment(selectedDate).add(5, "hours").toISOString()
+  }
+
+  const getEndDate = () => {
+    if (advertisementType === 'resort' || advertisementType === 'boat') return moment(selectionRange.endDate).add(5, "hours").toISOString();
+    else return moment(selectedDate).add(5, "hours").toISOString()
+  }
+
+  const getSelectedOptions = () => {
+    const selectedOptions = []
+    data.options.forEach(option => {
+      if (typeof(options[option.id]) === "string" || typeof(options[option.id]) === "number") {
+        if (options[option.id] > 0) selectedOptions.push({optionId: option.id, count: options[option.id]});
+      }
+      else if (typeof(options[option.id]) === "boolean") {
+        if (options[option.id] === true) selectedOptions.push({optionId: option.id, count: 1});
+      }
+    })
+    return selectedOptions;
+  }
 
   const fillOptions = () => {
     let initOptions = {};
@@ -74,15 +123,15 @@ const CustomerReservationModal = ({data, close}) => {
   }
 
   return ( 
-    <div onClick={closeModal} className="fixed top-0 left-0 z-50 w-full min-h-screen h-screen text-center
+    <div onClick={closeModal} className="fixed top-0 left-0 z-30 w-full min-h-screen h-screen text-center
     flex items-center justify-center bg-gray-900 bg-opacity-70 font-mono transition-opacity text-base">
       <div className="relative flex flex-col w-180 h-140 bg-white rounded-xl mx-auto overflow-hidden p-9">
         <h1 className="text-xl mb-5 font-display">Make a reservation</h1>
 
-
         <div className="flex gap-x-6">
           <ReservationDatePicker data={data} type={advertisementType} 
-          selectionRange={selectionRange} setSelectionRange={setSelectionRange}/>
+          selectionRange={selectionRange} setSelectionRange={setSelectionRange}
+          selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
           
 
           <div className="block w-full text-left">
@@ -102,7 +151,8 @@ const CustomerReservationModal = ({data, close}) => {
                 <div key={option.id} className="py-1">
                   {option.maxCount === 1 &&
                     <div className="flex gap-x-2">
-                      <Checkbox className="my-auto w-10 h-4 accent-cyan-700" onChange={(e) => handleSetOption(option, e.target.value)}
+                      <input type="checkbox" className="my-auto w-10 h-4 accent-cyan-700"
+                      onChange={(e) => handleSetOption(option, e.target.value)}
                       checked={Object.keys(options).length > 0 ? options[option.id] : ""}/>
 
                       <div className="block">
@@ -134,13 +184,17 @@ const CustomerReservationModal = ({data, close}) => {
             <div>
               <button className="rounded-xl shadow-sm px-6 py-2 text-white font-bold 
               bg-cyan-700 hover:bg-cyan-800 active:bg-cyan-900 focus:outline-none
-              w-full mt-4">
+              w-full mt-4" onClick={makeReservation}>
                 Make a reservation
               </button>
             </div>
 
           </div>
         </div>
+
+        {showMessageModal &&
+        <MessageModal okayFunction={close} closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+        />}
         
       </div>
     </div>

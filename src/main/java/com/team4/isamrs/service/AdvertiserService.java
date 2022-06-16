@@ -3,9 +3,12 @@ package com.team4.isamrs.service;
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
 import com.team4.isamrs.dto.display.AdvertisementSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
+import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
+import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.AdvertiserRepository;
 import com.team4.isamrs.repository.ReservationReportRepository;
+import com.team4.isamrs.repository.ReviewRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,9 @@ public class AdvertiserService {
 
     @Autowired
     private ReservationReportRepository reservationReportRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -41,5 +47,13 @@ public class AdvertiserService {
         Double value = advertiserRepository.findAverageRatingForAdvertiser(advertiser).orElse(0.0);
 
         return new AverageRatingDisplayDTO(Math.round(value * 100.0) / 100.0);
+    }
+
+    public Set<ReviewPublicDisplayDTO> getApprovedReviews(Long id) {
+        Advertiser advertiser = advertiserRepository.findById(id).orElseThrow();
+        return reviewRepository.findReviewsForAdsByAdvertiser(advertiser).stream()
+                .filter(e -> e.getApprovalStatus().equals(ApprovalStatus.APPROVED))
+                .map(e -> modelMapper.map(e, ReviewPublicDisplayDTO.class))
+                .collect(Collectors.toSet());
     }
 }

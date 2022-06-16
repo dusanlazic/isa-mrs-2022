@@ -2,10 +2,7 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.ReservationCreationDTO;
 import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
-import com.team4.isamrs.exception.EndDateBeforeStartDateException;
-import com.team4.isamrs.exception.ExceededMaxAttendeesException;
-import com.team4.isamrs.exception.ExceededOptionMaxCountValueException;
-import com.team4.isamrs.exception.ReservationPeriodUnavailableException;
+import com.team4.isamrs.exception.*;
 import com.team4.isamrs.model.advertisement.*;
 import com.team4.isamrs.model.loyalty.LoyaltyProgramCategory;
 import com.team4.isamrs.model.loyalty.TargetedAccountType;
@@ -16,6 +13,7 @@ import com.team4.isamrs.model.user.User;
 import com.team4.isamrs.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +29,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -63,6 +62,14 @@ public class ReservationService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    public void cancel(Long id, Authentication auth) {
+        Reservation reservation = reservationRepository.findById(id).orElseThrow();
+        if (LocalDateTime.now().until(reservation.getStartDateTime(), ChronoUnit.HOURS) < 72)
+            throw new ReservationCancellationWithinThreeDaysException("Unable to cancel reservation. It starts within three days.");
+        reservation.setCancelled(true);
+        reservationRepository.save(reservation);
+    }
 
     public ReservationSimpleDisplayDTO findById(Long id, Authentication auth) {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
@@ -150,16 +157,33 @@ public class ReservationService {
     public void create(Long id, ReservationCreationDTO dto, Authentication auth) {
         Customer customer = (Customer) auth.getPrincipal();
         Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
-        if (advertisement instanceof ResortAd) {
-            advertisement = resortAdRepository.lockGetById(id).orElseThrow();
-            dto.setEndDate(dto.getEndDate().plusDays(1));
+
+        try {
+            if (advertisement instanceof ResortAd) {
+                advertisement = resortAdRepository.lockGetById(id).orElseThrow();
+                dto.setEndDate(dto.getEndDate().plusDays(1));
+            }
+            else if (advertisement instanceof BoatAd) {
+                advertisement = boatAdRepository.lockGetById(id).orElseThrow();
+                dto.setEndDate(dto.getEndDate().plusDays(1));
+            }
+            else if (advertisement instanceof AdventureAd) {
+                advertisement = adventureAdRepository.lockGetById(id).orElseThrow();
+                if (!dto.getStartDate().isEqual(dto.getEndDate()))
+                    throw new ReservationPeriodUnavailableException("Adventure reservation must be within one day.");
+            }
         }
-        else if (advertisement instanceof BoatAd) {
-            advertisement = boatAdRepository.lockGetById(id).orElseThrow();
-            dto.setEndDate(dto.getEndDate().plusDays(1));
+        catch (PessimisticLockingFailureException e) {
+            throw new ReservationConflictException("Another user is currently attempting to make a reservation" +
+                    " for the same entity. Please try again in a few seconds.");
         }
-        else if (advertisement instanceof AdventureAd) {
-            advertisement = adventureAdRepository.lockGetById(id).orElseThrow();
+
+        if (reservationRepository.findByAdvertisementEqualsAndCustomerEqualsAndCancelledIsTrue(advertisement, customer)
+                .stream().anyMatch(reservation ->
+                reservation.getStartDateTime().toLocalDate().equals(dto.getStartDate()) &&
+                reservation.getEndDateTime().toLocalDate().equals(dto.getEndDate()))) {
+            throw new ReservationPeriodUnavailableException("Attempted re-reservation of same entity during" +
+                    " the same period after cancelling an identical reservation.");
         }
 
         if (dto.getEndDate().isBefore(dto.getStartDate()))

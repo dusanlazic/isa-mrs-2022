@@ -67,4 +67,11 @@ public class ReservationController {
         reservationReportService.create(id, dto, auth);
         return new ResponseOK("Report created.");
     }
+
+    @PatchMapping(value = "/{id}/cancel")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseOK cancelReservation(@PathVariable Long id, Authentication auth) {
+        reservationService.cancel(id, auth);
+        return new ResponseOK("Reservation cancelled.");
+    }
 }

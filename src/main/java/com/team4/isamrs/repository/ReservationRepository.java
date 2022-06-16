@@ -4,11 +4,9 @@ import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import javax.persistence.LockModeType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -30,4 +28,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("endDate") LocalDateTime endDate);
 
     Boolean existsByAdvertisementEqualsAndCustomerEqualsAndCancelledIsFalseAndEndDateTimeBefore(Advertisement advertisement, Customer customer, LocalDateTime endDateTime);
+
+    Set<Reservation> findByAdvertisementEqualsAndCustomerEqualsAndCancelledIsTrue
+            (Advertisement advertisement, Customer customer);
 }

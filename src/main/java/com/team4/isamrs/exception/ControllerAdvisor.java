@@ -96,6 +96,14 @@ public class ControllerAdvisor {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ReservationCancellationWithinThreeDaysException.class)
+    public ExceptionResponseBody handleReservationCancellationWithinThreeDaysException(ReservationCancellationWithinThreeDaysException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ExceededMaxAttendeesException.class)
     public ExceptionResponseBody handleExceededMaxAttendeesException(ExceededMaxAttendeesException ex) {
         return new ExceptionResponseBody(

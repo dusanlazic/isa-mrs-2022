@@ -184,7 +184,8 @@ public class ResortAdService {
 
 
         List<Reservation> reservations = reservationRepository
-                .getResortReservationsForRange(resortAd.getId(), adjustedStartDate, adjustedEndDate);
+                .getResortReservationsForRange(resortAd.getId(), adjustedStartDate, adjustedEndDate)
+                .stream().filter(reservation -> !reservation.getCancelled()).toList();
 
         if (reservations.size() == 0) {
             return true;

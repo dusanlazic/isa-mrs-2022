@@ -189,7 +189,8 @@ public class BoatAdService {
 
 
         List<Reservation> reservations = reservationRepository
-                .getResortReservationsForRange(boatAd.getId(), adjustedStartDate, adjustedEndDate);
+                .getResortReservationsForRange(boatAd.getId(), adjustedStartDate, adjustedEndDate)
+                .stream().filter(reservation -> !reservation.getCancelled()).toList();
 
         if (reservations.size() == 0) {
             return true;

@@ -190,7 +190,8 @@ public class AdventureAdService {
 
 
         List<Reservation> reservations = reservationRepository
-                .getResortReservationsForRange(adventureAd.getId(), adjustedStartDate, adjustedEndDate);
+                .getResortReservationsForRange(adventureAd.getId(), adjustedStartDate, adjustedEndDate)
+                .stream().filter(reservation -> !reservation.getCancelled()).toList();
 
         if (reservations.size() == 0) {
             return true;

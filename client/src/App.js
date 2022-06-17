@@ -6,9 +6,6 @@ import ProfileEditorPage from './pages/ProfileEditorPage';
 import RegistrationPage from './pages/RegistrationPage';
 import LoginPage from './pages/LoginPage';
 import RegistrationConfirmation from './pages/RegistrationConfirmationPage';
-import CreateAdventurePage from './pages/CreateAdventurePage';
-import CreateBoatPage from './pages/CreateBoatPage';
-import CreateResortPage from './pages/CreateResortPage';
 import UpdateAdvertisementPage from './pages/UpdateAdvertisementPage';
 import RegistrationRequestsPage from './pages/RegistrationRequestsPage';
 import RemovalRequestsPage from './pages/RemovalRequestsPage';
@@ -35,13 +32,10 @@ function App() {
               <Route path="/ads/resorts" exact element={<SearchPage/>}/>
               <Route path="/ads/boats" exact element={<SearchPage/>}/>
               <Route path="/ads/adventures" exact element={<SearchPage/>}/>
-              <Route path="/adventure/new" exact element={<CreateAdventurePage/>}/>
               <Route path="/adventure/:id/edit" exact element={<UpdateAdvertisementPage/>}/>
               <Route path="/adventure/:id" exact element={<ProfilePage key={1}/>}/>
-              <Route path="/resort/new" exact element={<CreateResortPage/>}/>
               <Route path="/resort/:id" exact element={<ProfilePage key={2}/>}/>
               <Route path="/resort/:id/edit" exact element={<UpdateAdvertisementPage/>}/>
-              <Route path="/boat/new" exact element={<CreateBoatPage/>}/>
               <Route path="/boat/:id" exact element={<ProfilePage key={3}/>}/>
               <Route path="/boat/:id/edit" exact element={<UpdateAdvertisementPage/>}/>
               <Route path="/advertiser/:id" exact element={<ProfilePage key={4} me={false}/>}/>

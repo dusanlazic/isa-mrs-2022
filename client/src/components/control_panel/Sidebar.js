@@ -1,5 +1,19 @@
 import { useEffect, useState } from "react"
 import { Icon } from '@iconify/react';
+import { getSession } from "../../contexts";
+
+const getNewEntityName = () => {
+  const session = getSession();
+  if (session.accountType == "FISHING_INSTRUCTOR_OWNER"){
+    return "adventure";
+  }
+  else if (session.accountType == "BOAT_OWNER"){
+    return "boat";
+  }
+  else {
+    return "resort";
+  }
+}
 
 const Sidebar = ({ currentComponent, setCurrentComponent }) => {
 
@@ -20,7 +34,7 @@ const Sidebar = ({ currentComponent, setCurrentComponent }) => {
 
   const sidebarItems =[
     { name:"reservations", text:"Reservation history", icon:"tabler:list-search" },
-    { name:"newEntity", text:"New entity", icon:"tabler:new-section" },
+    { name:"newEntity", text:`New ${getNewEntityName()}`, icon:"tabler:new-section" },
     { name:"reports", text:"Reports", icon:"tabler:clipboard-list" },
   ];
 

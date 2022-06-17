@@ -3,12 +3,14 @@ package com.team4.isamrs.controller;
 import com.team4.isamrs.dto.display.AccountDisplayDTO;
 import com.team4.isamrs.dto.display.AdvertisementSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
+import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
 import com.team4.isamrs.service.AdvertiserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/advertisers",
@@ -32,5 +34,10 @@ public class AdvertiserController {
     @GetMapping(value = "/{id}/reviews/average")
     public AverageRatingDisplayDTO getAverageRating(@PathVariable Long id) {
         return advertiserService.getAverageRating(id);
+    }
+
+    @GetMapping(value = "/{id}/reviews")
+    public Set<ReviewPublicDisplayDTO> getApprovedReviews(@PathVariable Long id) {
+        return advertiserService.getApprovedReviews(id);
     }
 }

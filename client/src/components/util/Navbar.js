@@ -87,6 +87,18 @@ const Navbar = () => {
                 </li>
               </Link>
 
+              { (session.accountType == "FISHING_INSTRUCTOR_OWNER" || session.accountType == "RESORT_OWNER" || session.accountType == "BOAT_OWNER" ) &&
+                
+              <Link to='/control-panel'>
+                <li>
+                  <div className='flex text-lg rounded-lg hover:bg-gray-500 hover:bg-opacity-10 px-1'>
+                    <Icon className='w-6 h-6 text-gray-600' icon="tabler:settings" inline={true} />
+                    <span className='ml-1.5 pb-1'>control panel</span>
+                  </div>
+                </li>
+              </Link>
+              }
+
               <li onClick={logUserOut}>
                 <div className='flex text-lg rounded-lg hover:bg-gray-500 hover:bg-opacity-10 px-1'>
                   <Icon className='w-6 h-6 text-gray-600' icon="tabler:logout" inline={true} />

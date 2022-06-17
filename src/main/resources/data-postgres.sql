@@ -196,16 +196,16 @@ VALUES (3, 1);
 
 INSERT INTO public.reservation(
     id, calculated_price, cancelled, created_at, customer_id, end_date_time, start_date_time, advertisement_id)
-VALUES (1001, 400, FALSE, '05-18-2022 15:10', 1001, '2022-06-10 14:00', '2022-06-01 12:00', 1004);
+VALUES (1001, 400, FALSE, '2022-05-18 15:10', 1001, '2022-06-10 14:00', '2022-06-01 12:00', 1004);
 INSERT INTO public.reservation(
     id, calculated_price, cancelled, created_at, customer_id, end_date_time, start_date_time, advertisement_id)
-VALUES (1002, 400, FALSE, '05-18-2022 15:10', 1001, '2022-07-03 14:00', '2022-07-01 12:00', 1004);
+VALUES (1002, 400, FALSE, '2022-05-18 15:10', 1001, '2022-07-03 14:00', '2022-07-01 12:00', 1004);
 INSERT INTO public.reservation(
     id, calculated_price, cancelled, created_at, customer_id, end_date_time, start_date_time, advertisement_id)
-VALUES (1003, 400, FALSE, '05-18-2022 15:10', 1001, '2022-07-05 14:00', '2022-07-04 12:00', 1004);
+VALUES (1003, 400, FALSE, '2022-05-18 15:10', 1001, '2022-07-05 14:00', '2022-07-04 12:00', 1004);
 INSERT INTO public.reservation(
     id, calculated_price, cancelled, created_at, customer_id, end_date_time, start_date_time, advertisement_id)
-VALUES (1004, 400, FALSE, '05-18-2022 15:10', 1001, '2022-07-10 14:00', '2022-07-05 12:00', 1004);
+VALUES (1004, 400, FALSE, '2022-05-18 15:10', 1001, '2022-07-10 14:00', '2022-07-05 12:00', 1004);
 
 INSERT INTO public.reservation(
     id, calculated_price, cancelled, created_at, customer_id, end_date_time, start_date_time, advertisement_id)

@@ -78,7 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 HttpMethod.POST,
                 "/auth/login",
                 "/account/register/**");
-
+/*
         web.ignoring().antMatchers(HttpMethod.GET,
                 "/customers/**",
                 "/photos/**",
@@ -87,7 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/tags/*",
                 "/account/register/**",
                 "/advertisers/**");
-
+*/
         web.ignoring().antMatchers(HttpMethod.GET,
                 "/",
                 "/*.html",

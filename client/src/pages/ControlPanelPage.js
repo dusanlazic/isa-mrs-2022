@@ -9,6 +9,9 @@ const ControlPanel = ({}) => {
   return (
     <div className="flex min-h-screen">
     <Sidebar currentComponent={currentComponent} setCurrentComponent={setCurrentComponent} />
+    {
+      currentComponent == "reservations" ? <ReservationHistory /> : <div></div>
+    }
     </div>
   );
 }

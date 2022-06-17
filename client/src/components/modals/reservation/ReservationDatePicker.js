@@ -12,6 +12,10 @@ const ReservationDatePicker = ({data, type, selectionRange, setSelectionRange, s
   const [, update] = useState({});
 
   useEffect(() => {
+    unavailableDates = [];
+  }, []);
+
+  useEffect(() => {
     queriedMonths = [];
     getUnavailableDates((new Date()).getFullYear(), monthStrings[(new Date()).getMonth()]);
     getUnavailableDates(

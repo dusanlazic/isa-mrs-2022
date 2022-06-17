@@ -22,7 +22,6 @@ const ClientReservationHistory = ({data}) => {
   const fetchData = (resetPage=false) => {
     setCurrentPage(resetPage ? 0 : currentPage);
 		get(`/api/customers/${data.id}/previous-reservations?page=${currentPage}&sorting=${sorting}`).then((response) => {
-      console.log(response.data.content)
 			setReservations(response.data.content);
       setTotalPages(response.data.totalPages);
     });
@@ -43,12 +42,12 @@ const ClientReservationHistory = ({data}) => {
   return ( 
     <div>
       { reservations.length === 0 &&
-        <div className="flex flex-col gap-y-4">
+        <div className="flex flex-col">
           <div>You haven't made any reservations.</div>
         </div>
       }
       { reservations.length > 0 &&
-        <div className="flex flex-col gap-y-4">
+        <div className="flex flex-col gap-y-0.5">
         {reservations.map(reservation => 
           <div key={reservation.id}>
             <ClientReservationItem reservation={reservation} allowCancel={false}/>

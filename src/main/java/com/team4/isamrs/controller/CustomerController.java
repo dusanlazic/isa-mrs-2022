@@ -35,12 +35,12 @@ public class CustomerController {
     @GetMapping(value = "/{id}/previous-reservations")
     public Page<ReservationSimpleDisplayDTO> getPreviousReservations(
             @PathVariable Long id, @RequestParam int page, @RequestParam String sorting) {
-        return customerService.getPreviousReservations(id, PageRequest.of(page, 10, Sort.by(sorting).descending()));
+        return customerService.getPreviousReservations(id, PageRequest.of(page, 10, Sort.by(sorting)));
     }
 
     @GetMapping(value = "/{id}/upcoming-reservations")
     public Page<ReservationSimpleDisplayDTO> getActiveReservations(
             @PathVariable Long id, @RequestParam int page, @RequestParam String sorting) {
-        return customerService.getUpcomingReservations(id, PageRequest.of(page, 10, Sort.by(sorting).descending()));
+        return customerService.getUpcomingReservations(id, PageRequest.of(page, 10, Sort.by(sorting)));
     }
 }

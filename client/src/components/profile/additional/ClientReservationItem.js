@@ -1,19 +1,19 @@
 import moment from "moment";
 import { Link } from 'react-router-dom'
 
-const ClientReservationItem = ({reservation, allowCancel}) => {
-  
+const ClientReservationItem = ({reservation, allowCancel, cancel}) => {
   const getPlaceholderImage = () => {
-    if (reservation.advertisementType === 'resort') return '/images/property-placeholder.jpg'
-    if (reservation.advertisementType === 'boat') return '/images/boat-placeholder.jpg'
-    if (reservation.advertisementType === 'adventure') return '/images/fish-placeholder.jpg'
+    if (reservation.advertisement.advertisementType === 'resort') return '/images/property-placeholder.jpg'
+    if (reservation.advertisement.advertisementType === 'boat') return '/images/boat-placeholder.jpg'
+    if (reservation.advertisement.advertisementType === 'adventure') return '/images/fish-placeholder.jpg'
   }
 
   return ( 
-  <div className="flex text-left">
+  <div className={`flex text-left rounded-lg p-1.5 px-2
+  ${reservation.cancelled ? 'bg-red-100' : 'bg-white'}`}>
     <Link to={`/${reservation.advertisement.advertisementType}/${reservation.advertisement.id}`}>
       <img src={reservation.advertisement.photo ? `/api/${reservation.advertisement.photo.uri}` : getPlaceholderImage()}
-      alt="" className="flex-none w-20 h-14 object-cover rounded-lg" />
+      alt="" className="flex-none h-14 w-20 object-cover rounded-lg" />
     </Link>
     <div className="block ml-2 w-full">
       <div className="flex justify-between text-xl w-full text-gray-700 tracking-tight my-auto text-left leading-5">
@@ -39,7 +39,7 @@ const ClientReservationItem = ({reservation, allowCancel}) => {
         </div>
         { allowCancel &&
         <div className="flex">
-          <button className="hover:text-red-600">
+          <button className="hover:text-red-600" onClick={() => cancel(reservation)}>
             Cancel
           </button>
         </div>}

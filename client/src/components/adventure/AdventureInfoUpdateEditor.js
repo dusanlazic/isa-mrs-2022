@@ -2,7 +2,7 @@ import { useState } from "react";
 import { put, post, del } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import ReactFlagsSelect from "react-flags-select";
-import DeletionModal from "../modals/DeletionModal"
+import DeletionModal from "../modals/DeletionModal";
 import { Icon } from '@iconify/react';
 import Map from "../profile/additional/Map";
 import MessageModal from "../modals/MessageModal";

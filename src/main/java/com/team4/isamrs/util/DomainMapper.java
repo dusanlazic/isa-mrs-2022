@@ -12,6 +12,7 @@ import com.team4.isamrs.dto.updation.ResortAdUpdationDTO;
 import com.team4.isamrs.model.advertisement.*;
 import com.team4.isamrs.model.enumeration.AccountType;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
+import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.*;
 import com.team4.isamrs.repository.FishingEquipmentRepository;
 import com.team4.isamrs.repository.NavigationalEquipmentRepository;
@@ -285,7 +286,6 @@ public class DomainMapper {
 
             return destination;
         };
-
 
         Converter<ResortAdUpdationDTO, ResortAd> UpdationDtoToResortAdConverter = context -> {
             ResortAdUpdationDTO source = context.getSource();

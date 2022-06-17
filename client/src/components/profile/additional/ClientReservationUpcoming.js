@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react"
 import { get } from "../../../adapters/xhr";
+
 import ClientReservationItem from "./ClientReservationItem";
 import ReactPaginate from "react-paginate";
+import moment from "moment";
 
-const ClientReservationHistory = ({data}) => {
+const ClientReservationUpcoming = ({data}) => {
 	const [reservations, setReservations] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
@@ -21,7 +23,7 @@ const ClientReservationHistory = ({data}) => {
   
   const fetchData = (resetPage=false) => {
     setCurrentPage(resetPage ? 0 : currentPage);
-		get(`/api/customers/${data.id}/previous-reservations?page=${currentPage}&sorting=${sorting}`).then((response) => {
+		get(`/api/customers/${data.id}/upcoming-reservations?page=${currentPage}&sorting=${sorting}`).then((response) => {
       console.log(response.data.content)
 			setReservations(response.data.content);
       setTotalPages(response.data.totalPages);
@@ -51,7 +53,8 @@ const ClientReservationHistory = ({data}) => {
         <div className="flex flex-col gap-y-4">
         {reservations.map(reservation => 
           <div key={reservation.id}>
-            <ClientReservationItem reservation={reservation} allowCancel={false}/>
+            <ClientReservationItem reservation={reservation}
+            allowCancel={moment(reservation.startDateTime).diff(moment(), "hours") > 72}/>
           </div>
           
         )}
@@ -92,4 +95,4 @@ const ClientReservationHistory = ({data}) => {
    );
 }
  
-export default ClientReservationHistory;
+export default ClientReservationUpcoming;

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class ReviewPublicDisplayDTO {
     private Long id;
     private LocalDateTime createdAt;
+    private AdvertisementSimpleDisplayDTO advertisement;
     private CustomerPublicDisplayDTO customer;
     private Double rating;
     private String comment;

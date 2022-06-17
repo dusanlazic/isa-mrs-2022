@@ -12,6 +12,7 @@ import AdventureProfileMainInfo from '../components/profile/main/AdventureProfil
 import ClientReviewList from '../components/profile/additional/ClientReviewList'
 import AdvertisementReviewList from '../components/profile/additional/AdvertisementReviewList'
 import ClientReservationHistory from '../components/profile/additional/ClientReservationHistory'
+import ClientReservationUpcoming from '../components/profile/additional/ClientReservationUpcoming'
 import About from '../components/profile/additional/AboutTab'
 import BoatAbout from '../components/profile/additional/BoatAboutTab'
 import Gallery from '../components/profile/additional/Gallery'
@@ -158,7 +159,8 @@ const ProfilePage = ({me}) => {
     MainComponent = clientMainComponent;
     contentComponents = [
       { title: 'Reviews', component: <ClientReviewList data = {profileData} /> },
-      { title: 'Reservation History',  component: <ClientReservationHistory/> },
+      { title: 'Reservation History',  component: <ClientReservationHistory data={profileData} /> },
+      { title: 'Upcoming Reservations',  component: <ClientReservationUpcoming data={profileData} /> },
     ];
   }
   else if (self !== null) {

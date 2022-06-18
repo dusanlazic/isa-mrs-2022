@@ -1,7 +1,8 @@
 import moment from "moment";
 import { Link } from 'react-router-dom'
 
-const ClientReservationItem = ({reservation, allowCancel, cancel}) => {
+const ClientReservationItem = ({reservation, allowCancel, cancel, review}) => {
+
   const getPlaceholderImage = () => {
     if (reservation.advertisement.advertisementType === 'resort') return '/images/property-placeholder.jpg'
     if (reservation.advertisement.advertisementType === 'boat') return '/images/boat-placeholder.jpg'
@@ -45,7 +46,7 @@ const ClientReservationItem = ({reservation, allowCancel, cancel}) => {
         </div>}
         { !allowCancel && reservation.canBeReviewed &&
         <div className="flex">
-          <button className="hover:text-cyan-600" onClick={() => cancel(reservation)}>
+          <button className="hover:text-cyan-600" onClick={() => review(reservation)}>
             Review
           </button>
         </div>}

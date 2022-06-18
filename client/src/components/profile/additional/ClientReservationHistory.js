@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react"
 import { get } from "../../../adapters/xhr";
 import ClientReservationItem from "./ClientReservationItem";
+import CustomerReviewModal from "../../modals/review/CustomerReviewModal";
 import ReactPaginate from "react-paginate";
 
 const ClientReservationHistory = ({data}) => {
 	const [reservations, setReservations] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [reservationToReview, setReservationToReview] = useState(null);
 
   const [sorting, setSorting] = useState('startDateTime');
   const [descending, setDescending] = useState(true);
@@ -26,7 +30,12 @@ const ClientReservationHistory = ({data}) => {
       setTotalPages(response.data.totalPages);
     });
   }
-  
+
+  const initReview = reservation => {
+    setReservationToReview(reservation);
+    setIsReviewModalOpen(true);
+  } 
+
   useEffect(() => {
     fetchData(true);
   }, [sorting, descending]);
@@ -48,45 +57,51 @@ const ClientReservationHistory = ({data}) => {
       }
       { reservations.length > 0 &&
         <div className="flex flex-col gap-y-0.5">
-        {reservations.map(reservation => 
-          <div key={reservation.id}>
-            <ClientReservationItem reservation={reservation} allowCancel={false}/>
+          {reservations.map(reservation => 
+            <div key={reservation.id}>
+              <ClientReservationItem reservation={reservation}
+              allowCancel={false} review={initReview}/>
+            </div>
+          )}
+          <div className="mt-10 mb-4 mx-auto h-10 w-full font-sans"> 
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel=">"
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={2}
+              pageCount={totalPages}
+              forcePage={currentPage}
+              previousLabel="<"
+              
+              pageClassName="text-gray-700 font-medium w-10 h-10"
+              pageLinkClassName="flex flex-col text-center justify-center w-full h-full "
+
+              previousClassName="w-10 h-10 text-2xl select-none text-slate-600 hover:text-black"
+              previousLinkClassName="flex justify-center w-full h-full"
+
+              nextClassName="w-10 h-10 text-2xl select-none text-slate-600 hover:text-black"
+              nextLinkClassName="flex justify-center w-full h-full"
+
+              breakClassName=""
+              breakLinkClassName=""
+
+              disabledClassName="!text-gray-400 hover:text-gray-400"
+              disabledLinkClassName=""
+
+              marginPagesDisplayed={1}
+              containerClassName="flex justfy-center bg-slate-200 p-1 rounded-xl w-min mx-auto"
+
+              activeClassName="bg-white text-green-600 border border-slate-400 rounded-lg"
+            />
           </div>
-          
-        )}
-        <div className="mt-10 mb-4 mx-auto h-10 w-full font-sans"> 
-          <ReactPaginate
-            breakLabel="..."
-            nextLabel=">"
-            onPageChange={handlePageClick}
-            pageRangeDisplayed={2}
-            pageCount={totalPages}
-            forcePage={currentPage}
-            previousLabel="<"
-            
-            pageClassName="text-gray-700 font-medium w-10 h-10"
-            pageLinkClassName="flex flex-col text-center justify-center w-full h-full "
-
-            previousClassName="w-10 h-10 text-2xl select-none text-slate-600 hover:text-black"
-            previousLinkClassName="flex justify-center w-full h-full"
-
-            nextClassName="w-10 h-10 text-2xl select-none text-slate-600 hover:text-black"
-            nextLinkClassName="flex justify-center w-full h-full"
-
-            breakClassName=""
-            breakLinkClassName=""
-
-            disabledClassName="!text-gray-400 hover:text-gray-400"
-            disabledLinkClassName=""
-
-            marginPagesDisplayed={1}
-            containerClassName="flex justfy-center bg-slate-200 p-1 rounded-xl w-min mx-auto"
-
-            activeClassName="bg-white text-green-600 border border-slate-400 rounded-lg"
-          />
         </div>
-      </div>
       }
+    
+      { isReviewModalOpen &&
+        <CustomerReviewModal data={reservationToReview} 
+        close={() => setIsReviewModalOpen(false)}/>
+      }
+
     </div>
    );
 }

@@ -182,7 +182,7 @@ const CustomerReservationModal = ({data, close}) => {
             </div>
 
             <div>
-              <button className="rounded-xl shadow-sm px-6 py-2 text-white font-bold 
+              <button className="rounded-xl shadow-sm px-6 py-2 text-white font-display font-bold 
               bg-cyan-700 hover:bg-cyan-800 active:bg-cyan-900 focus:outline-none
               w-full mt-4" onClick={makeReservation}>
                 Make a reservation

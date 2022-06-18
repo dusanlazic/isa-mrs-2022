@@ -4,10 +4,6 @@ import CustomerReservationModal from "../../modals/reservation/CustomerReservati
 const ReservationButton = ({data}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const closeModal = (e) => {
-    setIsModalOpen(false);
-  }
-
   return ( 
     <div className="border border-gray-100 rounded-lg text-left
       shadow-sm py-3 px-5 tracking-wide">
@@ -18,7 +14,7 @@ const ReservationButton = ({data}) => {
         </button>
 
         {isModalOpen &&
-          <CustomerReservationModal data={data} close={closeModal}/>
+          <CustomerReservationModal data={data} close={() => setIsModalOpen(false)}/>
         }
       </div>
    );

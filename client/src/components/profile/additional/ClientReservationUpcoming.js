@@ -16,7 +16,7 @@ const ClientReservationUpcoming = ({data}) => {
   const [sorting, setSorting] = useState('startDateTime');
   const [descending, setDescending] = useState(true);
 
-  const [reservationToCancel, setReservationToCancel] = useState(false);
+  const [reservationToCancel, setReservationToCancel] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [messageModalText, setMessageModalText] = useState('');
@@ -118,11 +118,12 @@ const ClientReservationUpcoming = ({data}) => {
       { showConfirmationModal &&
         <ConfirmationModal closeFunction = {() => setShowConfirmationModal(false)}
         text = { "Are you sure you want to cancel the reservation?" }
-        confirmButtonText="Confirm cancellation" confirmFunction={cancelReservation}
+        confirmButtonText="Confirm cancellation" confirmFunction={ cancelReservation }
       />}
 
       { showMessageModal &&
-        <MessageModal okayFunction={() => window.location.reload()} closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+        <MessageModal okayFunction={() => window.location.reload()}
+        closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
       />}
     </div>
    );

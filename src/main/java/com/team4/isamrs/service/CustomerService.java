@@ -158,4 +158,12 @@ public class CustomerService {
                     return dto;
                 });
     }
+
+    public Collection<AdvertisementSimpleDisplayDTO> getSubscriptions(Authentication auth) {
+        Customer customer = (Customer) auth.getPrincipal();
+        return customerRepository.getSubscriptionsByCustomer(customer)
+                .stream()
+                .map(subscription -> modelMapper.map(subscription, AdvertisementSimpleDisplayDTO.class))
+                .collect(Collectors.toSet());
+    }
 }

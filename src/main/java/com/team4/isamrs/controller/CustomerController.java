@@ -1,8 +1,10 @@
 package com.team4.isamrs.controller;
 
+import com.team4.isamrs.dto.display.AdvertisementSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.CustomerDisplayDTO;
 import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
+import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,5 +50,11 @@ public class CustomerController {
                                                                    @RequestParam String sorting,
                                                                    Authentication auth) {
         return customerService.getUpcomingReservations(PageRequest.of(page, 10, Sort.by(sorting)), auth);
+    }
+
+    @GetMapping(value = "/subscriptions")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public Collection<AdvertisementSimpleDisplayDTO> getSubscriptions(Authentication auth) {
+        return customerService.getSubscriptions(auth);
     }
 }

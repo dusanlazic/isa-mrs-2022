@@ -11,7 +11,9 @@ import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
+import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.repository.AdvertisementRepository;
+import com.team4.isamrs.repository.CustomerRepository;
 import com.team4.isamrs.repository.OptionRepository;
 import com.team4.isamrs.repository.ReservationRepository;
 import org.apache.tomcat.jni.Local;
@@ -19,6 +21,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -40,6 +43,9 @@ public class AdvertisementService {
     @Autowired
     private OptionRepository optionRepository;
 
+    @Autowired
+    private CustomerRepository customerRepository;
+
     public void delete(Long id, Authentication auth) {
         /* Note:
         Do not allow deletion if any future or current reservations for this ad exist.
@@ -60,6 +66,15 @@ public class AdvertisementService {
         }
 
         advertisementRepository.delete(advertisement);
+    }
+
+    public void subscribe(Long id, Authentication auth) {
+        Customer customer = (Customer) auth.getPrincipal();
+        Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
+        Set<Advertisement> currentSubscriptions = customerRepository.getSubscriptionsByCustomer(customer);
+        currentSubscriptions.add(advertisement);
+        customer.setSubscriptions(currentSubscriptions);
+        customerRepository.save(customer);
     }
 
     public Collection<LocalDate> getUnavailableDates(Long id, String year, String month) {

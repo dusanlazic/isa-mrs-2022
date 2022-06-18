@@ -94,4 +94,11 @@ public class AdvertisementController {
         reservationService.create(id, dto, auth);
         return new ResponseOK("Reservation created.");
     }
+
+    @PatchMapping(value = "/{id}/subscribe")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseOK subscribe(@PathVariable Long id, Authentication auth) {
+        advertisementService.subscribe(id, auth);
+        return new ResponseOK("Subscription added.");
+    }
 }

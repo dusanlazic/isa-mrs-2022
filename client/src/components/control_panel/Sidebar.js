@@ -15,6 +15,19 @@ const getNewEntityName = () => {
   }
 }
 
+const getMyEntityIcon = () => {
+  const session = getSession();
+  if (session.accountType === "FISHING_INSTRUCTOR_OWNER"){
+    return "tabler:fish";
+  }
+  else if (session.accountType === "BOAT_OWNER"){
+    return "tabler:sailboat";
+  }
+  else {
+    return "tabler:window";
+  }
+}
+
 const Sidebar = ({ currentComponent, setCurrentComponent }) => {
 
 	const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -34,6 +47,7 @@ const Sidebar = ({ currentComponent, setCurrentComponent }) => {
 
   const sidebarItems =[
     { name:"reservations", text:"Reservation history", icon:"tabler:list-search" },
+    { name:"myEntities", text:`My ${getNewEntityName()}s`, icon:getMyEntityIcon() },
     { name:"newEntity", text:`New ${getNewEntityName()}`, icon:"tabler:new-section" },
     { name:"reports", text:"Reports", icon:"tabler:clipboard-list" },
   ];

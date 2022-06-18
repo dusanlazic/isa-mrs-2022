@@ -8,6 +8,7 @@ import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.advertisement.ResortAd;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
+import com.team4.isamrs.repository.AdvertisementRepository;
 import com.team4.isamrs.repository.AdvertiserRepository;
 import com.team4.isamrs.repository.ReservationReportRepository;
 import com.team4.isamrs.repository.ReservationRepository;
@@ -33,6 +34,9 @@ public class AdvertiserService {
 
     @Autowired
     private ReservationRepository reservationRepository;
+
+    @Autowired
+    private AdvertisementRepository advertisementRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -82,5 +86,10 @@ public class AdvertiserService {
             }
             return dto;
         });
+    }
+
+    public Page<AdvertisementSimpleDisplayDTO> getPaginatedAdvertisements(Authentication auth, Pageable pageable) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        return advertisementRepository.findAdvertisementsByAdvertiser(advertiser, pageable).map( advertisement -> modelMapper.map(advertisement, AdvertisementSimpleDisplayDTO.class));
     }
 }

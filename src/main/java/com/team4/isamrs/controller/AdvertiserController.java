@@ -50,6 +50,6 @@ public class AdvertiserController {
     @GetMapping(value = "/advertisements")
     @PreAuthorize("hasRole('ADVERTISER')")
     public Page<AdvertisementSimpleDisplayDTO> getPaginatedAdvertisements(Authentication auth, @RequestParam int page, @RequestParam String sorting) {
-        return advertiserService.getPaginatedAdvertisements(auth, PageRequest.of(page, 12, Sort.by(sorting)));
+        return advertiserService.getPaginatedAdvertisements(auth, PageRequest.of(page, 12, Sort.by(sorting).descending()));
     }
 }

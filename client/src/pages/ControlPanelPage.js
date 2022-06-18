@@ -5,6 +5,7 @@ import ResortInfoEditor from "../components/resort/ResortInfoEditor";
 import ReservationHistory from "../components/control_panel/ReservationHistory";
 import Sidebar from "../components/control_panel/Sidebar";
 import { getSession } from "../contexts";
+import MyEntities from "../components/control_panel/MyEntities";
 
 const getNewEntityPage = () => {
   const session = getSession();
@@ -30,6 +31,7 @@ const ControlPanel = ({}) => {
         {
         currentComponent === "reservations" ? <ReservationHistory /> : 
         currentComponent === "newEntity" ? getNewEntityPage() : 
+        currentComponent === "myEntities" ? <MyEntities /> : 
         <div></div>
         }
       </div>

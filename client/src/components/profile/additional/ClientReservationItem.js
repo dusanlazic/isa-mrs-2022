@@ -43,6 +43,12 @@ const ClientReservationItem = ({reservation, allowCancel, cancel}) => {
             Cancel
           </button>
         </div>}
+        { !allowCancel && reservation.canBeReviewed &&
+        <div className="flex">
+          <button className="hover:text-cyan-600" onClick={() => cancel(reservation)}>
+            Review
+          </button>
+        </div>}
 
       </div>
     </div>

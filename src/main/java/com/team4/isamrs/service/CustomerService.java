@@ -5,6 +5,7 @@ import com.team4.isamrs.model.advertisement.AdventureAd;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.advertisement.ResortAd;
+import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.repository.AdvertisementRepository;
 import com.team4.isamrs.repository.CustomerRepository;
@@ -81,8 +82,14 @@ public class CustomerService {
                         dto.setAdvertisement(modelMapper.map(concreteAd, AdvertisementSimpleDisplayDTO.class));
                     }
 
+                    dto.setCanBeReviewed(!reservation.getCancelled()
+                            && !hasUserReviewedAdvertisement(customer, advertisement));
                     return dto;
                 });
+    }
+
+    private boolean hasUserReviewedAdvertisement(Customer customer, Advertisement advertisement) {
+        return advertisement.getReviews().stream().anyMatch(review -> review.getCustomer().getId().equals(customer.getId()));
     }
 
     public Page<ReservationSimpleDisplayDTO> getUpcomingReservations(Long id, PageRequest pageable) {
@@ -97,6 +104,7 @@ public class CustomerService {
                     dto.setCalculatedPrice(reservation.getCalculatedPrice());
                     dto.setId(reservation.getId());
                     dto.setCreatedAt(reservation.getCreatedAt());
+                    dto.setCanBeReviewed(false);
 
                     // domain mapper sucks
                     Advertisement advertisement = (Advertisement) Hibernate.unproxy(reservation.getAdvertisement());

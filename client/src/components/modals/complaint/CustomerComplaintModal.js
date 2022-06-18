@@ -12,7 +12,7 @@ const CustomerComplaintModal = ({data, close}) => {
 
   const tryComplaint = () => {
     if (complaintText.trim().length === 0)
-      setErrorMsg('Complaint message cannot be empty.');
+      setErrorMsg('Enter a message.');
     else sendComplaint();
   }
 

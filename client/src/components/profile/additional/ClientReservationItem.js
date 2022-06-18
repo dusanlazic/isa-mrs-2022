@@ -48,7 +48,8 @@ const ClientReservationItem = ({reservation, allowCancel, cancel, review, report
         <div className="flex my-auto divide-x h-min">
           { !allowCancel && reservation.canBeReviewed &&
           <div>
-            <button className="hover:text-cyan-600 pr-1.5" onClick={() => review(reservation)}>
+            <button className={`hover:text-cyan-600 
+            ${reservation.canBeComplainedAbout ? 'pr-1.5' : ''}`} onClick={() => review(reservation)}>
               Review
             </button>
           </div>}

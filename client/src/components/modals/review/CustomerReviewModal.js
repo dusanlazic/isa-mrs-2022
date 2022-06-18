@@ -14,12 +14,27 @@ const CustomerReviewModal = ({data, close}) => {
   const [messageModalText, setMessageModalText] = useState('');
 
   const tryReview = () => {
-    if (reviewText.trim().length === 0) 
+    if (reviewText.trim().length === 0)
       setErrorMsg('Review text cannot be empty.');
+    else if (reviewText.trim().length > 100)
+      setErrorMsg('Maximum length surpassed.');
     else sendReview();
   }
 
   const sendReview = () => {
+    post(`/api/ads/${data.advertisement.id}/reviews`,
+    {
+      rating: selectedStars + 1,
+      comment: reviewText.trim()
+    })
+    .then(response => {
+      setMessageModalText("Review successfully created.");
+      setShowMessageModal(true);
+    })
+    .catch(error => {
+      setMessageModalText(error.response.data.message);
+      setShowMessageModal(true);
+    })
   }
 
   const closeModal = (e) => {
@@ -52,6 +67,9 @@ const CustomerReviewModal = ({data, close}) => {
           text-lg text-thin text-gray-700 p-2 leading-tight rounded-md focus:outline-none focus:border-slate-400"
           value={reviewText} onChange={(e) => {setErrorMsg(''); setReviewText(e.target.value);}}
           placeholder={`Your review of ${data.advertisement.title}`}></textarea>
+          <div className={`flex justify-end -mt-2 ${reviewText.length > 100 ? 'text-red-600' : 'text-slate-500'}`}>
+            {reviewText.length}/100
+          </div>
         </div>
 
         <div className="flex justify-center md:justify-end mt-6">
@@ -67,7 +85,7 @@ const CustomerReviewModal = ({data, close}) => {
         </div>
 
         {showMessageModal &&
-        <MessageModal okayFunction={() => close()} closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+        <MessageModal okayFunction={() => window.location.reload()} closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
         />}
         
       </div>

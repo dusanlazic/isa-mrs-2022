@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { get } from "../adapters/xhr"
+import { logout } from '../util'; 
+
 
 // main components
 import UserProfileMainInfo from '../components/profile/main/UserProfileMainInfo'
@@ -70,7 +72,8 @@ const ProfilePage = ({me}) => {
         getMyAccountData();
       })
       .catch(error => {
-        navigate('/notfound');
+        logout();
+        navigate('/');
       });
     } else {
       get(`/api${endpoint}/${id}`)

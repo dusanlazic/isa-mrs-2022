@@ -12,6 +12,6 @@ public class ReviewCreationDTO {
     @Range(min = 1, max = 5)
     private Integer rating;
 
-    @Size(max = 100)
+    @Size(max = 100, message="Maximum comment length is 100 characters.")
     private String comment;
 }

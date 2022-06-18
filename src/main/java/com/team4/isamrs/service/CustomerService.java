@@ -5,6 +5,7 @@ import com.team4.isamrs.model.advertisement.AdventureAd;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.advertisement.ResortAd;
+import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.repository.AdvertisementRepository;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,8 +52,33 @@ public class CustomerService {
     public Collection<ReviewPublicDisplayDTO> getReviews(Long id) {
         Customer customer = customerRepository.findById(id).orElseThrow();
         return reviewRepository.findByCustomer(customer).stream()
-                .map(e -> modelMapper.map(e, ReviewPublicDisplayDTO.class))
-                .collect(Collectors.toSet());
+                .filter(review -> review.getApprovalStatus().equals(ApprovalStatus.APPROVED))
+                .map(review -> {
+                    ReviewPublicDisplayDTO dto = new ReviewPublicDisplayDTO();
+                    dto.setCustomer(modelMapper.map(customer, CustomerPublicDisplayDTO.class));
+                    dto.setComment(review.getComment());
+                    dto.setRating(review.getRating());
+                    dto.setId(review.getId());
+                    dto.setCreatedAt(review.getCreatedAt());
+
+                    // domain mapper sucks
+                    Advertisement advertisement = (Advertisement) Hibernate.unproxy(review.getAdvertisement());
+                    if (advertisement instanceof ResortAd) {
+                        ResortAd concreteAd = (ResortAd) advertisement;
+                        dto.setAdvertisement(modelMapper.map(concreteAd, AdvertisementSimpleDisplayDTO.class));
+                    }
+                    else if (advertisement instanceof BoatAd) {
+                        BoatAd concreteAd = (BoatAd) advertisement;
+                        dto.setAdvertisement(modelMapper.map(concreteAd, AdvertisementSimpleDisplayDTO.class));
+                    }
+                    else if (advertisement instanceof AdventureAd) {
+                        AdventureAd concreteAd = (AdventureAd) advertisement;
+                        dto.setAdvertisement(modelMapper.map(concreteAd, AdvertisementSimpleDisplayDTO.class));
+                    }
+
+                    dto.setAdvertiser(modelMapper.map(advertisement.getAdvertiser(), SessionDisplayDTO.class));
+                    return dto;
+                }).collect(Collectors.toSet());
     }
 
     public Page<ReservationSimpleDisplayDTO> getPreviousReservations(Long id, Pageable pageable) {

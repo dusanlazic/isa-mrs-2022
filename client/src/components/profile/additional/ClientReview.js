@@ -1,23 +1,48 @@
 import { useState } from "react";
-
+import { Link } from "react-router-dom";
+import { Icon } from "@iconify/react";
 
 const ClientReview = ({review}) => {
+  console.log(review)
   let [showMore, setShowMore] = useState(false);
+
+  const getPlaceholderImage = () => {
+    if (review.advertisement.advertisementType === 'resort') return '/images/property-placeholder.jpg'
+    if (review.advertisement.advertisementType === 'boat') return '/images/boat-placeholder.jpg'
+    if (review.advertisement.advertisementType === 'adventure') return '/images/fish-placeholder.jpg'
+  }
 
   return ( 
     <div className="block rounded-lg">
       <div className="flex">
-        <img src={review.advertisement.image} alt="" className="flex-none w-20 h-14 object-cover rounded-lg" />
+        <Link to={`/${review.advertisement.advertisementType}/${review.advertisement.id}`}>
+          <img src={review.advertisement.photo ? `/api/${review.advertisement.photo.uri}` : getPlaceholderImage()}
+          alt="" className="flex-none w-20 h-14 object-cover rounded-lg" />
+        </Link>
 
-        <div className="block ml-2">
-          <h1 className="text-xl text-gray-700 tracking-tight my-auto text-left">
-              {review.advertisement.title}
-          </h1>
-          <div className="flex text-lg -mt-2">
+        <div className="flex flex-col ml-2 justify-between">
+          <div>
+            <Link to={`/${review.advertisement.advertisementType}/${review.advertisement.id}`}>
+              <h1 className="text-lg text-slate-700 leading-4 tracking-tight my-auto text-left">
+                  {review.advertisement.title}
+              </h1>
+            </Link>
+            
+            <Link to={`/advertiser/${review.advertiser.id}`}>
+              <h4 className="text-sm text-slate-500 leading-4 tracking-tight my-auto text-left">
+                  {review.advertiser.firstName} {review.advertiser.lastName}
+              </h4>
+            </Link>
+          </div>
+          <div className="flex text-lg mt-1">
             {[0,1,2,3,4].map((id) =>
               <span key={id}>
-                {id < review.rating  ? <div className="text-yellow-500">&#9733;</div> 
-                : <div className="text-gray-300">&#9733;</div>}
+                 <Icon icon="tabler:star" inline={true}
+                  className={`my-auto w-4 h-4
+                  ${id < review.rating ? 
+                    'text-green-700' :
+                    'text-gray-400'}`}/>
+               
               </span>
             )}
           </div>

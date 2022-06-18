@@ -1,11 +1,13 @@
 package com.team4.isamrs.service;
 
+import com.team4.isamrs.dto.creation.QuickReservationCreationDTO;
 import com.team4.isamrs.dto.creation.ReservationCreationDTO;
 import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.exception.*;
 import com.team4.isamrs.model.advertisement.*;
 import com.team4.isamrs.model.loyalty.LoyaltyProgramCategory;
 import com.team4.isamrs.model.loyalty.TargetedAccountType;
+import com.team4.isamrs.model.reservation.QuickReservation;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
@@ -59,6 +61,9 @@ public class ReservationService {
 
     @Autowired
     private LoyaltyProgramCategoryRepository loyaltyProgramCategoryRepository;
+
+    @Autowired
+    private QuickReservationRepository quickReservationRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -231,6 +236,29 @@ public class ReservationService {
                 .collect(Collectors.toSet());
     }
 
+    private Set<SelectedOption> generateSelectedOptions(QuickReservationCreationDTO dto, Advertisement advertisement) {
+        return dto.getSelectedOptions()
+                .stream()
+                .map(selectedOptionDto -> {
+                    Option option = advertisement
+                            .getOptions()
+                            .stream()
+                            .filter(x -> x.getId().equals(selectedOptionDto.getOptionId()))
+                            .findFirst()
+                            .orElseThrow();
+                    if (selectedOptionDto.getCount() > option.getMaxCount()) {
+                        throw new ExceededOptionMaxCountValueException(
+                                "Selected value (" + selectedOptionDto.getCount() + ") for " + option.getName() +
+                                        " exceeds max value of " + option.getMaxCount());
+                    }
+                    SelectedOption selectedOption = new SelectedOption();
+                    selectedOption.setOption(option);
+                    selectedOption.setCount(selectedOptionDto.getCount());
+                    return selectedOption;
+                })
+                .collect(Collectors.toSet());
+    }
+
     private BigDecimal calculateReservationPrice(ReservationCreationDTO dto, Advertisement advertisement,
                                                  Customer customer) {
         LoyaltyProgramCategory category = loyaltyProgramCategoryRepository
@@ -252,6 +280,26 @@ public class ReservationService {
         return BigDecimal.valueOf(days)
                 .multiply(pricePerThing)
                 .multiply(category.getMultiply())
+                .setScale(2, RoundingMode.UP);
+    }
+
+    private BigDecimal calculateReservationPrice(QuickReservationCreationDTO dto, Advertisement advertisement) {
+        BigDecimal pricePerThing = new BigDecimal(0);
+        if (advertisement instanceof ResortAd) {
+            ResortAd ad = (ResortAd) advertisement;
+            pricePerThing = ad.getPricePerDay();
+        }
+        else if (advertisement instanceof BoatAd) {
+            BoatAd ad = (BoatAd) advertisement;
+            pricePerThing = ad.getPricePerDay();
+        }
+        else if (advertisement instanceof AdventureAd){
+            AdventureAd ad = (AdventureAd) advertisement;
+            pricePerThing = ad.getPricePerPerson();
+        }
+        long days = dto.getStartDate().until(dto.getEndDate(), ChronoUnit.DAYS)+1;
+        return BigDecimal.valueOf(days)
+                .multiply(pricePerThing)
                 .setScale(2, RoundingMode.UP);
     }
 
@@ -307,5 +355,59 @@ public class ReservationService {
             else
                 return !date.isEqual(availableAfter);
         }
+    }
+
+    public void createQuickReservation(QuickReservationCreationDTO dto, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        Advertisement advertisement = advertisementRepository.findAdvertisementByIdAndAdvertiser(dto.getAdvertisementId(), advertiser).orElseThrow();
+
+        if (advertisement instanceof ResortAd) {
+            advertisement = resortAdRepository.getById(dto.getAdvertisementId());
+            dto.setEndDate(dto.getEndDate().plusDays(1));
+        }
+        else if (advertisement instanceof BoatAd) {
+            advertisement = boatAdRepository.getById(dto.getAdvertisementId());
+            dto.setEndDate(dto.getEndDate().plusDays(1));
+        }
+        else if (advertisement instanceof AdventureAd) {
+            advertisement = adventureAdRepository.getById(dto.getAdvertisementId());
+            if (!dto.getStartDate().isEqual(dto.getEndDate()))
+                throw new ReservationPeriodUnavailableException("Adventure reservation must be within one day.");
+        }
+
+        if (dto.getEndDate().isBefore(LocalDate.now()) || dto.getStartDate().isBefore(LocalDate.now()) ||
+                dto.getValidUntil().isBefore(LocalDate.now()) || dto.getValidAfter().isBefore(LocalDate.now()))
+            throw new EndDateBeforeStartDateException("Dates cannot be in the past.");
+
+        if (dto.getEndDate().isBefore(dto.getStartDate()))
+            throw new EndDateBeforeStartDateException("End date cannot be before start date.");
+
+        if (dto.getValidUntil().isBefore(dto.getValidAfter()))
+            throw new EndDateBeforeStartDateException("Valid until cannot be before valid after.");
+
+        if (dto.getStartDate().isBefore(dto.getValidUntil()))
+            throw new EndDateBeforeStartDateException("Start date cannot be before valid until.");
+
+        if (advertisement.getCapacity() < dto.getCapacity())
+            throw new ExceededMaxAttendeesException("Exceeded maximum number of attendees (" +
+                    advertisement.getCapacity() + ")");
+
+        if (!isAvailableForReservation(advertisement, dto.getStartDate(), dto.getEndDate()))
+            throw new ReservationPeriodUnavailableException("Unable to make reservation. Requested period is unavailable.");
+
+        QuickReservation quickReservation = new QuickReservation();
+        quickReservation.setAdvertisement(advertisement);
+        quickReservation.setCreatedAt(LocalDateTime.now());
+        quickReservation.setSelectedOptions(generateSelectedOptions(dto, advertisement));
+        quickReservation.setValidAfter(dto.getValidAfter().atStartOfDay());
+        quickReservation.setValidUntil(dto.getValidUntil().atStartOfDay());
+        quickReservation.setCalculatedOldPrice(dto.getCalculatedOldPrice());
+        quickReservation.setNewPrice(calculateReservationPrice(dto, advertisement));
+        quickReservation.setStartDateTime(dto.getStartDate().atTime(advertisement.getCheckInTime()));
+        quickReservation.setEndDateTime(dto.getEndDate().atTime(advertisement.getCheckOutTime()));
+        quickReservation.setCapacity(dto.getCapacity());
+        quickReservation.setTaken(false);
+
+        quickReservationRepository.save(quickReservation);
     }
 }

@@ -1,6 +1,7 @@
 package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.ResponseOK;
+import com.team4.isamrs.dto.creation.QuickReservationCreationDTO;
 import com.team4.isamrs.dto.creation.ReservationReportCreationDTO;
 import com.team4.isamrs.dto.display.ReservationReportDisplayDTO;
 import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
@@ -73,5 +74,12 @@ public class ReservationController {
     public ResponseOK cancelReservation(@PathVariable Long id, Authentication auth) {
         reservationService.cancel(id, auth);
         return new ResponseOK("Reservation cancelled.");
+    }
+
+    @PostMapping(value = "/quick-reservation")
+    @PreAuthorize("hasRole('ADVERTISER')")
+    public ResponseOK createQuickReservation(@Valid @RequestBody QuickReservationCreationDTO dto, Authentication auth) {
+        reservationService.createQuickReservation(dto, auth);
+        return new ResponseOK("Quick reservation created.");
     }
 }

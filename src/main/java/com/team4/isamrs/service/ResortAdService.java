@@ -231,7 +231,7 @@ public class ResortAdService {
 
     public void update(Long id, ResortAdUpdationDTO dto, Authentication auth) {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
-        ResortAd resortAd = resortAdRepository.findAdventureAdByIdAndAdvertiser(id, advertiser).orElseThrow();
+        ResortAd resortAd = resortAdRepository.findResortAdByIdAndAdvertiser(id, advertiser).orElseThrow();
 
         modelMapper.map(dto, resortAd);
 

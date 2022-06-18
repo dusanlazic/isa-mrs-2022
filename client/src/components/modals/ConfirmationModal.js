@@ -12,7 +12,7 @@ export default function ConfirmationModal ({ closeFunction, confirmFunction, con
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-40" onClose={hide}>
+      <Dialog as="div" className="relative z-30" onClose={hide}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

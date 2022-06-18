@@ -2,6 +2,8 @@ package com.team4.isamrs.model.reservation;
 
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.SelectedOption;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -10,9 +12,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public class QuickReservation {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -22,7 +27,7 @@ public class QuickReservation {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @ManyToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "quick_reservation_selected_option",
         joinColumns = @JoinColumn(name = "quick_reservation_id"),

@@ -11,7 +11,7 @@ export default function MessageModal ({ closeFunction, text, okayFunction })  {
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-40" onClose={hide}>
+      <Dialog as="div" className="relative z-50" onClose={hide}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

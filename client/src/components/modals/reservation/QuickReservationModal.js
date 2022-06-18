@@ -22,11 +22,10 @@ const QuickReservationModal = ({data, close}) => {
   const [messageModalText, setMessageModalText] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [availableAfter, setAvailableAfter] = useState(null);
-  const [availableBefore, setAvailableBefore] = useState(null);
+  const [validUntil, setValidUntil] = useState(null);
+  const [validAfter, setValidAfter] = useState(null);
 
   useEffect(() => {
-    console.log(data)
     decideType();
     fillOptions();
   }, []);
@@ -36,17 +35,18 @@ const QuickReservationModal = ({data, close}) => {
     const startDate = getStartDate();
     const endDate = getEndDate();
     
-    post(`/api/ads/${data.id}/reservations`, {
-      availableAfter: availableAfter,
-      availableBefore: endDate,
-      startDate: availableBefore,
+    post(`/api/reservations/quick-reservation`, {
+      advertisementId: data.id,
+      validUntil: validUntil,
+      validAfter: validAfter,
+      startDate: startDate,
       endDate: endDate,
-      newPrice: price,
+      calculatedOldPrice: price,
       capacity: attendees,
       selectedOptions: selectedOptions
     })
     .then(response => {
-      setMessageModalText('Reservation made successfully!');
+      setMessageModalText('Quick reservation made successfully!');
       setShowMessageModal(true);
     })
     .catch(error => {
@@ -102,7 +102,7 @@ const QuickReservationModal = ({data, close}) => {
     }
   }
 
-  const closeModal = (e) => {
+  const closeMessageModal = (e) => {
     if (e.target === e.currentTarget) {
       close();
     }
@@ -133,35 +133,35 @@ const QuickReservationModal = ({data, close}) => {
   }
 
   return ( 
-    <div onClick={closeModal} className="fixed top-0 left-0 z-50 w-full min-h-screen h-screen text-center
+    <div onClick={closeMessageModal} className="fixed top-0 left-0 z-40 w-full min-h-screen h-screen text-center
     flex items-center justify-center bg-gray-900 bg-opacity-70 font-mono transition-opacity text-base">
       <div className="relative flex flex-col w-180 h-150 bg-white rounded-xl mx-auto overflow-hidden p-9">
         <h1 className="text-xl mb-5 font-display">Make a reservation</h1>
 
         <div className="flex flex-col-2 mb-4 text-left">
           <div className="w-80 mx-auto">
-            <label className="text-xs text-slate-500">Available after:</label>
-            <DatePicker
-                dateFormat="dd-MM-yyyy"
-                selected={availableAfter}
-                onChange={(date) => setAvailableAfter(date)}
-                placeholderText="Valid after"
-                className={`w-full outline-none text-center rounded-lg placeholder-slate-400
-                text-slate-600 focus:text-slate-900 h-10 px-2 border border-slate-200
-                ${availableAfter ? 'pt-2 font-medium' : ''}`}
-              />
-          </div>
-          <div className="w-80 mx-auto">
-            <label className="text-xs text-slate-500">Available until:</label>
+            <label className="text-xs text-slate-500">Valid after:</label>
             <DatePicker
               dateFormat="dd-MM-yyyy"
-              selected={availableBefore}
-              onChange={(date) => setAvailableBefore(date)}
-              placeholderText="Valid until"
+              selected={validAfter}
+              onChange={(date) => setValidAfter(date)}
+              placeholderText="Valid after"
               className={`w-full outline-none text-center rounded-lg placeholder-slate-400
               text-slate-600 focus:text-slate-900 h-10 px-2 border border-slate-200
-              ${availableBefore ? 'pt-2 font-medium' : ''}`}
+              ${validAfter ? 'pt-2 font-medium' : ''}`}
             />
+          </div>
+          <div className="w-80 mx-auto">
+            <label className="text-xs text-slate-500">Valid until:</label>
+            <DatePicker
+                dateFormat="dd-MM-yyyy"
+                selected={validUntil}
+                onChange={(date) => setValidUntil(date)}
+                placeholderText="Valid until"
+                className={`w-full outline-none text-center rounded-lg placeholder-slate-400
+                text-slate-600 focus:text-slate-900 h-10 px-2 border border-slate-200
+                ${validUntil ? 'pt-2 font-medium' : ''}`}
+              />
           </div>
             
         </div>
@@ -240,7 +240,7 @@ const QuickReservationModal = ({data, close}) => {
         </div>
 
         {showMessageModal &&
-        <MessageModal okayFunction={close} closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+        <MessageModal okayFunction={closeMessageModal} closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
         />}
         
       </div>

@@ -8,16 +8,14 @@ import com.team4.isamrs.model.advertisement.ResortAd;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Customer;
-import com.team4.isamrs.repository.AdvertisementRepository;
-import com.team4.isamrs.repository.CustomerRepository;
-import com.team4.isamrs.repository.ReservationRepository;
-import com.team4.isamrs.repository.ReviewRepository;
+import com.team4.isamrs.repository.*;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,6 +38,9 @@ public class CustomerService {
 
     @Autowired
     private AdvertisementRepository advertisementRepository;
+
+    @Autowired
+    private ComplaintRepository complaintRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -81,8 +82,8 @@ public class CustomerService {
                 }).collect(Collectors.toSet());
     }
 
-    public Page<ReservationSimpleDisplayDTO> getPreviousReservations(Long id, Pageable pageable) {
-        Customer customer = customerRepository.findById(id).orElseThrow();
+    public Page<ReservationSimpleDisplayDTO> getPreviousReservations(Pageable pageable, Authentication auth) {
+        Customer customer = (Customer) auth.getPrincipal();
         return reservationRepository.findReservationsByCustomerEqualsAndStartDateTimeBefore(customer, LocalDateTime.now(), pageable)
                 .map(reservation -> {
                     ReservationSimpleDisplayDTO dto = new ReservationSimpleDisplayDTO();
@@ -111,16 +112,22 @@ public class CustomerService {
 
                     dto.setCanBeReviewed(!reservation.getCancelled()
                             && !hasUserReviewedAdvertisement(customer, advertisement));
+                    dto.setCanBeComplainedAbout(!reservation.getCancelled()
+                            && !hasUserComplainedAboutAdvertisement(customer, advertisement));
                     return dto;
                 });
+    }
+
+    private boolean hasUserComplainedAboutAdvertisement(Customer customer, Advertisement advertisement) {
+        return complaintRepository.findByCustomerAndAdvertisement(customer, advertisement).size() > 0;
     }
 
     private boolean hasUserReviewedAdvertisement(Customer customer, Advertisement advertisement) {
         return advertisement.getReviews().stream().anyMatch(review -> review.getCustomer().getId().equals(customer.getId()));
     }
 
-    public Page<ReservationSimpleDisplayDTO> getUpcomingReservations(Long id, PageRequest pageable) {
-        Customer customer = customerRepository.findById(id).orElseThrow();
+    public Page<ReservationSimpleDisplayDTO> getUpcomingReservations(PageRequest pageable, Authentication auth) {
+        Customer customer = (Customer) auth.getPrincipal();
         return reservationRepository.findReservationsByCustomerEqualsAndStartDateTimeAfter(customer, LocalDateTime.now(), pageable)
                 .map(reservation -> {
                     ReservationSimpleDisplayDTO dto = new ReservationSimpleDisplayDTO();

@@ -1,7 +1,7 @@
 import moment from "moment";
 import { Link } from 'react-router-dom'
 
-const ClientReservationItem = ({reservation, allowCancel, cancel, review}) => {
+const ClientReservationItem = ({reservation, allowCancel, cancel, review, report}) => {
 
   const getPlaceholderImage = () => {
     if (reservation.advertisement.advertisementType === 'resort') return '/images/property-placeholder.jpg'
@@ -13,7 +13,7 @@ const ClientReservationItem = ({reservation, allowCancel, cancel, review}) => {
   <div className={`flex text-left rounded-lg p-1.5 px-2
   ${reservation.cancelled ? 'bg-red-100' : 'bg-white'}`}>
     <Link to={`/${reservation.advertisement.advertisementType}/${reservation.advertisement.id}`}>
-      <img src={reservation.advertisement.photo ? `/api/${reservation.advertisement.photo.uri}` : getPlaceholderImage()}
+      <img src={reservation.advertisement.photo ? `/api${reservation.advertisement.photo.uri}` : getPlaceholderImage()}
       alt="" className="flex-none h-14 w-20 object-cover rounded-lg" />
     </Link>
     <div className="block ml-2 w-full">
@@ -44,12 +44,21 @@ const ClientReservationItem = ({reservation, allowCancel, cancel, review}) => {
             Cancel
           </button>
         </div>}
-        { !allowCancel && reservation.canBeReviewed &&
-        <div className="flex">
-          <button className="hover:text-cyan-600" onClick={() => review(reservation)}>
-            Review
-          </button>
-        </div>}
+
+        <div className="flex my-auto divide-x h-min">
+          { !allowCancel && reservation.canBeReviewed &&
+          <div>
+            <button className="hover:text-cyan-600 pr-1.5" onClick={() => review(reservation)}>
+              Review
+            </button>
+          </div>}
+          { !allowCancel && reservation.canBeComplainedAbout &&
+          <div >
+            <button className="hover:text-red-600 pl-1.5" onClick={() => report(reservation)}>
+              Report
+            </button>
+          </div>}
+        </div>
 
       </div>
     </div>

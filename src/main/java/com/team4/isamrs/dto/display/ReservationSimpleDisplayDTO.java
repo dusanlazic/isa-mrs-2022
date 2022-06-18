@@ -20,4 +20,6 @@ public class ReservationSimpleDisplayDTO {
     private BigDecimal calculatedPrice;
     private boolean cancelled;
     private boolean canBeReviewed;
+    private boolean canBeComplainedAbout;
+
 }

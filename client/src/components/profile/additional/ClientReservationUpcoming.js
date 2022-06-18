@@ -31,7 +31,7 @@ const ClientReservationUpcoming = ({data}) => {
   
   const fetchData = (resetPage=false) => {
     setCurrentPage(resetPage ? 0 : currentPage);
-		get(`/api/customers/${data.id}/upcoming-reservations?page=${currentPage}&sorting=${sorting}`).then((response) => {
+		get(`/api/customers/upcoming-reservations?page=${currentPage}&sorting=${sorting}`).then((response) => {
 			setReservations(response.data.content);
       setTotalPages(response.data.totalPages);
     });

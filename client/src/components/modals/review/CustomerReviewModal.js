@@ -51,7 +51,8 @@ const CustomerReviewModal = ({data, close}) => {
 
         <div className="flex mt-2">
           { [0, 1, 2, 3, 4].map(n => 
-            <span className={`${n !== 0 ? 'pl-0.5' : ''}`} key={n} onClick={() => setSelectedStars(n)} onMouseOver={() => setHoveredStars(n)} onMouseLeave={() => setHoveredStars(-1)}>
+            <span className={`${n !== 0 ? 'pl-0.5' : ''}`} key={n} onClick={() => setSelectedStars(n)}
+            onMouseOver={() => setHoveredStars(n)} onMouseLeave={() => setHoveredStars(-1)}>
               <Icon icon="tabler:star" inline={true}
               className={`my-auto w-5 h-5 cursor-pointer
               ${(hoveredStars > -1 ? hoveredStars : selectedStars) >= n ? 
@@ -77,7 +78,7 @@ const CustomerReviewModal = ({data, close}) => {
             <button onClick={tryReview} id="tooltip-target-1"
             className={`h-9px-8 lg:px-10 py-2 
             text-white font-display font-bold shadow-sm focus:outline-none rounded-xl 
-            ${selectedStars < 0 ? 'bg-gray-600 cursor-default' : 'bg-cyan-700 hover:bg-cyan-800 active:bg-cyan-900 '}`}>
+            ${selectedStars < 0 ? 'bg-gray-600 cursor-default' : 'bg-cyan-700 hover:bg-cyan-800 active:bg-cyan-900'}`}>
               leave review
             </button>
             <div v-if="errorMsg && !selectedStars" className="text-xs h-2 text-gray-400 text-center">{ errorMsg }</div>
@@ -85,7 +86,8 @@ const CustomerReviewModal = ({data, close}) => {
         </div>
 
         {showMessageModal &&
-        <MessageModal okayFunction={() => window.location.reload()} closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+        <MessageModal okayFunction={() => window.location.reload()}
+        closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
         />}
         
       </div>

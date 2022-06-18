@@ -78,6 +78,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 HttpMethod.POST,
                 "/auth/login",
                 "/account/register/**");
+
+        web.ignoring().antMatchers(HttpMethod.GET,
+                "/photos/**");
 /*
         web.ignoring().antMatchers(HttpMethod.GET,
                 "/customers/**",

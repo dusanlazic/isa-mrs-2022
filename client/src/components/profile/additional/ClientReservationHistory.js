@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { get } from "../../../adapters/xhr";
 import ClientReservationItem from "./ClientReservationItem";
 import CustomerReviewModal from "../../modals/review/CustomerReviewModal";
+import CustomerComplaintModal from "../../modals/complaint/CustomerComplaintModal";
 import ReactPaginate from "react-paginate";
 
 const ClientReservationHistory = ({data}) => {
@@ -10,7 +11,9 @@ const ClientReservationHistory = ({data}) => {
   const [currentPage, setCurrentPage] = useState(0);
 
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false);
   const [reservationToReview, setReservationToReview] = useState(null);
+  const [reservationToReport, setReservationToReport] = useState(null);
 
   const [sorting, setSorting] = useState('startDateTime');
   const [descending, setDescending] = useState(true);
@@ -25,7 +28,8 @@ const ClientReservationHistory = ({data}) => {
   
   const fetchData = (resetPage=false) => {
     setCurrentPage(resetPage ? 0 : currentPage);
-		get(`/api/customers/${data.id}/previous-reservations?page=${currentPage}&sorting=${sorting}`).then((response) => {
+		get(`/api/customers/previous-reservations?page=${currentPage}&sorting=${sorting}`).then((response) => {
+      console.log(response.data.content)
 			setReservations(response.data.content);
       setTotalPages(response.data.totalPages);
     });
@@ -34,6 +38,11 @@ const ClientReservationHistory = ({data}) => {
   const initReview = reservation => {
     setReservationToReview(reservation);
     setIsReviewModalOpen(true);
+  } 
+
+  const initReport = reservation => {
+    setReservationToReport(reservation);
+    setIsComplaintModalOpen(true);
   } 
 
   useEffect(() => {
@@ -60,7 +69,7 @@ const ClientReservationHistory = ({data}) => {
           {reservations.map(reservation => 
             <div key={reservation.id}>
               <ClientReservationItem reservation={reservation}
-              allowCancel={false} review={initReview}/>
+              allowCancel={false} review={initReview} report={initReport}/>
             </div>
           )}
           <div className="mt-10 mb-4 mx-auto h-10 w-full font-sans"> 
@@ -100,6 +109,11 @@ const ClientReservationHistory = ({data}) => {
       { isReviewModalOpen &&
         <CustomerReviewModal data={reservationToReview} 
         close={() => setIsReviewModalOpen(false)}/>
+      }
+
+      { isComplaintModalOpen &&
+        <CustomerComplaintModal data={reservationToReport} 
+        close={() => setIsComplaintModalOpen(false)}/>
       }
 
     </div>

@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -32,15 +34,19 @@ public class CustomerController {
         return customerService.getReviews(id);
     }
 
-    @GetMapping(value = "/{id}/previous-reservations")
-    public Page<ReservationSimpleDisplayDTO> getPreviousReservations(
-            @PathVariable Long id, @RequestParam int page, @RequestParam String sorting) {
-        return customerService.getPreviousReservations(id, PageRequest.of(page, 10, Sort.by(sorting)));
+    @GetMapping(value = "/previous-reservations")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public Page<ReservationSimpleDisplayDTO> getPreviousReservations(@RequestParam int page,
+                                                                     @RequestParam String sorting,
+                                                                     Authentication auth) {
+        return customerService.getPreviousReservations(PageRequest.of(page, 10, Sort.by(sorting)), auth);
     }
 
-    @GetMapping(value = "/{id}/upcoming-reservations")
-    public Page<ReservationSimpleDisplayDTO> getActiveReservations(
-            @PathVariable Long id, @RequestParam int page, @RequestParam String sorting) {
-        return customerService.getUpcomingReservations(id, PageRequest.of(page, 10, Sort.by(sorting)));
+    @GetMapping(value = "/upcoming-reservations")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public Page<ReservationSimpleDisplayDTO> getActiveReservations(@RequestParam int page,
+                                                                   @RequestParam String sorting,
+                                                                   Authentication auth) {
+        return customerService.getUpcomingReservations(PageRequest.of(page, 10, Sort.by(sorting)), auth);
     }
 }

@@ -1,6 +1,6 @@
 const ReservationItem = ({ reservation }) => {
   return (
-    <div className="flex text-left bg-slate-50 p-4 rounded-md">
+    <div className="flex text-left bg-gray-50 p-4 rounded-md hover:bg-gray-100 transition-colors">
       <img src={reservation.advertisement.photo == null ? "" : `/api/${reservation.advertisement.photo.uri}`} alt="" className="flex-none w-48 h-32 object-cover rounded-lg" />
       <div className="block ml-2 w-full">
         <div className="flex justify-between text-xl w-full text-gray-700 tracking-tight my-auto text-left leading-5">

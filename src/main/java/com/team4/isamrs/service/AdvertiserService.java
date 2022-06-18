@@ -1,10 +1,7 @@
 package com.team4.isamrs.service;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
-import com.team4.isamrs.dto.display.AccountDisplayDTO;
-import com.team4.isamrs.dto.display.AdvertisementSimpleDisplayDTO;
-import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
-import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
+import com.team4.isamrs.dto.display.*;
 import com.team4.isamrs.model.advertisement.AdventureAd;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.BoatAd;
@@ -17,6 +14,9 @@ import com.team4.isamrs.repository.ReservationRepository;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -55,35 +55,32 @@ public class AdvertiserService {
         return new AverageRatingDisplayDTO(Math.round(value * 100.0) / 100.0);
     }
 
-    public Set<ReservationSimpleDisplayDTO> getReservations(Authentication auth) {
+    public Page<ReservationSimpleDisplayDTO> getReservations(Authentication auth, Pageable pageable) {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
-        List<Reservation> reservations = reservationRepository.findReservationsForAdvertiser(advertiser);
-        Set<ReservationSimpleDisplayDTO> dtos = new HashSet<>();
+        return reservationRepository.findReservationsForAdvertiser(advertiser, pageable).map(reservation -> {
+            ReservationSimpleDisplayDTO dto = new ReservationSimpleDisplayDTO();
+            dto.setCustomer(modelMapper.map(reservation.getCustomer(), CustomerSimpleDisplayDTO.class));
+            dto.setStartDateTime(reservation.getStartDateTime());
+            dto.setEndDateTime(reservation.getEndDateTime());
+            //dto.setCancelled(reservation.getCancelled());
+            dto.setCalculatedPrice(reservation.getCalculatedPrice());
+            dto.setId(reservation.getId());
+            dto.setCreatedAt(reservation.getCreatedAt());
 
-        for (Reservation reservation: reservations) {
             Advertisement advertisement = (Advertisement) Hibernate.unproxy(reservation.getAdvertisement());
             if (advertisement instanceof ResortAd) {
                 ResortAd concreteAd = (ResortAd) advertisement;
-                ReservationSimpleDisplayDTO dto = modelMapper.map(reservation, ReservationSimpleDisplayDTO.class);
                 dto.setAdvertisement(modelMapper.map(concreteAd, AdvertisementSimpleDisplayDTO.class));
-                dtos.add(dto);
             }
             else if (advertisement instanceof BoatAd) {
                 BoatAd concreteAd = (BoatAd) advertisement;
-                ReservationSimpleDisplayDTO dto = modelMapper.map(reservation, ReservationSimpleDisplayDTO.class);
                 dto.setAdvertisement(modelMapper.map(concreteAd, AdvertisementSimpleDisplayDTO.class));
-                dtos.add(dto);
-                System.out.println("boat");
             }
             else if (advertisement instanceof AdventureAd) {
                 AdventureAd concreteAd = (AdventureAd) advertisement;
-                ReservationSimpleDisplayDTO dto = modelMapper.map(reservation, ReservationSimpleDisplayDTO.class);
                 dto.setAdvertisement(modelMapper.map(concreteAd, AdvertisementSimpleDisplayDTO.class));
-                dtos.add(dto);
-                System.out.println("adventure");
             }
-        }
-
-        return dtos;
+            return dto;
+        });
     }
 }

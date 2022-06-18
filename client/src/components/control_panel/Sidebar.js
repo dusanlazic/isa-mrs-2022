@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Icon } from '@iconify/react';
 import { getSession } from "../../contexts";
 
 const getNewEntityName = () => {
   const session = getSession();
-  if (session.accountType == "FISHING_INSTRUCTOR_OWNER"){
+  if (session.accountType === "FISHING_INSTRUCTOR_OWNER"){
     return "adventure";
   }
-  else if (session.accountType == "BOAT_OWNER"){
+  else if (session.accountType === "BOAT_OWNER"){
     return "boat";
   }
   else {
@@ -43,7 +43,7 @@ const Sidebar = ({ currentComponent, setCurrentComponent }) => {
       <div className="h-screen w-80 top-0 bottom-0 overflow-y-scroll overflow-x-hidden no-scrollbar hidden md:block bg-gray-100">
         <div className="pt-12 p-6 h-full">
           {sidebarItems.map(item => 
-            <div key={item.name} onClick={() => setCurrentComponent(item.name)} className={'flex text-lg px-4 py-2 tracking-wide rounded-lg cursor-pointer hover:bg-gray-300 hover:text-gray-800' + (currentComponent == item.name ? 'bg-gray-200 text-gray-800' : 'text-gray-500')}>
+            <div key={item.name} onClick={() => setCurrentComponent(item.name)} className={'flex text-lg px-4 py-2 tracking-wide rounded-lg cursor-pointer hover:bg-gray-300 hover:text-gray-800' + (currentComponent === item.name ? 'bg-gray-200 text-gray-800' : 'text-gray-500')}>
               <span className='w-8 '>
                 <Icon icon={item.icon} height="27"/>
               </span>
@@ -68,7 +68,7 @@ const Sidebar = ({ currentComponent, setCurrentComponent }) => {
         <div className="mt-6 space-y-1">
           <div className="mt-6 space-y-1">
             {sidebarItems.map(item => 
-              <div key={item.name} onClick={() => setCurrentComponent(item.name)} className={'flex text-lg px-4 py-2 tracking-wide rounded-lg cursor-pointer hover:bg-gray-300 hover:text-gray-800' + (currentComponent == item.name ? 'bg-gray-200 text-gray-800' : 'text-gray-500')}>
+              <div key={item.name} onClick={() => setCurrentComponent(item.name)} className={'flex text-lg px-4 py-2 tracking-wide rounded-lg cursor-pointer hover:bg-gray-300 hover:text-gray-800' + (currentComponent === item.name ? 'bg-gray-200 text-gray-800' : 'text-gray-500')}>
                 <span className='w-8 '>
                   <Icon icon={item.icon} height="27"/>
                 </span>

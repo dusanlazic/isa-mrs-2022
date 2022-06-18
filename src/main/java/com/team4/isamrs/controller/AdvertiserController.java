@@ -4,9 +4,15 @@ import com.team4.isamrs.dto.display.AccountDisplayDTO;
 import com.team4.isamrs.dto.display.AdvertisementSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
 import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
+import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.service.AdvertiserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -39,5 +45,17 @@ public class AdvertiserController {
     @GetMapping(value = "/{id}/reviews")
     public Set<ReviewPublicDisplayDTO> getApprovedReviews(@PathVariable Long id) {
         return advertiserService.getApprovedReviews(id);
+    }
+    
+    @GetMapping(value = "/reservations")
+    @PreAuthorize("hasRole('ADVERTISER')")
+    public Page<ReservationSimpleDisplayDTO> getReservations(Authentication auth, @RequestParam int page, @RequestParam String sorting) {
+        return advertiserService.getReservations(auth, PageRequest.of(page, 10, Sort.by(sorting)));
+    }
+
+    @GetMapping(value = "/advertisements")
+    @PreAuthorize("hasRole('ADVERTISER')")
+    public Page<AdvertisementSimpleDisplayDTO> getPaginatedAdvertisements(Authentication auth, @RequestParam int page, @RequestParam String sorting) {
+        return advertiserService.getPaginatedAdvertisements(auth, PageRequest.of(page, 12, Sort.by(sorting).descending()));
     }
 }

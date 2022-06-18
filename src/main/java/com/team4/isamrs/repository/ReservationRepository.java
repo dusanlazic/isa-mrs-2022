@@ -2,6 +2,8 @@ package com.team4.isamrs.repository;
 
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.reservation.Reservation;
+import com.team4.isamrs.model.reservation.ReservationReport;
+import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -37,4 +40,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     Set<Reservation> findByAdvertisementEqualsAndCustomerEqualsAndCancelledIsTrue
             (Advertisement advertisement, Customer customer);
+
+    @Query(value = "SELECT r FROM Reservation r WHERE r.cancelled = false AND r.advertisement.advertiser = ?1")
+    Page<Reservation> findReservationsForAdvertiser(Advertiser advertiser, Pageable pageable);
+
 }

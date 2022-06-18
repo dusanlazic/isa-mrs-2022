@@ -1,18 +1,30 @@
 package com.team4.isamrs.service;
 
-import com.team4.isamrs.dto.display.AccountDisplayDTO;
-import com.team4.isamrs.dto.display.AdvertisementSimpleDisplayDTO;
-import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
-import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
+import com.team4.isamrs.dto.display.*;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
+import ch.qos.logback.core.net.SyslogOutputStream;
+import com.team4.isamrs.model.advertisement.AdventureAd;
+import com.team4.isamrs.model.advertisement.Advertisement;
+import com.team4.isamrs.model.advertisement.BoatAd;
+import com.team4.isamrs.model.advertisement.ResortAd;
+import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
+import com.team4.isamrs.repository.AdvertisementRepository;
 import com.team4.isamrs.repository.AdvertiserRepository;
 import com.team4.isamrs.repository.ReservationReportRepository;
 import com.team4.isamrs.repository.ReviewRepository;
+import com.team4.isamrs.repository.ReservationRepository;
+import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,7 +35,10 @@ public class AdvertiserService {
     private AdvertiserRepository advertiserRepository;
 
     @Autowired
-    private ReservationReportRepository reservationReportRepository;
+    private ReservationRepository reservationRepository;
+
+    @Autowired
+    private AdvertisementRepository advertisementRepository;
 
     @Autowired
     private ReviewRepository reviewRepository;
@@ -55,5 +70,39 @@ public class AdvertiserService {
                 .filter(e -> e.getApprovalStatus().equals(ApprovalStatus.APPROVED))
                 .map(e -> modelMapper.map(e, ReviewPublicDisplayDTO.class))
                 .collect(Collectors.toSet());
+    }
+    
+    public Page<ReservationSimpleDisplayDTO> getReservations(Authentication auth, Pageable pageable) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        return reservationRepository.findReservationsForAdvertiser(advertiser, pageable).map(reservation -> {
+            ReservationSimpleDisplayDTO dto = new ReservationSimpleDisplayDTO();
+            dto.setCustomer(modelMapper.map(reservation.getCustomer(), CustomerSimpleDisplayDTO.class));
+            dto.setStartDateTime(reservation.getStartDateTime());
+            dto.setEndDateTime(reservation.getEndDateTime());
+            //dto.setCancelled(reservation.getCancelled());
+            dto.setCalculatedPrice(reservation.getCalculatedPrice());
+            dto.setId(reservation.getId());
+            dto.setCreatedAt(reservation.getCreatedAt());
+
+            Advertisement advertisement = (Advertisement) Hibernate.unproxy(reservation.getAdvertisement());
+            if (advertisement instanceof ResortAd) {
+                ResortAd concreteAd = (ResortAd) advertisement;
+                dto.setAdvertisement(modelMapper.map(concreteAd, AdvertisementSimpleDisplayDTO.class));
+            }
+            else if (advertisement instanceof BoatAd) {
+                BoatAd concreteAd = (BoatAd) advertisement;
+                dto.setAdvertisement(modelMapper.map(concreteAd, AdvertisementSimpleDisplayDTO.class));
+            }
+            else if (advertisement instanceof AdventureAd) {
+                AdventureAd concreteAd = (AdventureAd) advertisement;
+                dto.setAdvertisement(modelMapper.map(concreteAd, AdvertisementSimpleDisplayDTO.class));
+            }
+            return dto;
+        });
+    }
+
+    public Page<AdvertisementSimpleDisplayDTO> getPaginatedAdvertisements(Authentication auth, Pageable pageable) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        return advertisementRepository.findAdvertisementsByAdvertiser(advertiser, pageable).map( advertisement -> modelMapper.map(advertisement, AdvertisementSimpleDisplayDTO.class));
     }
 }

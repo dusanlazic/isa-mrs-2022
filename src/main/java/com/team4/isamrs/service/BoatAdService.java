@@ -5,6 +5,7 @@ import com.team4.isamrs.dto.display.BoatAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.BoatAdUpdationDTO;
 import com.team4.isamrs.model.advertisement.BoatAd;
+import com.team4.isamrs.model.reservation.QuickReservation;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.*;
@@ -34,6 +35,9 @@ public class BoatAdService {
 
     @Autowired
     private ReservationRepository reservationRepository;
+
+    @Autowired
+    private QuickReservationRepository quickReservationRepository;
 
     @Autowired
     private TagRepository tagRepository;

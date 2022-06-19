@@ -6,9 +6,10 @@ import MessageModal from "../MessageModal";
 import moment from "moment";
 
 const QuickReservationModal = ({data, close}) => {
+  const [, update] = useState({});
   const [advertisementType, setAdvertisementType] = useState("");
   const [attendees, setAttendees] = useState(1);
-  const [price, setPrice] = useState(null);
+  const [price, setPrice] = useState(0);
   const [options, setOptions] = useState({});
   const [selectionRange, setSelectionRange] = useState(
     {
@@ -20,8 +21,6 @@ const QuickReservationModal = ({data, close}) => {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [messageModalText, setMessageModalText] = useState('');
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
   const [validUntil, setValidUntil] = useState(null);
   const [validAfter, setValidAfter] = useState(null);
 
@@ -34,7 +33,6 @@ const QuickReservationModal = ({data, close}) => {
     const selectedOptions = getSelectedOptions();
     const startDate = getStartDate();
     const endDate = getEndDate();
-    console.log(moment(validAfter).add(5, "hours").toISOString())
     post(`/api/reservations/quick-reservation`, {
       advertisementId: data.id,
       validUntil: moment(validUntil).add(5, "hours").toISOString(),
@@ -46,10 +44,12 @@ const QuickReservationModal = ({data, close}) => {
       selectedOptions: selectedOptions
     })
     .then(response => {
+      update({});
       setMessageModalText('Quick reservation made successfully!');
       setShowMessageModal(true);
     })
     .catch(error => {
+      update({});
       setMessageModalText(error.response.data.message);
       setShowMessageModal(true);
     })
@@ -240,7 +240,7 @@ const QuickReservationModal = ({data, close}) => {
         </div>
 
         {showMessageModal &&
-        <MessageModal okayFunction={closeMessageModal} closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+        <MessageModal okayFunction={close} closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
         />}
         
       </div>

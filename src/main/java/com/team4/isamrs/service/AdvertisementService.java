@@ -77,6 +77,15 @@ public class AdvertisementService {
         customerRepository.save(customer);
     }
 
+    public void unsubscribe(Long id, Authentication auth) {
+        Customer customer = (Customer) auth.getPrincipal();
+        Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
+        Set<Advertisement> currentSubscriptions = customerRepository.getSubscriptionsByCustomer(customer);
+        currentSubscriptions.remove(advertisement);
+        customer.setSubscriptions(currentSubscriptions);
+        customerRepository.save(customer);
+    }
+
     public Collection<LocalDate> getUnavailableDates(Long id, String year, String month) {
         Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
         LocalDate startDate = LocalDate.of(Integer.parseInt(year), Month.valueOf(month).ordinal() + 1,1);

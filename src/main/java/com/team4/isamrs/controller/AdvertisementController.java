@@ -101,4 +101,11 @@ public class AdvertisementController {
         advertisementService.subscribe(id, auth);
         return new ResponseOK("Subscription added.");
     }
+
+    @PatchMapping(value = "/{id}/unsubscribe")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseOK unsubscribe(@PathVariable Long id, Authentication auth) {
+        advertisementService.unsubscribe(id, auth);
+        return new ResponseOK("Subscription removed.");
+    }
 }

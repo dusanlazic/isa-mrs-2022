@@ -9,6 +9,7 @@ import RegistrationConfirmation from './pages/RegistrationConfirmationPage';
 import UpdateAdvertisementPage from './pages/UpdateAdvertisementPage';
 import RegistrationRequestsPage from './pages/RegistrationRequestsPage';
 import RemovalRequestsPage from './pages/RemovalRequestsPage';
+import ReservationReportsPage from './pages/ReservationReportsPage';
 import AdminPasswordPage from './pages/AdminPasswordPage';
 import RegisterAdminPage from './pages/RegisterAdminPage';
 import ManageLoyaltyProgramPage from './pages/ManageLoyaltyProgramPage';
@@ -50,6 +51,7 @@ function App() {
               <Route path="/admin/system/loyalty" exact element={<ManageLoyaltyProgramPage/>}/>
               <Route path="/admin/system/commission-rate" exact element={<SetCommissionRatePage/>}/>
               <Route path="/admin/setup" exact element={<AdminPasswordPage/>}/>
+              <Route path="/admin/reports" exact element={<ReservationReportsPage/>}/>
               <Route path="/control-panel" exact element={<ControlPanel/>}/>
               <Route path="*" element={<NotFound/>}/>
             </Routes>

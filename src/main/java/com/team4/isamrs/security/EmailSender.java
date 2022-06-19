@@ -2,14 +2,22 @@ package com.team4.isamrs.security;
 
 import com.team4.isamrs.dto.updation.ComplaintResponseDTO;
 import com.team4.isamrs.model.advertisement.Advertisement;
+import com.team4.isamrs.model.advertisement.BoatAd;
+import com.team4.isamrs.model.advertisement.ResortAd;
 import com.team4.isamrs.model.complaint.Complaint;
+import com.team4.isamrs.model.reservation.QuickReservation;
 import com.team4.isamrs.model.reservation.ReservationReport;
 import com.team4.isamrs.model.review.Review;
 import com.team4.isamrs.model.user.*;
+import com.team4.isamrs.repository.ReservationRepository;
+import com.team4.isamrs.service.PhotoService;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -21,8 +29,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -34,22 +42,8 @@ public class EmailSender {
 
     private final Path templatesLocation = Paths.get("templates");
 
-    @Async
-    public void sendEmail(String templateFilename, HashMap<String, String> variables, String subject, String sendTo) {
-        try {
-            MimeMessage mimeMessage = emailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-
-            helper.setText(buildEmailFromTemplate(templateFilename, variables), true);
-            helper.setTo(sendTo);
-            helper.setSubject(subject);
-            helper.setFrom("gajba.na.vodi@gmail.com");
-            emailSender.send(mimeMessage);
-
-        } catch (MessagingException | IOException e) {
-            LOGGER.error("Failed to send email", e);
-        }
-    }
+    @Autowired
+    private PhotoService photoService;
 
     public void sendRegistrationEmail(Customer customer, String token) {
         HashMap<String, String> variables = new HashMap<>();
@@ -177,6 +171,67 @@ public class EmailSender {
         variables.put("total_rating", totalRating.toString());
 
         sendEmail("review/new.html", variables, "You got a review!", advertiser.getUsername());
+    }
+
+    public void sendDiscountNotificationEmails(QuickReservation quickReservation) {
+        Advertisement ad = quickReservation.getAdvertisement();
+        String type = ad instanceof BoatAd ? "boat" :
+                ad instanceof ResortAd ? "resort" : "adventure";
+
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("title", ad.getTitle());
+        variables.put("currency", ad.getCurrency());
+        variables.put("city", ad.getAddress().getCity());
+        variables.put("description", ad.getDescription());
+        Locale l = new Locale("", ad.getAddress().getCountryCode());
+        variables.put("country", l.getDisplayCountry());
+        variables.put("old_price", quickReservation.getCalculatedOldPrice().toString());
+        variables.put("new_price", quickReservation.getNewPrice().toString());
+        variables.put("from_date", quickReservation.getStartDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
+        variables.put("to_date", quickReservation.getEndDateTime().format(DateTimeFormatter.ofPattern("dd.mm.yyyy. HH:mm")));
+        System.out.println(ad.getPhotos().get(0).getStoredFilename());
+        variables.put("image_data", "cid:" + ad.getPhotos().get(0).getStoredFilename());
+        variables.put("link", "http://localhost:3000/" + type + "/" + ad.getId());
+        
+        quickReservation.getAdvertisement().getSubscribers().forEach(subscriber -> {
+            sendEmailWithImage("subscription/newDiscount.html", variables, quickReservation.getAdvertisement().getTitle() + " is on discount now!", subscriber.getUsername(), ad.getPhotos().get(0).getStoredFilename());
+        });
+    }
+
+    @Async
+    public void sendEmailWithImage(String templateFilename, HashMap<String, String> variables, String subject, String sendTo, String fileName) {
+        try {
+            Resource resource = photoService.getResource(fileName);
+            MimeMessage mimeMessage = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
+
+            helper.setText(buildEmailFromTemplate(templateFilename, variables), true);
+            helper.addInline(fileName, resource);
+            helper.setTo(sendTo);
+            helper.setSubject(subject);
+            helper.setFrom("gajba.na.vodi@gmail.com");
+            emailSender.send(mimeMessage);
+
+        } catch (MessagingException | IOException e) {
+            LOGGER.error("Failed to send email", e);
+        }
+    }
+
+    @Async
+    public void sendEmail(String templateFilename, HashMap<String, String> variables, String subject, String sendTo) {
+        try {
+            MimeMessage mimeMessage = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+
+            helper.setText(buildEmailFromTemplate(templateFilename, variables), true);
+            helper.setTo(sendTo);
+            helper.setSubject(subject);
+            helper.setFrom("gajba.na.vodi@gmail.com");
+            emailSender.send(mimeMessage);
+
+        } catch (MessagingException | IOException e) {
+            LOGGER.error("Failed to send email", e);
+        }
     }
 
     private String buildEmailFromTemplate(String filename, HashMap<String, String> variables) throws IOException {

@@ -13,6 +13,7 @@ import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.model.user.User;
 import com.team4.isamrs.repository.*;
+import com.team4.isamrs.security.EmailSender;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.PessimisticLockingFailureException;
@@ -64,6 +65,9 @@ public class ReservationService {
 
     @Autowired
     private QuickReservationRepository quickReservationRepository;
+
+    @Autowired
+    private EmailSender emailSender;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -357,22 +361,29 @@ public class ReservationService {
         }
     }
 
+    @Transactional
     public void createQuickReservation(QuickReservationCreationDTO dto, Authentication auth) {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
         Advertisement advertisement = advertisementRepository.findAdvertisementByIdAndAdvertiser(dto.getAdvertisementId(), advertiser).orElseThrow();
 
-        if (advertisement instanceof ResortAd) {
-            advertisement = resortAdRepository.getById(dto.getAdvertisementId());
-            dto.setEndDate(dto.getEndDate().plusDays(1));
+        try {
+            if (advertisement instanceof ResortAd) {
+                advertisement = resortAdRepository.lockGetById(dto.getAdvertisementId()).orElseThrow();
+                dto.setEndDate(dto.getEndDate().plusDays(1));
+            }
+            else if (advertisement instanceof BoatAd) {
+                advertisement = boatAdRepository.lockGetById(dto.getAdvertisementId()).orElseThrow();
+                dto.setEndDate(dto.getEndDate().plusDays(1));
+            }
+            else if (advertisement instanceof AdventureAd) {
+                advertisement = adventureAdRepository.lockGetById(dto.getAdvertisementId()).orElseThrow();
+                if (!dto.getStartDate().isEqual(dto.getEndDate()))
+                    throw new ReservationPeriodUnavailableException("Adventure reservation must be within one day.");
+            }
         }
-        else if (advertisement instanceof BoatAd) {
-            advertisement = boatAdRepository.getById(dto.getAdvertisementId());
-            dto.setEndDate(dto.getEndDate().plusDays(1));
-        }
-        else if (advertisement instanceof AdventureAd) {
-            advertisement = adventureAdRepository.getById(dto.getAdvertisementId());
-            if (!dto.getStartDate().isEqual(dto.getEndDate()))
-                throw new ReservationPeriodUnavailableException("Adventure reservation must be within one day.");
+        catch (PessimisticLockingFailureException e) {
+            throw new ReservationConflictException("Another user is currently attempting to make a reservation" +
+                    " for the same entity. Please try again in a few seconds.");
         }
 
         if (dto.getEndDate().isBefore(LocalDate.now()) || dto.getStartDate().isBefore(LocalDate.now()) ||
@@ -409,5 +420,7 @@ public class ReservationService {
         quickReservation.setTaken(false);
 
         quickReservationRepository.save(quickReservation);
+
+        emailSender.sendDiscountNotificationEmails(quickReservation);
     }
 }

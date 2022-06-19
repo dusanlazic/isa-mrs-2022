@@ -1,0 +1,72 @@
+<div style="background-color: rgb(229, 238, 238); padding-bottom: 1px;
+              font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;">
+    <div style="margin: 20px;" >
+
+        <div style="text-align: center; padding-bottom: 40px; padding-top: 20px; width: 100%">
+            <h1 style="margin-bottom: 5px;">{{ title }} is on discount!</h1>
+            <p>Book it now by clicking on the link down below.</p>
+        </div>
+
+        <div style=" background-color: rgb(229, 238, 238); background-color: white;
+      padding: 10px; margin-bottom: 20px; box-shadow: 0 2px 10px 0 rgba(131, 131, 131, 0.2), 0 2px 10px 0 rgba(131, 131, 131, 0.2); padding: 20px;">
+
+            <div style="width: 100%;">
+                <img src="{{ image_data }}" alt="" width="100%" height="400" style="object-fit: cover;"/>
+            </div>
+            <div style="margin: 20px;">
+                <div style="background-color: rgb(215, 236, 233); margin: 10px 10px 10px 0px; width: fit-content; padding: 7px; color: rgb(18, 112, 65);">Price: <span style=" text-decoration: line-through; font-size: small;">{{ currency }}{{ old_price }}</span> {{ currency }}{{ new_price }}</div>
+                <h2 style="margin: 0px;">{{ title }}</h2>
+                <p style="margin: 0px;">{{ city }}, {{ country }}</p>
+                <p>{{ description }}</p>
+                <div style="font-size: larger; display: flex; flex-direction: row;">
+                    <div style="width: 50%; padding-right: 10px;">
+                        <p><b>From:</b></p>
+                        <p>{{ from_date }}</p>
+                    </div>
+                    <div style="width: 50%; padding-right: 10px;">
+                        <p><b>To:</b></p>
+                        <p>{{ to_date }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a href="{{ link }}">
+            <button  style="display: block; margin-left: auto; margin-right: auto; margin-bottom: 20px; margin-top: 20px; background-color: black;
+                        color: white; width: 110px; padding: 10px; font-size: medium; border-radius: 8px;">
+                Book it now
+            </button>
+        </a>
+    </div>
+</div>
+
+<div style="padding: 0 20px; display: flex; flex-direction: row;">
+    <div style="text-align: right; padding: 0 30px; width: 50%; border-right: 1px solid rgb(189, 189, 189);">
+        <h2>Do you want to advertise your own rentals?</h2>
+        If so, head over to our website and register as a property owner.
+    </div>
+
+    <div style="padding: 0 30px; width: 50%;">
+        <h2>Do you want to browse some more rentals?</h2>
+        If so, head over to our website and search for rentals near you.
+    </div>
+</div>
+<div style=" display: flex; flex-direction: row;">
+    <div style="text-align: right; padding: 0 30px; width: 50%; border-right: 1px solid rgb(189, 189, 189);">
+        <a href="http://localhost:3000/register">
+            <button  style="margin-right: 0; display: block; margin-left: auto; margin-right: auto; margin-bottom: 40px; margin-top: 20px;
+                      background-color: black; color: white; width: 110px; padding: 10px; font-size: medium; border-radius: 8px;">
+                Register
+            </button>
+        </a>
+    </div>
+
+    <div style="padding: 0 30px; width: 50%;">
+        <a href="http://localhost:3000">
+            <button  style="margin-right: 0; display: block; margin-left: auto; margin-right: auto; margin-bottom: 40px; margin-top: 20px;
+                        background-color: black; color: white; width: 110px; padding: 10px; font-size: medium; border-radius: 8px;">
+                Browse
+            </button>
+        </a>
+    </div>
+</div>

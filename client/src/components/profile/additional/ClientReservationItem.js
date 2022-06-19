@@ -32,20 +32,20 @@ const ClientReservationItem = ({reservation, allowCancel, cancel, review, report
 
         <div className="block">
           <div className="text-sm text-gray-500">
-            From: {moment(reservation.startDateTime).format("DD-MM-yyyy")}
+            From: {moment(reservation.startDateTime, "DD/MM/yyyy hh:mm").format("DD-MM-yyyy")}
           </div>
           <div className="text-sm text-gray-500">
-            To: {moment(reservation.endDateTime).format("DD-MM-yyyy")}
+            To: {moment(reservation.endDateTime, "DD/MM/yyyy hh:mm").format("DD-MM-yyyy")}
           </div>
         </div>
-        { allowCancel &&
-        <div className="flex">
-          <button className="hover:text-red-600" onClick={() => cancel(reservation)}>
-            Cancel
-          </button>
-        </div>}
 
         <div className="flex my-auto divide-x h-min">
+          { allowCancel &&
+          <div className="flex">
+            <button className="hover:text-red-600" onClick={() => cancel(reservation)}>
+              Cancel
+            </button>
+          </div>}
           { !allowCancel && reservation.canBeReviewed &&
           <div>
             <button className={`hover:text-cyan-600 

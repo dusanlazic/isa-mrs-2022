@@ -24,13 +24,14 @@ import Map from '../components/profile/additional/Map'
 import LoyaltyProgramCard from '../components/profile/sidebar/LoyaltyProgramCard'
 import Equipment from '../components/profile/sidebar/Equipment'
 import Tags from '../components/profile/sidebar/Tags'
-import ReservationButton from '../components/profile/sidebar/ReservationButton'
+import ReservationAndSubscription from '../components/profile/sidebar/ReservationAndSubscription'
 
 import AdditionalInformation from '../components/profile/additional/AdditionalInformation'
 import Sidebar from '../components/profile/sidebar/Sidebar'
 import PriceCard from '../components/profile/sidebar/PriceCard'
 import AdvertisementList from '../components/profile/additional/AdvertisementList'
 import AdvertiserReviewList from '../components/profile/additional/AdvertiserReviewList'
+import ClientSubscriptionList from '../components/profile/additional/ClientSubscriptionList';
 
 
 const clientMainComponent = UserProfileMainInfo;
@@ -114,7 +115,7 @@ const ProfilePage = ({me}) => {
     sidebarComponents = [
     <PriceCard profileData={profileData} loyaltyProgramData={loyaltyProgramData} />,
     <Tags data={profileData} />,
-    <ReservationButton data={profileData}/>];
+    <ReservationAndSubscription data={profileData}/>];
     MainComponent = ResortProfileMainInfo;
     contentComponents = [
       { title: 'About', component: <About data={profileData} />},
@@ -127,7 +128,7 @@ const ProfilePage = ({me}) => {
     sidebarComponents = [
     <PriceCard profileData={profileData} loyaltyProgramData={loyaltyProgramData} />,
     <Tags data={profileData} />,
-    <ReservationButton data={profileData}/>];
+    <ReservationAndSubscription data={profileData}/>];
     MainComponent = boatMainComponent;
     contentComponents = [
       { title: 'About', component: <BoatAbout data={profileData} />},
@@ -140,7 +141,7 @@ const ProfilePage = ({me}) => {
     sidebarComponents = [
     <PriceCard profileData={profileData} loyaltyProgramData={loyaltyProgramData} />,
     <Tags data={profileData} />,
-    <ReservationButton data={profileData}/>];
+    <ReservationAndSubscription data={profileData}/>];
     MainComponent = adventureMainComponent;
     contentComponents = [
       { title: 'About', component: <About data={profileData} />},
@@ -164,6 +165,7 @@ const ProfilePage = ({me}) => {
       { title: 'Reviews', component: <ClientReviewList data = {profileData} /> },
       { title: 'Reservation History',  component: <ClientReservationHistory data={profileData} /> },
       { title: 'Upcoming Reservations',  component: <ClientReservationUpcoming data={profileData} /> },
+      { title: 'Subscriptions',  component: <ClientSubscriptionList data={profileData} /> },
     ];
   }
   else if (self !== null) {

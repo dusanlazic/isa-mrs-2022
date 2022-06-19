@@ -9,9 +9,8 @@ import java.time.LocalDateTime;
 public class ComplaintDisplayDTO implements DisplayDTO {
     private Long id;
     private LocalDateTime createdAt;
-    private ReservationSimpleDisplayDTO reservation;
+    private AdvertisementDisplayDTO advertisement;
     private CustomerSimpleDisplayDTO customer;
     private String comment;
-    private Boolean customerWasLate;
     private ResponseStatus responseStatus;
 }

@@ -1,7 +1,9 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.model.advertisement.*;
+import com.team4.isamrs.model.complaint.Complaint;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
+import com.team4.isamrs.model.enumeration.ResponseStatus;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.reservation.ReservationReport;
 import com.team4.isamrs.model.user.Administrator;
@@ -56,10 +58,12 @@ public class TestDataSupplierService {
     ReservationReportRepository reservationReportRepository;
 
     @Autowired
+    ComplaintRepository complaintRepository;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     Random random = new Random();
-
 
     String adminEmail = "admin@pecaj.ga";
     String resortOwnerEmail = "maja@gmail.com";
@@ -77,6 +81,7 @@ public class TestDataSupplierService {
         addResorts();
         addBoats();
         addAdventures();
+        addComplaints();
     }
 
     private void createTestAccounts() {
@@ -370,6 +375,14 @@ public class TestDataSupplierService {
     }
 
     private void addReservations(Advertisement ad, List<Customer> customers) {
+        List<String> reportComments = new ArrayList<>();
+        reportComments.add("bad experience");
+        reportComments.add("awful experience");
+        reportComments.add("this customer made me consider early retirement");
+        reportComments.add("he kept trying to steal the boat");
+        reportComments.add("he just could not stop beatboxing and he was just ignoring everyone");
+        reportComments.add("asked me if i could hide him from the police, i called the cops and he ran away");
+
         List<Reservation> reservations = new ArrayList<>();
         List<ReservationReport> reports = new ArrayList<>();
 
@@ -385,14 +398,16 @@ public class TestDataSupplierService {
             reservation.setCancelled(false);
             reservations.add(reservation);
 
-            ReservationReport report = new ReservationReport();
-            report.setCreatedAt(LocalDateTime.now());
-            report.setReservation(reservation);
-            report.setComment("example comment " + i);
-            report.setPenaltyRequested(random.nextBoolean());
-            report.setCustomerWasLate(random.nextBoolean());
-            report.setApprovalStatus(report.getPenaltyRequested() ? ApprovalStatus.PENDING : ApprovalStatus.APPROVED);
-            reports.add(report);
+            if (i < 2) {
+                ReservationReport report = new ReservationReport();
+                report.setCreatedAt(LocalDateTime.now());
+                report.setReservation(reservation);
+                report.setComment(reportComments.get(random.nextInt(reportComments.size())));
+                report.setPenaltyRequested(random.nextBoolean());
+                report.setCustomerWasLate(random.nextBoolean());
+                report.setApprovalStatus(report.getPenaltyRequested() ? ApprovalStatus.PENDING : ApprovalStatus.APPROVED);
+                reports.add(report);
+            }
         }
 
         // active
@@ -425,5 +440,34 @@ public class TestDataSupplierService {
 
         reservationRepository.saveAll(reservations);
         reservationReportRepository.saveAll(reports);
+    }
+
+    private void addComplaints() {
+        List<String> complaintComments = new ArrayList<>();
+        complaintComments.add("bad experience");
+        complaintComments.add("awful experience");
+        complaintComments.add("he said he knows where we are going and we ended up in ečka");
+        complaintComments.add("i want my money back this is a pyramid scheme");
+        complaintComments.add("she could not stop committing tax fraud, i told her to stop but she didnt pay attention at all");
+        complaintComments.add("i am sure this advertiser has a criminal past that you were not aware of");
+        complaintComments.add("hi i am a hacker<script>alert(\"you just got hacked\")</script>");
+
+        List<Reservation> reservations = reservationRepository.findAll();
+        List<Complaint> complaints = new ArrayList<>();
+
+        for (int i = 0; i < 20; i++) {
+            Reservation reservation = reservations.get(random.nextInt(reservations.size()));
+
+            Complaint complaint = new Complaint();
+            complaint.setCreatedAt(LocalDateTime.now());
+            complaint.setAdvertisement(reservation.getAdvertisement());
+            complaint.setCustomer(reservation.getCustomer());
+            complaint.setComment(complaintComments.get(random.nextInt(complaintComments.size())));
+            complaint.setResponseStatus(ResponseStatus.PENDING);
+
+            complaints.add(complaint);
+        }
+
+        complaintRepository.saveAll(complaints);
     }
 }

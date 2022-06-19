@@ -10,5 +10,6 @@ public class AdvertisementSimpleDisplayDTO {
     private String description;
     private String currency;
     private AddressSimpleDisplayDTO address;
+    private SessionDisplayDTO advertiser;
     private String advertisementType;
 }

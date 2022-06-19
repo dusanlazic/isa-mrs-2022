@@ -3,7 +3,7 @@ import { get, patch } from "../adapters/xhr";
 import { Icon } from '@iconify/react';
 import Moment from 'moment';
 
-const ReservationReportsPage = () => {
+const ReportsPage = () => {
   const [reports, setReports] = useState(null);
   
   useEffect(() => {
@@ -45,12 +45,16 @@ const ReservationReportsPage = () => {
           <div className="grid grid-cols-10 pt-3">
             <div className="block col-span-7">
               <h1 className="text-xl text-gray-700 font-bold tracking-tight my-auto text-left">
-                  {report.reservation.customer.firstName} {report.reservation.customer.lastName}
+                  {report.reservation.advertisement.advertiser.firstName} {report.reservation.advertisement.advertiser.lastName}
                   <span className="font-normal">
-                    &nbsp;for advertisement&nbsp;
+                    &nbsp;for customer&nbsp;
                   </span>
-                  {report.reservation.advertisement.title}
+                  {report.reservation.customer.firstName} {report.reservation.customer.lastName}
               </h1>
+              <h2 class="text-m text-gray-500 font-bold text-left">
+                <span className="font-normal">for reservation of </span>
+              {report.reservation.advertisement.title}
+              </h2>
               <div className="text-left mt-4">
               {report.comment}
               </div>
@@ -87,4 +91,4 @@ const ReservationReportsPage = () => {
    );
 }
  
-export default ReservationReportsPage;
+export default ReportsPage;

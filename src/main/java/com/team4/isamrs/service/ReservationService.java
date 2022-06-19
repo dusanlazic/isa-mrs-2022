@@ -1,6 +1,7 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.ReservationCreationDTO;
+import com.team4.isamrs.dto.display.ReservationDetailedDisplayDTO;
 import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.exception.*;
 import com.team4.isamrs.model.advertisement.*;
@@ -78,6 +79,17 @@ public class ReservationService {
             throw new NoSuchElementException();
 
         return modelMapper.map(reservation, ReservationSimpleDisplayDTO.class);
+    }
+
+    public ReservationDetailedDisplayDTO findDetailedById(Long id, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        Reservation reservation = reservationRepository.findById(id).orElseThrow();
+        if (!reservation.getAdvertisement().getAdvertiser().getUsername().equals(advertiser.getUsername()))
+            throw new NoSuchElementException();
+        ReservationDetailedDisplayDTO dto = modelMapper.map(reservation, ReservationDetailedDisplayDTO.class);
+        dto.setType(reservation.getAdvertisement() instanceof ResortAd ? "resort" :
+                    reservation.getAdvertisement() instanceof BoatAd ? "boat" : "adventure");
+        return dto;
     }
 
     public Page<ReservationSimpleDisplayDTO> findAll(Pageable pageable, Authentication auth) {

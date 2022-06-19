@@ -2,6 +2,7 @@ package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.ResponseOK;
 import com.team4.isamrs.dto.creation.ReservationReportCreationDTO;
+import com.team4.isamrs.dto.display.ReservationDetailedDisplayDTO;
 import com.team4.isamrs.dto.display.ReservationReportDisplayDTO;
 import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.service.ReservationReportService;
@@ -33,6 +34,12 @@ public class ReservationController {
     @PreAuthorize("hasRole('ADVERTISER')")
     public ReservationSimpleDisplayDTO find(@PathVariable Long id, Authentication auth) {
         return reservationService.findById(id, auth);
+    }
+
+    @GetMapping(value = "/{id}/detailed", consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasRole('ADVERTISER')")
+    public ReservationDetailedDisplayDTO findDetailed(@PathVariable Long id, Authentication auth) {
+        return reservationService.findDetailedById(id, auth);
     }
 
     @GetMapping(value = "", consumes = MediaType.ALL_VALUE)

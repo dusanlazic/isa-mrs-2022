@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { get } from "../../adapters/xhr";
 import ReservationItem from "./ReservationItem";
 import ReactPaginate from "react-paginate";
+import AdvertiserReservationModal from "../modals/reservation/AdvertiserReservationModal";
 
 const ReservationHistory = () => {
 
@@ -12,6 +13,11 @@ const ReservationHistory = () => {
 
   const [sorting, setSorting] = useState('startDateTime');
   const [descending, setDescending] = useState(true);
+
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isExtendModalOpen, setIsExtendModalOpen] = useState(false);
+  const [reservationToReport, setReservationToReport] = useState(null);
+  const [reservationToExtend, setReservationToExtend] = useState(null);
 
   const navigate = useNavigate();
 
@@ -43,6 +49,18 @@ const ReservationHistory = () => {
     return null;
   }
 
+  /*
+  const initReport = reservation => {
+    setReservationToReport(reservation);
+    setIsReportModalOpen(true);
+  } 
+  */
+
+  const initExtend = reservation => {
+    setReservationToExtend(reservation);
+    setIsExtendModalOpen(true);
+  } 
+
   return (
     <div>
       {reservations.length === 0 &&
@@ -54,7 +72,7 @@ const ReservationHistory = () => {
         <div className="grid 2xl:grid-cols-2 gap-4 mx-auto justify-items-center">
           {reservations != null && reservations.map(reservation =>
             <div key={reservation.id} className="w-full">
-              <ReservationItem reservation={reservation} />
+              <ReservationItem reservation={reservation} extend={initExtend} />
             </div>
           )}
 
@@ -91,6 +109,16 @@ const ReservationHistory = () => {
           activeClassName="bg-white text-green-600 border border-slate-400 rounded-lg"
         />
       </div>
+    
+      { /*isReviewModalOpen &&
+        <AdvertiserReportModal data={reservationToReview} 
+        close={() => setIsReviewModalOpen(false)}/>*/
+      }
+
+      { isExtendModalOpen &&
+        <AdvertiserReservationModal data={reservationToExtend} 
+        close={() => setIsExtendModalOpen(false)}/>
+      }
     </div>
   );
 }

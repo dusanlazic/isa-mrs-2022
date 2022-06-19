@@ -1,7 +1,9 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.model.advertisement.*;
+import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.reservation.Reservation;
+import com.team4.isamrs.model.reservation.ReservationReport;
 import com.team4.isamrs.model.user.Administrator;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
@@ -49,6 +51,9 @@ public class TestDataSupplierService {
 
     @Autowired
     ReservationRepository reservationRepository;
+
+    @Autowired
+    ReservationReportRepository reservationReportRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -366,6 +371,7 @@ public class TestDataSupplierService {
 
     private void addReservations(Advertisement ad, List<Customer> customers) {
         List<Reservation> reservations = new ArrayList<>();
+        List<ReservationReport> reports = new ArrayList<>();
 
         // past
         for (int i = 0; i < 5; i++) {
@@ -377,8 +383,16 @@ public class TestDataSupplierService {
             reservation.setCustomer(customers.get(random.nextInt(customers.size())));
             reservation.setCalculatedPrice(BigDecimal.valueOf(1337));
             reservation.setCancelled(false);
-
             reservations.add(reservation);
+
+            ReservationReport report = new ReservationReport();
+            report.setCreatedAt(LocalDateTime.now());
+            report.setReservation(reservation);
+            report.setComment("example comment " + i);
+            report.setPenaltyRequested(random.nextBoolean());
+            report.setCustomerWasLate(random.nextBoolean());
+            report.setApprovalStatus(report.getPenaltyRequested() ? ApprovalStatus.PENDING : ApprovalStatus.APPROVED);
+            reports.add(report);
         }
 
         // active
@@ -410,5 +424,6 @@ public class TestDataSupplierService {
         }
 
         reservationRepository.saveAll(reservations);
+        reservationReportRepository.saveAll(reports);
     }
 }

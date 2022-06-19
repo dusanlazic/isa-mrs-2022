@@ -22,7 +22,7 @@ public class QuickReservationCreationDTO {
     private LocalDate validUntil;
 
     @NotNull
-    private BigDecimal calculatedOldPrice;
+    private BigDecimal newPrice;
 
     @NotNull
     private LocalDate startDate;

@@ -2,6 +2,7 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.QuickReservationCreationDTO;
 import com.team4.isamrs.dto.creation.ReservationCreationDTO;
+import com.team4.isamrs.dto.display.QuickReservationSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.exception.*;
 import com.team4.isamrs.model.advertisement.*;
@@ -102,6 +103,15 @@ public class ReservationService {
         int toIndex = Math.min((fromIndex + pageable.getPageSize()), reservations.size());
 
         return new PageImpl<>(reservations.subList(fromIndex, toIndex), pageable, reservations.size());
+    }
+
+    public Collection<QuickReservationSimpleDisplayDTO> getQuickReservations(Long id) {
+        Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
+        return quickReservationRepository.findActiveUntakenQuickReservations(
+                advertisement, LocalDateTime.now())
+                .stream()
+                .map(qr -> modelMapper.map(qr, QuickReservationSimpleDisplayDTO.class))
+                .collect(Collectors.toSet());
     }
 
     public Page<ReservationSimpleDisplayDTO> findActive(Pageable pageable, Authentication auth) {
@@ -280,8 +290,9 @@ public class ReservationService {
             AdventureAd ad = (AdventureAd) advertisement;
             pricePerThing = ad.getPricePerPerson();
         }
-        long days = dto.getStartDate().until(dto.getEndDate(), ChronoUnit.DAYS)+1;
-        return BigDecimal.valueOf(days)
+        long thing = advertisement instanceof AdventureAd ? dto.getAttendees()
+                : dto.getStartDate().until(dto.getEndDate(), ChronoUnit.DAYS);
+        return BigDecimal.valueOf(thing)
                 .multiply(pricePerThing)
                 .multiply(category.getMultiply())
                 .setScale(2, RoundingMode.UP);
@@ -301,8 +312,9 @@ public class ReservationService {
             AdventureAd ad = (AdventureAd) advertisement;
             pricePerThing = ad.getPricePerPerson();
         }
-        long days = dto.getStartDate().until(dto.getEndDate(), ChronoUnit.DAYS)+1;
-        return BigDecimal.valueOf(days)
+        long thing = advertisement instanceof AdventureAd ? dto.getCapacity()
+                : dto.getStartDate().until(dto.getEndDate(), ChronoUnit.DAYS);
+        return BigDecimal.valueOf(thing)
                 .multiply(pricePerThing)
                 .setScale(2, RoundingMode.UP);
     }
@@ -412,12 +424,12 @@ public class ReservationService {
         quickReservation.setSelectedOptions(generateSelectedOptions(dto, advertisement));
         quickReservation.setValidAfter(dto.getValidAfter().atStartOfDay());
         quickReservation.setValidUntil(dto.getValidUntil().atStartOfDay());
-        quickReservation.setCalculatedOldPrice(dto.getCalculatedOldPrice());
-        quickReservation.setNewPrice(calculateReservationPrice(dto, advertisement));
+        quickReservation.setCalculatedOldPrice(calculateReservationPrice(dto, advertisement));
+        quickReservation.setNewPrice(dto.getNewPrice());
         quickReservation.setStartDateTime(dto.getStartDate().atTime(advertisement.getCheckInTime()));
         quickReservation.setEndDateTime(dto.getEndDate().atTime(advertisement.getCheckOutTime()));
         quickReservation.setCapacity(dto.getCapacity());
-        quickReservation.setTaken(false);
+        quickReservation.setReservation(null);
 
         quickReservationRepository.save(quickReservation);
 

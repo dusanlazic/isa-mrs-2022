@@ -34,14 +34,14 @@ const QuickReservationModal = ({data, close}) => {
     const selectedOptions = getSelectedOptions();
     const startDate = getStartDate();
     const endDate = getEndDate();
-    
+    console.log(moment(validAfter).add(5, "hours").toISOString())
     post(`/api/reservations/quick-reservation`, {
       advertisementId: data.id,
-      validUntil: validUntil,
-      validAfter: validAfter,
+      validUntil: moment(validUntil).add(5, "hours").toISOString(),
+      validAfter: moment(validAfter).add(5, "hours").toISOString(),
       startDate: startDate,
       endDate: endDate,
-      calculatedOldPrice: price,
+      newPrice: price,
       capacity: attendees,
       selectedOptions: selectedOptions
     })

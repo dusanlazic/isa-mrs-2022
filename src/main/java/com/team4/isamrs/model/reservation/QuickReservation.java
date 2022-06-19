@@ -55,6 +55,7 @@ public class QuickReservation {
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
 
-    @Column(name = "taken", nullable = false)
-    private Boolean taken;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
 }

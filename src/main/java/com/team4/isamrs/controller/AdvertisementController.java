@@ -6,6 +6,8 @@ import com.team4.isamrs.dto.creation.ReservationCreationDTO;
 import com.team4.isamrs.dto.creation.ReservationReportCreationDTO;
 import com.team4.isamrs.dto.creation.ReviewCreationDTO;
 import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
+import com.team4.isamrs.dto.display.QuickReservationSimpleDisplayDTO;
+import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.service.AdvertisementService;
@@ -93,5 +95,10 @@ public class AdvertisementController {
     public ResponseOK createReportForReservation(@PathVariable Long id, @Valid @RequestBody ReservationCreationDTO dto, Authentication auth) {
         reservationService.create(id, dto, auth);
         return new ResponseOK("Reservation created.");
+    }
+
+    @GetMapping(value = "/{id}/quick-reservations")
+    public Collection<QuickReservationSimpleDisplayDTO> getQuickReservations(@PathVariable Long id) {
+        return reservationService.getQuickReservations(id);
     }
 }

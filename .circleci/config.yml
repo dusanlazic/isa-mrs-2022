@@ -1,0 +1,45 @@
+version: 2.1
+orbs:
+  sonarcloud: sonarsource/sonarcloud@1.1.1
+
+jobs:
+  build-backend:
+    docker:
+      - image: cimg/openjdk:18.0
+        auth:
+          username: dusanlazic
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=isamrs -DskipTests clean
+  deploy-backend:
+    docker:
+      - image: cimg/openjdk:18.0
+        auth:
+          username: dusanlazic
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: Deploy backend
+          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/pecaj-ga-backend.git HEAD:master
+  deploy-frontend:
+    docker:
+      - image: cimg/node:16.3.0
+        auth:
+          username: dusanlazic
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: Deploy frontend
+          command: git subtree push --prefix client https://heroku:$HEROKU_API_KEY@git.heroku.com/pecaj-ga-frontend.git master
+
+workflows:
+  sample:
+    jobs:
+      - build-backend
+      - deploy-backend
+      - deploy-frontend

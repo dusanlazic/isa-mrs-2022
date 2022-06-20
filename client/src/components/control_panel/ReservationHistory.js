@@ -15,9 +15,9 @@ const ReservationHistory = () => {
   const [descending, setDescending] = useState(true);
 
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const [isExtendModalOpen, setIsExtendModalOpen] = useState(false);
+  const [isRenewModalOpen, setIsRenewModalOpen] = useState(false);
   const [reservationToReport, setReservationToReport] = useState(null);
-  const [reservationToExtend, setReservationToExtend] = useState(null);
+  const [reservationToRenew, setReservationToRenew] = useState(null);
 
   const navigate = useNavigate();
 
@@ -56,9 +56,9 @@ const ReservationHistory = () => {
   } 
   */
 
-  const initExtend = reservation => {
-    setReservationToExtend(reservation);
-    setIsExtendModalOpen(true);
+  const initRenew = reservation => {
+    setReservationToRenew(reservation);
+    setIsRenewModalOpen(true);
   } 
 
   return (
@@ -72,7 +72,7 @@ const ReservationHistory = () => {
         <div className="grid 2xl:grid-cols-2 gap-4 mx-auto justify-items-center">
           {reservations != null && reservations.map(reservation =>
             <div key={reservation.id} className="w-full">
-              <ReservationItem reservation={reservation} extend={initExtend} />
+              <ReservationItem reservation={reservation} renew={initRenew} />
             </div>
           )}
 
@@ -115,9 +115,9 @@ const ReservationHistory = () => {
         close={() => setIsReviewModalOpen(false)}/>*/
       }
 
-      { isExtendModalOpen &&
-        <AdvertiserReservationModal data={reservationToExtend} 
-        close={() => setIsExtendModalOpen(false)}/>
+      { isRenewModalOpen &&
+        <AdvertiserReservationModal data={reservationToRenew} 
+        close={() => setIsRenewModalOpen(false)}/>
       }
     </div>
   );

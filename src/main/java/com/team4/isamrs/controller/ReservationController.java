@@ -1,6 +1,7 @@
 package com.team4.isamrs.controller;
 
 import com.team4.isamrs.dto.ResponseOK;
+import com.team4.isamrs.dto.creation.ReservationRenewalCreationDTO;
 import com.team4.isamrs.dto.creation.ReservationReportCreationDTO;
 import com.team4.isamrs.dto.display.ReservationDetailedDisplayDTO;
 import com.team4.isamrs.dto.display.ReservationReportDisplayDTO;
@@ -80,5 +81,12 @@ public class ReservationController {
     public ResponseOK cancelReservation(@PathVariable Long id, Authentication auth) {
         reservationService.cancel(id, auth);
         return new ResponseOK("Reservation cancelled.");
+    }
+
+    @PostMapping(value = "/{id}/renewal")
+    @PreAuthorize("hasRole('ADVERTISER')")
+    public ResponseOK createRenewedReservation(@PathVariable Long id, @Valid @RequestBody ReservationRenewalCreationDTO dto, Authentication auth) {
+        reservationService.create(id, dto, auth);
+        return new ResponseOK("Reservation renewed.");
     }
 }

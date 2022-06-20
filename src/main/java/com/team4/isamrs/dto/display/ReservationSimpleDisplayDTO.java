@@ -22,5 +22,5 @@ public class ReservationSimpleDisplayDTO {
     private boolean canBeReviewed;
     private boolean canBeComplainedAbout;
     private boolean canBeReportedOn;
-    private boolean canBeExtended;
+    private boolean canBeRenewed;
 }

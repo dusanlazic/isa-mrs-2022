@@ -14,6 +14,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
@@ -44,4 +45,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query(value = "SELECT r FROM Reservation r WHERE r.cancelled = false AND r.advertisement.advertiser = ?1")
     Page<Reservation> findReservationsForAdvertiser(Advertiser advertiser, Pageable pageable);
 
+    @Query(value = "SELECT r FROM Reservation r WHERE r.cancelled = false AND r.id = :reservationId AND r.advertisement.id = :advertisementId AND r.advertisement.advertiser.id = :advertiserId AND r.customer.id = :custId AND r.startDateTime < :now AND r.endDateTime > :now")
+    Optional<Reservation> findByAdvertisementIdAndAdvertiserIdAndClientIdAndDate(@Param("reservationId") Long reservationId, @Param("advertisementId") Long advertisementId, @Param("advertiserId") Long advertiserId, @Param("custId") Long customerId, @Param("now") LocalDateTime now);
 }

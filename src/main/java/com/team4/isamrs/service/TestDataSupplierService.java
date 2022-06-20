@@ -372,7 +372,7 @@ public class TestDataSupplierService {
     private void addReservations(Advertisement ad, List<Customer> customers) {
         List<Reservation> reservations = new ArrayList<>();
         List<ReservationReport> reports = new ArrayList<>();
-
+/*
         // past
         for (int i = 0; i < 5; i++) {
             Reservation reservation = new Reservation();
@@ -393,7 +393,7 @@ public class TestDataSupplierService {
             report.setCustomerWasLate(random.nextBoolean());
             report.setApprovalStatus(report.getPenaltyRequested() ? ApprovalStatus.PENDING : ApprovalStatus.APPROVED);
             reports.add(report);
-        }
+        }*/
 
         // active
         for (int i = 0; i < 5; i++) {

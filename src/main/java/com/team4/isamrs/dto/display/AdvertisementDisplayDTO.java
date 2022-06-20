@@ -11,6 +11,7 @@ public class AdvertisementDisplayDTO implements DisplayDTO {
     private Long id;
     private AccountDisplayDTO advertiser;
     private String title;
+    private Integer capacity;
     private AddressDisplayDTO address;
     private String description;
     private String pricingDescription;

@@ -24,9 +24,4 @@ public class ReservationDetailedDisplayDTO {
     private BigDecimal calculatedPrice;
     private Integer attendees;
     private Set<SelectedOptionCreationDTO> selectedOptions = new HashSet<>();
-    private boolean cancelled;
-    private boolean canBeReviewed;
-    private boolean canBeComplainedAbout;
-    private boolean canBeReportedOn;
-    private boolean canBeExtended;
 }

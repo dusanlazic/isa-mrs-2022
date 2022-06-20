@@ -80,7 +80,7 @@ public class AdvertiserService {
             dto.setId(reservation.getId());
             dto.setCreatedAt(reservation.getCreatedAt());
             dto.setCanBeReportedOn(reportRepository.findReservationReportByReservation(reservation).isEmpty() && LocalDateTime.now().isAfter(reservation.getEndDateTime()));
-            dto.setCanBeExtended(LocalDateTime.now().isAfter(reservation.getStartDateTime()) && LocalDateTime.now().isBefore(reservation.getEndDateTime()));
+            dto.setCanBeRenewed(LocalDateTime.now().isAfter(reservation.getStartDateTime()) && LocalDateTime.now().isBefore(reservation.getEndDateTime()));
 
             Advertisement advertisement = (Advertisement) Hibernate.unproxy(reservation.getAdvertisement());
             if (advertisement instanceof ResortAd) {

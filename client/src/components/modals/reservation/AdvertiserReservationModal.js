@@ -19,9 +19,7 @@ const AdvertiserReservationModal = ({data, close}) => {
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [messageModalText, setMessageModalText] = useState('');
 
-  get(`/api/reservations/${data.id}/detailed`).then((response) => {
-    setReservation(response.data);
-  });
+  
 
   useEffect(() => {
     if (reservation === null) {
@@ -31,19 +29,24 @@ const AdvertiserReservationModal = ({data, close}) => {
   }, []);
 
   if (reservation === null) {
+    get(`/api/reservations/${data.id}/detailed`).then((response) => {
+      setReservation(response.data);
+    });
     return null;
-  }
+  } 
 
   const makeReservation = () => {
     const selectedOptions = getSelectedOptions();
     const startDate = getStartDate();
     const endDate = getEndDate();
     
-    post(`/api/ads/${reservation.advertisement.id}/reservations`, {
+    post(`/api/reservations/${reservation.advertisement.id}/renewal`, {
       startDate: startDate,
       endDate: endDate,
       attendees: attendees,
-      selectedOptions: selectedOptions
+      selectedOptions: selectedOptions,
+      customerId: reservation.customer.id,
+      reservationId: reservation.id
     })
     .then(response => {
       setMessageModalText('Reservation made successfully!');

@@ -33,7 +33,7 @@ jobs:
       - checkout
       - run:
           name: Deploy frontend
-          command: git subtree push --prefix client https://heroku:$HEROKU_API_KEY@git.heroku.com/pecaj-ga-frontend.git HEAD:master
+          command: git subtree push --prefix client https://heroku:$HEROKU_API_KEY@git.heroku.com/pecaj-ga-frontend.git master
 
 workflows:
   sample:

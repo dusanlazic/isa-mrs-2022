@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  sonarcloud: sonarsource/sonarcloud@1.1.1
 
 jobs:
   build-backend:
@@ -11,7 +13,7 @@ jobs:
       - checkout
       - run:
           name: Build
-          command: mvn -B -DskipTests clean package
+          command: mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=isa-mrs-2022 -DskipTests clean
   deploy-backend:
     docker:
       - image: cimg/openjdk:18.0

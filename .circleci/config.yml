@@ -22,7 +22,7 @@ jobs:
       - checkout
       - run:
           name: Deploy backend
-          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/pecaj-ga-backend.git master
+          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/pecaj-ga-backend.git HEAD:master
 
 workflows:
   sample:

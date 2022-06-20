@@ -25,8 +25,7 @@ public interface QuickReservationRepository extends JpaRepository<QuickReservati
     @Query("SELECT qr FROM QuickReservation qr WHERE " +
             "qr.advertisement = :advertisement AND " +
             "qr.validAfter <= :now AND " +
-            "qr.validUntil >= :now AND " +
-            "qr.reservation IS NULL")
+            "qr.validUntil >= :now")
     Collection<QuickReservation> findActiveUntakenQuickReservations(
             Advertisement advertisement,
             LocalDateTime now);

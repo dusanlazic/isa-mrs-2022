@@ -78,7 +78,7 @@ const ClientReservationUpcoming = ({data}) => {
         {reservations.map(reservation => 
           <div key={reservation.id}>
             <ClientReservationItem reservation={reservation}
-            allowCancel={moment(reservation.startDateTime).diff(moment(), "hours") > 72 && !reservation.cancelled}
+            allowCancel={moment(reservation.startDateTime, "DD/MM/yyyy hh:mm").diff(moment(), "hours") > 72 && !reservation.cancelled}
             cancel={initCancelReservation}/>
           </div>
         )}
@@ -122,7 +122,8 @@ const ClientReservationUpcoming = ({data}) => {
       />}
 
       { showMessageModal &&
-        <MessageModal okayFunction={() => window.location.reload()} closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+        <MessageModal okayFunction={() => window.location.reload()}
+        closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
       />}
     </div>
    );

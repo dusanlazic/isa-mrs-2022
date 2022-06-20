@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react";
 
 import BookQuickReservationModal from "../../modals/reservation/BookQuickReservationModal";
 
-const QuickReservation = ({advertisement, quickReservation, showBookButton}) => {
+const QuickReservation = ({advertisement, quickReservation, showBookButton, removeQuickReservation}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const closeModal = (e) => {
@@ -66,7 +66,8 @@ const QuickReservation = ({advertisement, quickReservation, showBookButton}) => 
       <BookQuickReservationModal
         quickReservation={quickReservation}
         advertisement={advertisement}
-        close={closeModal}/>
+        close={closeModal}
+        removeQuickReservation={removeQuickReservation}/>
     }
   </div>
   );

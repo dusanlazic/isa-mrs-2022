@@ -127,6 +127,14 @@ public class ControllerAdvisor {
                 ex.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DiscountCostsMoreThanOriginalException.class)
+    public ExceptionResponseBody handleDiscountCostsMoreThanOriginalException(DiscountCostsMoreThanOriginalException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(QuickReservationAlreadyBookedException.class)
     public ExceptionResponseBody handleQuickReservationAlreadyBookedException(QuickReservationAlreadyBookedException ex) {

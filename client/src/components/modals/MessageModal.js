@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 
-export default function MessageModal ({ closeFunction, text, okayFunction })  {
+function MessageModal ({ closeFunction, text, okayFunction, deactivateOkayFunction })  {
   const [open, setOpen] = useState(true)
 
   const hide = () => {
@@ -60,7 +60,7 @@ export default function MessageModal ({ closeFunction, text, okayFunction })  {
                     className="w-full inline-flex justify-center rounded-md border border-gray-300 
                     shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 
                     sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                    onClick={() => {hide(); if (okayFunction) okayFunction();}}
+                    onClick={() => {hide(); if (!deactivateOkayFunction && okayFunction) okayFunction();}}
                   >
                     Okay
                   </button>
@@ -73,3 +73,5 @@ export default function MessageModal ({ closeFunction, text, okayFunction })  {
     </Transition.Root>
   );
 }
+
+export default MessageModal;

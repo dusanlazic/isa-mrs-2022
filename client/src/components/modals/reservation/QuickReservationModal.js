@@ -24,6 +24,8 @@ const QuickReservationModal = ({data, close}) => {
   const [validUntil, setValidUntil] = useState(null);
   const [validAfter, setValidAfter] = useState(null);
 
+  const [isCreationSuccessful, setIsCreationSuccessful] = useState(false);
+
   useEffect(() => {
     decideType();
     fillOptions();
@@ -45,11 +47,13 @@ const QuickReservationModal = ({data, close}) => {
     })
     .then(response => {
       update({});
+      setIsCreationSuccessful(true);
       setMessageModalText('Quick reservation made successfully!');
       setShowMessageModal(true);
     })
     .catch(error => {
       update({});
+      setIsCreationSuccessful(false);
       setMessageModalText(error.response.data.message);
       setShowMessageModal(true);
     })
@@ -240,7 +244,11 @@ const QuickReservationModal = ({data, close}) => {
         </div>
 
         {showMessageModal &&
-        <MessageModal okayFunction={close} closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+        <MessageModal
+        okayFunction={close}
+        closeFunction = {() => setShowMessageModal(false)}
+        text = { messageModalText }
+        deactivateOkayFunction={ !isCreationSuccessful }
         />}
         
       </div>

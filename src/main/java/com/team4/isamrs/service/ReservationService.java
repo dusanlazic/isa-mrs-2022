@@ -110,6 +110,7 @@ public class ReservationService {
         return quickReservationRepository.findActiveUntakenQuickReservations(
                 advertisement, LocalDateTime.now())
                 .stream()
+                .filter(qr -> qr.getReservation() == null || qr.getReservation().getCancelled())
                 .map(qr -> modelMapper.map(qr, QuickReservationSimpleDisplayDTO.class))
                 .collect(Collectors.toSet());
     }
@@ -195,6 +196,15 @@ public class ReservationService {
         if (quickReservation.getValidAfter().isAfter(LocalDateTime.now())) {
             throw new QuickReservationInvalidException(
                     "The quick reservation is yet to become available for booking.");
+        }
+
+        if (reservationRepository.findByAdvertisementEqualsAndCustomerEqualsAndCancelledIsTrue(
+                quickReservation.getAdvertisement(), customer)
+                .stream().anyMatch(reservation ->
+                        reservation.getStartDateTime().toLocalDate().equals(quickReservation.getStartDateTime().toLocalDate()) &&
+                                reservation.getEndDateTime().toLocalDate().equals(quickReservation.getEndDateTime().toLocalDate()))) {
+            throw new ReservationPeriodUnavailableException("Attempted re-reservation of same entity during" +
+                    " the same period after cancelling an identical reservation.");
         }
 
         Reservation reservation = new Reservation();
@@ -461,6 +471,11 @@ public class ReservationService {
         if (advertisement.getCapacity() < dto.getCapacity())
             throw new ExceededMaxAttendeesException("Exceeded maximum number of attendees (" +
                     advertisement.getCapacity() + ")");
+
+        if (calculateReservationPrice(dto, advertisement).compareTo(dto.getNewPrice()) < 0)
+            throw new DiscountCostsMoreThanOriginalException("Discount (" + dto.getNewPrice() + ") cannot cost" +
+                    "more than the original price of " + calculateReservationPrice(dto, advertisement) + ". [" +
+                    advertisement.getCurrency() + "]");
 
         if (!isAvailableForReservation(advertisement, dto.getStartDate(), dto.getEndDate()))
             throw new ReservationPeriodUnavailableException("Unable to make reservation. Requested period is unavailable.");

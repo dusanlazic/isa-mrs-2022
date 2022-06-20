@@ -1,49 +1,28 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { post } from "../../../adapters/xhr";
 import { Icon } from "@iconify/react";
 import MessageModal from "../MessageModal";
 import moment from "moment";
 
-const BookQuickReservationModal = ({quickReservation, advertisement, close}) => {
-  const [advertisementType, setAdvertisementType] = useState("");
-  
+const BookQuickReservationModal = ({quickReservation, advertisement, close, removeQuickReservation}) => {
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [messageModalText, setMessageModalText] = useState('');
 
+  const [isReservationSuccessful, setIsReservationSuccessful] = useState(false);
+
   const bookQuickReservation = () => {
-    // const selectedOptions = getSelectedOptions();
-    // const startDate = getStartDate();
-    // const endDate = getEndDate();
-    // post(`/api/reservations/quick-reservation`, {
-    //   advertisementId: quickReservation.id,
-    //   validUntil: moment(validUntil).add(5, "hours").toISOString(),
-    //   validAfter: moment(validAfter).add(5, "hours").toISOString(),
-    //   startDate: startDate,
-    //   endDate: endDate,
-    //   newPrice: price,
-    //   capacity: attendees,
-    //   selectedOptions: selectedOptions
-    // })
-    // .then(response => {
-    //   setMessageModalText('Reservation made successfully!');
-    //   setShowMessageModal(true);
-    // })
-    // .catch(error => {
-    //   setMessageModalText(error.response.data.message);
-    //   setShowMessageModal(true);
-    // })
+    post(`/api/reservations/${quickReservation.id}/book-quick-reservation`)
+    .then(response => {
+      setIsReservationSuccessful(true);
+      setMessageModalText('Successfully booked reservation!');
+      setShowMessageModal(true);
+    })
+    .catch(error => {
+      setIsReservationSuccessful(false);
+      setMessageModalText(error.response.data.message);
+      setShowMessageModal(true);
+    })
   }
-
-  // const getStartDate = () => {
-  //   if (advertisementType === 'resort' || advertisementType === 'boat') return moment(selectionRange.startDate).add(5, "hours").toISOString();
-  //   else return moment(selectedDate).add(5, "hours").toISOString()
-  // }
-
-  // const getEndDate = () => {
-  //   if (advertisementType === 'resort' || advertisementType === 'boat') return moment(selectionRange.endDate).add(5, "hours").toISOString();
-  //   else return moment(selectedDate).add(5, "hours").toISOString()
-  // }
-
   const closeMessageModal = (e) => {
     if (e.target === e.currentTarget) {
       close();
@@ -54,7 +33,7 @@ const BookQuickReservationModal = ({quickReservation, advertisement, close}) => 
     <div onClick={closeMessageModal} className="fixed top-0 left-0 z-40 w-full min-h-screen h-screen text-center
     flex items-center justify-center bg-gray-900 bg-opacity-70 font-mono transition-opacity text-base">
       <div className="relative flex flex-col w-96 h-150 bg-white rounded-xl mx-auto overflow-hidden p-9">
-        <h1 className="text-xl mb-4 font-display">Book a quick reservation</h1>
+        <h1 className="text-xl mb-4 font-display">Quick reservation</h1>
 
         <label className="text-xs text-left text-slate-500">When:</label>
         <div className="flex justify-between border-b">
@@ -76,7 +55,8 @@ const BookQuickReservationModal = ({quickReservation, advertisement, close}) => 
           </div>
         </div>
 
-        <div className="block mt-3 max-h-48 overflow-auto">
+        { quickReservation.selectedOptions.length > 0 &&
+          <div className="block mt-3 max-h-48 overflow-auto">
           <p className="text-xs text-left text-slate-500 -mb-1.5">Selected options:</p>
           {quickReservation.selectedOptions.map(selectedOption => 
             <div key={selectedOption.id} className="flex justify-between border-b mt-2 text-slate-700 text-left">
@@ -94,6 +74,7 @@ const BookQuickReservationModal = ({quickReservation, advertisement, close}) => 
             </div>
             )}
         </div>
+        }
 
         <div className="flex justify-between border-b mt-8">
           <label className="text-xs text-left text-slate-500">Final price:</label>
@@ -111,7 +92,10 @@ const BookQuickReservationModal = ({quickReservation, advertisement, close}) => 
         </div>
 
         {showMessageModal &&
-        <MessageModal okayFunction={close} closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+        <MessageModal okayFunction={(e) => {removeQuickReservation(quickReservation.id); close(e);}}
+        closeFunction = {() => setShowMessageModal(false)}
+        text = { messageModalText }
+        deactivateOkayFunction = { !isReservationSuccessful }
         />}
         
       </div>

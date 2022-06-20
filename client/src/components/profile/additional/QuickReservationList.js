@@ -14,11 +14,14 @@ const QuickReservationList = ({data}) => {
   const fetchData = () => {
 		get(`/api/ads/${data.id}/quick-reservations`)
     .then((response) => {
-			console.log(response.data);
 			setQuickReservations(response.data);
       const session = getSession();
       if (session && session.accountType === 'CUSTOMER') showBookButton = true;
     });
+  }
+
+  const removeQuickReservation = (id) => {
+    setQuickReservations(quickReservations.filter(x => x.id !== id));
   }
 
   if (quickReservations === null) {
@@ -37,7 +40,7 @@ const QuickReservationList = ({data}) => {
         {quickReservations.map(quickReservation => 
           <div key={quickReservation.id}>
             <QuickReservation advertisement={data} quickReservation={quickReservation} 
-            showBookButton={showBookButton}/>
+            showBookButton={showBookButton} removeQuickReservation={removeQuickReservation}/>
           </div>
           
         )}

@@ -16,8 +16,10 @@ const CustomerReservationModal = ({data, close}) => {
     }
   )
   const [selectedDate, setSelectedDate] = useState(new Date())
+
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [messageModalText, setMessageModalText] = useState('');
+  const [isCreationSuccessful, setIsCreationSuccessful] = useState(false);
 
   useEffect(() => {
     decideType();
@@ -36,10 +38,12 @@ const CustomerReservationModal = ({data, close}) => {
       selectedOptions: selectedOptions
     })
     .then(response => {
+      setIsCreationSuccessful(true);
       setMessageModalText('Reservation made successfully!');
       setShowMessageModal(true);
     })
     .catch(error => {
+      setIsCreationSuccessful(false);
       setMessageModalText(error.response.data.message);
       setShowMessageModal(true);
     })
@@ -193,7 +197,11 @@ const CustomerReservationModal = ({data, close}) => {
         </div>
 
         {showMessageModal &&
-        <MessageModal okayFunction={close} closeFunction = {() => setShowMessageModal(false)} text = { messageModalText }
+        <MessageModal
+        okayFunction={close}
+        closeFunction = {() => setShowMessageModal(false)}
+        text = { messageModalText }
+        deactivateOkayFunction = { !isCreationSuccessful }
         />}
         
       </div>

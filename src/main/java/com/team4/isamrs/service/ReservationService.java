@@ -3,6 +3,8 @@ package com.team4.isamrs.service;
 import com.team4.isamrs.dto.creation.QuickReservationCreationDTO;
 import com.team4.isamrs.dto.creation.ReservationCreationDTO;
 import com.team4.isamrs.dto.display.QuickReservationSimpleDisplayDTO;
+import com.team4.isamrs.dto.creation.ReservationRenewalCreationDTO;
+import com.team4.isamrs.dto.display.ReservationDetailedDisplayDTO;
 import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.exception.*;
 import com.team4.isamrs.model.advertisement.*;
@@ -15,6 +17,8 @@ import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.model.user.User;
 import com.team4.isamrs.repository.*;
 import com.team4.isamrs.security.EmailSender;
+import org.apache.tika.utils.StringUtils;
+import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.PessimisticLockingFailureException;
@@ -23,17 +27,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.LockModeType;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,6 +48,9 @@ public class ReservationService {
 
     @Autowired
     private AdvertiserRepository advertiserRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Autowired
     private AdvertisementRepository advertisementRepository;
@@ -88,6 +91,19 @@ public class ReservationService {
             throw new NoSuchElementException();
 
         return modelMapper.map(reservation, ReservationSimpleDisplayDTO.class);
+    }
+
+    public ReservationDetailedDisplayDTO findDetailedById(Long id, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        Reservation reservation = reservationRepository.findById(id).orElseThrow();
+        if (!reservation.getAdvertisement().getAdvertiser().getUsername().equals(advertiser.getUsername()))
+            throw new NoSuchElementException();
+        Advertisement advertisement = (Advertisement) Hibernate.unproxy(reservation.getAdvertisement());
+        ReservationDetailedDisplayDTO dto = modelMapper.map(reservation, ReservationDetailedDisplayDTO.class);
+        dto.setType(advertisement instanceof ResortAd ? "resort" :
+                advertisement instanceof BoatAd ? "boat" : "adventure");
+        // dto.setAttendees(reservation.getAttendees());
+        return dto;
     }
 
     public Page<ReservationSimpleDisplayDTO> findAll(Pageable pageable, Authentication auth) {
@@ -429,7 +445,6 @@ public class ReservationService {
                 return !date.isEqual(availableAfter);
         }
     }
-
     @Transactional
     public void createQuickReservation(QuickReservationCreationDTO dto, Authentication auth) {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
@@ -496,5 +511,62 @@ public class ReservationService {
         quickReservationRepository.save(quickReservation);
 
         emailSender.sendDiscountNotificationEmails(quickReservation);
+    }
+
+    @Transactional
+    public void create(Long advertisementId, ReservationRenewalCreationDTO dto, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        Reservation reservation = reservationRepository.findByAdvertisementIdAndAdvertiserIdAndClientIdAndDate(dto.getReservationId(), advertisementId, advertiser.getId(), dto.getCustomerId(), LocalDateTime.now()).orElseThrow();
+        Advertisement advertisement = (Advertisement) Hibernate.unproxy(reservation.getAdvertisement());
+        try {
+            if (advertisement instanceof ResortAd) {
+                advertisement = resortAdRepository.lockGetById(advertisementId).orElseThrow();
+                dto.setEndDate(dto.getEndDate().plusDays(1));
+            }
+            else if (advertisement instanceof BoatAd) {
+                advertisement = boatAdRepository.lockGetById(advertisementId).orElseThrow();
+                dto.setEndDate(dto.getEndDate().plusDays(1));
+            }
+            else if (advertisement instanceof AdventureAd) {
+                advertisement = adventureAdRepository.lockGetById(advertisementId).orElseThrow();
+                if (!dto.getStartDate().isEqual(dto.getEndDate()))
+                    throw new ReservationPeriodUnavailableException("Adventure reservation must be within one day.");
+            }
+        }
+        catch (PessimisticLockingFailureException e) {
+            throw new ReservationConflictException("Another user is currently attempting to make a reservation" +
+                    " for the same entity. Please try again in a few seconds.");
+        }
+
+        if (reservationRepository.findByAdvertisementEqualsAndCustomerEqualsAndCancelledIsTrue(advertisement, reservation.getCustomer())
+                .stream().anyMatch(r ->
+                        r.getStartDateTime().toLocalDate().equals(dto.getStartDate()) &&
+                                r.getEndDateTime().toLocalDate().equals(dto.getEndDate()))) {
+            throw new ReservationPeriodUnavailableException("Attempted re-reservation of same entity during" +
+                    " the same period after cancelling an identical reservation.");
+        }
+
+        if (dto.getEndDate().isBefore(dto.getStartDate()))
+            throw new EndDateBeforeStartDateException("End date cannot be before start date.");
+
+        if (advertisement.getCapacity() < dto.getAttendees())
+            throw new ExceededMaxAttendeesException("Exceeded maximum number of attendees (" +
+                    advertisement.getCapacity() + ")");
+
+        if (!isAvailableForReservation(advertisement, dto.getStartDate(), dto.getEndDate()))
+            throw new ReservationPeriodUnavailableException("Unable to make reservation. Requested period is unavailable.");
+
+        Reservation newReservation = new Reservation();
+
+        newReservation.setCustomer(reservation.getCustomer());
+        newReservation.setAdvertisement(advertisement);
+        newReservation.setCreatedAt(LocalDateTime.now());
+        newReservation.setStartDateTime(dto.getStartDate().atTime(advertisement.getCheckInTime()));
+        newReservation.setEndDateTime(dto.getEndDate().atTime(advertisement.getCheckOutTime()));
+        newReservation.setCancelled(false);
+        reservation.setSelectedOptions(generateSelectedOptions(modelMapper.map(dto, ReservationCreationDTO.class), advertisement));
+        newReservation.setCalculatedPrice(calculateReservationPrice(modelMapper.map(dto, ReservationCreationDTO.class), advertisement, reservation.getCustomer()));
+
+        reservationRepository.save(newReservation);
     }
 }

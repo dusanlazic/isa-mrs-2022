@@ -2,29 +2,22 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.display.*;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.team4.isamrs.model.advertisement.AdventureAd;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.advertisement.ResortAd;
-import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
-import com.team4.isamrs.repository.AdvertisementRepository;
-import com.team4.isamrs.repository.AdvertiserRepository;
-import com.team4.isamrs.repository.ReservationReportRepository;
-import com.team4.isamrs.repository.ReviewRepository;
-import com.team4.isamrs.repository.ReservationRepository;
+import com.team4.isamrs.repository.*;
+import org.apache.tika.utils.StringUtils;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,6 +35,9 @@ public class AdvertiserService {
 
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @Autowired
+    private ReportRepository reportRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -79,10 +75,12 @@ public class AdvertiserService {
             dto.setCustomer(modelMapper.map(reservation.getCustomer(), CustomerSimpleDisplayDTO.class));
             dto.setStartDateTime(reservation.getStartDateTime());
             dto.setEndDateTime(reservation.getEndDateTime());
-            //dto.setCancelled(reservation.getCancelled());
+            dto.setCancelled(reservation.getCancelled());
             dto.setCalculatedPrice(reservation.getCalculatedPrice());
             dto.setId(reservation.getId());
             dto.setCreatedAt(reservation.getCreatedAt());
+            dto.setCanBeReportedOn(reportRepository.findReservationReportByReservation(reservation).isEmpty() && LocalDateTime.now().isAfter(reservation.getEndDateTime()));
+            dto.setCanBeRenewed(LocalDateTime.now().isAfter(reservation.getStartDateTime()) && LocalDateTime.now().isBefore(reservation.getEndDateTime()));
 
             Advertisement advertisement = (Advertisement) Hibernate.unproxy(reservation.getAdvertisement());
             if (advertisement instanceof ResortAd) {

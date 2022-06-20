@@ -17,6 +17,7 @@ import About from '../components/profile/additional/AboutTab'
 import BoatAbout from '../components/profile/additional/BoatAboutTab'
 import Gallery from '../components/profile/additional/Gallery'
 import Map from '../components/profile/additional/Map'
+import QuickReservationList from '../components/profile/additional/QuickReservationList'
 
 // sidebar components
 import LoyaltyProgramCard from '../components/profile/sidebar/LoyaltyProgramCard'
@@ -125,7 +126,9 @@ const ProfilePage = ({me}) => {
       { title: 'About', component: <About data={profileData} />},
       { title: 'Photos',  component: <Gallery data={profileData} />},
       { title: 'Reviews', component: <AdvertisementReviewList data={profileData} />},
-      { title: 'Location', component: <Map data={profileData} coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
+      { title: 'Location', component: <Map data={profileData}
+      coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
+      { title: 'Discounts', component: <QuickReservationList data={profileData} />},
     ];
   }
   else if (window.location.href.includes('boat')) {
@@ -144,7 +147,9 @@ const ProfilePage = ({me}) => {
       { title: 'About', component: <BoatAbout data={profileData} />},
       { title: 'Photos',  component: <Gallery data={profileData} />},
       { title: 'Reviews', component: <AdvertisementReviewList data={profileData} />},
-      { title: 'Location', component: <Map data={profileData} coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
+      { title: 'Location', component: <Map data={profileData}
+      coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
+      { title: 'Discounts', component: <QuickReservationList data={profileData} />},
     ];
   }
   else if (window.location.href.includes('adventure')) {
@@ -163,7 +168,9 @@ const ProfilePage = ({me}) => {
       { title: 'About', component: <About data={profileData} />},
       { title: 'Photos',  component: <Gallery data={profileData} />},
       { title: 'Reviews', component: <AdvertisementReviewList data={profileData} />},
-      { title: 'Location', component: <Map data={profileData} coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
+      { title: 'Location', component: <Map data={profileData}
+      coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
+      { title: 'Discounts', component: <QuickReservationList data={profileData} />},
     ];
   }
   else if (window.location.href.includes('advertiser')) {

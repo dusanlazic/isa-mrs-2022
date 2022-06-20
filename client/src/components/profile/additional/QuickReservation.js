@@ -1,43 +1,55 @@
 import moment from "moment";
-import { Link } from 'react-router-dom'
+import { Icon } from "@iconify/react";
 
-const QuickReservation = ({reservation}) => {
-  const getPlaceholderImage = () => {
-    if (reservation.advertisement.advertisementType === 'resort') return '/images/property-placeholder.jpg'
-    if (reservation.advertisement.advertisementType === 'boat') return '/images/boat-placeholder.jpg'
-    if (reservation.advertisement.advertisementType === 'adventure') return '/images/fish-placeholder.jpg'
-  }
+const QuickReservation = ({advertisement, reservation}) => {
 
   return ( 
-  <div className={`flex text-left rounded-lg p-1.5 px-2 bg-white`}>
-    <Link to={`/${reservation.advertisement.advertisementType}/${reservation.advertisement.id}`}>
-      <img src={reservation.advertisement.photo ? `/api/${reservation.advertisement.photo.uri}` : getPlaceholderImage()}
-      alt="" className="flex-none h-14 w-20 object-cover rounded-lg" />
-    </Link>
-    <div className="block ml-2 w-full">
-      <div className="flex justify-between text-xl w-full text-gray-700 tracking-tight my-auto text-left leading-5">
-        <Link to={`/${reservation.advertisement.advertisementType}/${reservation.advertisement.id}`}>
-          <h1>
-            {reservation.advertisement.title}
-          </h1>
-        </Link>
-        <h1 className="font-mono font-medium text-gray-700">
-          {reservation.advertisement.currency}{reservation.calculatedPrice}
-        </h1>
+  <div className='flex text-left rounded-lg bg-white'>
+    <div className="block w-full rounded-lg overflow-hidden border border-slate-200 shadow-sm">
+
+      {/* red top */}
+      <div className="flex flex-col justify-center h-6 w-full bg-red-700
+      font-mono text-center text-white text-sm font-bold">
+        Save {advertisement.currency}{reservation.calculatedOldPrice - reservation.newPrice}!
       </div>
 
-      <div className="flex justify-between">
-
+      <div className="flex flex-col text-xl w-full text-slate-700
+      tracking-tight my-auto text-left leading-5 p-2">
         <div className="block">
-          <div className="text-sm text-gray-500">
-            From: {moment(reservation.startDateTime).format("DD-MM-yyyy")}
+
+          <div className="flex justify-center text-sm rounded-md border border-slate-400">
+            <p>{moment(reservation.startDateTime).format("DD-MM-yyyy HH:mm")}</p>
           </div>
-          <div className="text-sm text-gray-500">
-            To: {moment(reservation.endDateTime).format("DD-MM-yyyy")}
+
+          <Icon icon="tabler:chevron-down" inline={true} className="my-auto mx-auto text-center mt-1 text-slate-400"/>
+
+          <div className="flex justify-center text-sm rounded-md border border-slate-400 mt-1">
+            <p>{moment(reservation.endDateTime).format("DD-MM-yyyy HH:mm")}</p>
+          </div>
+
+          <div className="flex justify-center text-lg mt-1.5">
+            <p className="flex">
+              <Icon icon="tabler:users" inline={true} className="my-auto mr-1"/>
+              {reservation.capacity}
+            </p>
           </div>
         </div>
+
+        <div className="flex justify-between mt-8">
+          <h1 className="font-mono font-medium text-slate-700 text-xl underline mt-0.5">
+            {advertisement.currency}{reservation.calculatedOldPrice}
+          </h1>
+
+          <h1 className="font-mono font-bold text-4xl text-red-600">
+            {advertisement.currency}{reservation.newPrice}
+          </h1>
+        </div>
+
+        <button className="w-full text-white bg-red-700 hover:bg-red-800 active:bg-red-900 rounded-md font-sans
+        font-medium py-1 pb-1.5 mt-1">
+          Book
+        </button>
       </div>
-      
     </div>
   </div>
   );

@@ -1,5 +1,6 @@
 import moment from "moment";
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import { Icon } from "@iconify/react";
 
 const ClientReservationItem = ({reservation, allowCancel, cancel, review, report}) => {
 
@@ -18,14 +19,24 @@ const ClientReservationItem = ({reservation, allowCancel, cancel, review, report
     </Link>
     <div className="block ml-2 w-full">
       <div className="flex justify-between text-xl w-full text-gray-700 tracking-tight my-auto text-left leading-5">
+
         <Link to={`/${reservation.advertisement.advertisementType}/${reservation.advertisement.id}`}>
           <h1>
             {reservation.advertisement.title}
           </h1>
         </Link>
-        <h1 className="font-mono font-medium text-gray-700">
-          {reservation.advertisement.currency}{reservation.calculatedPrice}
-        </h1>
+
+        <div className="flex divide-x">
+          <div className="flex font-mono font-medium text-slate-700 pr-2">
+            <Icon icon="tabler:users"/>
+            <p>{reservation.attendees}</p>
+          </div>
+
+          <h1 className="font-mono font-medium text-slate-700 pl-2">
+            {reservation.advertisement.currency}{reservation.calculatedPrice}
+          </h1>
+        </div>
+
       </div>
 
       <div className="flex justify-between">

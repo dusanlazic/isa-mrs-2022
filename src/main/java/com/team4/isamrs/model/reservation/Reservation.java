@@ -20,6 +20,9 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "attendees", nullable = false)
+    private Integer attendees;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 

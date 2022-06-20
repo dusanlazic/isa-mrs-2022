@@ -17,8 +17,6 @@ import java.util.Optional;
 public interface ResortAdRepository  extends JpaRepository<ResortAd, Long> {
     Optional<ResortAd> findResortAdByIdAndAdvertiser(Long id, Advertiser advertiser);
 
-    Optional<ResortAd> findAdventureAdByIdAndAdvertiser(Long id, Advertiser advertiser);
-
     @Query("SELECT rad FROM ResortAd rad JOIN Address a ON rad.address = a.id WHERE" +
             "(CAST(:guests AS string) IS NULL OR rad.capacity >= :guests) AND " +
             "(CAST(:where AS string) IS NULL " +

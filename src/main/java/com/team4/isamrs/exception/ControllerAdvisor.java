@@ -119,6 +119,30 @@ public class ControllerAdvisor {
                 ex.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(QuickReservationInvalidException.class)
+    public ExceptionResponseBody handleQuickReservationInvalidException(QuickReservationInvalidException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DiscountCostsMoreThanOriginalException.class)
+    public ExceptionResponseBody handleDiscountCostsMoreThanOriginalException(DiscountCostsMoreThanOriginalException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(QuickReservationAlreadyBookedException.class)
+    public ExceptionResponseBody handleQuickReservationAlreadyBookedException(QuickReservationAlreadyBookedException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ExceptionResponseBody handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {

@@ -5,8 +5,10 @@ import com.team4.isamrs.dto.display.ResortAdDisplayDTO;
 import com.team4.isamrs.dto.display.ResortAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.updation.ResortAdUpdationDTO;
 import com.team4.isamrs.model.advertisement.ResortAd;
+import com.team4.isamrs.model.reservation.QuickReservation;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
+import com.team4.isamrs.repository.QuickReservationRepository;
 import com.team4.isamrs.repository.ReservationRepository;
 import com.team4.isamrs.repository.ResortAdRepository;
 import com.team4.isamrs.repository.TagRepository;
@@ -36,6 +38,9 @@ public class ResortAdService {
 
     @Autowired
     private ReservationRepository reservationRepository;
+
+    @Autowired
+    private QuickReservationRepository quickReservationRepository;
 
     @Autowired
     private TagRepository tagRepository;
@@ -231,7 +236,7 @@ public class ResortAdService {
 
     public void update(Long id, ResortAdUpdationDTO dto, Authentication auth) {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
-        ResortAd resortAd = resortAdRepository.findAdventureAdByIdAndAdvertiser(id, advertiser).orElseThrow();
+        ResortAd resortAd = resortAdRepository.findResortAdByIdAndAdvertiser(id, advertiser).orElseThrow();
 
         modelMapper.map(dto, resortAd);
 

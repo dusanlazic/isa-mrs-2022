@@ -12,7 +12,7 @@ export default function DeletionModal ({ closeFunction, deleteFunction, text }) 
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-40" onClose={hide}>
+      <Dialog as="div" className="relative z-30" onClose={hide}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

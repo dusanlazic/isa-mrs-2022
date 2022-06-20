@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
+import DatePicker from "react-datepicker";
 import { post } from "../../../adapters/xhr";
 import ReservationDatePicker from "./ReservationDatePicker";
 import MessageModal from "../MessageModal";
 import moment from "moment";
 
-const CustomerReservationModal = ({data, close}) => {
+const QuickReservationModal = ({data, close}) => {
+  const [, update] = useState({});
   const [advertisementType, setAdvertisementType] = useState("");
   const [attendees, setAttendees] = useState(1);
+  const [price, setPrice] = useState(0);
   const [options, setOptions] = useState({});
   const [selectionRange, setSelectionRange] = useState(
     {
@@ -16,9 +19,11 @@ const CustomerReservationModal = ({data, close}) => {
     }
   )
   const [selectedDate, setSelectedDate] = useState(new Date())
-
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [messageModalText, setMessageModalText] = useState('');
+  const [validUntil, setValidUntil] = useState(null);
+  const [validAfter, setValidAfter] = useState(null);
+
   const [isCreationSuccessful, setIsCreationSuccessful] = useState(false);
 
   useEffect(() => {
@@ -30,19 +35,24 @@ const CustomerReservationModal = ({data, close}) => {
     const selectedOptions = getSelectedOptions();
     const startDate = getStartDate();
     const endDate = getEndDate();
-    
-    post(`/api/ads/${data.id}/reservations`, {
+    post(`/api/reservations/quick-reservation`, {
+      advertisementId: data.id,
+      validUntil: moment(validUntil).add(5, "hours").toISOString(),
+      validAfter: moment(validAfter).add(5, "hours").toISOString(),
       startDate: startDate,
       endDate: endDate,
-      attendees: attendees,
+      newPrice: price,
+      capacity: attendees,
       selectedOptions: selectedOptions
     })
     .then(response => {
+      update({});
       setIsCreationSuccessful(true);
-      setMessageModalText('Reservation made successfully!');
+      setMessageModalText('Quick reservation made successfully!');
       setShowMessageModal(true);
     })
     .catch(error => {
+      update({});
       setIsCreationSuccessful(false);
       setMessageModalText(error.response.data.message);
       setShowMessageModal(true);
@@ -96,7 +106,7 @@ const CustomerReservationModal = ({data, close}) => {
     }
   }
 
-  const closeModal = (e) => {
+  const closeMessageModal = (e) => {
     if (e.target === e.currentTarget) {
       close();
     }
@@ -127,10 +137,38 @@ const CustomerReservationModal = ({data, close}) => {
   }
 
   return ( 
-    <div onClick={closeModal} className="fixed top-0 left-0 z-30 w-full min-h-screen h-screen text-center
+    <div onClick={closeMessageModal} className="fixed top-0 left-0 z-40 w-full min-h-screen h-screen text-center
     flex items-center justify-center bg-gray-900 bg-opacity-70 font-mono transition-opacity text-base">
-      <div className="relative flex flex-col w-180 h-140 bg-white rounded-xl mx-auto overflow-hidden p-9">
+      <div className="relative flex flex-col w-180 h-150 bg-white rounded-xl mx-auto overflow-hidden p-9">
         <h1 className="text-xl mb-5 font-display">Make a reservation</h1>
+
+        <div className="flex flex-col-2 mb-4 text-left">
+          <div className="w-80 mx-auto">
+            <label className="text-xs text-slate-500">Valid after:</label>
+            <DatePicker
+              dateFormat="dd-MM-yyyy"
+              selected={validAfter}
+              onChange={(date) => setValidAfter(date)}
+              placeholderText="Valid after"
+              className={`w-full outline-none text-center rounded-lg placeholder-slate-400
+              text-slate-600 focus:text-slate-900 h-10 px-2 border border-slate-200
+              ${validAfter ? 'pt-2 font-medium' : ''}`}
+            />
+          </div>
+          <div className="w-80 mx-auto">
+            <label className="text-xs text-slate-500">Valid until:</label>
+            <DatePicker
+                dateFormat="dd-MM-yyyy"
+                selected={validUntil}
+                onChange={(date) => setValidUntil(date)}
+                placeholderText="Valid until"
+                className={`w-full outline-none text-center rounded-lg placeholder-slate-400
+                text-slate-600 focus:text-slate-900 h-10 px-2 border border-slate-200
+                ${validUntil ? 'pt-2 font-medium' : ''}`}
+              />
+          </div>
+            
+        </div>
 
         <div className="flex gap-x-6">
           <ReservationDatePicker data={data} type={advertisementType} 
@@ -139,6 +177,15 @@ const CustomerReservationModal = ({data, close}) => {
           
 
           <div className="block w-full text-left">
+            {/* promotional price */}
+            <div>
+              <label className="text-xs text-slate-500">Price for the entire reservation:</label>
+              <input type="number" name="price" placeholder="promotional price" value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className="block rounded-lg px-3 border text-gray-700 border-gray-300 py-1
+                  focus:outline-none focus:border-gray-500  caret-gray-700"/>
+            </div>
+            
             {/* attendees */}
             <div>
               <label className="text-xs text-slate-500">Number of attendees (max {data.capacity}):</label>
@@ -186,10 +233,10 @@ const CustomerReservationModal = ({data, close}) => {
             </div>
 
             <div>
-              <button className="rounded-xl shadow-sm px-6 py-2 text-white font-display font-bold 
+              <button className="rounded-xl shadow-sm px-6 py-2 text-white font-bold 
               bg-cyan-700 hover:bg-cyan-800 active:bg-cyan-900 focus:outline-none
               w-full mt-4" onClick={makeReservation}>
-                Make a reservation
+                Make a quick reservation
               </button>
             </div>
 
@@ -201,7 +248,7 @@ const CustomerReservationModal = ({data, close}) => {
         okayFunction={close}
         closeFunction = {() => setShowMessageModal(false)}
         text = { messageModalText }
-        deactivateOkayFunction = { !isCreationSuccessful }
+        deactivateOkayFunction={ !isCreationSuccessful }
         />}
         
       </div>
@@ -216,4 +263,4 @@ function compare( a, b ) {
   return 1;
 }
  
-export default CustomerReservationModal;
+export default QuickReservationModal;

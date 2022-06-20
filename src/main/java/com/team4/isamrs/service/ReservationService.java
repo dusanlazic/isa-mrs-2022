@@ -1,16 +1,20 @@
 package com.team4.isamrs.service;
 
+import com.team4.isamrs.dto.creation.QuickReservationCreationDTO;
 import com.team4.isamrs.dto.creation.ReservationCreationDTO;
+import com.team4.isamrs.dto.display.QuickReservationSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.exception.*;
 import com.team4.isamrs.model.advertisement.*;
 import com.team4.isamrs.model.loyalty.LoyaltyProgramCategory;
 import com.team4.isamrs.model.loyalty.TargetedAccountType;
+import com.team4.isamrs.model.reservation.QuickReservation;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.model.user.User;
 import com.team4.isamrs.repository.*;
+import com.team4.isamrs.security.EmailSender;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.PessimisticLockingFailureException;
@@ -61,6 +65,12 @@ public class ReservationService {
     private LoyaltyProgramCategoryRepository loyaltyProgramCategoryRepository;
 
     @Autowired
+    private QuickReservationRepository quickReservationRepository;
+
+    @Autowired
+    private EmailSender emailSender;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     public void cancel(Long id, Authentication auth) {
@@ -93,6 +103,16 @@ public class ReservationService {
         int toIndex = Math.min((fromIndex + pageable.getPageSize()), reservations.size());
 
         return new PageImpl<>(reservations.subList(fromIndex, toIndex), pageable, reservations.size());
+    }
+
+    public Collection<QuickReservationSimpleDisplayDTO> getQuickReservations(Long id) {
+        Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
+        return quickReservationRepository.findActiveUntakenQuickReservations(
+                advertisement, LocalDateTime.now())
+                .stream()
+                .filter(qr -> qr.getReservation() == null || qr.getReservation().getCancelled())
+                .map(qr -> modelMapper.map(qr, QuickReservationSimpleDisplayDTO.class))
+                .collect(Collectors.toSet());
     }
 
     public Page<ReservationSimpleDisplayDTO> findActive(Pageable pageable, Authentication auth) {
@@ -154,6 +174,61 @@ public class ReservationService {
     }
 
     @Transactional
+    public void bookQuickReservation(Long id, Authentication auth) {
+        Customer customer = (Customer) auth.getPrincipal();
+        QuickReservation quickReservation;
+        try {
+            quickReservation = quickReservationRepository.lockGetById(id).orElseThrow();
+        }
+        catch (PessimisticLockingFailureException e) {
+            throw new ReservationConflictException(
+                    "Another user is currently attempting to book this quick reservation. " +
+                    "Please try again in a few seconds.");
+        }
+        if (quickReservation.getReservation() != null && !quickReservation.getReservation().getCancelled()) {
+            throw new QuickReservationAlreadyBookedException(
+                    "The quick reservation was already booked by another customer.");
+        }
+        if (quickReservation.getValidUntil().isBefore(LocalDateTime.now())) {
+            throw new QuickReservationInvalidException(
+                    "The quick reservation has expired.");
+        }
+        if (quickReservation.getValidAfter().isAfter(LocalDateTime.now())) {
+            throw new QuickReservationInvalidException(
+                    "The quick reservation is yet to become available for booking.");
+        }
+
+        if (reservationRepository.findByAdvertisementEqualsAndCustomerEqualsAndCancelledIsTrue(
+                quickReservation.getAdvertisement(), customer)
+                .stream().anyMatch(reservation ->
+                        reservation.getStartDateTime().toLocalDate().equals(quickReservation.getStartDateTime().toLocalDate()) &&
+                                reservation.getEndDateTime().toLocalDate().equals(quickReservation.getEndDateTime().toLocalDate()))) {
+            throw new ReservationPeriodUnavailableException("Attempted re-reservation of same entity during" +
+                    " the same period after cancelling an identical reservation.");
+        }
+
+        Reservation reservation = new Reservation();
+        reservation.setCancelled(false);
+        reservation.setStartDateTime(quickReservation.getStartDateTime());
+        reservation.setEndDateTime(quickReservation.getEndDateTime());
+        reservation.setCustomer(customer);
+        reservation.setCalculatedPrice(quickReservation.getNewPrice());
+        reservation.setCreatedAt(LocalDateTime.now());
+        reservation.setAdvertisement(quickReservation.getAdvertisement());
+        reservation.setAttendees(quickReservation.getCapacity());
+        quickReservation.setReservation(reservation);
+        reservation.setSelectedOptions(quickReservation.getSelectedOptions()
+        .stream().map(selectedOption -> {
+            SelectedOption newSo = new SelectedOption();
+            newSo.setCount(selectedOption.getCount());
+            newSo.setOption(selectedOption.getOption());
+            return newSo;
+        }).collect(Collectors.toSet()));
+        reservationRepository.save(reservation);
+        quickReservationRepository.save(quickReservation);
+    }
+
+    @Transactional
     public void create(Long id, ReservationCreationDTO dto, Authentication auth) {
         Customer customer = (Customer) auth.getPrincipal();
         Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
@@ -205,10 +280,34 @@ public class ReservationService {
         reservation.setCancelled(false);
         reservation.setSelectedOptions(generateSelectedOptions(dto, advertisement));
         reservation.setCalculatedPrice(calculateReservationPrice(dto, advertisement, customer));
+        reservation.setAttendees(dto.getAttendees());
         reservationRepository.save(reservation);
     }
 
     private Set<SelectedOption> generateSelectedOptions(ReservationCreationDTO dto, Advertisement advertisement) {
+        return dto.getSelectedOptions()
+                .stream()
+                .map(selectedOptionDto -> {
+                    Option option = advertisement
+                            .getOptions()
+                            .stream()
+                            .filter(x -> x.getId().equals(selectedOptionDto.getOptionId()))
+                            .findFirst()
+                            .orElseThrow();
+                    if (selectedOptionDto.getCount() > option.getMaxCount()) {
+                        throw new ExceededOptionMaxCountValueException(
+                                "Selected value (" + selectedOptionDto.getCount() + ") for " + option.getName() +
+                                        " exceeds max value of " + option.getMaxCount());
+                    }
+                    SelectedOption selectedOption = new SelectedOption();
+                    selectedOption.setOption(option);
+                    selectedOption.setCount(selectedOptionDto.getCount());
+                    return selectedOption;
+                })
+                .collect(Collectors.toSet());
+    }
+
+    private Set<SelectedOption> generateSelectedOptions(QuickReservationCreationDTO dto, Advertisement advertisement) {
         return dto.getSelectedOptions()
                 .stream()
                 .map(selectedOptionDto -> {
@@ -248,10 +347,32 @@ public class ReservationService {
             AdventureAd ad = (AdventureAd) advertisement;
             pricePerThing = ad.getPricePerPerson();
         }
-        long days = dto.getStartDate().until(dto.getEndDate(), ChronoUnit.DAYS)+1;
-        return BigDecimal.valueOf(days)
+        long thing = advertisement instanceof AdventureAd ? dto.getAttendees()
+                : dto.getStartDate().until(dto.getEndDate(), ChronoUnit.DAYS);
+        return BigDecimal.valueOf(thing)
                 .multiply(pricePerThing)
                 .multiply(category.getMultiply())
+                .setScale(2, RoundingMode.UP);
+    }
+
+    private BigDecimal calculateReservationPrice(QuickReservationCreationDTO dto, Advertisement advertisement) {
+        BigDecimal pricePerThing = new BigDecimal(0);
+        if (advertisement instanceof ResortAd) {
+            ResortAd ad = (ResortAd) advertisement;
+            pricePerThing = ad.getPricePerDay();
+        }
+        else if (advertisement instanceof BoatAd) {
+            BoatAd ad = (BoatAd) advertisement;
+            pricePerThing = ad.getPricePerDay();
+        }
+        else if (advertisement instanceof AdventureAd){
+            AdventureAd ad = (AdventureAd) advertisement;
+            pricePerThing = ad.getPricePerPerson();
+        }
+        long thing = advertisement instanceof AdventureAd ? dto.getCapacity()
+                : dto.getStartDate().until(dto.getEndDate(), ChronoUnit.DAYS);
+        return BigDecimal.valueOf(thing)
+                .multiply(pricePerThing)
                 .setScale(2, RoundingMode.UP);
     }
 
@@ -307,5 +428,73 @@ public class ReservationService {
             else
                 return !date.isEqual(availableAfter);
         }
+    }
+
+    @Transactional
+    public void createQuickReservation(QuickReservationCreationDTO dto, Authentication auth) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        Advertisement advertisement = advertisementRepository.findAdvertisementByIdAndAdvertiser(dto.getAdvertisementId(), advertiser).orElseThrow();
+
+        try {
+            if (advertisement instanceof ResortAd) {
+                advertisement = resortAdRepository.lockGetById(dto.getAdvertisementId()).orElseThrow();
+                dto.setEndDate(dto.getEndDate().plusDays(1));
+            }
+            else if (advertisement instanceof BoatAd) {
+                advertisement = boatAdRepository.lockGetById(dto.getAdvertisementId()).orElseThrow();
+                dto.setEndDate(dto.getEndDate().plusDays(1));
+            }
+            else if (advertisement instanceof AdventureAd) {
+                advertisement = adventureAdRepository.lockGetById(dto.getAdvertisementId()).orElseThrow();
+                if (!dto.getStartDate().isEqual(dto.getEndDate()))
+                    throw new ReservationPeriodUnavailableException("Adventure reservation must be within one day.");
+            }
+        }
+        catch (PessimisticLockingFailureException e) {
+            throw new ReservationConflictException("Another user is currently attempting to make a reservation" +
+                    " for the same entity. Please try again in a few seconds.");
+        }
+
+        if (dto.getEndDate().isBefore(LocalDate.now()) || dto.getStartDate().isBefore(LocalDate.now()) ||
+                dto.getValidUntil().isBefore(LocalDate.now()) || dto.getValidAfter().isBefore(LocalDate.now()))
+            throw new EndDateBeforeStartDateException("Dates cannot be in the past.");
+
+        if (dto.getEndDate().isBefore(dto.getStartDate()))
+            throw new EndDateBeforeStartDateException("End date cannot be before start date.");
+
+        if (dto.getValidUntil().isBefore(dto.getValidAfter()))
+            throw new EndDateBeforeStartDateException("Valid until cannot be before valid after.");
+
+        if (dto.getStartDate().isBefore(dto.getValidUntil()))
+            throw new EndDateBeforeStartDateException("Start date cannot be before valid until.");
+
+        if (advertisement.getCapacity() < dto.getCapacity())
+            throw new ExceededMaxAttendeesException("Exceeded maximum number of attendees (" +
+                    advertisement.getCapacity() + ")");
+
+        if (calculateReservationPrice(dto, advertisement).compareTo(dto.getNewPrice()) < 0)
+            throw new DiscountCostsMoreThanOriginalException("Discount (" + dto.getNewPrice() + ") cannot cost" +
+                    "more than the original price of " + calculateReservationPrice(dto, advertisement) + ". [" +
+                    advertisement.getCurrency() + "]");
+
+        if (!isAvailableForReservation(advertisement, dto.getStartDate(), dto.getEndDate()))
+            throw new ReservationPeriodUnavailableException("Unable to make reservation. Requested period is unavailable.");
+
+        QuickReservation quickReservation = new QuickReservation();
+        quickReservation.setAdvertisement(advertisement);
+        quickReservation.setCreatedAt(LocalDateTime.now());
+        quickReservation.setSelectedOptions(generateSelectedOptions(dto, advertisement));
+        quickReservation.setValidAfter(dto.getValidAfter().atStartOfDay());
+        quickReservation.setValidUntil(dto.getValidUntil().atStartOfDay());
+        quickReservation.setCalculatedOldPrice(calculateReservationPrice(dto, advertisement));
+        quickReservation.setNewPrice(dto.getNewPrice());
+        quickReservation.setStartDateTime(dto.getStartDate().atTime(advertisement.getCheckInTime()));
+        quickReservation.setEndDateTime(dto.getEndDate().atTime(advertisement.getCheckOutTime()));
+        quickReservation.setCapacity(dto.getCapacity());
+        quickReservation.setReservation(null);
+
+        quickReservationRepository.save(quickReservation);
+
+        emailSender.sendDiscountNotificationEmails(quickReservation);
     }
 }

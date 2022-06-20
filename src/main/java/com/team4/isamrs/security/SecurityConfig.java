@@ -80,7 +80,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/account/register/**");
 
         web.ignoring().antMatchers(HttpMethod.GET,
-                "/photos/**");
+                "/photos/**",
+                "/ads/**");
 /*
         web.ignoring().antMatchers(HttpMethod.GET,
                 "/customers/**",

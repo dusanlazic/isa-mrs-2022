@@ -10,6 +10,7 @@ import com.team4.isamrs.model.advertisement.Photo;
 import com.team4.isamrs.model.user.User;
 import com.team4.isamrs.repository.PhotoRepository;
 import com.team4.isamrs.util.StorageConfig;
+import org.apache.commons.io.FileUtils;
 import org.apache.tika.Tika;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.mime.MimeTypeException;
@@ -28,10 +29,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Base64;
 import java.util.Set;
 import java.util.UUID;
 
@@ -173,5 +176,21 @@ public class PhotoService {
             if (!path.normalize().toAbsolutePath().getParent().equals(uploadsLocation.toAbsolutePath()))
                 throw new PhotoPathTraversalException();
         }
+    }
+
+    public Resource getResource(String filename) {
+        Path uploadedFilePath = uploadsLocation.resolve(filename);
+        validatePath(uploadedFilePath);
+
+        Resource resource = null;
+        try {
+            resource = new UrlResource(uploadedFilePath.toUri());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        if (!resource.exists() || !resource.isReadable())
+            throw new PhotoNotFoundException();
+
+        return resource;
     }
 }

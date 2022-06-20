@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class SelectedOptionCreationDTO {
-    @NotBlank
+    @NotNull
     private Long optionId;
 
     @NotNull

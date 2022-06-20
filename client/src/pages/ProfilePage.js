@@ -19,12 +19,14 @@ import About from '../components/profile/additional/AboutTab'
 import BoatAbout from '../components/profile/additional/BoatAboutTab'
 import Gallery from '../components/profile/additional/Gallery'
 import Map from '../components/profile/additional/Map'
+import QuickReservationList from '../components/profile/additional/QuickReservationList'
 
 // sidebar components
 import LoyaltyProgramCard from '../components/profile/sidebar/LoyaltyProgramCard'
 import Equipment from '../components/profile/sidebar/Equipment'
 import Tags from '../components/profile/sidebar/Tags'
 import ReservationAndSubscription from '../components/profile/sidebar/ReservationAndSubscription'
+import QuickReservationButton from '../components/profile/sidebar/QuickReservationButton'
 
 import AdditionalInformation from '../components/profile/additional/AdditionalInformation'
 import Sidebar from '../components/profile/sidebar/Sidebar'
@@ -32,6 +34,7 @@ import PriceCard from '../components/profile/sidebar/PriceCard'
 import AdvertisementList from '../components/profile/additional/AdvertisementList'
 import AdvertiserReviewList from '../components/profile/additional/AdvertiserReviewList'
 import ClientSubscriptionList from '../components/profile/additional/ClientSubscriptionList';
+import { getSession } from '../contexts'
 
 
 const clientMainComponent = UserProfileMainInfo;
@@ -112,42 +115,66 @@ const ProfilePage = ({me}) => {
   }
 
   if (window.location.href.includes('resort')) {
+    const session = getSession();
     sidebarComponents = [
     <PriceCard profileData={profileData} loyaltyProgramData={loyaltyProgramData} />,
-    <Tags data={profileData} />,
-    <ReservationAndSubscription data={profileData}/>];
+    <Tags data={profileData} />];
+    if (session && session.accountType === "CUSTOMER") {
+      sidebarComponents.push(<ReservationAndSubscription data={profileData}/>);
+    }
+    else if (session && session.accountType === "RESORT_OWNER" && profileData.advertiser.id === session.id) {
+      sidebarComponents.push(<QuickReservationButton data={profileData}/>);
+    }
     MainComponent = ResortProfileMainInfo;
     contentComponents = [
       { title: 'About', component: <About data={profileData} />},
       { title: 'Photos',  component: <Gallery data={profileData} />},
       { title: 'Reviews', component: <AdvertisementReviewList data={profileData} />},
-      { title: 'Location', component: <Map data={profileData} coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
+      { title: 'Location', component: <Map data={profileData}
+      coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
+      { title: 'Discounts', component: <QuickReservationList data={profileData} />},
     ];
   }
   else if (window.location.href.includes('boat')) {
+    const session = getSession();
     sidebarComponents = [
     <PriceCard profileData={profileData} loyaltyProgramData={loyaltyProgramData} />,
-    <Tags data={profileData} />,
-    <ReservationAndSubscription data={profileData}/>];
+    <Tags data={profileData} />];
+    if (session.accountType === "CUSTOMER") {
+      sidebarComponents.push(<ReservationAndSubscription data={profileData}/>);
+    }
+    else if (session.accountType === "BOAT_OWNER" && profileData.advertiser.id === session.id) {
+      sidebarComponents.push(<QuickReservationButton data={profileData}/>);
+    }
     MainComponent = boatMainComponent;
     contentComponents = [
       { title: 'About', component: <BoatAbout data={profileData} />},
       { title: 'Photos',  component: <Gallery data={profileData} />},
       { title: 'Reviews', component: <AdvertisementReviewList data={profileData} />},
-      { title: 'Location', component: <Map data={profileData} coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
+      { title: 'Location', component: <Map data={profileData}
+      coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
+      { title: 'Discounts', component: <QuickReservationList data={profileData} />},
     ];
   }
   else if (window.location.href.includes('adventure')) {
+    const session = getSession();
     sidebarComponents = [
     <PriceCard profileData={profileData} loyaltyProgramData={loyaltyProgramData} />,
-    <Tags data={profileData} />,
-    <ReservationAndSubscription data={profileData}/>];
+    <Tags data={profileData} />,];
+    if (session.accountType === "CUSTOMER") {
+      sidebarComponents.push(<ReservationAndSubscription data={profileData}/>);
+    }
+    else if (session.accountType === "RESORT_OWNER" && profileData.advertiser.id === session.id) {
+      sidebarComponents.push(<QuickReservationButton data={profileData}/>);
+    }
     MainComponent = adventureMainComponent;
     contentComponents = [
       { title: 'About', component: <About data={profileData} />},
       { title: 'Photos',  component: <Gallery data={profileData} />},
       { title: 'Reviews', component: <AdvertisementReviewList data={profileData} />},
-      { title: 'Location', component: <Map data={profileData} coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
+      { title: 'Location', component: <Map data={profileData}
+      coordinates={[profileData.address.latitude, profileData.address.longitude]}/>},
+      { title: 'Discounts', component: <QuickReservationList data={profileData} />},
     ];
   }
   else if (window.location.href.includes('advertiser')) {

@@ -395,6 +395,7 @@ public class TestDataSupplierService {
             reservation.setAdvertisement(ad);
             reservation.setCustomer(customers.get(random.nextInt(customers.size())));
             reservation.setCalculatedPrice(BigDecimal.valueOf(1337));
+            reservation.setAttendees(1);
             reservation.setCancelled(false);
             reservations.add(reservation);
 
@@ -419,6 +420,7 @@ public class TestDataSupplierService {
             reservation.setAdvertisement(ad);
             reservation.setCustomer(customers.get(random.nextInt(customers.size())));
             reservation.setCalculatedPrice(BigDecimal.valueOf(1337));
+            reservation.setAttendees(1);
             reservation.setCancelled(false);
 
             reservations.add(reservation);
@@ -433,6 +435,7 @@ public class TestDataSupplierService {
             reservation.setAdvertisement(ad);
             reservation.setCustomer(customers.get(random.nextInt(customers.size())));
             reservation.setCalculatedPrice(BigDecimal.valueOf(1337));
+            reservation.setAttendees(1);
             reservation.setCancelled(false);
 
             reservations.add(reservation);

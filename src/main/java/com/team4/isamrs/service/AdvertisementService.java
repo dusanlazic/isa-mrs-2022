@@ -15,6 +15,7 @@ import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.repository.AdvertisementRepository;
 import com.team4.isamrs.repository.CustomerRepository;
 import com.team4.isamrs.repository.OptionRepository;
+import com.team4.isamrs.repository.QuickReservationRepository;
 import com.team4.isamrs.repository.ReservationRepository;
 import org.apache.tomcat.jni.Local;
 import org.modelmapper.ModelMapper;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,6 +41,9 @@ public class AdvertisementService {
 
     @Autowired
     private ReservationRepository reservationRepository;
+
+    @Autowired
+    private QuickReservationRepository quickReservationRepository;
 
     @Autowired
     private OptionRepository optionRepository;
@@ -110,6 +115,22 @@ public class AdvertisementService {
                     else {
                         reservation.getStartDateTime().toLocalDate()
                                 .datesUntil(reservation.getEndDateTime().toLocalDate())
+                                .forEach(unavailableDates::add);
+                    }
+                });
+
+        quickReservationRepository.findUnexpiredUntakenQuickReservations(advertisement, LocalDateTime.now())
+                .stream()
+                .filter(quickReservation ->
+                        (quickReservation.getStartDateTime().getMonth() == Month.valueOf(month) ||
+                                quickReservation.getEndDateTime().getMonth() == Month.valueOf(month)))
+                .forEach(quickReservation -> {
+                    if (quickReservation.getStartDateTime().getDayOfYear() == quickReservation.getEndDateTime().getDayOfYear()) {
+                        unavailableDates.add(quickReservation.getStartDateTime().toLocalDate());
+                    }
+                    else {
+                        quickReservation.getStartDateTime().toLocalDate()
+                                .datesUntil(quickReservation.getEndDateTime().toLocalDate())
                                 .forEach(unavailableDates::add);
                     }
                 });

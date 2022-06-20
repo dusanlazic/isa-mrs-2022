@@ -6,6 +6,8 @@ import com.team4.isamrs.dto.creation.ReservationCreationDTO;
 import com.team4.isamrs.dto.creation.ReservationReportCreationDTO;
 import com.team4.isamrs.dto.creation.ReviewCreationDTO;
 import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
+import com.team4.isamrs.dto.display.QuickReservationSimpleDisplayDTO;
+import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.service.AdvertisementService;
@@ -107,5 +109,10 @@ public class AdvertisementController {
     public ResponseOK unsubscribe(@PathVariable Long id, Authentication auth) {
         advertisementService.unsubscribe(id, auth);
         return new ResponseOK("Subscription removed.");
+    }
+
+    @GetMapping(value = "/{id}/quick-reservations")
+    public Collection<QuickReservationSimpleDisplayDTO> getQuickReservations(@PathVariable Long id) {
+        return reservationService.getQuickReservations(id);
     }
 }

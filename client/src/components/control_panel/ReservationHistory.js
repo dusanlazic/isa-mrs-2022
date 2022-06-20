@@ -4,6 +4,7 @@ import { get } from "../../adapters/xhr";
 import ReservationItem from "./ReservationItem";
 import ReactPaginate from "react-paginate";
 import AdvertiserReservationModal from "../modals/reservation/AdvertiserReservationModal";
+import AdvertiserReportModal from "../modals/report/AdvertiserReportModal";
 
 const ReservationHistory = () => {
 
@@ -49,12 +50,12 @@ const ReservationHistory = () => {
     return null;
   }
 
-  /*
+  
   const initReport = reservation => {
     setReservationToReport(reservation);
     setIsReportModalOpen(true);
   } 
-  */
+  
 
   const initRenew = reservation => {
     setReservationToRenew(reservation);
@@ -72,7 +73,7 @@ const ReservationHistory = () => {
         <div className="grid 2xl:grid-cols-2 gap-4 mx-auto justify-items-center">
           {reservations != null && reservations.map(reservation =>
             <div key={reservation.id} className="w-full">
-              <ReservationItem reservation={reservation} renew={initRenew} />
+              <ReservationItem reservation={reservation} renew={initRenew} report={initReport} />
             </div>
           )}
 
@@ -110,9 +111,9 @@ const ReservationHistory = () => {
         />
       </div>
     
-      { /*isReviewModalOpen &&
-        <AdvertiserReportModal data={reservationToReview} 
-        close={() => setIsReviewModalOpen(false)}/>*/
+      { isReportModalOpen &&
+        <AdvertiserReportModal data={reservationToReport} 
+        close={() => setIsReportModalOpen(false)}/>
       }
 
       { isRenewModalOpen &&

@@ -1,7 +1,7 @@
 import moment from "moment";
 import { Link } from 'react-router-dom'
 
-const ReservationItem = ({ reservation, renew }) => {
+const ReservationItem = ({ reservation, renew, report }) => {
 
   const getPlaceholderImage = () => {
     if (reservation.advertisement.advertisementType === 'resort') return '/images/property-placeholder.jpg'
@@ -43,7 +43,7 @@ const ReservationItem = ({ reservation, renew }) => {
           <div className="flex mt-auto divide-x h-min">
             {reservation.canBeReportedOn &&
               <div>
-                <button className={`hover:text-cyan-600 pl-1.5 ${reservation.canBeRenewed ? 'pr-1.5' : ''}`}>
+                <button className={`hover:text-cyan-600 pl-1.5 ${reservation.canBeRenewed ? 'pr-1.5' : ''}`} onClick={() => report(reservation)}>
                   Report
                 </button>
               </div>}

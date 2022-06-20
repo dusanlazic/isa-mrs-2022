@@ -22,6 +22,7 @@ const ClientReservationHistory = ({data}) => {
   const fetchData = (resetPage=false) => {
     setCurrentPage(resetPage ? 0 : currentPage);
 		get(`/api/customers/${data.id}/previous-reservations?page=${currentPage}&sorting=${sorting}`).then((response) => {
+			console.log(response.data.content);
 			setReservations(response.data.content);
       setTotalPages(response.data.totalPages);
     });

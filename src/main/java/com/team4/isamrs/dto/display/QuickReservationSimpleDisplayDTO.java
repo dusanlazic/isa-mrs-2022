@@ -9,6 +9,7 @@ import java.util.Set;
 
 @Data
 public class QuickReservationSimpleDisplayDTO {
+    private Long id;
     private LocalDateTime validAfter;
     private LocalDateTime validUntil;
     private BigDecimal newPrice;

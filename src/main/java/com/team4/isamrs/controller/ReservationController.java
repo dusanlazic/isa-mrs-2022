@@ -76,6 +76,13 @@ public class ReservationController {
         return new ResponseOK("Reservation cancelled.");
     }
 
+    @PostMapping(value = "/{id}/book-quick-reservation")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseOK bookQuickReservation(@PathVariable Long id, Authentication auth) {
+        reservationService.bookQuickReservation(id, auth);
+        return new ResponseOK("Quick reservation booked.");
+    }
+
     @PostMapping(value = "/quick-reservation")
     @PreAuthorize("hasRole('ADVERTISER')")
     public ResponseOK createQuickReservation(@Valid @RequestBody QuickReservationCreationDTO dto, Authentication auth) {

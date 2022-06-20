@@ -173,6 +173,52 @@ public class ReservationService {
     }
 
     @Transactional
+    public void bookQuickReservation(Long id, Authentication auth) {
+        Customer customer = (Customer) auth.getPrincipal();
+        QuickReservation quickReservation;
+        try {
+            quickReservation = quickReservationRepository.lockGetById(id).orElseThrow();
+        }
+        catch (PessimisticLockingFailureException e) {
+            throw new ReservationConflictException(
+                    "Another user is currently attempting to book this quick reservation. " +
+                    "Please try again in a few seconds.");
+        }
+        if (quickReservation.getReservation() != null && !quickReservation.getReservation().getCancelled()) {
+            throw new QuickReservationAlreadyBookedException(
+                    "The quick reservation was already booked by another customer.");
+        }
+        if (quickReservation.getValidUntil().isBefore(LocalDateTime.now())) {
+            throw new QuickReservationInvalidException(
+                    "The quick reservation has expired.");
+        }
+        if (quickReservation.getValidAfter().isAfter(LocalDateTime.now())) {
+            throw new QuickReservationInvalidException(
+                    "The quick reservation is yet to become available for booking.");
+        }
+
+        Reservation reservation = new Reservation();
+        reservation.setCancelled(false);
+        reservation.setStartDateTime(quickReservation.getStartDateTime());
+        reservation.setEndDateTime(quickReservation.getEndDateTime());
+        reservation.setCustomer(customer);
+        reservation.setCalculatedPrice(quickReservation.getNewPrice());
+        reservation.setCreatedAt(LocalDateTime.now());
+        reservation.setAdvertisement(quickReservation.getAdvertisement());
+        reservation.setAttendees(quickReservation.getCapacity());
+        quickReservation.setReservation(reservation);
+        reservation.setSelectedOptions(quickReservation.getSelectedOptions()
+        .stream().map(selectedOption -> {
+            SelectedOption newSo = new SelectedOption();
+            newSo.setCount(selectedOption.getCount());
+            newSo.setOption(selectedOption.getOption());
+            return newSo;
+        }).collect(Collectors.toSet()));
+        reservationRepository.save(reservation);
+        quickReservationRepository.save(quickReservation);
+    }
+
+    @Transactional
     public void create(Long id, ReservationCreationDTO dto, Authentication auth) {
         Customer customer = (Customer) auth.getPrincipal();
         Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
@@ -224,6 +270,7 @@ public class ReservationService {
         reservation.setCancelled(false);
         reservation.setSelectedOptions(generateSelectedOptions(dto, advertisement));
         reservation.setCalculatedPrice(calculateReservationPrice(dto, advertisement, customer));
+        reservation.setAttendees(dto.getAttendees());
         reservationRepository.save(reservation);
     }
 

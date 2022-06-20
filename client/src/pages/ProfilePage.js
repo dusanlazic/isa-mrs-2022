@@ -114,10 +114,10 @@ const ProfilePage = ({me}) => {
     sidebarComponents = [
     <PriceCard profileData={profileData} loyaltyProgramData={loyaltyProgramData} />,
     <Tags data={profileData} />];
-    if (session.accountType === "CUSTOMER") {
+    if (session && session.accountType === "CUSTOMER") {
       sidebarComponents.push(<ReservationButton data={profileData}/>);
     }
-    else if (session.accountType === "RESORT_OWNER" && profileData.advertiser.id === session.id) {
+    else if (session && session.accountType === "RESORT_OWNER" && profileData.advertiser.id === session.id) {
       sidebarComponents.push(<QuickReservationButton data={profileData}/>);
     }
     MainComponent = ResortProfileMainInfo;

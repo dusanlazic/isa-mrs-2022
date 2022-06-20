@@ -87,7 +87,8 @@ const Navbar = () => {
                 </li>
               </Link>
 
-              { (session.accountType == "FISHING_INSTRUCTOR_OWNER" || session.accountType == "RESORT_OWNER" || session.accountType == "BOAT_OWNER" ) &&
+              { (session.accountType === "FISHING_INSTRUCTOR_OWNER" || session.accountType === "RESORT_OWNER" 
+              || session.accountType === "BOAT_OWNER" ) &&
                 
               <Link to='/control-panel'>
                 <li>

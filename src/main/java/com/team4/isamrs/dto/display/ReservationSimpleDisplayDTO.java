@@ -18,5 +18,6 @@ public class ReservationSimpleDisplayDTO {
     private AdvertisementSimpleDisplayDTO advertisement;
     private CustomerSimpleDisplayDTO customer;
     private BigDecimal calculatedPrice;
+    private Integer attendees;
     private boolean cancelled;
 }

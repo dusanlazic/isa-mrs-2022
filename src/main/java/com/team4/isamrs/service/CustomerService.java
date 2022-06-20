@@ -64,6 +64,7 @@ public class CustomerService {
                     dto.setCancelled(reservation.getCancelled());
                     dto.setCalculatedPrice(reservation.getCalculatedPrice());
                     dto.setId(reservation.getId());
+                    dto.setAttendees(reservation.getAttendees());
                     dto.setCreatedAt(reservation.getCreatedAt());
 
                     // domain mapper sucks
@@ -96,6 +97,7 @@ public class CustomerService {
                     dto.setCancelled(reservation.getCancelled());
                     dto.setCalculatedPrice(reservation.getCalculatedPrice());
                     dto.setId(reservation.getId());
+                    dto.setAttendees(reservation.getAttendees());
                     dto.setCreatedAt(reservation.getCreatedAt());
 
                     // domain mapper sucks

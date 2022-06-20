@@ -1,0 +1,31 @@
+version: 2.1
+
+jobs:
+  build-backend:
+    docker:
+      - image: cimg/openjdk:18.0
+        auth:
+          username: dusanlazic
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: mvn -B -DskipTests clean package
+  deploy-backend:
+    docker:
+      - image: cimg/openjdk:18.0
+        auth:
+          username: dusanlazic
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: Deploy backend
+          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/pecaj-ga-backend.git master
+
+workflows:
+  sample:
+    jobs:
+      - build-backend
+      - deploy-backend

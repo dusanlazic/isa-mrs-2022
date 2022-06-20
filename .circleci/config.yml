@@ -23,9 +23,21 @@ jobs:
       - run:
           name: Deploy backend
           command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/pecaj-ga-backend.git HEAD:master
+  deploy-frontend:
+    docker:
+      - image: cimg/node:16.3.0
+        auth:
+          username: dusanlazic
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: Deploy frontend
+          command: git subtree push --prefix client https://heroku:$HEROKU_API_KEY@git.heroku.com/pecaj-ga-frontend.git HEAD:master
 
 workflows:
   sample:
     jobs:
       - build-backend
       - deploy-backend
+      - deploy-frontend

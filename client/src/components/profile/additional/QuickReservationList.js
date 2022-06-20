@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react"
 import { get } from "../../../adapters/xhr";
+import { getSession } from "../../../contexts";
 import QuickReservation from "./QuickReservation";
 
+let showBookButton = false;
 const QuickReservationList = ({data}) => {
-	const [reservations, setReservations] = useState(null);
+	const [quickReservations, setQuickReservations] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -13,26 +15,29 @@ const QuickReservationList = ({data}) => {
 		get(`/api/ads/${data.id}/quick-reservations`)
     .then((response) => {
 			console.log(response.data);
-			setReservations(response.data);
+			setQuickReservations(response.data);
+      const session = getSession();
+      if (session && session.accountType === 'CUSTOMER') showBookButton = true;
     });
   }
 
-  if (reservations === null) {
+  if (quickReservations === null) {
     return null;
   }
 
   return ( 
     <div>
-      { reservations.length === 0 &&
+      { quickReservations.length === 0 &&
         <div className="flex flex-col">
           <div>Advertisement has no discounts.</div>
         </div>
       }
-      { reservations.length > 0 &&
+      { quickReservations.length > 0 &&
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-x-2 lg:gap-x-6 gap-y-4">
-        {reservations.map(reservation => 
-          <div key={reservation.id}>
-            <QuickReservation advertisement={data} reservation={reservation}/>
+        {quickReservations.map(quickReservation => 
+          <div key={quickReservation.id}>
+            <QuickReservation advertisement={data} quickReservation={quickReservation} 
+            showBookButton={showBookButton}/>
           </div>
           
         )}

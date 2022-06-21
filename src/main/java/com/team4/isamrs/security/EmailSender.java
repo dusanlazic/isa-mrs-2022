@@ -151,7 +151,7 @@ public class EmailSender {
         variables.put("response", dto.getMessageToAdvertiser());
         variables.put("image_data", "cid:" + storedFilename);
 
-        sendEmailWithImage("complaint/advertiser.html", variables, "You got a complaint", "ana3664@gmail.com", customer.getAvatar().getStoredFilename());
+        sendEmailWithImage("complaint/advertiser.html", variables, "You got a complaint", advertiser.getUsername(), customer.getAvatar().getStoredFilename());
     }
 
     @Async
@@ -164,7 +164,7 @@ public class EmailSender {
         variables.put("response", dto.getMessageToCustomer());
         variables.put("image_data", "cid:" + storedFilename);
 
-        sendEmailWithImage("complaint/customer.html", variables, "Admin response to your complaint", "ana3664@gmail.com", customer.getAvatar().getStoredFilename());
+        sendEmailWithImage("complaint/customer.html", variables, "Admin response to your complaint", customer.getUsername(), customer.getAvatar().getStoredFilename());
     }
 
     @Async

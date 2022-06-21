@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react"
 import { get } from "../../../adapters/xhr";
-import ClientReview from './ClientReview'
+import AdvertisementReview from "./AdvertisementReview";
 
 const AdvertisementReviewList = ({data}) => {
 
 	const [reviews, setReviews] = useState(null);
 
 	useEffect(() => {
-		get(`/api/ads/${data.id}/reviews`).then((response) => {
+		get(`/api/ads/${data.id}/reviews`)
+    .then((response) => {
+      console.log(response.data);
 			setReviews(response.data);
 		  });
 		}, [])
@@ -20,7 +22,7 @@ const AdvertisementReviewList = ({data}) => {
       {
         reviews !== null && reviews.length > 0 &&
         reviews.map((review, index) => 
-          <ClientReview review={review} key={index}/>
+          <AdvertisementReview review={review} key={index}/>
         )
       }
     </div>

@@ -6,5 +6,5 @@ import lombok.Data;
 public class CustomerPublicDisplayDTO {
     private String firstName;
     private String lastName;
-    private String avatar;
+    private PhotoBriefDisplayDTO avatar;
 }

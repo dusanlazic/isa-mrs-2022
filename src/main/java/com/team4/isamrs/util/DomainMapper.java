@@ -13,6 +13,7 @@ import com.team4.isamrs.model.advertisement.*;
 import com.team4.isamrs.model.enumeration.AccountType;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.reservation.Reservation;
+import com.team4.isamrs.model.review.Review;
 import com.team4.isamrs.model.user.*;
 import com.team4.isamrs.repository.*;
 import org.modelmapper.Converter;
@@ -445,8 +446,17 @@ public class DomainMapper {
         };
 
         Converter<Customer, CustomerPublicDisplayDTO> CustomerToPublicDisplayDtoConverter = context -> {
-            context.getDestination().setAvatar("/photos/" + context.getSource().getAvatar().getStoredFilename());
-            return context.getDestination();
+            User source = context.getSource();
+            CustomerPublicDisplayDTO destination = context.getDestination();
+            destination.setAvatar(modelMapper.map(source.getAvatar(), PhotoBriefDisplayDTO.class));
+            return destination;
+        };
+
+        Converter<Review, ReviewPublicDisplayDTO> ReviewToReviewPublicDisplayDtoConverter = context -> {
+            Review source = context.getSource();
+            ReviewPublicDisplayDTO destination = context.getDestination();
+            destination.setCustomer(modelMapper.map(source.getCustomer(), CustomerPublicDisplayDTO.class));
+            return destination;
         };
 
         modelMapper.createTypeMap(AdventureAdCreationDTO.class, AdventureAd.class).setPostConverter(CreationDtoToAdventureAdConverter);
@@ -479,6 +489,8 @@ public class DomainMapper {
         modelMapper.createTypeMap(ResortAd.class, AdvertisementSimpleDisplayDTO.class).setPostConverter(ResortAdToAdvertisementSimpleDisplayDtoConverter);
         modelMapper.createTypeMap(BoatAd.class, AdvertisementSimpleDisplayDTO.class).setPostConverter(BoatAdToAdvertisementSimpleDisplayDtoConverter);
         modelMapper.createTypeMap(AdventureAd.class, AdvertisementSimpleDisplayDTO.class).setPostConverter(AdventureAdToAdvertisementSimpleDisplayDtoConverter);
+
+        modelMapper.createTypeMap(Review.class, ReviewPublicDisplayDTO.class).setPostConverter(ReviewToReviewPublicDisplayDtoConverter);
     }
 
     private HashSet<Tag> mapTagNames(Set<String> tagNames) {

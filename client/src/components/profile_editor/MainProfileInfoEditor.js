@@ -9,7 +9,7 @@ const MainProfileInfoEditor = ({data, refreshData}) => {
 
   const [image, setImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
-  const [avatar, setAvatar] = useState(data.avatar.uri);
+  const [avatar, setAvatar] = useState(data.avatar);
   const [firstName, setFirstName] = useState(data.firstName);
   const [lastName, setLastName] = useState(data.lastName);
   const [phoneNumber, setPhoneNumber] = useState(data.phoneNumber);
@@ -65,7 +65,7 @@ const MainProfileInfoEditor = ({data, refreshData}) => {
             hover:outline-gray-600
           hover:border-gray-300 cursor-pointer">
 
-            <img id="image-preview" src={data.avatar.uri !== null ? `/api${data.avatar.uri}` : '/images/fish_guy.jpg'}
+            <img id="image-preview" src={avatar.uri !== null ? `/api${avatar.uri}` : '/images/fish_guy.jpg'}
             className="flex-none w-24 h-24 rounded-xl object-cover"/>
 
             <input type="file" accept="image/*" onChange={() => uploadImage()} id="image-input" 

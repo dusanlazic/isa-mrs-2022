@@ -8,4 +8,12 @@ import java.util.UUID;
 public class PhotoBriefDisplayDTO implements DisplayDTO {
     private String uri;
     private UUID id;
+
+    public PhotoBriefDisplayDTO(String uri) {
+        this.uri = uri;
+    }
+
+    public PhotoBriefDisplayDTO() {
+        // ModelMapper requires a non-private no-argument constructor
+    }
 }

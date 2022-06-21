@@ -14,12 +14,8 @@ const SearchBar = () => {
   const [selectedEntity, setSelectedEntity] = useState('resorts');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const handleCalendarClose = () => console.log(startDate);
-  const handleCalendarOpen = () => console.log(endDate);
-
   const handleDropdown = () => {
     if (isDropdownOpen && document.activeElement === document.getElementById('dropdown-btn-search')) {
-      console.log(document.activeElement)
       setIsDropdownOpen(false);
       removeFocusFromDropdown();
     } else {
@@ -124,8 +120,6 @@ const SearchBar = () => {
               dateFormat="dd-MM-yyyy"
               selected={startDate}
               onChange={(date) => setStartDate(date)}
-              onCalendarClose={handleCalendarClose}
-              onCalendarOpen={handleCalendarOpen}
               placeholderText="Select a date"
               className="w-24 outline-none text-slate-600 focus:text-slate-900"
             />
@@ -140,8 +134,6 @@ const SearchBar = () => {
               dateFormat="dd-MM-yyyy"
               selected={endDate}
               onChange={(date) => setEndDate(date)}
-              onCalendarClose={handleCalendarClose}
-              onCalendarOpen={handleCalendarOpen}
               placeholderText="Select a date"
               className="w-24 outline-none text-slate-600 focus:text-slate-900"
             />

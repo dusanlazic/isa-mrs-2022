@@ -31,6 +31,5 @@ export function patch(url, requestData){
 
 export function del(url, requestData){
   const axios = returnAxiosInstance();
-  console.log(requestData)
   return axios.delete(url, {data: requestData});
 }

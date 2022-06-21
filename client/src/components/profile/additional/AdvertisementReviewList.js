@@ -9,7 +9,6 @@ const AdvertisementReviewList = ({data}) => {
 	useEffect(() => {
 		get(`/api/ads/${data.id}/reviews`)
     .then((response) => {
-      console.log(response.data);
 			setReviews(response.data);
 		  });
 		}, [])

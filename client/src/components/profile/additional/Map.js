@@ -13,7 +13,6 @@ L.Marker.prototype.options.icon = customMarker;
 function LocationFinderDummy({func}) {
   const map = useMapEvents({
       click(e) {
-          console.log(e.latlng);
           func(e.latlng);
       },
   });

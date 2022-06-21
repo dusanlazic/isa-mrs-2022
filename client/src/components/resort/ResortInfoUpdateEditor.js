@@ -169,7 +169,6 @@ const ResortInfoUpdateEditor = ({ data, advertisementId }) => {
 
   const deleteAdvertisement = () => {
     del(`/api/ads/${advertisementId}`).then((response) => {
-      console.log(response);
       setShowModal(false);
       navigate("/");
     });

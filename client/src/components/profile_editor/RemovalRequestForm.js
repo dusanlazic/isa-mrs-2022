@@ -23,12 +23,10 @@ const RemovalRequestForm = ({id}) => {
       "explanation": reason,
     })
     .then((response) => {
-      console.log(response.data);
       setMessageModalText('Removal request sent successfully!')
       setShowMessageModal(true);
     })
     .catch(err => {
-      console.log(err.response);
       setMessageModalText('Something went wrong. Maybe you\'ve already sent a removal request.');
       setShowMessageModal(true);
     })

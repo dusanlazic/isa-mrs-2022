@@ -70,7 +70,7 @@ public class ComplaintService {
 
         complaint.setResponseStatus(ResponseStatus.RESOLVED);
 
-        emailSender.sendComplaintResponseToBothParties(complaint, dto);
+        emailSender.sendComplaintResponseToBothParties(complaint, dto, complaint.getAdvertisement(), complaint.getAdvertisement().getAdvertiser(), complaint.getCustomer(), complaint.getCustomer().getAvatar().getStoredFilename());
 
         complaintRepository.save(complaint);
     }

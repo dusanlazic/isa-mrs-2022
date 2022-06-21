@@ -135,38 +135,36 @@ public class EmailSender {
     }
 
     @Async
-    public void sendComplaintResponseToBothParties(Complaint complaint, ComplaintResponseDTO dto) {
-        sendComplaintResponseToCustomer(complaint, dto);
-        sendComplaintResponseToAdvertiser(complaint, dto);
+    public void sendComplaintResponseToBothParties(Complaint complaint, ComplaintResponseDTO dto, Advertisement advertisement, Advertiser advertiser, Customer customer, String storedFilename) {
+        sendComplaintResponseToCustomer(complaint, dto, advertisement, customer, storedFilename);
+        sendComplaintResponseToAdvertiser(complaint, dto, advertisement, advertiser, customer, storedFilename);
     }
 
     @Async
-    private void sendComplaintResponseToAdvertiser(Complaint complaint, ComplaintResponseDTO dto) {
-        Advertisement advertisement = complaint.getAdvertisement();
-        Advertiser advertiser = advertisement.getAdvertiser();
+    public void sendComplaintResponseToAdvertiser(Complaint complaint, ComplaintResponseDTO dto, Advertisement advertisement, Advertiser advertiser, Customer customer, String storedFilename) {
 
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", advertiser.getFirstName());
-        variables.put("customer_name", complaint.getCustomer().getFirstName());
+        variables.put("customer_name", customer.getFirstName() + customer.getLastName());
         variables.put("ad_title", advertisement.getTitle());
         variables.put("complaint", complaint.getComment());
         variables.put("response", dto.getMessageToAdvertiser());
+        variables.put("image_data", "cid:" + storedFilename);
 
-        sendEmail("complaint/advertiser.html", variables, "You got a complaint", advertiser.getUsername());
+        sendEmailWithImage("complaint/advertiser.html", variables, "You got a complaint", "ana3664@gmail.com", customer.getAvatar().getStoredFilename());
     }
 
     @Async
-    private void sendComplaintResponseToCustomer(Complaint complaint, ComplaintResponseDTO dto) {
-        Advertisement advertisement = complaint.getAdvertisement();
-        Customer customer = complaint.getCustomer();
-
+    public void sendComplaintResponseToCustomer(Complaint complaint, ComplaintResponseDTO dto, Advertisement advertisement, Customer customer, String storedFilename) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", customer.getFirstName());
+        variables.put("customer_name", customer.getFirstName() + customer.getLastName());
         variables.put("ad_title", advertisement.getTitle());
         variables.put("complaint", complaint.getComment());
         variables.put("response", dto.getMessageToCustomer());
+        variables.put("image_data", "cid:" + storedFilename);
 
-        sendEmail("complaint/customer.html", variables, "Admin response to your complaint", customer.getUsername());
+        sendEmailWithImage("complaint/customer.html", variables, "Admin response to your complaint", "ana3664@gmail.com", customer.getAvatar().getStoredFilename());
     }
 
     @Async

@@ -66,7 +66,7 @@ public class TestDataSupplierService {
     Random random = new Random();
 
     String adminEmail = "admin@pecaj.ga";
-    String resortOwnerEmail = "maja@gmail.com";
+    String resortOwnerEmail = "sinisa@gmail.com";
     String fishingInstructorEmail = "lazard@test.rs";
     String boatOwnerEmail = "draganb@test.rs";
     String customerEmail = "stevade@test.rs";
@@ -105,14 +105,28 @@ public class TestDataSupplierService {
         resortOwner.setCity("Novi Sad");
         resortOwner.setCountryCode("RS");
         resortOwner.setUsername(resortOwnerEmail);
-        resortOwner.setFirstName("Maja");
-        resortOwner.setLastName("Majic");
+        resortOwner.setFirstName("Siniša");
+        resortOwner.setLastName("Veliki");
         resortOwner.setPassword(passwordEncoder.encode("cascaded"));
         resortOwner.getAuthorities().add(roleRepository.findByName("ROLE_RESORT_OWNER").get());
         resortOwner.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
         resortOwner.setPhoneNumber("021111222");
         resortOwner.setPoints(220);
         userRepository.save(resortOwner);
+
+        UUID uuidSinisa = UUID.randomUUID();
+        String originalFilenameSinisa = "sinisa.jpg";
+        String storedFilenameSinisa = uuidSinisa + ".jpg";
+        Photo sinisaPhoto = new Photo(uuidSinisa, originalFilenameSinisa, storedFilenameSinisa, 1337L, resortOwner);
+        try {
+            Path source = Paths.get("uploads-test-data").resolve(originalFilenameSinisa);
+            Path target = Paths.get("uploads").resolve(storedFilenameSinisa);
+            Files.copy(source, target);
+            sinisaPhoto = photoRepository.save(sinisaPhoto);
+            resortOwner.setAvatar(sinisaPhoto);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Advertiser boatOwner = new Advertiser();
         boatOwner.setEnabled(true);
@@ -129,6 +143,20 @@ public class TestDataSupplierService {
         boatOwner.setPoints(140);
         userRepository.save(boatOwner);
 
+        UUID uuidDragan = UUID.randomUUID();
+        String originalFilenameDragan = "dragan.jpg";
+        String storedFilenameDragan = uuidDragan + ".jpg";
+        Photo photoDragan = new Photo(uuidDragan, originalFilenameDragan, storedFilenameDragan, 1337L, boatOwner);
+        try {
+            Path source = Paths.get("uploads-test-data").resolve(originalFilenameDragan);
+            Path target = Paths.get("uploads").resolve(storedFilenameDragan);
+            Files.copy(source, target);
+            photoDragan = photoRepository.save(photoDragan);
+            boatOwner.setAvatar(photoDragan);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Advertiser fishingInstructor = new Advertiser();
         fishingInstructor.setEnabled(true);
         fishingInstructor.setAddress("Kod mene kući BB");
@@ -143,6 +171,20 @@ public class TestDataSupplierService {
         fishingInstructor.setPhoneNumber("4494358490");
         fishingInstructor.setPoints(290);
         userRepository.save(fishingInstructor);
+
+        UUID uuidLazar = UUID.randomUUID();
+        String originalFilenameLazar = "lazar.jpg";
+        String storedFilenameLazar = uuidLazar + ".jpg";
+        Photo lazarPhoto = new Photo(uuidLazar, originalFilenameLazar, storedFilenameLazar, 1337L, fishingInstructor);
+        try {
+            Path source = Paths.get("uploads-test-data").resolve(originalFilenameLazar);
+            Path target = Paths.get("uploads").resolve(storedFilenameLazar);
+            Files.copy(source, target);
+            lazarPhoto = photoRepository.save(lazarPhoto);
+            fishingInstructor.setAvatar(lazarPhoto);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Customer customer = new Customer();
         customer.setEnabled(true);
@@ -159,6 +201,20 @@ public class TestDataSupplierService {
         customer.setPenalties(0);
         customer.setPoints(110);
         userRepository.save(customer);
+
+        UUID uuidStevan = UUID.randomUUID();
+        String originalFilenameStevan = "stevan.jpg";
+        String storedFilenameStevan = uuidStevan + ".jpg";
+        Photo stevanPhoto = new Photo(uuidStevan, originalFilenameStevan, storedFilenameStevan, 1337L, customer);
+        try {
+            Path source = Paths.get("uploads-test-data").resolve(originalFilenameStevan);
+            Path target = Paths.get("uploads").resolve(storedFilenameStevan);
+            Files.copy(source, target);
+            stevanPhoto = photoRepository.save(stevanPhoto);
+            customer.setAvatar(stevanPhoto);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void addResorts() {

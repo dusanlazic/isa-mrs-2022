@@ -50,7 +50,11 @@ public class TokenUtils {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7); // Ignore "Bearer " part
         }
-        throw new TokenNotProvidedException("Token is not provided.");
+        throw new TokenNotProvidedException("Token is not provided."); // Cannot be thrown since filter is not in
+    }
+
+    public boolean tokenIsPresentInRequest(HttpServletRequest request) {
+        return request.getHeader("Authorization") != null;
     }
 
     public String generateConfirmationToken(User user) {

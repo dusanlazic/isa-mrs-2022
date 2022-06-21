@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,7 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -60,13 +58,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .exceptionHandling()
-                .authenticationEntryPoint(restAuthenticationEntryPoint)
+                .exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint)
                 .accessDeniedHandler(restAccessDeniedHandler).and()
                 .authorizeRequests()
-                .antMatchers("/account/register/**").permitAll()
-                .expressionHandler(webSecurityExpressionHandler())
-                .anyRequest().authenticated().and()
+                .anyRequest().permitAll().and()
                 .cors().and()
                 .csrf().disable()
                 .addFilterBefore(new TokenAuthenticationFilter(tokenUtils, customUserDetailsService), BasicAuthenticationFilter.class);
@@ -74,24 +69,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(
-                HttpMethod.POST,
-                "/auth/login",
-                "/account/register/**");
-
-        web.ignoring().antMatchers(HttpMethod.GET,
-                "/photos/**",
-                "/ads/**");
-/*
-        web.ignoring().antMatchers(HttpMethod.GET,
-                "/customers/**",
-                "/photos/**",
-                "/ads/**",
-                "/fishing-equipment/**",
-                "/tags/*",
-                "/account/register/**",
-                "/advertisers/**");
-*/
         web.ignoring().antMatchers(HttpMethod.GET,
                 "/",
                 "/*.html",
@@ -102,7 +79,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/swagger-resources/**",
                 "/swagger-ui.html",
                 "/v2/api-docs",
-                "/webjars/**"
+                "/webjars/**",
+                "/photos/**"
         );
     }
 
@@ -118,7 +96,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return roleHierarchy;
     }
 
-    private SecurityExpressionHandler<FilterInvocation> webSecurityExpressionHandler() {
+    @Bean
+    public DefaultWebSecurityExpressionHandler webSecurityExpressionHandler() {
         DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
         defaultWebSecurityExpressionHandler.setRoleHierarchy(roleHierarchy());
         return defaultWebSecurityExpressionHandler;

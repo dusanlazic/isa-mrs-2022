@@ -33,6 +33,15 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
+            if (!tokenUtils.tokenIsPresentInRequest(request)) {
+                /*
+                Do not use this if there is no token provided at all.
+                This is safe as long as the endpoint is protected with @PreAuthorize.
+                 */
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             String accessToken = tokenUtils.getTokenFromRequest(request);
             DecodedJWT decodedJWT = tokenUtils.verifyToken(accessToken);
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(decodedJWT.getSubject());

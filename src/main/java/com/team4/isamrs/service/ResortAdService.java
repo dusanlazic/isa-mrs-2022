@@ -4,6 +4,10 @@ import com.team4.isamrs.dto.creation.ResortAdCreationDTO;
 import com.team4.isamrs.dto.display.ResortAdDisplayDTO;
 import com.team4.isamrs.dto.display.ResortAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.updation.ResortAdUpdationDTO;
+import com.team4.isamrs.exception.ReservationConflictException;
+import com.team4.isamrs.exception.ReservationPeriodUnavailableException;
+import com.team4.isamrs.model.advertisement.AdventureAd;
+import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.advertisement.ResortAd;
 import com.team4.isamrs.model.reservation.QuickReservation;
 import com.team4.isamrs.model.reservation.Reservation;
@@ -14,6 +18,7 @@ import com.team4.isamrs.repository.ResortAdRepository;
 import com.team4.isamrs.repository.TagRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -237,7 +242,13 @@ public class ResortAdService {
     public void update(Long id, ResortAdUpdationDTO dto, Authentication auth) {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
         ResortAd resortAd = resortAdRepository.findResortAdByIdAndAdvertiser(id, advertiser).orElseThrow();
-
+        try {
+            resortAd = resortAdRepository.lockFindResortAdByIdAndAdvertiser(id, advertiser).orElseThrow();
+        }
+        catch (PessimisticLockingFailureException e) {
+            throw new ReservationConflictException("Another user is currently attempting to make a reservation" +
+                    " for the same entity. Please try again in a few seconds.");
+        }
         modelMapper.map(dto, resortAd);
 
         resortAd.verifyPhotosOwnership(advertiser);

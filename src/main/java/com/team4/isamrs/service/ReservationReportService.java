@@ -14,7 +14,6 @@ import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.repository.CustomerRepository;
 import com.team4.isamrs.repository.ReservationReportRepository;
 import com.team4.isamrs.repository.ReservationRepository;
-import com.team4.isamrs.security.EmailSender;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -38,7 +37,7 @@ public class ReservationReportService {
     private CustomerRepository customerRepository;
 
     @Autowired
-    private EmailSender emailSender;
+    private EmailService emailService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -99,10 +98,10 @@ public class ReservationReportService {
             customer.setPenalties(customer.getPenalties() + 1);
             report.setApprovalStatus(ApprovalStatus.APPROVED);
             customerRepository.save(customer);
-            emailSender.sendReportApprovalEmail(report);
+            emailService.sendReportApprovalEmail(report);
         } else {
             report.setApprovalStatus(ApprovalStatus.REJECTED);
-            emailSender.sendReportRejectionEmail(report);
+            emailService.sendReportRejectionEmail(report);
         }
 
         reservationReportRepository.save(report);

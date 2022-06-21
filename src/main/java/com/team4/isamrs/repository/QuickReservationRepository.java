@@ -1,7 +1,6 @@
 package com.team4.isamrs.repository;
 
 import com.team4.isamrs.model.advertisement.Advertisement;
-import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.reservation.QuickReservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;

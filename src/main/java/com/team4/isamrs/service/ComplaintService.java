@@ -12,7 +12,6 @@ import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.repository.AdvertisementRepository;
 import com.team4.isamrs.repository.ComplaintRepository;
 import com.team4.isamrs.repository.ReservationRepository;
-import com.team4.isamrs.security.EmailSender;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -35,7 +34,7 @@ public class ComplaintService {
     private ReservationRepository reservationRepository;
 
     @Autowired
-    private EmailSender emailSender;
+    private EmailService emailService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -70,7 +69,7 @@ public class ComplaintService {
 
         complaint.setResponseStatus(ResponseStatus.RESOLVED);
 
-        emailSender.sendComplaintResponseToBothParties(complaint, dto, complaint.getAdvertisement(), complaint.getAdvertisement().getAdvertiser(), complaint.getCustomer(), complaint.getCustomer().getAvatar().getStoredFilename());
+        emailService.sendComplaintResponseToBothParties(complaint, dto, complaint.getAdvertisement(), complaint.getAdvertisement().getAdvertiser(), complaint.getCustomer(), complaint.getCustomer().getAvatar().getStoredFilename());
 
         complaintRepository.save(complaint);
     }

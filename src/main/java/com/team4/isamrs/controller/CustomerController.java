@@ -4,7 +4,6 @@ import com.team4.isamrs.dto.display.AdvertisementSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.CustomerDisplayDTO;
 import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
-import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +19,6 @@ import java.util.Collection;
 @RestController
 @RequestMapping(value = "/customers",
         produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "*")
 public class CustomerController {
 
     @Autowired

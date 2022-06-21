@@ -10,7 +10,6 @@ import com.team4.isamrs.model.user.RegistrationRequest;
 import com.team4.isamrs.repository.RegistrationRequestRepository;
 import com.team4.isamrs.repository.RoleRepository;
 import com.team4.isamrs.repository.UserRepository;
-import com.team4.isamrs.security.EmailSender;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,7 @@ public class RegistrationRequestService {
     private UserRepository userRepository;
 
     @Autowired
-    private EmailSender emailSender;
+    private EmailService emailService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -50,11 +49,11 @@ public class RegistrationRequestService {
         if (dto.getApprove()) {
             request.setApprovalStatus(ApprovalStatus.APPROVED);
             createAdvertiser(request);
-            emailSender.sendRegistrationApprovalEmail(request);
+            emailService.sendRegistrationApprovalEmail(request);
         } else {
             request.setApprovalStatus(ApprovalStatus.REJECTED);
             request.setRejectionReason(dto.getRejectionReason());
-            emailSender.sendRegistrationRejectionEmail(request);
+            emailService.sendRegistrationRejectionEmail(request);
         }
         registrationRequestRepository.save(request);
     }

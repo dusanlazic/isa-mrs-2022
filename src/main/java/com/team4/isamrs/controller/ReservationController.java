@@ -23,7 +23,6 @@ import javax.validation.Valid;
 @RequestMapping(
         value = "/reservations",
         produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "*")
 public class ReservationController {
 
     @Autowired

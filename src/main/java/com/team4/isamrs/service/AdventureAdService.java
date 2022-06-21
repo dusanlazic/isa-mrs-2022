@@ -5,7 +5,6 @@ import com.team4.isamrs.dto.display.AdventureAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.AdventureAdUpdationDTO;
 import com.team4.isamrs.model.advertisement.AdventureAd;
-import com.team4.isamrs.model.reservation.QuickReservation;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.*;

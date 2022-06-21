@@ -25,7 +25,6 @@ import java.util.Collection;
 @RestController
 @RequestMapping(value = "/ads/resorts",
         produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "*")
 public class ResortController {
 
     @Autowired

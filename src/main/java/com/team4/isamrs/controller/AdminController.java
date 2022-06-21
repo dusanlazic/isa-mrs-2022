@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/admin",
         produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "*")
 public class AdminController {
 
     @Autowired

@@ -2,8 +2,8 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.QuickReservationCreationDTO;
 import com.team4.isamrs.dto.creation.ReservationCreationDTO;
-import com.team4.isamrs.dto.display.QuickReservationSimpleDisplayDTO;
 import com.team4.isamrs.dto.creation.ReservationRenewalCreationDTO;
+import com.team4.isamrs.dto.display.QuickReservationSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.ReservationDetailedDisplayDTO;
 import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.exception.*;
@@ -16,8 +16,6 @@ import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.model.user.User;
 import com.team4.isamrs.repository.*;
-import com.team4.isamrs.security.EmailSender;
-import org.apache.tika.utils.StringUtils;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +69,7 @@ public class ReservationService {
     private QuickReservationRepository quickReservationRepository;
 
     @Autowired
-    private EmailSender emailSender;
+    private EmailService emailService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -246,7 +244,7 @@ public class ReservationService {
             return newSo;
         }).collect(Collectors.toSet()));
 
-        emailSender.sendReservationConfirmationEmail(reservation, reservation.getAdvertisement().getPhotos().get(0));
+        emailService.sendReservationConfirmationEmail(reservation, reservation.getAdvertisement().getPhotos().get(0));
         reservationRepository.save(reservation);
         quickReservationRepository.save(quickReservation);
     }
@@ -311,7 +309,7 @@ public class ReservationService {
         reservation.setCalculatedPrice(calculateReservationPrice(dto, advertisement, customer));
         reservation.setAttendees(dto.getAttendees());
 
-        emailSender.sendReservationConfirmationEmail(reservation, reservation.getAdvertisement().getPhotos().get(0));
+        emailService.sendReservationConfirmationEmail(reservation, reservation.getAdvertisement().getPhotos().get(0));
         reservationRepository.save(reservation);
     }
 
@@ -409,7 +407,7 @@ public class ReservationService {
 
     public boolean isAvailableForReservation(Advertisement advertisement, LocalDate startDate, LocalDate endDate) {
 
-        Set<LocalDate> unavailableDates = new HashSet<LocalDate>();
+        Set<LocalDate> unavailableDates = new HashSet<>();
 
         if (startDate.isBefore(LocalDate.now())) return false;
 
@@ -526,7 +524,7 @@ public class ReservationService {
         quickReservationRepository.save(quickReservation);
 
         Collection<Customer> subscribers = advertisementRepository.getSubscribersOfAdvertisement(advertisement);
-        emailSender.sendDiscountNotificationEmails(quickReservation, advertisement.getPhotos().get(0),
+        emailService.sendDiscountNotificationEmails(quickReservation, advertisement.getPhotos().get(0),
                 subscribers);
     }
 
@@ -584,7 +582,7 @@ public class ReservationService {
         reservation.setSelectedOptions(generateSelectedOptions(modelMapper.map(dto, ReservationCreationDTO.class), advertisement));
         newReservation.setCalculatedPrice(calculateReservationPrice(modelMapper.map(dto, ReservationCreationDTO.class), advertisement, reservation.getCustomer()));
 
-        emailSender.sendReservationConfirmationEmail(newReservation, newReservation.getAdvertisement().getPhotos().get(0));
+        emailService.sendReservationConfirmationEmail(newReservation, newReservation.getAdvertisement().getPhotos().get(0));
         reservationRepository.save(newReservation);
     }
 }

@@ -21,14 +21,14 @@ public class ControllerAdvisor {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ValidationErrorResponseBody handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            String fieldName = error.getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
 
-        ex.getBindingResult().getGlobalErrors().forEach((error) -> {
-            String objectName = ((ObjectError) error).getObjectName();
+        ex.getBindingResult().getGlobalErrors().forEach(error -> {
+            String objectName = error.getObjectName();
             String errorMessage = error.getDefaultMessage();
             errors.put(objectName, errorMessage);
         });

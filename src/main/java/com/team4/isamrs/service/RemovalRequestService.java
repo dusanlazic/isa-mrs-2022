@@ -9,7 +9,6 @@ import com.team4.isamrs.model.user.User;
 import com.team4.isamrs.repository.RemovalRequestRepository;
 import com.team4.isamrs.repository.RoleRepository;
 import com.team4.isamrs.repository.UserRepository;
-import com.team4.isamrs.security.EmailSender;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +29,7 @@ public class RemovalRequestService {
     private UserRepository userRepository;
 
     @Autowired
-    private EmailSender emailSender;
+    private EmailService emailService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -49,11 +48,11 @@ public class RemovalRequestService {
         if (dto.getApprove()) {
             request.setApprovalStatus(ApprovalStatus.APPROVED);
             disableUser(request.getUser());
-            emailSender.sendRemovalApprovalEmail(request);
+            emailService.sendRemovalApprovalEmail(request);
         } else {
             request.setApprovalStatus(ApprovalStatus.REJECTED);
             request.setRejectionReason(dto.getRejectionReason());
-            emailSender.sendRemovalRejectionEmail(request);
+            emailService.sendRemovalRejectionEmail(request);
         }
         removalRequestRepository.save(request);
     }

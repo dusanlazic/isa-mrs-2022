@@ -17,14 +17,14 @@ public class Customer extends User {
     Users that make reservations
      */
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
-    private Set<Reservation> reservations = new HashSet<Reservation>();
+    private Set<Reservation> reservations = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
             name = "subscriptions",
             joinColumns = @JoinColumn(name = "customer_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "advertisement_id", referencedColumnName = "id"))
-    private Set<Advertisement> subscriptions = new HashSet<Advertisement>();
+    private Set<Advertisement> subscriptions = new HashSet<>();
     
     @Column(name = "points", nullable = false)
     private Integer points;

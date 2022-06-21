@@ -18,6 +18,6 @@ public class GlobalSetting {
     private String value;
 
     public GlobalSetting() {
-
+        // Empty constructor required for @AllArgsConstructor
     }
 }

@@ -1,11 +1,11 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.display.*;
-import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.advertisement.AdventureAd;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.advertisement.ResortAd;
+import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.*;

@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @Component
 public class TokenUtils {
 
-    private final String secret;
     private final String issuer;
     private final Integer lifespan;
     private final Algorithm signatureAlgorithm;
@@ -27,7 +26,6 @@ public class TokenUtils {
     public TokenUtils(@Value("${token-utils.secret}") String secret,
                       @Value("${token-utils.issuer}") String issuer,
                       @Value("${token-utils.lifespan}") Integer lifespan) {
-        this.secret = secret;
         this.issuer = issuer;
         this.lifespan = lifespan;
         this.signatureAlgorithm = Algorithm.HMAC256(secret.getBytes());

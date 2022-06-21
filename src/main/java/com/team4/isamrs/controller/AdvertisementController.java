@@ -3,11 +3,9 @@ package com.team4.isamrs.controller;
 import com.team4.isamrs.dto.ResponseOK;
 import com.team4.isamrs.dto.creation.ComplaintCreationDTO;
 import com.team4.isamrs.dto.creation.ReservationCreationDTO;
-import com.team4.isamrs.dto.creation.ReservationReportCreationDTO;
 import com.team4.isamrs.dto.creation.ReviewCreationDTO;
 import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
 import com.team4.isamrs.dto.display.QuickReservationSimpleDisplayDTO;
-import com.team4.isamrs.dto.display.ReservationSimpleDisplayDTO;
 import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.service.AdvertisementService;
@@ -22,15 +20,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.Collection;
-import java.util.Date;
 
 @RestController
 @RequestMapping(
         value = "/ads",
         produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "*")
 public class AdvertisementController {
 
     @Autowired

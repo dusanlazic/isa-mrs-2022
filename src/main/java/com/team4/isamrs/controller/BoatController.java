@@ -26,7 +26,6 @@ import java.util.Collection;
 @RestController
 @RequestMapping(value = "/ads/boats",
         produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "*")
 public class BoatController {
 
     @Autowired

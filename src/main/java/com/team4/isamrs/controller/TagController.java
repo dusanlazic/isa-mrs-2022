@@ -16,7 +16,6 @@ import java.util.Collection;
 @RequestMapping(
         value = "/tags",
         produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "*")
 public class TagController {
 
     @Autowired

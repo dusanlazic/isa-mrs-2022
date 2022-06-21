@@ -15,7 +15,6 @@ import com.team4.isamrs.exception.*;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.user.*;
 import com.team4.isamrs.repository.*;
-import com.team4.isamrs.security.EmailSender;
 import com.team4.isamrs.security.TokenUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,7 @@ public class AccountService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private EmailSender emailSender;
+    private EmailService emailService;
 
     @Autowired
     private TokenUtils tokenUtils;
@@ -152,7 +151,7 @@ public class AccountService {
         customerRepository.save(customer);
 
         String token = tokenUtils.generateConfirmationToken(customer);
-        emailSender.sendRegistrationEmail(customer, token);
+        emailService.sendRegistrationEmail(customer, token);
     }
 
     public void createAdmin(AdminCreationDTO dto) {
@@ -164,7 +163,7 @@ public class AccountService {
         administrator.getAuthorities().add(roleRepository.findByName("ROLE_FRESH_ADMIN").orElseThrow());
         userRepository.save(administrator);
 
-        emailSender.sendAdministratorRegistrationEmail(administrator);
+        emailService.sendAdministratorRegistrationEmail(administrator);
     }
 
     private void checkForExistingRemovalRequest(Long userId) {

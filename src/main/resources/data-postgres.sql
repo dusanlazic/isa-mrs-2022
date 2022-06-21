@@ -7,6 +7,7 @@ INSERT INTO fishing_equipment(name, fishing_equipment_id) VALUES ('Fishing rods'
 INSERT INTO fishing_equipment(name, fishing_equipment_id) VALUES ('Baits', 1002);
 */
 
+
 INSERT INTO photo(id, original_filename, stored_filename,
 "size")
 VALUES ('2d74b08c-b270-4d7a-ae26-c278bd13816c',

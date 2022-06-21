@@ -246,7 +246,7 @@ public class ReservationService {
             return newSo;
         }).collect(Collectors.toSet()));
 
-        emailSender.sendReservationConfirmationEmail(reservation);
+        emailSender.sendReservationConfirmationEmail(reservation, reservation.getAdvertisement().getPhotos().get(0));
         reservationRepository.save(reservation);
         quickReservationRepository.save(quickReservation);
     }
@@ -311,7 +311,7 @@ public class ReservationService {
         reservation.setCalculatedPrice(calculateReservationPrice(dto, advertisement, customer));
         reservation.setAttendees(dto.getAttendees());
 
-        emailSender.sendReservationConfirmationEmail(reservation);
+        emailSender.sendReservationConfirmationEmail(reservation, reservation.getAdvertisement().getPhotos().get(0));
         reservationRepository.save(reservation);
     }
 
@@ -525,7 +525,9 @@ public class ReservationService {
 
         quickReservationRepository.save(quickReservation);
 
-        emailSender.sendDiscountNotificationEmails(quickReservation);
+        Collection<Customer> subscribers = advertisementRepository.getSubscribersOfAdvertisement(advertisement);
+        emailSender.sendDiscountNotificationEmails(quickReservation, advertisement.getPhotos().get(0),
+                subscribers);
     }
 
     @Transactional
@@ -582,7 +584,7 @@ public class ReservationService {
         reservation.setSelectedOptions(generateSelectedOptions(modelMapper.map(dto, ReservationCreationDTO.class), advertisement));
         newReservation.setCalculatedPrice(calculateReservationPrice(modelMapper.map(dto, ReservationCreationDTO.class), advertisement, reservation.getCustomer()));
 
-        emailSender.sendReservationConfirmationEmail(newReservation);
+        emailSender.sendReservationConfirmationEmail(newReservation, newReservation.getAdvertisement().getPhotos().get(0));
         reservationRepository.save(newReservation);
     }
 }

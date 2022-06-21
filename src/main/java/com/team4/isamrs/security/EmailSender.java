@@ -3,6 +3,7 @@ package com.team4.isamrs.security;
 import com.team4.isamrs.dto.updation.ComplaintResponseDTO;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.BoatAd;
+import com.team4.isamrs.model.advertisement.Photo;
 import com.team4.isamrs.model.advertisement.ResortAd;
 import com.team4.isamrs.model.complaint.Complaint;
 import com.team4.isamrs.model.reservation.QuickReservation;
@@ -46,6 +47,7 @@ public class EmailSender {
     @Autowired
     private PhotoService photoService;
 
+    @Async
     public void sendRegistrationEmail(Customer customer, String token) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", customer.getFirstName());
@@ -54,6 +56,7 @@ public class EmailSender {
         sendEmail("registration/confirmation.html", variables, "Registration Confirmation", customer.getUsername());
     }
 
+    @Async
     public void sendRegistrationApprovalEmail(RegistrationRequest registrationRequest) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", registrationRequest.getFirstName());
@@ -62,6 +65,7 @@ public class EmailSender {
         sendEmail("registration/approval.html", variables, "Your request has been APPROVED", registrationRequest.getUsername());
     }
 
+    @Async
     public void sendRegistrationRejectionEmail(RegistrationRequest registrationRequest) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", registrationRequest.getFirstName());
@@ -70,6 +74,7 @@ public class EmailSender {
         sendEmail("registration/rejection.html", variables, "Your request has been REJECTED", registrationRequest.getUsername());
     }
 
+    @Async
     public void sendAdministratorRegistrationEmail(Administrator administrator) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", administrator.getFirstName());
@@ -78,6 +83,7 @@ public class EmailSender {
         sendEmail("registration/administrator.html", variables, "Activate your administrator account", administrator.getUsername());
     }
 
+    @Async
     public void sendRemovalApprovalEmail(RemovalRequest removalRequest) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", removalRequest.getUser().getFirstName());
@@ -85,6 +91,7 @@ public class EmailSender {
         sendEmail("removal/approval.html", variables, "Your account has been DELETED", removalRequest.getUser().getUsername());
     }
 
+    @Async
     public void sendRemovalRejectionEmail(RemovalRequest removalRequest) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", removalRequest.getUser().getFirstName());
@@ -93,6 +100,7 @@ public class EmailSender {
         sendEmail("removal/rejection.html", variables, "Your request for account removal has been REJECTED", removalRequest.getUser().getUsername());
     }
 
+    @Async
     public void sendReportApprovalEmail(ReservationReport report) {
         Customer customer = report.getReservation().getCustomer();
         Advertisement advertisement = report.getReservation().getAdvertisement();
@@ -109,6 +117,7 @@ public class EmailSender {
         sendEmail("report/approval-advertiser.html", variables, "Your customer got a penalty!", advertiser.getUsername());
     }
 
+    @Async
     public void sendReportRejectionEmail(ReservationReport report) {
         Customer customer = report.getReservation().getCustomer();
         Advertisement advertisement = report.getReservation().getAdvertisement();
@@ -125,11 +134,13 @@ public class EmailSender {
         sendEmail("report/rejection-advertiser.html", variables, "Your customer did not get a penalty", advertiser.getUsername());
     }
 
+    @Async
     public void sendComplaintResponseToBothParties(Complaint complaint, ComplaintResponseDTO dto) {
         sendComplaintResponseToCustomer(complaint, dto);
         sendComplaintResponseToAdvertiser(complaint, dto);
     }
 
+    @Async
     private void sendComplaintResponseToAdvertiser(Complaint complaint, ComplaintResponseDTO dto) {
         Advertisement advertisement = complaint.getAdvertisement();
         Advertiser advertiser = advertisement.getAdvertiser();
@@ -144,6 +155,7 @@ public class EmailSender {
         sendEmail("complaint/advertiser.html", variables, "You got a complaint", advertiser.getUsername());
     }
 
+    @Async
     private void sendComplaintResponseToCustomer(Complaint complaint, ComplaintResponseDTO dto) {
         Advertisement advertisement = complaint.getAdvertisement();
         Customer customer = complaint.getCustomer();
@@ -157,7 +169,7 @@ public class EmailSender {
         sendEmail("complaint/customer.html", variables, "Admin response to your complaint", customer.getUsername());
     }
 
-
+    @Async
     public void sendNewReviewEmail(Review review, Double totalRating) {
         Advertisement advertisement = review.getAdvertisement();
         Advertiser advertiser = advertisement.getAdvertiser();
@@ -174,7 +186,8 @@ public class EmailSender {
         sendEmail("review/new.html", variables, "You got a review!", advertiser.getUsername());
     }
 
-    public void sendReservationConfirmationEmail(Reservation reservation) {
+    @Async
+    public void sendReservationConfirmationEmail(Reservation reservation, Photo photo) {
         Advertisement ad = reservation.getAdvertisement();
         String type = ad instanceof BoatAd ? "boat" :
                 ad instanceof ResortAd ? "resort" : "adventure";
@@ -190,17 +203,19 @@ public class EmailSender {
         variables.put("new_price", reservation.getCalculatedPrice().toString());
         variables.put("from_date", reservation.getStartDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
         variables.put("to_date", reservation.getEndDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
-        System.out.println(ad.getPhotos().get(0).getStoredFilename());
-        variables.put("image_data", "cid:" + ad.getPhotos().get(0).getStoredFilename());
+        System.out.println(photo.getStoredFilename());
+        variables.put("image_data", "cid:" + photo.getStoredFilename());
         variables.put("link", "http://localhost:3000/" + type + "/" + ad.getId());
 
         sendEmailWithImage("reservation/confirmation.html", variables,
                 "Reservation successful", reservation.getCustomer().getUsername(),
-                ad.getPhotos().get(0).getStoredFilename());
+                photo.getStoredFilename());
 
     }
 
-    public void sendDiscountNotificationEmails(QuickReservation quickReservation) {
+    @Async
+    public void sendDiscountNotificationEmails(QuickReservation quickReservation, Photo photo,
+                                               Collection<Customer> subscribers) {
         Advertisement ad = quickReservation.getAdvertisement();
         String type = ad instanceof BoatAd ? "boat" :
                 ad instanceof ResortAd ? "resort" : "adventure";
@@ -210,22 +225,24 @@ public class EmailSender {
         variables.put("currency", ad.getCurrency());
         variables.put("city", ad.getAddress().getCity());
         variables.put("description", ad.getDescription());
+        variables.put("capacity", quickReservation.getCapacity().toString());
         Locale l = new Locale("", ad.getAddress().getCountryCode());
         variables.put("country", l.getDisplayCountry());
         variables.put("old_price", quickReservation.getCalculatedOldPrice().toString());
         variables.put("new_price", quickReservation.getNewPrice().toString());
         variables.put("from_date", quickReservation.getStartDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
-        variables.put("to_date", quickReservation.getEndDateTime().format(DateTimeFormatter.ofPattern("dd.mm.yyyy. HH:mm")));
-        System.out.println(ad.getPhotos().get(0).getStoredFilename());
-        variables.put("image_data", "cid:" + ad.getPhotos().get(0).getStoredFilename());
+        variables.put("to_date", quickReservation.getEndDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
+        System.out.println(photo.getStoredFilename());
+        variables.put("image_data", "cid:" + photo.getStoredFilename());
         variables.put("link", "http://localhost:3000/" + type + "/" + ad.getId());
-        
-        quickReservation.getAdvertisement().getSubscribers().forEach(subscriber -> {
-            sendEmailWithImage("subscription/newDiscount.html", variables, quickReservation.getAdvertisement().getTitle() + " is on discount now!", subscriber.getUsername(), ad.getPhotos().get(0).getStoredFilename());
+
+        subscribers.forEach(subscriber -> {
+            sendEmailWithImage("subscription/newDiscount.html",
+                    variables, quickReservation.getAdvertisement().getTitle() + " is on discount now!",
+                    subscriber.getUsername(), photo.getStoredFilename());
         });
     }
 
-    @Async
     public void sendEmailWithImage(String templateFilename, HashMap<String, String> variables, String subject, String sendTo, String fileName) {
         try {
             Resource resource = photoService.getResource(fileName);
@@ -244,7 +261,6 @@ public class EmailSender {
         }
     }
 
-    @Async
     public void sendEmail(String templateFilename, HashMap<String, String> variables, String subject, String sendTo) {
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();

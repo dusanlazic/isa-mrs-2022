@@ -245,6 +245,8 @@ public class ReservationService {
             newSo.setOption(selectedOption.getOption());
             return newSo;
         }).collect(Collectors.toSet()));
+
+        emailSender.sendReservationConfirmationEmail(reservation);
         reservationRepository.save(reservation);
         quickReservationRepository.save(quickReservation);
     }
@@ -308,6 +310,8 @@ public class ReservationService {
         reservation.setSelectedOptions(generateSelectedOptions(dto, advertisement));
         reservation.setCalculatedPrice(calculateReservationPrice(dto, advertisement, customer));
         reservation.setAttendees(dto.getAttendees());
+
+        emailSender.sendReservationConfirmationEmail(reservation);
         reservationRepository.save(reservation);
     }
 
@@ -578,6 +582,7 @@ public class ReservationService {
         reservation.setSelectedOptions(generateSelectedOptions(modelMapper.map(dto, ReservationCreationDTO.class), advertisement));
         newReservation.setCalculatedPrice(calculateReservationPrice(modelMapper.map(dto, ReservationCreationDTO.class), advertisement, reservation.getCustomer()));
 
+        emailSender.sendReservationConfirmationEmail(newReservation);
         reservationRepository.save(newReservation);
     }
 }

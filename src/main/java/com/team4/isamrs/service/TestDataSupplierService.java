@@ -156,7 +156,7 @@ public class TestDataSupplierService {
         customer.getAuthorities().add(roleRepository.findByName("ROLE_CUSTOMER").get());
         customer.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
         customer.setPhoneNumber("4369911628747");
-        customer.setPenalties(6);
+        customer.setPenalties(0);
         customer.setPoints(110);
         userRepository.save(customer);
     }

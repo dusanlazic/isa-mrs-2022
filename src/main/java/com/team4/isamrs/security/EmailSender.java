@@ -6,6 +6,7 @@ import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.advertisement.ResortAd;
 import com.team4.isamrs.model.complaint.Complaint;
 import com.team4.isamrs.model.reservation.QuickReservation;
+import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.reservation.ReservationReport;
 import com.team4.isamrs.model.review.Review;
 import com.team4.isamrs.model.user.*;
@@ -171,6 +172,32 @@ public class EmailSender {
         variables.put("total_rating", totalRating.toString());
 
         sendEmail("review/new.html", variables, "You got a review!", advertiser.getUsername());
+    }
+
+    public void sendReservationConfirmationEmail(Reservation reservation) {
+        Advertisement ad = reservation.getAdvertisement();
+        String type = ad instanceof BoatAd ? "boat" :
+                ad instanceof ResortAd ? "resort" : "adventure";
+
+        HashMap<String, String> variables = new HashMap<>();
+        variables.put("title", ad.getTitle());
+        variables.put("currency", ad.getCurrency());
+        variables.put("city", ad.getAddress().getCity());
+        variables.put("description", ad.getDescription());
+        variables.put("attendees", reservation.getAttendees().toString());
+        Locale l = new Locale("", ad.getAddress().getCountryCode());
+        variables.put("country", l.getDisplayCountry());
+        variables.put("new_price", reservation.getCalculatedPrice().toString());
+        variables.put("from_date", reservation.getStartDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
+        variables.put("to_date", reservation.getEndDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
+        System.out.println(ad.getPhotos().get(0).getStoredFilename());
+        variables.put("image_data", "cid:" + ad.getPhotos().get(0).getStoredFilename());
+        variables.put("link", "http://localhost:3000/" + type + "/" + ad.getId());
+
+        sendEmailWithImage("reservation/confirmation.html", variables,
+                "Reservation successful", reservation.getCustomer().getUsername(),
+                ad.getPhotos().get(0).getStoredFilename());
+
     }
 
     public void sendDiscountNotificationEmails(QuickReservation quickReservation) {

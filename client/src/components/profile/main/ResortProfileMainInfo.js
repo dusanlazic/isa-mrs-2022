@@ -2,24 +2,18 @@ import { useEffect, useState } from "react"
 import { useNavigate } from 'react-router-dom';
 import { get } from "../../../adapters/xhr";
 import { Link } from "react-router-dom";
+import { Icon } from "@iconify/react";
 
 
 const ResortProfileMainInfo = ({ data, advertisementId }) => {
 	let [showMore, setShowMore] = useState(false);
 	let description = data.description;
-	const [rating, setRating] = useState(null);
 	const [showEditBtn, setShowEditBtn] = useState(false);
 	const navigate = useNavigate();
 
 	const redirectToEdit = () => {
 		navigate(`/resort/${advertisementId}/edit`);
 	}
-
-	useEffect(() => {
-		get(`/api/ads/${data.id}/rating`).then((response) => {
-			setRating(response.data);
-		});
-	}, [])
 
 	useEffect(() => {
 		get(`/api/account/whoami`).then((response) => {
@@ -49,9 +43,12 @@ const ResortProfileMainInfo = ({ data, advertisementId }) => {
                 {data.advertiser.firstName} {data.advertiser.lastName}
               </p>
             </Link>
-            <div className="block">
-              {rating} <span className="text-yellow-500 text-xl">&#9733;</span>
-            </div>
+            { data.averageRating !== null &&
+              <div className="flex justify-center gap-x-1">
+                <Icon className='text-green-700 my-auto' icon="tabler:star" inline={true} />
+                <div className="my-auto pt-0.5">{data.averageRating}</div>
+              </div>
+            }
 					</div>
 				</div>
 
@@ -61,9 +58,12 @@ const ResortProfileMainInfo = ({ data, advertisementId }) => {
               {data.advertiser.firstName} {data.advertiser.lastName}
             </p>
           </Link>
-          <div className="block">
-					  {rating} <span className="text-yellow-500 text-xl">&#9733;</span>
-          </div>
+          { data.averageRating !== null &&
+            <div className="flex gap-x-1">
+              <Icon className='text-green-700 my-auto w-4 h-4' icon="tabler:star" inline={true} />
+              <div className="my-auto pt-0.5">{data.averageRating}</div>
+            </div>
+          }
 				</div>
 
 				{/* Description */}

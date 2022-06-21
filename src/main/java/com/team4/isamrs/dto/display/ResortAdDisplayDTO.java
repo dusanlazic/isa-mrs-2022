@@ -31,4 +31,5 @@ public class ResortAdDisplayDTO implements DisplayDTO {
     private LocalTime checkOutTime;
     @JsonFormat(pattern="HH:mm")
     private LocalTime checkInTime;
+    private Double averageRating;
 }

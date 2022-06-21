@@ -1,19 +1,12 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom";
-import { get, del } from "../../../adapters/xhr";
+import { get } from "../../../adapters/xhr";
+import { Icon } from "@iconify/react";
 
 const AdventureProfileMainInfo = ({ data, advertisementId }) => {
 	let [showMore, setShowMore] = useState(false);
 	let description = data.description;
-	const [rating, setRating] = useState(null);
 	const [showEditBtn, setShowEditBtn] = useState(false);
-
-
-	useEffect(() => {
-		get(`/api/ads/${advertisementId}/rating`).then((response) => {
-			setRating(response.data);
-		});
-	}, [])
 
 	useEffect(() => {
 		get(`/api/account/whoami`).then((response) => {
@@ -45,9 +38,12 @@ const AdventureProfileMainInfo = ({ data, advertisementId }) => {
                 {data.advertiser.firstName} {data.advertiser.lastName}
               </p>
             </Link>
-            <div className="block">
-              {rating} <span className="text-yellow-500 text-xl">&#9733;</span>
-            </div>
+            { data.averageRating !== null &&
+              <div className="flex justify-center gap-x-1">
+                <Icon className='text-green-700 my-auto' icon="tabler:star" inline={true} />
+                <div className="my-auto pt-0.5">{data.averageRating}</div>
+              </div>
+            }
 					</div>
 				</div>
 
@@ -57,9 +53,12 @@ const AdventureProfileMainInfo = ({ data, advertisementId }) => {
               {data.advertiser.firstName} {data.advertiser.lastName}
             </p>
           </Link>
-          <div className="block">
-					  {rating} <span className="text-yellow-500 text-xl">&#9733;</span>
-          </div>
+          { data.averageRating !== null &&
+            <div className="flex gap-x-1">
+              <Icon className='text-green-700 my-auto w-4 h-4' icon="tabler:star" inline={true} />
+              <div className="my-auto pt-0.5">{data.averageRating}</div>
+            </div>
+          }
 				</div>
 
 				{/* Description */}

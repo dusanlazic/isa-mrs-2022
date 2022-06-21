@@ -13,4 +13,5 @@ public class AdventureAdSimpleDisplayDTO {
     private String currency;
     private BigDecimal pricePerPerson;
     private AddressSimpleDisplayDTO address;
+    private Double averageRating;
 }

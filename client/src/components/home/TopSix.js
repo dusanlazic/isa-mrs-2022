@@ -93,10 +93,12 @@ const TopSix = () => {
               className="h-32 sm:h-40 w-full mx-auto object-cover rounded-lg"/>
             </Link>
 
-            <div className="flex text-xs mt-2">
-              <Icon className='text-green-700 my-auto' icon="tabler:star" inline={true} />
-              <div className="ml-1 pt-0.5">4.75 (254)</div>
-            </div>
+            { 
+              <div className="flex text-xs mt-2">
+                <Icon className='text-green-700 my-auto' icon="tabler:star" inline={true} />
+                <div className="ml-1 pt-0.5">{entity.averageRating ? entity.averageRating : '-'}</div>
+              </div>
+            }
 
             <div className="text-sm mt-0.5">
               <Link to={`/${current.substring(0, current.length - 1)}/${entity.id}`}>

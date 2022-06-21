@@ -13,4 +13,5 @@ public class BoatAdSimpleDisplayDTO {
     private String currency;
     private BigDecimal pricePerDay;
     private AddressSimpleDisplayDTO address;
+    private Double averageRating;
 }

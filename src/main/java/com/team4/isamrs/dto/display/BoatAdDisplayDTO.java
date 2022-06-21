@@ -39,4 +39,5 @@ public class BoatAdDisplayDTO implements DisplayDTO {
     private Integer capacity;
     private BigDecimal cancellationFee;
     private BigDecimal pricePerDay;
+    private Double averageRating;
 }

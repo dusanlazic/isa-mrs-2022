@@ -27,4 +27,5 @@ public class AdventureAdDisplayDTO implements DisplayDTO {
     private List<OptionDisplayDTO> options;
     private Set<FishingEquipmentDisplayDTO> fishingEquipment;
     private BigDecimal pricePerPerson;
+    private Double averageRating;
 }

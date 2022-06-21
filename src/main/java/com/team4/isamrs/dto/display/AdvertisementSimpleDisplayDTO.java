@@ -12,4 +12,5 @@ public class AdvertisementSimpleDisplayDTO {
     private AddressSimpleDisplayDTO address;
     private SessionDisplayDTO advertiser;
     private String advertisementType;
+    private Double averageRating;
 }

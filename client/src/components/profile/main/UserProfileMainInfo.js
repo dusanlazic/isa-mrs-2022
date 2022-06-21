@@ -35,7 +35,7 @@ const UserProfileMainInfo = ({data}) => {
 
           { data.penalties !== null && data.penalties > 0 &&
             <div className={`hidden md:block -mt-1 text-sm w-32 rounded-lg select-none font-bold text-black
-            ${ data.penalties > 2 ? 'bg-black text-danger-red' : data.penalties == 1 ? 'bg-yellow-500' : 'bg-orange-400'}`}>
+            ${ data.penalties > 2 ? 'bg-black text-danger-red' : data.penalties === 1 ? 'bg-yellow-500' : 'bg-orange-400'}`}>
               {data.penalties} {data.penalties !== null && data.penalties === 1 ? 'penalty' : 'penalties'}
             </div>
           }

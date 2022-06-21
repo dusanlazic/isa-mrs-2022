@@ -22,7 +22,7 @@ const EntityCard = ({entity, entityType}) => {
 
         <div className="flex text-xs mt-2">
           <Icon className='text-green-700 my-auto' icon="tabler:star" inline={true} />
-          <div className="ml-1 pt-0.5">4.75 (254)</div>
+          <div className="ml-1">{entity.averageRating ? entity.averageRating : '-'}</div>
         </div>
 
         <div className="text-sm font-medium text-raisin-black">

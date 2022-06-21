@@ -14,10 +14,7 @@ import com.team4.isamrs.model.enumeration.AccountType;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.*;
-import com.team4.isamrs.repository.FishingEquipmentRepository;
-import com.team4.isamrs.repository.NavigationalEquipmentRepository;
-import com.team4.isamrs.repository.PhotoRepository;
-import com.team4.isamrs.repository.TagRepository;
+import com.team4.isamrs.repository.*;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +32,9 @@ public class DomainMapper {
 
     @Autowired
     private PhotoRepository photoRepository;
+
+    @Autowired
+    private AdvertisementRepository advertisementRepository;
 
     @Autowired
     private FishingEquipmentRepository fishingEquipmentRepository;
@@ -112,6 +112,11 @@ public class DomainMapper {
             AdventureAd source = context.getSource();
             AdventureAdDisplayDTO destination = context.getDestination();
 
+            Optional<Double> averageRating = advertisementRepository.findAverageRatingForAdvertisement(source);
+            if (averageRating.isPresent())
+                destination.setAverageRating(Math.round(averageRating.get() * 100.0) / 100.0);
+            else
+                destination.setAverageRating(null);
             destination.setTags(source.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
 
             return destination;
@@ -144,6 +149,11 @@ public class DomainMapper {
             BoatAd source = context.getSource();
             BoatAdDisplayDTO destination = context.getDestination();
 
+            Optional<Double> averageRating = advertisementRepository.findAverageRatingForAdvertisement(source);
+            if (averageRating.isPresent())
+                destination.setAverageRating(Math.round(averageRating.get() * 100.0) / 100.0);
+            else
+                destination.setAverageRating(null);
             destination.setTags(source.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
 
             return destination;
@@ -209,6 +219,11 @@ public class DomainMapper {
             ResortAd source = context.getSource();
             ResortAdDisplayDTO destination = context.getDestination();
 
+            Optional<Double> averageRating = advertisementRepository.findAverageRatingForAdvertisement(source);
+            if (averageRating.isPresent())
+                destination.setAverageRating(Math.round(averageRating.get() * 100.0) / 100.0);
+            else
+                destination.setAverageRating(null);
             destination.setTags(source.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
             destination.setBedCountPerRoom(Arrays.stream(source.getNumberOfBeds().split(",")).map(Integer::parseInt).collect(Collectors.toList()));
 
@@ -219,6 +234,11 @@ public class DomainMapper {
             ResortAd source = context.getSource();
             ResortAdSimpleDisplayDTO destination = context.getDestination();
 
+            Optional<Double> averageRating = advertisementRepository.findAverageRatingForAdvertisement(source);
+            if (averageRating.isPresent())
+                destination.setAverageRating(Math.round(averageRating.get() * 100.0) / 100.0);
+            else
+                destination.setAverageRating(null);
             destination.setPhoto(source.getPhotos().isEmpty() ?
                     null :
                     modelMapper.map(source.getPhotos().stream().findFirst().orElse(null),
@@ -231,6 +251,11 @@ public class DomainMapper {
             BoatAd source = context.getSource();
             BoatAdSimpleDisplayDTO destination = context.getDestination();
 
+            Optional<Double> averageRating = advertisementRepository.findAverageRatingForAdvertisement(source);
+            if (averageRating.isPresent())
+                destination.setAverageRating(Math.round(averageRating.get() * 100.0) / 100.0);
+            else
+                destination.setAverageRating(null);
             destination.setPhoto(source.getPhotos().isEmpty() ?
                     null :
                     modelMapper.map(source.getPhotos().stream().findFirst().orElse(null),
@@ -243,6 +268,11 @@ public class DomainMapper {
             AdventureAd source = context.getSource();
             AdventureAdSimpleDisplayDTO destination = context.getDestination();
 
+            Optional<Double> averageRating = advertisementRepository.findAverageRatingForAdvertisement(source);
+            if (averageRating.isPresent())
+                destination.setAverageRating(Math.round(averageRating.get() * 100.0) / 100.0);
+            else
+                destination.setAverageRating(null);
             destination.setPhoto(source.getPhotos().isEmpty() ?
                     null :
                     modelMapper.map(source.getPhotos().stream().findFirst().orElse(null),
@@ -255,6 +285,12 @@ public class DomainMapper {
             ResortAd source = context.getSource();
             AdvertisementSimpleDisplayDTO destination = context.getDestination();
             destination.setAdvertisementType("resort");
+
+            Optional<Double> averageRating = advertisementRepository.findAverageRatingForAdvertisement(source);
+            if (averageRating.isPresent())
+                destination.setAverageRating(Math.round(averageRating.get() * 100.0) / 100.0);
+            else
+                destination.setAverageRating(null);
             destination.setPhoto(source.getPhotos().isEmpty() ?
                     null :
                     modelMapper.map(source.getPhotos().stream().findFirst().orElse(null),
@@ -267,6 +303,12 @@ public class DomainMapper {
             BoatAd source = context.getSource();
             AdvertisementSimpleDisplayDTO destination = context.getDestination();
             destination.setAdvertisementType("boat");
+
+            Optional<Double> averageRating = advertisementRepository.findAverageRatingForAdvertisement(source);
+            if (averageRating.isPresent())
+                destination.setAverageRating(Math.round(averageRating.get() * 100.0) / 100.0);
+            else
+                destination.setAverageRating(null);
             destination.setPhoto(source.getPhotos().isEmpty() ?
                     null :
                     modelMapper.map(source.getPhotos().stream().findFirst().orElse(null),
@@ -279,6 +321,12 @@ public class DomainMapper {
             AdventureAd source = context.getSource();
             AdvertisementSimpleDisplayDTO destination = context.getDestination();
             destination.setAdvertisementType("adventure");
+
+            Optional<Double> averageRating = advertisementRepository.findAverageRatingForAdvertisement(source);
+            if (averageRating.isPresent())
+                destination.setAverageRating(Math.round(averageRating.get() * 100.0) / 100.0);
+            else
+                destination.setAverageRating(null);
             destination.setPhoto(source.getPhotos().isEmpty() ?
                     null :
                     modelMapper.map(source.getPhotos().stream().findFirst().orElse(null),

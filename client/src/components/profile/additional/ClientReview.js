@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
 
 const ClientReview = ({review}) => {
-  console.log(review)
   let [showMore, setShowMore] = useState(false);
 
   const getPlaceholderImage = () => {

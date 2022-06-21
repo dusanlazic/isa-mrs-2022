@@ -33,7 +33,7 @@ const Navigation = () => {
   }
   return ( 
     <div className='flex justify-between py-4 px-4'>
-      <Link to="/"><img src='/images/logo-v1.png' alt='' className='h-10' /></Link>
+      <Link to="/"><img src='/images/logo-v2.png' alt='' className='h-10' /></Link>
       <div className='flex'>
         {!isSessionActive &&
           <div className='my-auto'>

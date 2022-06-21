@@ -32,6 +32,7 @@
     "yup": "^0.32.11"
   },
   "scripts": {
+    "dev": "react-scripts start",
     "start": "npm install && node --max_old_space_size=2560 node_modules/.bin/react-scripts start",
     "build": "node --max_old_space_size=2560 node_modules/.bin/react-scripts build",
     "test": "react-scripts test",

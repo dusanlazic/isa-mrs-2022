@@ -91,8 +91,9 @@ public class EmailService {
     public void sendRemovalApprovalEmail(RemovalRequest removalRequest) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", removalRequest.getUser().getFirstName());
+        variables.put("image_data", "cid:logo.png");
 
-        sendEmail("removal/approval.html", variables, "Your account has been DELETED", removalRequest.getUser().getUsername());
+        sendEmailWithImage("removal/approval.html", variables, "Your account has been DELETED", removalRequest.getUser().getUsername(), "logo.png");
     }
 
     @Async
@@ -100,8 +101,9 @@ public class EmailService {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", removalRequest.getUser().getFirstName());
         variables.put("reason", removalRequest.getRejectionReason());
+        variables.put("image_data", "cid:logo.png");
 
-        sendEmail("removal/rejection.html", variables, "Your request for account removal has been REJECTED", removalRequest.getUser().getUsername());
+        sendEmailWithImage("removal/rejection.html", variables, "Your request for account removal has been REJECTED", removalRequest.getUser().getUsername(), "logo.png");
     }
 
     @Async
@@ -245,7 +247,7 @@ public class EmailService {
         try {
             Resource resource = photoService.getResource(fileName);
             MimeMessage mimeMessage = emailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF_8");
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
             helper.setText(buildEmailFromTemplate(templateFilename, variables), true);
             helper.addInline(fileName, resource);
@@ -262,7 +264,7 @@ public class EmailService {
     public void sendEmail(String templateFilename, Map<String, String> variables, String subject, String sendTo) {
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF_8");
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
 
             helper.setText(buildEmailFromTemplate(templateFilename, variables), true);
             helper.setTo(sendTo);
@@ -277,7 +279,7 @@ public class EmailService {
 
     private String buildEmailFromTemplate(String filename, Map<String, String> variables) throws IOException {
         File file = templatesLocation.resolve(filename).toFile();
-        String message = FileUtils.readFileToString(file, "UTF_8");
+        String message = FileUtils.readFileToString(file, "UTF-8");
 
         String target;
         String value;

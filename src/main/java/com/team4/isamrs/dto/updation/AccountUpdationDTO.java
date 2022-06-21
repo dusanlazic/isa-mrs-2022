@@ -6,7 +6,6 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -30,7 +29,7 @@ public class AccountUpdationDTO {
     private String countryCode;
 
     @NotBlank
-    @Pattern(regexp = "[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}", message="Invalid phone number.")
+    @Pattern(regexp = "[+]?[(]?\\d{3}[)]?[-\\s.]?\\d{3}[-\\s.]?\\d{4,6}", message="Invalid phone number.")
     private String phoneNumber;
 
     private UUID photo;

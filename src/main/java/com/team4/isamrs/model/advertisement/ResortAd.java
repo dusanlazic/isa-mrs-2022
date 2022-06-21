@@ -6,7 +6,6 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.math.BigDecimal;
-import java.time.LocalTime;
 
 @Entity
 @Getter

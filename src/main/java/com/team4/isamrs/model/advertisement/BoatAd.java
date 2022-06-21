@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 

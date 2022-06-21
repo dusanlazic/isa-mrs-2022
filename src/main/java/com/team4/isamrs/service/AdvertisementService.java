@@ -12,22 +12,18 @@ import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
-import com.team4.isamrs.repository.AdvertisementRepository;
-import com.team4.isamrs.repository.CustomerRepository;
-import com.team4.isamrs.repository.OptionRepository;
-import com.team4.isamrs.repository.QuickReservationRepository;
-import com.team4.isamrs.repository.ReservationRepository;
-import org.apache.tomcat.jni.Local;
+import com.team4.isamrs.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,7 +93,7 @@ public class AdvertisementService {
         LocalDate endDate = LocalDate.of(Integer.parseInt(year), Month.valueOf(month).ordinal() + 1,
                 Month.valueOf(month).length(Integer.parseInt(year) % 4 == 0));
 
-        Set<LocalDate> unavailableDates = new HashSet<LocalDate>();
+        Set<LocalDate> unavailableDates = new HashSet<>();
         // if startDate and endDate are same, it still returns one date (start)
         startDate.datesUntil(endDate.plusDays(1)).forEach(date -> {
             if (!isWithinAvailabilityPeriod(advertisement, date)) unavailableDates.add(date);

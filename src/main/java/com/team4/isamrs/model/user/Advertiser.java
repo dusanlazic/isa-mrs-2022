@@ -17,7 +17,7 @@ public class Advertiser extends User {
     User that can have ads (resort owner/boat owner/fishing instructor)
      */
     @OneToMany(mappedBy = "advertiser", fetch = FetchType.LAZY)
-    private Set<Advertisement> ads = new HashSet<Advertisement>();
+    private Set<Advertisement> ads = new HashSet<>();
 
     @Column(name = "points", nullable = false)
     private Integer points;

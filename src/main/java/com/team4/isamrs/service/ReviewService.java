@@ -12,7 +12,6 @@ import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.repository.AdvertisementRepository;
 import com.team4.isamrs.repository.ReservationRepository;
 import com.team4.isamrs.repository.ReviewRepository;
-import com.team4.isamrs.security.EmailSender;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -35,7 +34,7 @@ public class ReviewService {
     private ReservationRepository reservationRepository;
 
     @Autowired
-    private EmailSender emailSender;
+    private EmailService emailService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -71,7 +70,7 @@ public class ReviewService {
 
         if (dto.getApprove()) {
             review.setApprovalStatus(ApprovalStatus.APPROVED);
-            emailSender.sendNewReviewEmail(review, 4.5);
+            emailService.sendNewReviewEmail(review, 4.5);
         } else {
             review.setApprovalStatus(ApprovalStatus.REJECTED);
         }

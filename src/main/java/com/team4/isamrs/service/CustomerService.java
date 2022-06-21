@@ -6,7 +6,6 @@ import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.advertisement.ResortAd;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
-import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.repository.*;
 import org.hibernate.Hibernate;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Service

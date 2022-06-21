@@ -29,5 +29,6 @@ public class Photo {
     private User uploader;
 
     public Photo() {
+        // Empty constructor required for @AllArgsConstructor
     }
 }

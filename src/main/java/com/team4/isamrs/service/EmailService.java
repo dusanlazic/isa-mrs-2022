@@ -1,4 +1,4 @@
-package com.team4.isamrs.security;
+package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.updation.ComplaintResponseDTO;
 import com.team4.isamrs.model.advertisement.Advertisement;
@@ -11,15 +11,12 @@ import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.reservation.ReservationReport;
 import com.team4.isamrs.model.review.Review;
 import com.team4.isamrs.model.user.*;
-import com.team4.isamrs.repository.ReservationRepository;
-import com.team4.isamrs.service.PhotoService;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -32,13 +29,16 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
-public class EmailSender {
+public class EmailService {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(EmailSender.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
 
     private final JavaMailSender emailSender;
 
@@ -205,7 +205,6 @@ public class EmailSender {
         variables.put("new_price", reservation.getCalculatedPrice().toString());
         variables.put("from_date", reservation.getStartDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
         variables.put("to_date", reservation.getEndDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
-        System.out.println(photo.getStoredFilename());
         variables.put("image_data", "cid:" + photo.getStoredFilename());
         variables.put("link", "http://localhost:3000/" + type + "/" + ad.getId());
 
@@ -234,22 +233,19 @@ public class EmailSender {
         variables.put("new_price", quickReservation.getNewPrice().toString());
         variables.put("from_date", quickReservation.getStartDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
         variables.put("to_date", quickReservation.getEndDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
-        System.out.println(photo.getStoredFilename());
         variables.put("image_data", "cid:" + photo.getStoredFilename());
         variables.put("link", "http://localhost:3000/" + type + "/" + ad.getId());
 
-        subscribers.forEach(subscriber -> {
-            sendEmailWithImage("subscription/newDiscount.html",
-                    variables, quickReservation.getAdvertisement().getTitle() + " is on discount now!",
-                    subscriber.getUsername(), photo.getStoredFilename());
-        });
+        subscribers.forEach(subscriber -> sendEmailWithImage("subscription/newDiscount.html",
+                variables, quickReservation.getAdvertisement().getTitle() + " is on discount now!",
+                subscriber.getUsername(), photo.getStoredFilename()));
     }
 
-    public void sendEmailWithImage(String templateFilename, HashMap<String, String> variables, String subject, String sendTo, String fileName) {
+    public void sendEmailWithImage(String templateFilename, Map<String, String> variables, String subject, String sendTo, String fileName) {
         try {
             Resource resource = photoService.getResource(fileName);
             MimeMessage mimeMessage = emailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF_8");
 
             helper.setText(buildEmailFromTemplate(templateFilename, variables), true);
             helper.addInline(fileName, resource);
@@ -263,10 +259,10 @@ public class EmailSender {
         }
     }
 
-    public void sendEmail(String templateFilename, HashMap<String, String> variables, String subject, String sendTo) {
+    public void sendEmail(String templateFilename, Map<String, String> variables, String subject, String sendTo) {
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF_8");
 
             helper.setText(buildEmailFromTemplate(templateFilename, variables), true);
             helper.setTo(sendTo);
@@ -279,11 +275,13 @@ public class EmailSender {
         }
     }
 
-    private String buildEmailFromTemplate(String filename, HashMap<String, String> variables) throws IOException {
+    private String buildEmailFromTemplate(String filename, Map<String, String> variables) throws IOException {
         File file = templatesLocation.resolve(filename).toFile();
-        String message = FileUtils.readFileToString(file, "UTF-8");
+        String message = FileUtils.readFileToString(file, "UTF_8");
 
-        String target, value;
+        String target;
+        String value;
+
         for (Map.Entry<String, String> entry : variables.entrySet()) {
             target = "\\{\\{ " + entry.getKey() + " \\}\\}";
             value = entry.getValue();

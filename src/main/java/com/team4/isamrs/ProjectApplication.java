@@ -24,7 +24,7 @@ public class ProjectApplication {
 	CommandLineRunner init(PhotoService photoService, AccountService accountService,
 						   TestDataSupplierService testDataSupplierService, LoyaltyProgramService loyaltyProgramService,
 						   GlobalSettingsService globalSettingsService) {
-		return (args) -> {
+		return args -> {
 			photoService.init();
 			accountService.initializeRoles();
 			loyaltyProgramService.init();

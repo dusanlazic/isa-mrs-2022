@@ -26,9 +26,9 @@ public class BoatAdDisplayDTO implements DisplayDTO {
     private List<PhotoBriefDisplayDTO> photos;
     private Set<OptionDisplayDTO> options;
     @JsonFormat(pattern="HH:mm")
-    private LocalTime CheckOutTime;
+    private LocalTime checkOutTime;
     @JsonFormat(pattern="HH:mm")
-    private LocalTime CheckInTime;
+    private LocalTime checkInTime;
     private String boatType;
     private String boatLength;
     private String engineNumber;

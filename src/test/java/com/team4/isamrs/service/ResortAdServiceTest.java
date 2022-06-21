@@ -2,10 +2,12 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.constants.ResortAdConstants;
 import com.team4.isamrs.dto.creation.ResortAdCreationDTO;
+import com.team4.isamrs.dto.creation.ReviewCreationDTO;
 import com.team4.isamrs.dto.display.ResortAdDisplayDTO;
 import com.team4.isamrs.dto.display.ResortAdSimpleDisplayDTO;
 import com.team4.isamrs.dto.updation.ResortAdUpdationDTO;
 import com.team4.isamrs.model.advertisement.ResortAd;
+import com.team4.isamrs.model.review.Review;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.ReservationRepository;
 import com.team4.isamrs.repository.ResortAdRepository;
@@ -117,6 +119,21 @@ public class ResortAdServiceTest {
         verify(resortAdRepositoryMock, times(1))
                 .search(where, guests);
         verifyNoMoreInteractions(resortAdRepositoryMock);
+    }
+
+    @Test
+    @Transactional
+    public void testCreate() {
+
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.isAuthenticated()).thenReturn(true);
+        when(authentication.getPrincipal()).thenReturn(advertiserMock);
+
+        when(resortAdRepositoryMock.save(any())).thenReturn(resortAdMock);
+
+        ResortAd savedResortAd = resortAdService.create(new ResortAdCreationDTO(), authentication);
+
+        assertEquals(resortAdMock, savedResortAd);
     }
 
     @Test(expected = NoSuchElementException.class)

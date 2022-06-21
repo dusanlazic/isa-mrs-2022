@@ -25,18 +25,23 @@ const UserProfileMainInfo = ({data}) => {
         <div>
           <div className="block md:flex w-full justify-between text-center md:text-left">
             <h1 className="text-3xl md:text-2xl xl:text-3xl mt-4 mb-1 lg:mb-2 md:mt-1 tracking-tight my-auto">{data.firstName} {data.lastName}</h1>
-            <div className="block md:hidden -mt-1 text-sm w-20 bg-yellow-400 rounded-xl select-none mx-auto mb-4">
-              Gold
-            </div>
             
+            { data.penalties !== null && data.penalties > 0 &&
+              <div className="block md:hidden -mt-1 text-sm w-32 rounded-lg select-none mx-auto mb-4 text-black">
+                {data.penalties} {data.penalties !== null && data.penalties === 1 ? 'penalty' : 'penalties'}
+              </div>
+            }
           </div>
 
-          <div className="hidden md:block -mt-1 text-sm w-20 bg-yellow-400 rounded-xl select-none">
-            Gold
-          </div>
+          { data.penalties !== null && data.penalties > 0 &&
+            <div className={`hidden md:block -mt-1 text-sm w-32 rounded-lg select-none font-bold text-black
+            ${ data.penalties > 2 ? 'bg-black text-danger-red' : data.penalties == 1 ? 'bg-yellow-500' : 'bg-orange-400'}`}>
+              {data.penalties} {data.penalties !== null && data.penalties === 1 ? 'penalty' : 'penalties'}
+            </div>
+          }
 
           {/* Basic info */}
-          <div className='flex justify-center md:justify-start mt-10 md:mt-4 '>
+          <div className='flex justify-center md:justify-start mt-10 md:mt-2 '>
             <div className="flex flex-col grid-cols-1 text-center md:text-left text-gray-600 gap-y-0.5">
               <div className='flex gap-x-2'>
                 <Icon className='my-auto text-2xl text-gray-500' icon="tabler:map-pin" inline={true} />

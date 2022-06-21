@@ -213,6 +213,11 @@ public class ReservationService {
             throw new QuickReservationInvalidException(
                     "The quick reservation is yet to become available for booking.");
         }
+        if (customer.getPenalties() >= 3) {
+            throw new TooManyPenaltiesException("Since the number of penalties you have received this month is " +
+                    customer.getPenalties() + ", you are prohibited from making reservations until the beginning " +
+                    "of next month.");
+        }
 
         if (reservationRepository.findByAdvertisementEqualsAndCustomerEqualsAndCancelledIsTrue(
                 quickReservation.getAdvertisement(), customer)
@@ -267,6 +272,12 @@ public class ReservationService {
         catch (PessimisticLockingFailureException e) {
             throw new ReservationConflictException("Another user is currently attempting to make a reservation" +
                     " for the same entity. Please try again in a few seconds.");
+        }
+
+        if (customer.getPenalties() >= 3) {
+            throw new TooManyPenaltiesException("Since the number of penalties you have received this month is " +
+                    customer.getPenalties() + ", you are prohibited from making reservations until the beginning " +
+                    "of next month.");
         }
 
         if (reservationRepository.findByAdvertisementEqualsAndCustomerEqualsAndCancelledIsTrue(advertisement, customer)

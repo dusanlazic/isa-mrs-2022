@@ -37,7 +37,8 @@ module.exports = {
         'whitish-gray': '#DBDBDB',
         'silver-accent': '#e2e6df',
         'baby-green-darker': '#cbeda4',
-        'gray-green': '#e9f2ef'
+        'gray-green': '#e9f2ef',
+        'danger-red': '#EA0B00',
       }
     },
   }

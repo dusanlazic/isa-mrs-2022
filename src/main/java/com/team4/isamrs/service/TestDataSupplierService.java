@@ -157,7 +157,6 @@ public class TestDataSupplierService {
         customer.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
         customer.setPhoneNumber("4369911628747");
         customer.setPoints(110);
-        customer.setPenalties(0);
         userRepository.save(customer);
     }
 

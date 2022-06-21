@@ -190,6 +190,14 @@ public class ControllerAdvisor {
                 HttpStatus.FORBIDDEN.value(),
                 "Incorrect current password.");
     }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(TooManyPenaltiesException.class)
+    public ExceptionResponseBody handleTooManyPenaltiesException(TooManyPenaltiesException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.FORBIDDEN.value(),
+                ex.getMessage());
+    }
     
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(ReservationsInUnavailabilityPeriodException.class)

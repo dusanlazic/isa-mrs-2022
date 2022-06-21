@@ -26,13 +26,9 @@ const Gallery = ({data}) => {
 
         <div className="relative first-letter:w-full h-120 carousel carousel-center rounded-md overflow-hidden">
           {data.photos.map((image) => 
-            // <img src={"/api/" + image.uri} alt="" key={image.uri}
-            // className="h-full rounded-md object-cover" />
-            
           <div className="carousel-item w-full">
             <img id={`item${data.photos.indexOf(image)}`} src={"/api/" + image.uri}
             className="w-full object-cover" alt="Tailwind CSS Carousel component" />
-
           </div>
           )}
         </div>
@@ -40,7 +36,6 @@ const Gallery = ({data}) => {
         <div className="flex justify-center w-full mt-4 gap-x-4">
           {data.photos.map((image) => 
             <a href={`#item${data.photos.indexOf(image)}`} onClick={() => setSelectedItem(data.photos.indexOf(image))}>
-              {/* <img src={"/api/" + image.uri} className="w-20 h-14 rounded-xl object-cover" alt="" /> */}
               <div className={`w-3 h-3 rounded-full border-2 border-raisin-black
               ${selectedItem === data.photos.indexOf(image) ? 'bg-raisin-black' : 'bg-white'}`}></div>
             </a>

@@ -245,7 +245,7 @@ public class EmailService {
         try {
             Resource resource = photoService.getResource(fileName);
             MimeMessage mimeMessage = emailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF_8");
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
             helper.setText(buildEmailFromTemplate(templateFilename, variables), true);
             helper.addInline(fileName, resource);
@@ -262,7 +262,7 @@ public class EmailService {
     public void sendEmail(String templateFilename, Map<String, String> variables, String subject, String sendTo) {
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF_8");
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
 
             helper.setText(buildEmailFromTemplate(templateFilename, variables), true);
             helper.setTo(sendTo);
@@ -277,7 +277,7 @@ public class EmailService {
 
     private String buildEmailFromTemplate(String filename, Map<String, String> variables) throws IOException {
         File file = templatesLocation.resolve(filename).toFile();
-        String message = FileUtils.readFileToString(file, "UTF_8");
+        String message = FileUtils.readFileToString(file, "UTF-8");
 
         String target;
         String value;

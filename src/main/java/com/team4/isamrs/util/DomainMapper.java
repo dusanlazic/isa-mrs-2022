@@ -404,7 +404,7 @@ public class DomainMapper {
             AccountDisplayDTO destination = context.getDestination();
 
             destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
-            destination.setAvatar(modelMapper.map(source.getAvatar(), PhotoBriefDisplayDTO.class));
+            destination.setAvatar(safeMapAvatar(source.getAvatar(), modelMapper));
             return destination;
         };
 
@@ -413,7 +413,7 @@ public class DomainMapper {
             AccountDisplayDTO destination = context.getDestination();
 
             destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
-            destination.setAvatar(modelMapper.map(source.getAvatar(), PhotoBriefDisplayDTO.class));
+            destination.setAvatar(safeMapAvatar(source.getAvatar(), modelMapper));
             return destination;
         };
 
@@ -422,7 +422,7 @@ public class DomainMapper {
             AccountDisplayDTO destination = context.getDestination();
 
             destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
-            destination.setAvatar(modelMapper.map(source.getAvatar(), PhotoBriefDisplayDTO.class));
+            destination.setAvatar(safeMapAvatar(source.getAvatar(), modelMapper));
             return destination;
         };
 
@@ -431,7 +431,7 @@ public class DomainMapper {
             AccountDisplayDTO destination = context.getDestination();
 
             destination.setAccountType(source.getAuthorities().stream().findFirst().get().getName().substring(5));
-            destination.setAvatar(modelMapper.map(source.getAvatar(), PhotoBriefDisplayDTO.class));
+            destination.setAvatar(safeMapAvatar(source.getAvatar(), modelMapper));
             return destination;
         };
 
@@ -447,7 +447,7 @@ public class DomainMapper {
         Converter<Customer, CustomerPublicDisplayDTO> customerToPublicDisplayDtoConverter = context -> {
             User source = context.getSource();
             CustomerPublicDisplayDTO destination = context.getDestination();
-            destination.setAvatar(modelMapper.map(source.getAvatar(), PhotoBriefDisplayDTO.class));
+            destination.setAvatar(safeMapAvatar(source.getAvatar(), modelMapper));
             return destination;
         };
 
@@ -529,5 +529,12 @@ public class DomainMapper {
             }
         });
         return newSet;
+    }
+
+    private PhotoBriefDisplayDTO safeMapAvatar(Photo photo, ModelMapper modelMapper) {
+        if (photo != null)
+            return modelMapper.map(photo, PhotoBriefDisplayDTO.class);
+
+        return new PhotoBriefDisplayDTO(null);
     }
 }

@@ -9,7 +9,7 @@ const AdvertisementReview = ({review}) => {
     <div className="block rounded-lg">
       <div className="flex">
         <Link to={`/${review.advertisement.advertisementType}/${review.advertisement.id}`}>
-          <img src={review.customer.avatar ? `/api/${review.customer.avatar.uri}` : '/images/fish_guy.jpg'}
+          <img src={review.customer.avatar ? `/api/${review.customer.avatar.uri}` : '/images/default.jpg'}
           alt="" className="flex-none w-14 h-14 object-cover rounded-lg" />
         </Link>
 

@@ -22,7 +22,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/account",
         produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "*")
 public class AccountController {
 
     @Autowired

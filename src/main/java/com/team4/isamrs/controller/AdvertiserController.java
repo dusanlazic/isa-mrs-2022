@@ -17,7 +17,6 @@ import java.util.Set;
 @RestController
 @RequestMapping(value = "/advertisers",
         produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "*")
 public class AdvertiserController {
 
     @Autowired

@@ -19,7 +19,6 @@ import java.util.Collection;
 @RestController
 @RequestMapping(value = "/customers",
         produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "*")
 public class CustomerController {
 
     @Autowired

@@ -26,7 +26,6 @@ import java.util.Collection;
 @RequestMapping(
         value = "/ads",
         produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "*")
 public class AdvertisementController {
 
     @Autowired

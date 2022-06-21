@@ -46,16 +46,28 @@ public class AdvertiserController {
     public Set<ReviewPublicDisplayDTO> getApprovedReviews(@PathVariable Long id) {
         return advertiserService.getApprovedReviews(id);
     }
-    
+
     @GetMapping(value = "/reservations")
     @PreAuthorize("hasRole('ADVERTISER')")
-    public Page<ReservationSimpleDisplayDTO> getReservations(Authentication auth, @RequestParam int page, @RequestParam String sorting) {
-        return advertiserService.getReservations(auth, PageRequest.of(page, 10, Sort.by(sorting)));
+    public Page<ReservationSimpleDisplayDTO> getReservations(Authentication auth, @RequestParam int page) {
+        return advertiserService.getReservations(auth, PageRequest.of(page, 10, Sort.by("startDateTime")));
+    }
+
+    @GetMapping(value = "/reservations/active")
+    @PreAuthorize("hasRole('ADVERTISER')")
+    public Page<ReservationSimpleDisplayDTO> getActveReservations(Authentication auth, @RequestParam int page) {
+        return advertiserService.getActveReservations(auth, PageRequest.of(page, 10, Sort.by("startDateTime")));
+    }
+
+    @GetMapping(value = "/reservations/pending-report")
+    @PreAuthorize("hasRole('ADVERTISER')")
+    public Page<ReservationSimpleDisplayDTO> getUnreportedReservations(Authentication auth, @RequestParam int page) {
+        return advertiserService.getUnreportedReservations(auth, PageRequest.of(page, 10, Sort.by("startDateTime")));
     }
 
     @GetMapping(value = "/advertisements")
     @PreAuthorize("hasRole('ADVERTISER')")
     public Page<AdvertisementSimpleDisplayDTO> getPaginatedAdvertisements(Authentication auth, @RequestParam int page, @RequestParam String sorting) {
-        return advertiserService.getPaginatedAdvertisements(auth, PageRequest.of(page, 12, Sort.by(sorting).descending()));
+        return advertiserService.getPaginatedAdvertisements(auth, PageRequest.of(page, 12, Sort.by("title").descending()));
     }
 }

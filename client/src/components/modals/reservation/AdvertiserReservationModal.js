@@ -127,7 +127,7 @@ const AdvertiserReservationModal = ({data, close}) => {
     <div onClick={closeModal} className="fixed top-0 left-0 z-30 w-full min-h-screen h-screen text-center
     flex items-center justify-center bg-gray-900 bg-opacity-70 font-mono transition-opacity text-base">
       <div className="relative flex flex-col w-180 h-140 bg-white rounded-xl mx-auto overflow-hidden p-9">
-        <h1 className="text-xl mb-5 font-display">Make a reservation</h1>
+        <h1 className="text-xl mb-5 font-display">Renew a reservation</h1>
 
         <div className="flex gap-x-6">
           <ReservationDatePicker data={reservation.advertisement} type={reservation.type} 

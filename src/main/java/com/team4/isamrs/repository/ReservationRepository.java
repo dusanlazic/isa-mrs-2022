@@ -6,6 +6,7 @@ import com.team4.isamrs.model.reservation.ReservationReport;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -47,4 +48,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     @Query(value = "SELECT r FROM Reservation r WHERE r.cancelled = false AND r.id = :reservationId AND r.advertisement.id = :advertisementId AND r.advertisement.advertiser.id = :advertiserId AND r.customer.id = :custId AND r.startDateTime < :now AND r.endDateTime > :now")
     Optional<Reservation> findByAdvertisementIdAndAdvertiserIdAndClientIdAndDate(@Param("reservationId") Long reservationId, @Param("advertisementId") Long advertisementId, @Param("advertiserId") Long advertiserId, @Param("custId") Long customerId, @Param("now") LocalDateTime now);
+
+    @Query(value = "SELECT r FROM Reservation r WHERE r.cancelled = false AND r.advertisement.advertiser = ?1 AND r.startDateTime < ?2 AND r.endDateTime > ?2")
+    Page<Reservation> findActiveReservationsForAdvertiser(Advertiser advertiser, LocalDateTime now, Pageable pageable);
+
+    @Query(value = "SELECT r FROM Reservation r LEFT JOIN ReservationReport rep ON rep.reservation = r WHERE r.cancelled = false AND rep IS NULL AND r.advertisement.advertiser = ?1 AND r.endDateTime < ?2")
+    Page<Reservation> findReservationsForAdvertiserWithPendingReport(Advertiser advertiser, LocalDateTime now, Pageable pageable);
 }

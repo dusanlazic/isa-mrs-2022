@@ -410,7 +410,7 @@ public class TestDataSupplierService {
                 reports.add(report);
             }
         }
-/*
+
         // active
         for (int i = 0; i < 5; i++) {
             Reservation reservation = new Reservation();
@@ -439,7 +439,7 @@ public class TestDataSupplierService {
             reservation.setCancelled(false);
 
             reservations.add(reservation);
-        }*/
+        }
 
         reservationRepository.saveAll(reservations);
         reservationReportRepository.saveAll(reports);

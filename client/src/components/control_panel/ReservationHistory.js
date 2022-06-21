@@ -1,26 +1,21 @@
 import { useEffect, useState } from "react"
-import { useParams, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { get } from "../../adapters/xhr";
 import ReservationItem from "./ReservationItem";
 import ReactPaginate from "react-paginate";
 import AdvertiserReservationModal from "../modals/reservation/AdvertiserReservationModal";
 import AdvertiserReportModal from "../modals/report/AdvertiserReportModal";
 
-const ReservationHistory = () => {
+const ReservationHistory = ({ type }) => {
 
   const [reservations, setReservations] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
 
-  const [sorting, setSorting] = useState('startDateTime');
-  const [descending, setDescending] = useState(true);
-
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isRenewModalOpen, setIsRenewModalOpen] = useState(false);
   const [reservationToReport, setReservationToReport] = useState(null);
   const [reservationToRenew, setReservationToRenew] = useState(null);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     setReservations(null);
@@ -32,15 +27,20 @@ const ReservationHistory = () => {
 
   const fetchData = (resetPage = false) => {
     setCurrentPage(resetPage ? 0 : currentPage);
-    get(`/api/advertisers/reservations?page=${currentPage}&sorting=${sorting}`).then((response) => {
+    console.log(type)
+    var address = `/api/advertisers/reservations?page=${currentPage}`;
+    if (type === "pendingReport") {
+      address = `/api/advertisers/reservations/pending-report?page=${currentPage}`;
+    }
+    if (type === "activeReservations") {
+      address = `/api/advertisers/reservations/active?page=${currentPage}`;
+    }
+    get(address).then((response) => {
       setReservations(response.data.content);
       setTotalPages(response.data.totalPages);
     });
-  }
 
-  useEffect(() => {
-    fetchData(true);
-  }, [sorting, descending]);
+  }
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
@@ -50,17 +50,17 @@ const ReservationHistory = () => {
     return null;
   }
 
-  
+
   const initReport = reservation => {
     setReservationToReport(reservation);
     setIsReportModalOpen(true);
-  } 
-  
+  }
+
 
   const initRenew = reservation => {
     setReservationToRenew(reservation);
     setIsRenewModalOpen(true);
-  } 
+  }
 
   return (
     <div>
@@ -76,7 +76,6 @@ const ReservationHistory = () => {
               <ReservationItem reservation={reservation} renew={initRenew} report={initReport} />
             </div>
           )}
-
         </div>
       }
       <div className="mt-10 mb-4 h-10 w-full font-sans">
@@ -110,15 +109,15 @@ const ReservationHistory = () => {
           activeClassName="bg-white text-green-600 border border-slate-400 rounded-lg"
         />
       </div>
-    
-      { isReportModalOpen &&
-        <AdvertiserReportModal data={reservationToReport} 
-        close={() => setIsReportModalOpen(false)}/>
+
+      {isReportModalOpen &&
+        <AdvertiserReportModal data={reservationToReport}
+          close={() => setIsReportModalOpen(false)} />
       }
 
-      { isRenewModalOpen &&
-        <AdvertiserReservationModal data={reservationToRenew} 
-        close={() => setIsRenewModalOpen(false)}/>
+      {isRenewModalOpen &&
+        <AdvertiserReservationModal data={reservationToRenew}
+          close={() => setIsRenewModalOpen(false)} />
       }
     </div>
   );

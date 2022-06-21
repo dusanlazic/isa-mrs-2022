@@ -22,16 +22,18 @@ const getNewEntityPage = () => {
 
 const ControlPanel = ({}) => {
 
-	const [currentComponent, setCurrentComponent] = useState("reservations");
+	const [currentComponent, setCurrentComponent] = useState("myEntities");
 
   return (
     <div className="flex min-h-screen">
       <Sidebar currentComponent={currentComponent} setCurrentComponent={setCurrentComponent} />
       <div className="p-32 px-8 md:px-8 lg:px-20 xl:px-40 w-full font-display md:ml-80">
         {
-        currentComponent === "reservations" ? <ReservationHistory /> : 
         currentComponent === "newEntity" ? getNewEntityPage() : 
         currentComponent === "myEntities" ? <MyEntities /> : 
+        currentComponent === "reservations" ? <ReservationHistory key={1} type="all"/> :
+        currentComponent === "pendingReport" ? <ReservationHistory key={2} type="pendingReport"/> :
+        currentComponent === "activeReservations" ? <ReservationHistory key={3} type="activeReservations"/> : 
         <div></div>
         }
       </div>

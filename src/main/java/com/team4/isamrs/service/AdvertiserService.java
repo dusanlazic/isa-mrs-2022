@@ -6,13 +6,14 @@ import com.team4.isamrs.model.advertisement.AdventureAd;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.advertisement.BoatAd;
 import com.team4.isamrs.model.advertisement.ResortAd;
+import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.*;
-import org.apache.tika.utils.StringUtils;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -70,7 +71,24 @@ public class AdvertiserService {
     
     public Page<ReservationSimpleDisplayDTO> getReservations(Authentication auth, Pageable pageable) {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
-        return reservationRepository.findReservationsForAdvertiser(advertiser, pageable).map(reservation -> {
+        Page<Reservation> advertisements = reservationRepository.findReservationsForAdvertiser(advertiser, pageable);
+        return getDTOFromAdvertisementPages(advertisements);
+    }
+
+    public Page<ReservationSimpleDisplayDTO> getActveReservations(Authentication auth, PageRequest pageable) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        Page<Reservation> advertisements = reservationRepository.findActiveReservationsForAdvertiser(advertiser, LocalDateTime.now(), pageable);
+        return getDTOFromAdvertisementPages(advertisements);
+    }
+
+    public Page<ReservationSimpleDisplayDTO> getUnreportedReservations(Authentication auth, PageRequest pageable) {
+        Advertiser advertiser = (Advertiser) auth.getPrincipal();
+        Page<Reservation> advertisements = reservationRepository.findReservationsForAdvertiserWithPendingReport(advertiser, LocalDateTime.now(), pageable);
+        return getDTOFromAdvertisementPages(advertisements);
+    }
+
+    private Page<ReservationSimpleDisplayDTO> getDTOFromAdvertisementPages(Page<Reservation> advertisements) {
+        return advertisements.map(reservation -> {
             ReservationSimpleDisplayDTO dto = new ReservationSimpleDisplayDTO();
             dto.setCustomer(modelMapper.map(reservation.getCustomer(), CustomerSimpleDisplayDTO.class));
             dto.setStartDateTime(reservation.getStartDateTime());

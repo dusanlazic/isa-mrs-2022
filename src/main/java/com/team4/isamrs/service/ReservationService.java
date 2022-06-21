@@ -481,7 +481,7 @@ public class ReservationService {
             }
         }
         catch (PessimisticLockingFailureException e) {
-            throw new ReservationConflictException("Another user is currently attempting to make a reservation" +
+            throw new ReservationConflictException("Customer is currently attempting to make a reservation" +
                     " for the same entity. Please try again in a few seconds.");
         }
 

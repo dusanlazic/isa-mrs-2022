@@ -30,4 +30,9 @@ public interface ResortAdRepository  extends JpaRepository<ResortAd, Long> {
     @Query("SELECT r FROM ResortAd r WHERE r.id = ?1")
     @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "0")})
     Optional<ResortAd> lockGetById(Long id);
+
+    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Query("SELECT r FROM ResortAd r WHERE r.id = ?1 AND r.advertiser = ?2")
+    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "0")})
+    Optional<ResortAd> lockFindResortAdByIdAndAdvertiser(Long id, Advertiser advertiser);
 }

@@ -99,6 +99,19 @@ public class TestDataSupplierService {
         administrator.setPhoneNumber("0651337");
         userRepository.save(administrator);
 
+        UUID uuid = UUID.randomUUID();
+        String originalFilename = "logo.png";
+        String storedFilename = "logo.png";
+        Photo photo = new Photo(uuid, originalFilename, storedFilename, 1337L, administrator);
+        try {
+            Path source = Paths.get("uploads-test-data").resolve(originalFilename);
+            Path target = Paths.get("uploads").resolve(storedFilename);
+            Files.copy(source, target);
+            photoRepository.save(photo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Advertiser resortOwner = new Advertiser();
         resortOwner.setEnabled(true);
         resortOwner.setAddress("Kod mene kući BB");

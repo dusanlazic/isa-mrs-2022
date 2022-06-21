@@ -52,8 +52,9 @@ public class EmailSender {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", customer.getFirstName());
         variables.put("link", "http://localhost:3000/confirm-registration/" + token);
+        variables.put("image_data", "cid:logo.png");
 
-        sendEmail("registration/confirmation.html", variables, "Registration Confirmation", customer.getUsername());
+        sendEmailWithImage("registration/confirmation.html", variables, "Registration Confirmation", customer.getUsername(), "logo.png");
     }
 
     @Async
@@ -61,8 +62,9 @@ public class EmailSender {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", registrationRequest.getFirstName());
         variables.put("link", "http://localhost:3000/login");
+        variables.put("image_data", "cid:logo.png");
 
-        sendEmail("registration/approval.html", variables, "Your request has been APPROVED", registrationRequest.getUsername());
+        sendEmailWithImage("registration/approval.html", variables, "Your request has been APPROVED", registrationRequest.getUsername(), "logo.png");
     }
 
     @Async
@@ -70,8 +72,9 @@ public class EmailSender {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", registrationRequest.getFirstName());
         variables.put("reason", registrationRequest.getRejectionReason());
+        variables.put("image_data", "cid:logo.png");
 
-        sendEmail("registration/rejection.html", variables, "Your request has been REJECTED", registrationRequest.getUsername());
+        sendEmailWithImage("registration/rejection.html", variables, "Your request has been REJECTED", registrationRequest.getUsername(), "logo.png");
     }
 
     @Async
@@ -79,8 +82,9 @@ public class EmailSender {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", administrator.getFirstName());
         variables.put("link", "http://localhost:3000/login");
+        variables.put("image_data", "cid:logo.png");
 
-        sendEmail("registration/administrator.html", variables, "Activate your administrator account", administrator.getUsername());
+        sendEmailWithImage("registration/administrator.html", variables, "Activate your administrator account", administrator.getUsername(), "logo.png");
     }
 
     @Async

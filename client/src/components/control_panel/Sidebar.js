@@ -4,7 +4,7 @@ import { getSession } from "../../contexts";
 
 const getNewEntityName = () => {
   const session = getSession();
-  if (session.accountType === "FISHING_INSTRUCTOR_OWNER") {
+  if (session.accountType === "FISHING_INSTRUCTOR") {
     return "adventure";
   }
   else if (session.accountType === "BOAT_OWNER") {
@@ -17,7 +17,7 @@ const getNewEntityName = () => {
 
 const getMyEntityIcon = () => {
   const session = getSession();
-  if (session.accountType === "FISHING_INSTRUCTOR_OWNER") {
+  if (session.accountType === "FISHING_INSTRUCTOR") {
     return "tabler:fish";
   }
   else if (session.accountType === "BOAT_OWNER") {

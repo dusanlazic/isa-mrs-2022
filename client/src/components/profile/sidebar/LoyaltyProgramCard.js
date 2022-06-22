@@ -3,6 +3,10 @@ import { useState } from "react";
 const LoyaltyProgramCard = ({data}) => {
   const [percentage, setPercentage] = useState(((data.points - data.category.pointsLowerBound) / (data.category.pointsUpperBound - data.category.pointsLowerBound)) * 100);
 
+
+  if (data === null) 
+    return null;
+    
   return (
     <div className="block border border-gray-100 rounded-lg text-left
     shadow-sm py-3 px-5 tracking-wide">

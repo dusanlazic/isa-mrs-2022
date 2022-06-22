@@ -129,16 +129,17 @@ const CustomerReservationModal = ({data, close}) => {
   return ( 
     <div onClick={closeModal} className="fixed top-0 left-0 z-30 w-full min-h-screen h-screen text-center
     flex items-center justify-center bg-gray-900 bg-opacity-70 font-mono transition-opacity text-base">
-      <div className="relative flex flex-col w-180 h-140 bg-white rounded-xl mx-auto overflow-hidden p-9">
+      <div className="relative flex flex-col w-11/12 md:w-180 h-5/6 md:h-140 overflow-auto md:overflow-hidden 
+       bg-white rounded-xl mx-auto p-2 py-5 md:p-9 hidden-scrollbar">
         <h1 className="text-xl mb-5 font-display">Make a reservation</h1>
 
-        <div className="flex gap-x-6">
+        <div className="flex flex-col mx-auto md:mx-0 md:flex-row gap-x-6">
           <ReservationDatePicker data={data} type={advertisementType} 
           selectionRange={selectionRange} setSelectionRange={setSelectionRange}
           selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
           
 
-          <div className="block w-full text-left">
+          <div className="block w-full text-left mt-5 md:mt-0">
             {/* attendees */}
             <div>
               <label className="text-xs text-slate-500">Number of attendees (max {data.capacity}):</label>

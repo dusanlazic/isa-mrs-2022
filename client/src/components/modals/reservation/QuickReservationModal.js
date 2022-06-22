@@ -139,7 +139,8 @@ const QuickReservationModal = ({data, close}) => {
   return ( 
     <div onClick={closeMessageModal} className="fixed top-0 left-0 z-40 w-full min-h-screen h-screen text-center
     flex items-center justify-center bg-gray-900 bg-opacity-70 font-mono transition-opacity text-base">
-      <div className="relative flex flex-col w-180 h-150 bg-white rounded-xl mx-auto overflow-hidden p-9">
+      <div className="relative flex flex-col w-11/12 md:w-180 h-5/6 md:h-min overflow-auto md:overflow-hidden 
+       bg-white rounded-xl mx-auto p-2 py-5 md:p-9 hidden-scrollbar">
         <h1 className="text-xl mb-5 font-display">Make a reservation</h1>
 
         <div className="flex flex-col-2 mb-4 text-left">
@@ -170,7 +171,7 @@ const QuickReservationModal = ({data, close}) => {
             
         </div>
 
-        <div className="flex gap-x-6">
+        <div className="flex flex-col mx-auto md:mx-0 md:flex-row gap-x-6">
           <ReservationDatePicker data={data} type={advertisementType} 
           selectionRange={selectionRange} setSelectionRange={setSelectionRange}
           selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
@@ -197,7 +198,7 @@ const QuickReservationModal = ({data, close}) => {
 
             {/* options */}
             <div className="text-xs text-slate-500 mt-4 mb-2">Options:</div>
-            <div className="flex flex-col divide-y font-display h-68 overflow-auto">
+            <div className="flex flex-col divide-y font-display h-52 overflow-auto">
               {data.options.map(option => 
                 <div key={option.id} className="py-1">
                   {option.maxCount === 1 &&

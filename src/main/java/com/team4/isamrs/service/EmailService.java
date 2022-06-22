@@ -91,8 +91,9 @@ public class EmailService {
     public void sendRemovalApprovalEmail(RemovalRequest removalRequest) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", removalRequest.getUser().getFirstName());
+        variables.put("image_data", "cid:logo.png");
 
-        sendEmail("removal/approval.html", variables, "Your account has been DELETED", removalRequest.getUser().getUsername());
+        sendEmailWithImage("removal/approval.html", variables, "Your account has been DELETED", removalRequest.getUser().getUsername(), "logo.png");
     }
 
     @Async
@@ -100,8 +101,9 @@ public class EmailService {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", removalRequest.getUser().getFirstName());
         variables.put("reason", removalRequest.getRejectionReason());
+        variables.put("image_data", "cid:logo.png");
 
-        sendEmail("removal/rejection.html", variables, "Your request for account removal has been REJECTED", removalRequest.getUser().getUsername());
+        sendEmailWithImage("removal/rejection.html", variables, "Your request for account removal has been REJECTED", removalRequest.getUser().getUsername(), "logo.png");
     }
 
     @Async
@@ -172,7 +174,7 @@ public class EmailService {
     }
 
     @Async
-    public void sendNewReviewEmail(Review review, Double totalRating) {
+    public void sendNewReviewEmail(Review review, Integer totalRating) {
         Advertisement advertisement = review.getAdvertisement();
         Advertiser advertiser = advertisement.getAdvertiser();
         Customer customer = review.getCustomer();

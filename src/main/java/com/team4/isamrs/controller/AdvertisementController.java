@@ -6,6 +6,7 @@ import com.team4.isamrs.dto.creation.ReservationCreationDTO;
 import com.team4.isamrs.dto.creation.ReviewCreationDTO;
 import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
 import com.team4.isamrs.dto.display.QuickReservationSimpleDisplayDTO;
+import com.team4.isamrs.dto.display.ReportItemDisplayDTO;
 import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.service.AdvertisementService;
@@ -110,4 +111,21 @@ public class AdvertisementController {
     public Collection<QuickReservationSimpleDisplayDTO> getQuickReservations(@PathVariable Long id) {
         return reservationService.getQuickReservations(id);
     }
+
+    @GetMapping(value = "/{id}/yearly-report")
+    public Collection<ReportItemDisplayDTO> getYearlyReport(@PathVariable Long id) {
+        return advertisementService.getYearlyReport(id);
+    }
+
+    @GetMapping(value = "/{id}/monthly-report")
+    public Collection<ReportItemDisplayDTO> getMonthlyReport(@PathVariable Long id) {
+        return advertisementService.getMonthlyReport(id);
+    }
+
+    @GetMapping(value = "/{id}/weekly-report")
+    public Collection<ReportItemDisplayDTO> getWeeklyReport(@PathVariable Long id) {
+        return advertisementService.getWeeklyReport(id);
+    }
+
+
 }

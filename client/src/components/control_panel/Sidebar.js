@@ -77,8 +77,7 @@ const Sidebar = ({ currentComponent, setCurrentComponent }) => {
       { name: "newEntity", text: `New ${getNewEntityName()}`, icon: "tabler:new-section" },
       { name: "reservations", text: "Reservation history", icon: "tabler:list-search" },
       { name: "pendingReport", text: "Pending report" },
-      { name: "activeReservations", text: "Active reservations" },
-      { name: "reports", text: "Reports", icon: "tabler:clipboard-list" },
+      { name: "activeReservations", text: "Active reservations" }
     );  
   }
 

@@ -1,6 +1,7 @@
 package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.display.AverageRatingDisplayDTO;
+import com.team4.isamrs.dto.display.ReportItemDisplayDTO;
 import com.team4.isamrs.dto.display.ReviewPublicDisplayDTO;
 import com.team4.isamrs.dto.updation.AvailabilityPeriodUpdationDTO;
 import com.team4.isamrs.exception.IdenticalAvailabilityDatesException;
@@ -13,6 +14,7 @@ import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.repository.*;
+import org.apache.tomcat.jni.Local;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -21,9 +23,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.format.TextStyle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -208,5 +209,77 @@ public class AdvertisementService {
         advertisement.setAvailableAfter(dto.getAvailableAfter());
         advertisement.setAvailableUntil(dto.getAvailableUntil());
         advertisementRepository.save(advertisement);
+    }
+
+    public Collection<ReportItemDisplayDTO> getMonthlyReport(Long id) {
+        List<ReportItemDisplayDTO> res = new ArrayList<>();
+
+        LocalDateTime firstDate = LocalDateTime.now().withDayOfMonth(1);
+        LocalDateTime lastDate = LocalDateTime.now();
+
+        List<Reservation> reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate).stream().toList();
+        ReportItemDisplayDTO item = new ReportItemDisplayDTO();
+        item.setName(lastDate.getMonth().getDisplayName(TextStyle.FULL, Locale.UK));
+        item.setValue(reservations.size());
+        res.add(item);
+
+        for (int i = 0; i < 6; i++) {
+            lastDate = firstDate;
+            firstDate = firstDate.minusMonths(1);
+
+            reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate).stream().toList();
+            item = new ReportItemDisplayDTO();
+            item.setName(lastDate.getMonth().getDisplayName(TextStyle.FULL, Locale.UK));
+            item.setValue(reservations.size());
+            res.add(item);
+        }
+        return res;
+    }
+
+    public Collection<ReportItemDisplayDTO> getYearlyReport(Long id) {
+        List<ReportItemDisplayDTO> res = new ArrayList<>();
+
+        LocalDateTime firstDate = LocalDateTime.now().withDayOfYear(1);
+        LocalDateTime lastDate = LocalDateTime.now();
+
+        List<Reservation> reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate).stream().toList();
+        ReportItemDisplayDTO item = new ReportItemDisplayDTO();
+        item.setName(String.valueOf(lastDate.getYear()));
+        item.setValue(reservations.size());
+        res.add(item);
+
+        for (int i = 0; i < 6; i++) {
+            lastDate = firstDate;
+            firstDate = firstDate.minusYears(1);
+
+            reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate).stream().toList();
+            item = new ReportItemDisplayDTO();
+            item.setName(String.valueOf(lastDate.getYear()));
+            item.setValue(reservations.size());
+            res.add(item);
+        }
+        return res;
+    }
+
+    public Collection<ReportItemDisplayDTO> getWeeklyReport(Long id) {
+        List<ReportItemDisplayDTO> res = new ArrayList<>();
+
+        LocalDateTime lastDate = LocalDateTime.now();
+        LocalDateTime firstDate = LocalDateTime.now();
+
+        List<Reservation> reservations;
+        ReportItemDisplayDTO item;
+
+        for (int i = 0; i < 7; i++) {
+            lastDate = firstDate;
+            firstDate = firstDate.minusWeeks(1);
+
+            reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate).stream().toList();
+            item = new ReportItemDisplayDTO();
+            item.setName(lastDate.getMonth().getDisplayName(TextStyle.FULL, Locale.UK));
+            item.setValue(reservations.size());
+            res.add(item);
+        }
+        return res;
     }
 }

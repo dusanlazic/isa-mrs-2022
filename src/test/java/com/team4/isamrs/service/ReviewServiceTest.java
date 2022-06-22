@@ -100,6 +100,6 @@ public class ReviewServiceTest {
         reviewService.respondToReview(Long.valueOf("1"), new ReviewResponseDTO());
 
         when(reviewRepositoryMock.save(any())).thenReturn(reviewMock);
-        doNothing().when(emailServiceMock).sendNewReviewEmail(any(), any());
+        doNothing().when(emailServiceMock).sendNewReviewEmail(any(), any(), any(), any(), any());
     }
 }

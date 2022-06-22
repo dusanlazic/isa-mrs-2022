@@ -20,9 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CustomerControllerTest {
+public class AdvertiserControllerTest {
 
-    private static final String URL_PREFIX = "/customers";
+    private static final String URL_PREFIX = "/advertisers";
 
     private final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype());
@@ -37,29 +37,32 @@ public class CustomerControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
-
     @Test
-    public void testFindById() throws Exception {
-        mockMvc.perform(get(URL_PREFIX + "/" + CustomerConstants.DB_ID)).andExpect(status().isOk())
+    public void testGetAdvertiser() throws Exception {
+        mockMvc.perform(get(URL_PREFIX + "/" + AdvertiserConstants.DB_ID)).andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
-                .andExpect(jsonPath("$.id").value(CustomerConstants.DB_ID))
-                .andExpect(jsonPath("$.username").value(CustomerConstants.DB_USERNAME))
-                .andExpect(jsonPath("$.firstName").value(CustomerConstants.DB_FIRST_NAME))
-                .andExpect(jsonPath("$.lastName").value(CustomerConstants.DB_LAST_NAME))
-                .andExpect(jsonPath("$.city").value(CustomerConstants.DB_CITY))
-                .andExpect(jsonPath("$.countryCode").value(CustomerConstants.DB_COUNTRY_CODE))
-                .andExpect(jsonPath("$.address").value(CustomerConstants.DB_ADDRESS))
-                .andExpect(jsonPath("$.phoneNumber").value(CustomerConstants.DB_PHONE_NUMBER));
+                .andExpect(jsonPath("$.id").value(AdvertiserConstants.DB_ID))
+                .andExpect(jsonPath("$.username").value(AdvertiserConstants.DB_USERNAME))
+                .andExpect(jsonPath("$.firstName").value(AdvertiserConstants.DB_FIRST_NAME))
+                .andExpect(jsonPath("$.lastName").value(AdvertiserConstants.DB_LAST_NAME))
+                .andExpect(jsonPath("$.city").value(AdvertiserConstants.DB_CITY))
+                .andExpect(jsonPath("$.countryCode").value(AdvertiserConstants.DB_COUNTRY_CODE))
+                .andExpect(jsonPath("$.address").value(AdvertiserConstants.DB_ADDRESS))
+                .andExpect(jsonPath("$.phoneNumber").value(AdvertiserConstants.DB_PHONE_NUMBER));
     }
 
     @Test
-    public void testGetReviews() throws Exception {
-        mockMvc.perform(get(URL_PREFIX + "/" + CustomerConstants.DB_ID + "/reviews")).andExpect(status().isOk())
+    public void testGetAverageRating() throws Exception {
+        mockMvc.perform(get(URL_PREFIX + "/" + AdvertiserConstants.DB_ID + "/reviews/average"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType));
+    }
+
+    @Test
+    public void testGetApprovedReviews() throws Exception {
+        mockMvc.perform(get(URL_PREFIX + "/" + AdvertiserConstants.DB_ID + "/reviews"))
+                .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
-                .andExpect(jsonPath("$.[*].rating").value(hasItem(5)))
-                .andExpect(jsonPath("$.[*].comment").value(hasItem("you've got mail")))
                 .andExpect(jsonPath("$.[*].customer.firstName").value(hasItem(CustomerConstants.DB_FIRST_NAME)));
     }
-
-
 }

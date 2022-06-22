@@ -48,7 +48,7 @@ public class EmailService {
     public void sendRegistrationEmail(Customer customer, String token) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", customer.getFirstName());
-        variables.put("link", "http://localhost:3000/confirm-registration/" + token);
+        variables.put("link", "http://www.pecaj.ga/confirm-registration/" + token);
         variables.put("image_data", "cid:logo.png");
 
         sendEmailWithImage("registration/confirmation.html", variables, "Registration Confirmation", customer.getUsername(), new String[]{"logo.png"});
@@ -58,7 +58,7 @@ public class EmailService {
     public void sendRegistrationApprovalEmail(RegistrationRequest registrationRequest) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", registrationRequest.getFirstName());
-        variables.put("link", "http://localhost:3000/login");
+        variables.put("link", "http://www.pecaj.ga/login");
         variables.put("image_data", "cid:logo.png");
 
         sendEmailWithImage("registration/approval.html", variables, "Your request has been APPROVED", registrationRequest.getUsername(), new String[]{"logo.png"});
@@ -78,7 +78,7 @@ public class EmailService {
     public void sendAdministratorRegistrationEmail(Administrator administrator) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", administrator.getFirstName());
-        variables.put("link", "http://localhost:3000/login");
+        variables.put("link", "http://www.pecaj.ga/login");
         variables.put("image_data", "cid:logo.png");
 
         sendEmailWithImage("registration/administrator.html", variables, "Activate your administrator account", administrator.getUsername(), new String[]{"logo.png"});
@@ -203,7 +203,7 @@ public class EmailService {
         variables.put("from_date", reservation.getStartDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
         variables.put("to_date", reservation.getEndDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
         variables.put("image_data", "cid:" + photo.getStoredFilename());
-        variables.put("link", "http://localhost:3000/" + type + "/" + ad.getId());
+        variables.put("link", "http://www.pecaj.ga/" + type + "/" + ad.getId());
 
         sendEmailWithImage("reservation/confirmation.html", variables,
                 "Reservation successful", reservation.getCustomer().getUsername(),
@@ -231,7 +231,7 @@ public class EmailService {
         variables.put("from_date", quickReservation.getStartDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
         variables.put("to_date", quickReservation.getEndDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm")));
         variables.put("image_data", "cid:" + photo.getStoredFilename());
-        variables.put("link", "http://localhost:3000/" + type + "/" + ad.getId());
+        variables.put("link", "http://www.pecaj.ga/" + type + "/" + ad.getId());
 
         subscribers.forEach(subscriber -> sendEmailWithImage("subscription/newDiscount.html",
                 variables, quickReservation.getAdvertisement().getTitle() + " is on discount now!",

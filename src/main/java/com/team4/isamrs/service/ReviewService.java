@@ -4,6 +4,7 @@ import com.team4.isamrs.dto.creation.ReviewCreationDTO;
 import com.team4.isamrs.dto.display.ReviewAdminDisplayDTO;
 import com.team4.isamrs.dto.updation.ReviewResponseDTO;
 import com.team4.isamrs.exception.ActionNotAllowedException;
+import com.team4.isamrs.exception.AdminConflictException;
 import com.team4.isamrs.exception.ReviewAlreadyResolvedException;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
@@ -14,8 +15,10 @@ import com.team4.isamrs.repository.ReservationRepository;
 import com.team4.isamrs.repository.ReviewRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -63,8 +66,18 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void respondToReview(Long id, ReviewResponseDTO dto) {
-        Review review = reviewRepository.findById(id).orElseThrow();
+        Review review;
+        try {
+            review = reviewRepository.lockGetById(id).orElseThrow();
+        }
+        catch (PessimisticLockingFailureException e) {
+            throw new AdminConflictException(
+                    "Another admin is currently attempting to respond to this review. " +
+                            "Try again in a few seconds.");
+        }
+
         if (!review.getApprovalStatus().equals(ApprovalStatus.PENDING))
             throw new ReviewAlreadyResolvedException();
 

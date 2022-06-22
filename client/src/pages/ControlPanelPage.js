@@ -21,7 +21,7 @@ import SetCommissionRatePage from '../components/control_panel/SetCommissionRate
 
 const getNewEntityPage = () => {
   const session = getSession();
-  if (session.accountType === "FISHING_INSTRUCTOR_OWNER"){
+  if (session.accountType === "FISHING_INSTRUCTOR"){
     return <AdventureInfoEditor/>;
   }
   else if (session.accountType === "BOAT_OWNER"){

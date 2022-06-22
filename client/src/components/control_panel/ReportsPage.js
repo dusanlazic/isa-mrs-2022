@@ -51,7 +51,7 @@ const ReportsPage = () => {
                   </span>
                   {report.reservation.customer.firstName} {report.reservation.customer.lastName}
               </h1>
-              <h2 class="text-m text-gray-500 font-bold text-left">
+              <h2 className="text-m text-gray-500 font-bold text-left">
                 <span className="font-normal">for reservation of </span>
               {report.reservation.advertisement.title}
               </h2>

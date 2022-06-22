@@ -31,7 +31,7 @@ const RegisterAdminPage = () => {
       setShowMessageModal(true);
     })
     .catch((error) => {
-      if (error.response.data.errors != undefined) {
+      if (error.response.data.errors !== undefined) {
         setErrors(error.response.data.errors)
       } else {
         setMessageModalText(error.response.data.message);
@@ -86,7 +86,7 @@ const RegisterAdminPage = () => {
             <label className="text-xs">Password</label>
             <input placeholder="password"
             type="password"
-            autocomplete="new-password"
+            autoComplete="new-password"
             onChange={(event) => {setPassword(event.target.value)}}
             className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-2
             focus:outline-none focus:border-gray-500 w-full caret-gray-700"/>

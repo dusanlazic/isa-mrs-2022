@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { get, put, post } from "../../adapters/xhr";
+import { get, put } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import { Icon } from "@iconify/react";
 

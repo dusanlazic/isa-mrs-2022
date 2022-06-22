@@ -47,6 +47,8 @@ const Sidebar = ({ currentComponent, setCurrentComponent }) => {
 
   const session = getSession();
   const sidebarItems = [];
+  
+  if (session === undefined) return null;
 
   if (session.accountType === "SUPERUSER") {
     sidebarItems.push(
@@ -59,7 +61,7 @@ const Sidebar = ({ currentComponent, setCurrentComponent }) => {
       { name: "loyaltyConfiguration", text: `Loyalty configuration`, icon: "tabler:settings" },
       { name: "commissionRates", text: `Commission rates`, icon: "tabler:cash" },
     );
-  } else if ((session.accountType === "ADMIN")) {
+  } else if (session.accountType === "ADMIN") {
     sidebarItems.push(
       { name: "resolveRegistrationRequests", text: `Registration requests`, icon: "tabler:user-plus" },
       { name: "resolveRemovalRequests", text: `Removal requests`, icon: "tabler:user-minus" },
@@ -110,10 +112,15 @@ const Sidebar = ({ currentComponent, setCurrentComponent }) => {
         <div className="mt-6 space-y-1">
           <div className="mt-6 space-y-1">
             {sidebarItems.map(item => {
-              if ((item.name === "pendingReport" || item.name === "activeReservations") && (currentComponent !== "reservations" && currentComponent !== "pendingReport" && currentComponent !== "activeReservations")) {
+              if ((item.name === "pendingReport" || item.name === "activeReservations") && 
+              (currentComponent !== "reservations" && currentComponent !== "pendingReport" && 
+              currentComponent !== "activeReservations")) {
                 return null;
               } else {
-                return <div key={item.name} onClick={() => setCurrentComponent(item.name)} className={'flex text-lg px-4 py-2 tracking-wide rounded-lg cursor-pointer hover:bg-gray-300 hover:text-gray-800' + (currentComponent === item.name ? 'bg-gray-200 text-gray-800' : 'text-gray-500')}>
+                return <div key={item.name} onClick={() => setCurrentComponent(item.name)} 
+                className={`flex text-lg px-4 py-2 tracking-wide rounded-lg 
+                cursor-pointer hover:bg-gray-300 hover:text-gray-800 
+                ${currentComponent === item.name ? 'bg-gray-200 text-gray-800' : 'text-gray-500'}`}>
                   <span className='w-8 '>
                     <Icon icon={item.icon} height="27" />
                   </span>

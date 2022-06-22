@@ -95,7 +95,6 @@ public class TestDataSupplierService {
         administrator.setLastName("Lazic");
         administrator.setPassword(passwordEncoder.encode("cascaded"));
         administrator.getAuthorities().add(roleRepository.findByName("ROLE_SUPERUSER").get());
-        administrator.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
         administrator.setPhoneNumber("0651337");
         userRepository.save(administrator);
 
@@ -122,7 +121,6 @@ public class TestDataSupplierService {
         resortOwner.setLastName("Veliki");
         resortOwner.setPassword(passwordEncoder.encode("cascaded"));
         resortOwner.getAuthorities().add(roleRepository.findByName("ROLE_RESORT_OWNER").get());
-        resortOwner.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
         resortOwner.setPhoneNumber("021111222");
         resortOwner.setPoints(220);
         userRepository.save(resortOwner);
@@ -151,7 +149,6 @@ public class TestDataSupplierService {
         boatOwner.setLastName("Bjelogrlić");
         boatOwner.setPassword(passwordEncoder.encode("cascaded"));
         boatOwner.getAuthorities().add(roleRepository.findByName("ROLE_BOAT_OWNER").get());
-        boatOwner.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
         boatOwner.setPhoneNumber("02121212212");
         boatOwner.setPoints(140);
         userRepository.save(boatOwner);
@@ -180,7 +177,6 @@ public class TestDataSupplierService {
         fishingInstructor.setLastName("Dušanić");
         fishingInstructor.setPassword(passwordEncoder.encode("cascaded"));
         fishingInstructor.getAuthorities().add(roleRepository.findByName("ROLE_FISHING_INSTRUCTOR").get());
-        fishingInstructor.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
         fishingInstructor.setPhoneNumber("4494358490");
         fishingInstructor.setPoints(290);
         userRepository.save(fishingInstructor);
@@ -209,7 +205,6 @@ public class TestDataSupplierService {
         customer.setLastName("Dejan");
         customer.setPassword(passwordEncoder.encode("cascaded"));
         customer.getAuthorities().add(roleRepository.findByName("ROLE_CUSTOMER").get());
-        customer.setAvatar(photoRepository.getById(UUID.fromString("ac29818c-5e95-438c-85ff-da0a25cd188c")));
         customer.setPhoneNumber("4369911628747");
         customer.setPenalties(0);
         customer.setPoints(110);

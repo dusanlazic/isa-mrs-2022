@@ -221,9 +221,8 @@ public class ResortAdService {
         resortAd.setAdvertiser(advertiser);
         resortAd.verifyPhotosOwnership(advertiser);
 
-        resortAdRepository.save(resortAd);
         tagRepository.saveAll(resortAd.getTags());
-        return resortAd;
+        return resortAdRepository.save(resortAd);
     }
 
     public void delete(Long id, Authentication auth) {

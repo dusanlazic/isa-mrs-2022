@@ -39,7 +39,7 @@ public class ReviewService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public void create(Long id, ReviewCreationDTO dto, Authentication auth) {
+    public Review create(Long id, ReviewCreationDTO dto, Authentication auth) {
         Customer customer = (Customer) auth.getPrincipal();
         Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
 
@@ -54,7 +54,7 @@ public class ReviewService {
         review.setRating(dto.getRating());
         review.setApprovalStatus(ApprovalStatus.PENDING);
 
-        reviewRepository.save(review);
+        return reviewRepository.save(review);
     }
 
     public Collection<ReviewAdminDisplayDTO> findAllPending() {

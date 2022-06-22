@@ -39,7 +39,7 @@ public class ComplaintService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public void create(Long id, ComplaintCreationDTO dto, Authentication auth) {
+    public Complaint create(Long id, ComplaintCreationDTO dto, Authentication auth) {
         Customer customer = (Customer) auth.getPrincipal();
         Advertisement advertisement = advertisementRepository.findById(id).orElseThrow();
 
@@ -53,7 +53,7 @@ public class ComplaintService {
         complaint.setComment(dto.getComment());
         complaint.setResponseStatus(ResponseStatus.PENDING);
 
-        complaintRepository.save(complaint);
+        return complaintRepository.save(complaint);
     }
 
     public Collection<ComplaintDisplayDTO> findAllPending() {

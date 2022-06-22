@@ -62,6 +62,8 @@ const Navigation = () => {
               <Icon className="w-10 h-10 text-gray-600 bg-silver-accent rounded-full" icon="tabler:user-circle" inline={true} />
             </label>
             <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-silver-accent text-left rounded-box w-40">
+              { (session.accountType != "ADMIN" && session.accountType != "SUPERUSER") &&
+
               <Link to={`/me`}>
                 <li>
                   <div className='flex text-lg rounded-lg hover:bg-gray-500 hover:bg-opacity-10 px-1'>
@@ -70,6 +72,7 @@ const Navigation = () => {
                   </div>
                 </li>
               </Link>
+              }
 
               <Link to='/account'>
                 <li>
@@ -80,7 +83,7 @@ const Navigation = () => {
                 </li>
               </Link>
 
-              { (session.accountType == "FISHING_INSTRUCTOR_OWNER" || session.accountType == "RESORT_OWNER" || session.accountType == "BOAT_OWNER" ) &&
+              { (session.accountType != "CUSTOMER") &&
                 
               <Link to='/control-panel'>
                 <li>

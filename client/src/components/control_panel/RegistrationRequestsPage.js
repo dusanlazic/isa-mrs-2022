@@ -1,26 +1,25 @@
 import { useState, useEffect } from "react";
-import { get, patch } from "../adapters/xhr";
+import { get, patch } from "../../adapters/xhr";
 import { Icon } from '@iconify/react';
 import Moment from 'moment';
 
-const RemovalRequestsPage = () => {
+const RegistrationRequestsPage = () => {
   const [requests, setRequests] = useState(null);
   
   const accountTypeIconMap = new Map();
   accountTypeIconMap.set('RESORT_OWNER', { icon: 'tabler:home-2', name: "Resort owner" });
   accountTypeIconMap.set('BOAT_OWNER', { icon: 'tabler:speedboat', name: "Boat owner" });
   accountTypeIconMap.set('FISHING_INSTRUCTOR', { icon: 'tabler:fish', name: "Fishing instructor" });
-  accountTypeIconMap.set('CUSTOMER', { icon: 'tabler:user', name: "Customer" });
 
   useEffect(() => {
-    get(`/api/admin/removal-requests/`)
+    get(`/api/admin/registration-requests/`)
     .then((response) => {
       setRequests(response.data);
     });
   }, [])
 
   const approveRequest = (index, id) => {
-    patch(`/api/admin/removal-requests/${id}`, { approve: true });
+    patch(`/api/admin/registration-requests/${id}`, { approve: true });
 
     let newRequests = [...requests];
     newRequests.splice(index, 1)
@@ -33,7 +32,7 @@ const RemovalRequestsPage = () => {
     if (reason === null)
       return
 
-    patch(`/api/admin/removal-requests/${id}`, { approve: false, rejectionReason: reason });
+    patch(`/api/admin/registration-requests/${id}`, { approve: false, rejectionReason: reason });
 
     let newRequests = [...requests];
     newRequests.splice(index, 1)
@@ -44,9 +43,9 @@ const RemovalRequestsPage = () => {
     return null
 
   return ( 
-    <div className="block min-h-screen p-32 px-8 sm:px-20 md:px-52 lg:px-60 xl:px-96 w-full font-display">
+    <div>
       <h1 className="text-2xl text-left text-gray-400 mb-6 font-sans">
-        Pending account removal requests:
+        Pending registration requests:
         <span className="text-gray-800"> {requests.length}</span>
       </h1>
 
@@ -56,24 +55,24 @@ const RemovalRequestsPage = () => {
           <div className="grid grid-cols-10 pt-3">
             <div className="block col-span-7">
               <h1 className="text-xl text-gray-700 font-bold tracking-tight my-auto text-left">
-                  {request.user.firstName} {request.user.lastName}
+                  {request.firstName} {request.lastName}
               </h1>
               <div className="flex mt-2 text-gray-600 text-sm">
-                <Icon className="mr-2" icon={accountTypeIconMap.get(request.user.accountType).icon} inline={true} width="20" /> 
-                <span className="mr-4">{accountTypeIconMap.get(request.user.accountType).name}</span>
+                <Icon className="mr-2" icon={accountTypeIconMap.get(request.accountType).icon} inline={true} width="20" /> 
+                  <span className="mr-4">{accountTypeIconMap.get(request.accountType).name}</span>
                 <Icon className="mr-2" icon="tabler:clock" inline={true} width="20" /> 
-                <span className="mr-4">{Moment(request.createdAt).format('D MMM YYYY HH:mm')}</span>
+                  <span className="mr-4">{Moment(request.createdAt).format('D MMM YYYY HH:mm')}</span>
               </div>
               <div className="text-left mt-4">
               {request.explanation}
               </div>
               <div className="flex mt-4 text-gray-600 text-sm">
                 <Icon className="mr-2" icon="tabler:mail" inline={true} width="20" /> 
-                <span className="mr-4">{request.user.username}</span>
+                  <span className="mr-4">{request.username}</span>
                 <Icon className="mr-2" icon="tabler:phone" inline={true} width="20" /> 
-                <span className="mr-4">{request.user.phoneNumber}</span>
+                  <span className="mr-4">{request.phoneNumber}</span>
                 <Icon className="mr-2" icon="tabler:building" inline={true} width="20" /> 
-                <span className="mr-4">{request.user.address}, {request.user.city}, {request.user.countryCode}</span>
+                  <span className="mr-4">{request.address}, {request.city}, {request.country}</span>
               </div>
             </div>
             <div className="block col-span-3">
@@ -96,4 +95,4 @@ const RemovalRequestsPage = () => {
    );
 }
  
-export default RemovalRequestsPage;
+export default RegistrationRequestsPage;

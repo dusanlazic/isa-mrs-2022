@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { get, put } from "../adapters/xhr";
+import { get, put } from "../../adapters/xhr";
 import { useNavigate } from 'react-router-dom';
 import { Icon } from "@iconify/react";
 
-import MessageModal from "../components/modals/MessageModal";
+import MessageModal from "../modals/MessageModal";
 
 const SetCommissionRatePage = () => {
   const [value, setValue] = useState(null);
@@ -44,7 +44,7 @@ const SetCommissionRatePage = () => {
   }
 
   return ( 
-    <div className="block min-h-screen p-32 px-8 sm:px-20 md:px-52 lg:px-60 xl:px-96 w-full font-display">
+    <div>
       <div className="flex flex-col divide-y divide-dashed
        h-full border-0.5 rounded-lg gap-y-4">
         <div className="block w-full">

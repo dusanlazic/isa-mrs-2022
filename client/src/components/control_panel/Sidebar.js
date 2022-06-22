@@ -10,7 +10,7 @@ const getNewEntityName = () => {
   else if (session.accountType === "BOAT_OWNER") {
     return "boat";
   }
-  else {
+  else if (session.accountType === "RESORT_OWNER") {
     return "resort";
   }
 }
@@ -23,13 +23,13 @@ const getMyEntityIcon = () => {
   else if (session.accountType === "BOAT_OWNER") {
     return "tabler:sailboat";
   }
-  else {
+  else if (session.accountType === "RESORT_OWNER") {
     return "tabler:window";
   }
 }
 
 const Sidebar = ({ currentComponent, setCurrentComponent }) => {
-
+  
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   function handleSidebar(b) {
@@ -45,30 +45,52 @@ const Sidebar = ({ currentComponent, setCurrentComponent }) => {
     }
   }
 
-  const sidebarItems = [
-    { name: "myEntities", text: `My ${getNewEntityName()}s`, icon: getMyEntityIcon() },
-    { name: "newEntity", text: `New ${getNewEntityName()}`, icon: "tabler:new-section" },
-    { name: "reservations", text: "Reservation history", icon: "tabler:list-search" },
-    { name: "pendingReport", text: "Pending report" },
-    { name: "activeReservations", text: "Active reservations" },
-    { name: "reports", text: "Reports", icon: "tabler:clipboard-list" },
-  ];
+  const session = getSession();
+  const sidebarItems = [];
+
+  if (session.accountType === "SUPERUSER") {
+    sidebarItems.push(
+      { name: "registerAdmin", text: `Register new admin`, icon: "tabler:briefcase" },
+      { name: "resolveRegistrationRequests", text: `Registration requests`, icon: "tabler:user-plus" },
+      { name: "resolveRemovalRequests", text: `Removal requests`, icon: "tabler:user-minus" },
+      { name: "resolveReports", text: `Reservation reports`, icon: "tabler:message" },
+      { name: "resolveComplaints", text: `Complaints`, icon: "tabler:message-report" },
+      { name: "resolveReviews", text: `Reviews`, icon: "tabler:star" },
+      { name: "loyaltyConfiguration", text: `Loyalty configuration`, icon: "tabler:settings" },
+      { name: "commissionRates", text: `Commission rates`, icon: "tabler:cash" },
+    );
+  } else if ((session.accountType === "ADMIN")) {
+    sidebarItems.push(
+      { name: "resolveRegistrationRequests", text: `Registration requests`, icon: "tabler:user-plus" },
+      { name: "resolveRemovalRequests", text: `Removal requests`, icon: "tabler:user-minus" },
+      { name: "resolveReports", text: `Reservation reports`, icon: "tabler:message" },
+      { name: "resolveComplaints", text: `Complaints`, icon: "tabler:message-report" },
+      { name: "resolveReviews", text: `Reviews`, icon: "tabler:star" },
+      { name: "loyaltyConfiguration", text: `Loyalty configuration`, icon: "tabler:settings" },
+      { name: "commissionRates", text: `Commission rates`, icon: "tabler:cash" },
+    );
+  } else {
+    sidebarItems.push(
+      { name: "myEntities", text: `My ${getNewEntityName()}s`, icon: getMyEntityIcon() },
+      { name: "newEntity", text: `New ${getNewEntityName()}`, icon: "tabler:new-section" },
+      { name: "reservations", text: "Reservation history", icon: "tabler:list-search" },
+      { name: "pendingReport", text: "Pending report" },
+      { name: "activeReservations", text: "Active reservations" },
+      { name: "reports", text: "Reports", icon: "tabler:clipboard-list" },
+    );  
+  }
 
   return (
     <div className="block fixed z-20 mt-10">
       <div className="h-screen w-80 top-0 bottom-0 overflow-y-scroll overflow-x-hidden no-scrollbar hidden md:block bg-gray-100">
         <div className="pt-12 p-6 h-full">
           {sidebarItems.map(item => {
-            if ((item.name === "pendingReport" || item.name === "activeReservations") && (currentComponent !== "reservations" && currentComponent !== "pendingReport" && currentComponent !== "activeReservations")) {
-              return null;
-            } else {
               return <div key={item.name} onClick={() => setCurrentComponent(item.name)} className={'flex text-lg px-4 py-2 tracking-wide rounded-lg cursor-pointer hover:bg-gray-300 hover:text-gray-800' + (currentComponent === item.name ? 'bg-gray-200 text-gray-800' : 'text-gray-500')}>
                 <span className='w-8 '>
                   <Icon icon={item.icon} height="27" />
                 </span>
                 <div>{item.text}</div>
               </div>
-            }
           })}
         </div>
       </div>

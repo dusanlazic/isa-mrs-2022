@@ -87,7 +87,7 @@ public class AdvertisementController {
 
     @PostMapping(value = "/{id}/reservations", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseOK createReportForReservation(@PathVariable Long id, @Valid @RequestBody ReservationCreationDTO dto, Authentication auth) {
+    public ResponseOK createReservation(@PathVariable Long id, @Valid @RequestBody ReservationCreationDTO dto, Authentication auth) {
         reservationService.create(id, dto, auth);
         return new ResponseOK("Reservation created.");
     }

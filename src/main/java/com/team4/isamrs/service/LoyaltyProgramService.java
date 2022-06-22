@@ -108,10 +108,12 @@ public class LoyaltyProgramService {
         Integer points = null;
         TargetedAccountType targetedAccountType = null;
 
-        if (user instanceof Customer customer) {
+        if (user instanceof Customer) {
+            Customer customer = (Customer) user;
             points = customer.getPoints();
             targetedAccountType = TargetedAccountType.CUSTOMER;
-        } else if (user instanceof Advertiser advertiser) {
+        } else if (user instanceof Advertiser) {
+            Advertiser advertiser = (Advertiser) user;
             points = advertiser.getPoints();
             targetedAccountType = TargetedAccountType.ADVERTISER;
         }

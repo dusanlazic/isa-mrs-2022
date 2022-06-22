@@ -2,6 +2,8 @@ package com.team4.isamrs.service;
 
 import com.team4.isamrs.dto.creation.ReviewCreationDTO;
 import com.team4.isamrs.dto.display.ReviewAdminDisplayDTO;
+import com.team4.isamrs.dto.updation.ReviewResponseDTO;
+import com.team4.isamrs.exception.ReviewAlreadyResolvedException;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.review.Review;
@@ -21,7 +23,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -41,6 +42,9 @@ public class ReviewServiceTest {
     private ReservationRepository reservationRepositoryMock;
     @Mock
     private AdvertisementRepository advertisementRepositoryMock;
+
+    @Mock
+    private EmailService emailServiceMock;
 
     @Mock
     private Review reviewMock;
@@ -85,5 +89,17 @@ public class ReviewServiceTest {
         Review savedReview = reviewService.create(Long.valueOf("1"), new ReviewCreationDTO(), authentication);
 
         assertEquals(reviewMock, savedReview);
+    }
+
+    @Test(expected = ReviewAlreadyResolvedException.class)
+    @Transactional
+    public void respondToReviewAlreadyResolved() {
+        when(reviewMock.getApprovalStatus()).thenReturn(ApprovalStatus.APPROVED);
+        when(reviewRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(reviewMock));
+
+        reviewService.respondToReview(Long.valueOf("1"), new ReviewResponseDTO());
+
+        when(reviewRepositoryMock.save(any())).thenReturn(reviewMock);
+        doNothing().when(emailServiceMock).sendNewReviewEmail(any(), any());
     }
 }

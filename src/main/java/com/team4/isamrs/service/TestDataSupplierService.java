@@ -62,6 +62,9 @@ public class TestDataSupplierService {
     ReservationReportRepository reservationReportRepository;
 
     @Autowired
+    FishingEquipmentRepository fishingEquipmentRepository;
+
+    @Autowired
     ComplaintRepository complaintRepository;
 
     @Autowired
@@ -315,6 +318,10 @@ public class TestDataSupplierService {
         Tag tag2 = new Tag("Bed");
         Tag tag3 = new Tag("Fishing rods");
 
+        FishingEquipment fe1 = new FishingEquipment("Nets");
+        FishingEquipment fe2 = new FishingEquipment("Fishing rods");
+        FishingEquipment fe3 = new FishingEquipment("Baits");
+
         for (int i = 0; i < 17; i++) {
             BoatAd boat = new BoatAd();
             boat.setAdvertiser(advertiser);
@@ -371,9 +378,14 @@ public class TestDataSupplierService {
             boat.addTag(tag2);
             boat.addTag(tag3);
 
+            boat.addFishingEquipment(fe1);
+            boat.addFishingEquipment(fe2);
+            boat.addFishingEquipment(fe3);
+
             photoRepository.saveAll(boat.getPhotos());
             boatAdRepository.save(boat);
             tagRepository.saveAll(boat.getTags());
+            fishingEquipmentRepository.saveAll(boat.getFishingEquipment());
         }
     }
 

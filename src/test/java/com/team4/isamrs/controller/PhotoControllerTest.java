@@ -1,27 +1,28 @@
 package com.team4.isamrs.controller;
 
-import com.team4.isamrs.constants.CustomerConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class AuthenticationControllerTest {
+public class PhotoControllerTest {
 
-    private static final String URL_PREFIX = "/auth";
+    private static final String URL_PREFIX = "/photos";
 
     private final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype());
@@ -37,11 +38,7 @@ public class AuthenticationControllerTest {
     }
 
     @Test
-    public void testLogin() throws Exception {
-        String payload = "{ \"username\": \""+ CustomerConstants.DB_USERNAME +"\", \"password\": \"cascaded\"}";
-        mockMvc.perform(post(URL_PREFIX + "/login")
-                .content(payload).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(contentType));
+    public void testServe() throws Exception {
+        mockMvc.perform(get(URL_PREFIX + "/logo.png")).andExpect(status().isOk());
     }
 }

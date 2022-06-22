@@ -38,20 +38,6 @@ public class AdvertiserControllerTest {
     }
 
     @Test
-    public void testGetAdvertiser() throws Exception {
-        mockMvc.perform(get(URL_PREFIX + "/" + AdvertiserConstants.DB_ID)).andExpect(status().isOk())
-                .andExpect(content().contentType(contentType))
-                .andExpect(jsonPath("$.id").value(AdvertiserConstants.DB_ID))
-                .andExpect(jsonPath("$.username").value(AdvertiserConstants.DB_USERNAME))
-                .andExpect(jsonPath("$.firstName").value(AdvertiserConstants.DB_FIRST_NAME))
-                .andExpect(jsonPath("$.lastName").value(AdvertiserConstants.DB_LAST_NAME))
-                .andExpect(jsonPath("$.city").value(AdvertiserConstants.DB_CITY))
-                .andExpect(jsonPath("$.countryCode").value(AdvertiserConstants.DB_COUNTRY_CODE))
-                .andExpect(jsonPath("$.address").value(AdvertiserConstants.DB_ADDRESS))
-                .andExpect(jsonPath("$.phoneNumber").value(AdvertiserConstants.DB_PHONE_NUMBER));
-    }
-
-    @Test
     public void testGetAverageRating() throws Exception {
         mockMvc.perform(get(URL_PREFIX + "/" + AdvertiserConstants.DB_ID + "/reviews/average"))
                 .andExpect(status().isOk())

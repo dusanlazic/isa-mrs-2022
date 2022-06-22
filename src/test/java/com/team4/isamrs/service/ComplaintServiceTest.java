@@ -96,7 +96,7 @@ public class ComplaintServiceTest {
     @Transactional
     public void respondToComplaintAlreadyResolved() {
         when(complaintMock.getResponseStatus()).thenReturn(ResponseStatus.RESOLVED);
-        when(complaintRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(complaintMock));
+        when(complaintRepositoryMock.lockGetById(Mockito.anyLong())).thenReturn(Optional.of(complaintMock));
 
         complaintService.respondToComplaint(Long.valueOf("1"), new ComplaintResponseDTO());
 

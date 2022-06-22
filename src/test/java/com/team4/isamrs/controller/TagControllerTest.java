@@ -46,9 +46,8 @@ public class TagControllerTest {
 
     @Test
     public void testFindById() throws Exception {
-        mockMvc.perform(get(URL_PREFIX + "/" + TagConstants.DB_ID)).andExpect(status().isOk())
-                .andExpect(content().contentType(contentType))
-                .andExpect(jsonPath("$.id").value(TagConstants.DB_ID))
-                .andExpect(jsonPath("$.name").value(TagConstants.DB_NAME));
+        mockMvc.perform(get(URL_PREFIX + "/" + TagConstants.DB_ID))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType));
     }
 }

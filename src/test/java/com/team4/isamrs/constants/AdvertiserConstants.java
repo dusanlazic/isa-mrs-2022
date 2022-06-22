@@ -1,7 +1,7 @@
 package com.team4.isamrs.constants;
 
 public class AdvertiserConstants {
-    public static final String DB_USERNAME = "sinisa@gmail.com";
+    public static final String DB_USERNAME = "sinisa@pecaj.ga";
     public static final Long DB_ID = Long.parseLong("2");
     public static final String DB_FIRST_NAME = "Siniša";
     public static final String DB_LAST_NAME = "Veliki";

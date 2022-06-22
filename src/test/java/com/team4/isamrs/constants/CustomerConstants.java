@@ -1,7 +1,7 @@
 package com.team4.isamrs.constants;
 
 public class CustomerConstants {
-    public static final String DB_USERNAME = "stevade@test.rs";
+    public static final String DB_USERNAME = "stevade@pecaj.ga";
     public static final Long DB_ID = Long.parseLong("5");
     public static final String DB_FIRST_NAME = "Stevan";
     public static final String DB_LAST_NAME = "Dejan";

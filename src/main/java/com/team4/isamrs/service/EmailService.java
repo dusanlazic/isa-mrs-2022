@@ -174,7 +174,7 @@ public class EmailService {
     }
 
     @Async
-    public void sendNewReviewEmail(Review review, Double totalRating) {
+    public void sendNewReviewEmail(Review review, Integer totalRating) {
         Advertisement advertisement = review.getAdvertisement();
         Advertiser advertiser = advertisement.getAdvertiser();
         Customer customer = review.getCustomer();

@@ -10,6 +10,7 @@ import UpdateAdvertisementPage from './pages/UpdateAdvertisementPage';
 import RegistrationRequestsPage from './pages/RegistrationRequestsPage';
 import RemovalRequestsPage from './pages/RemovalRequestsPage';
 import ReportsPage from './pages/ReportsPage';
+import ReviewsPage from './pages/ReviewsPage';
 import ComplaintsPage from './pages/ComplaintsPage';
 import AdminPasswordPage from './pages/AdminPasswordPage';
 import RegisterAdminPage from './pages/RegisterAdminPage';
@@ -53,6 +54,7 @@ function App() {
               <Route path="/admin/system/commission-rate" exact element={<SetCommissionRatePage/>}/>
               <Route path="/admin/setup" exact element={<AdminPasswordPage/>}/>
               <Route path="/admin/reports" exact element={<ReportsPage/>}/>
+              <Route path="/admin/reviews" exact element={<ReviewsPage/>}/>
               <Route path="/admin/complaints" exact element={<ComplaintsPage/>}/>
               <Route path="/control-panel" exact element={<ControlPanel/>}/>
               <Route path="*" element={<NotFound/>}/>

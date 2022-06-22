@@ -6,6 +6,7 @@ import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.enumeration.ResponseStatus;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.reservation.ReservationReport;
+import com.team4.isamrs.model.review.Review;
 import com.team4.isamrs.model.user.Administrator;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
@@ -61,6 +62,9 @@ public class TestDataSupplierService {
     ComplaintRepository complaintRepository;
 
     @Autowired
+    ReviewRepository reviewRepository;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     Random random = new Random();
@@ -82,6 +86,7 @@ public class TestDataSupplierService {
         addBoats();
         addAdventures();
         addComplaints();
+        addReviews();
     }
 
     private void createTestAccounts() {
@@ -536,5 +541,25 @@ public class TestDataSupplierService {
         }
 
         complaintRepository.saveAll(complaints);
+    }
+
+    private void addReviews() {
+        List<Reservation> reservations = reservationRepository.findAll();
+        List<Review> reviews = new ArrayList<>();
+
+        for (int i = 0; i < 100; i++) {
+            Reservation reservation = reservations.get(random.nextInt(reservations.size()));
+            Review review = new Review();
+            review.setCreatedAt(LocalDateTime.now());
+            review.setAdvertisement(reservation.getAdvertisement());
+            review.setCustomer(reservation.getCustomer());
+            review.setRating(random.nextInt(1, 6));
+            review.setComment("example review" + i);
+            review.setApprovalStatus(i < 80 ? ApprovalStatus.APPROVED : ApprovalStatus.PENDING);
+
+            reviews.add(review);
+        }
+
+        reviewRepository.saveAll(reviews);
     }
 }

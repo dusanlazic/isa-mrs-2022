@@ -14,6 +14,7 @@ import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.repository.CustomerRepository;
 import com.team4.isamrs.repository.ReservationReportRepository;
 import com.team4.isamrs.repository.ReservationRepository;
+import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -98,10 +99,10 @@ public class ReservationReportService {
             customer.setPenalties(customer.getPenalties() + 1);
             report.setApprovalStatus(ApprovalStatus.APPROVED);
             customerRepository.save(customer);
-            emailService.sendReportApprovalEmail(report);
+            emailService.sendReportApprovalEmail(report, report.getReservation().getAdvertisement(), report.getReservation().getAdvertisement().getAdvertiser(), (Customer) Hibernate.unproxy(report.getReservation().getCustomer()));
         } else {
             report.setApprovalStatus(ApprovalStatus.REJECTED);
-            emailService.sendReportRejectionEmail(report);
+            emailService.sendReportRejectionEmail(report, report.getReservation().getAdvertisement(), report.getReservation().getAdvertisement().getAdvertiser(), (Customer) Hibernate.unproxy(report.getReservation().getCustomer()));
         }
 
         reservationReportRepository.save(report);

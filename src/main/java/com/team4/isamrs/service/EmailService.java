@@ -29,10 +29,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -54,7 +51,7 @@ public class EmailService {
         variables.put("link", "http://localhost:3000/confirm-registration/" + token);
         variables.put("image_data", "cid:logo.png");
 
-        sendEmailWithImage("registration/confirmation.html", variables, "Registration Confirmation", customer.getUsername(), "logo.png");
+        sendEmailWithImage("registration/confirmation.html", variables, "Registration Confirmation", customer.getUsername(), new String[]{"logo.png"});
     }
 
     @Async
@@ -64,7 +61,7 @@ public class EmailService {
         variables.put("link", "http://localhost:3000/login");
         variables.put("image_data", "cid:logo.png");
 
-        sendEmailWithImage("registration/approval.html", variables, "Your request has been APPROVED", registrationRequest.getUsername(), "logo.png");
+        sendEmailWithImage("registration/approval.html", variables, "Your request has been APPROVED", registrationRequest.getUsername(), new String[]{"logo.png"});
     }
 
     @Async
@@ -74,7 +71,7 @@ public class EmailService {
         variables.put("reason", registrationRequest.getRejectionReason());
         variables.put("image_data", "cid:logo.png");
 
-        sendEmailWithImage("registration/rejection.html", variables, "Your request has been REJECTED", registrationRequest.getUsername(), "logo.png");
+        sendEmailWithImage("registration/rejection.html", variables, "Your request has been REJECTED", registrationRequest.getUsername(), new String[]{"logo.png"});
     }
 
     @Async
@@ -84,7 +81,7 @@ public class EmailService {
         variables.put("link", "http://localhost:3000/login");
         variables.put("image_data", "cid:logo.png");
 
-        sendEmailWithImage("registration/administrator.html", variables, "Activate your administrator account", administrator.getUsername(), "logo.png");
+        sendEmailWithImage("registration/administrator.html", variables, "Activate your administrator account", administrator.getUsername(), new String[]{"logo.png"});
     }
 
     @Async
@@ -93,7 +90,7 @@ public class EmailService {
         variables.put("name", removalRequest.getUser().getFirstName());
         variables.put("image_data", "cid:logo.png");
 
-        sendEmailWithImage("removal/approval.html", variables, "Your account has been DELETED", removalRequest.getUser().getUsername(), "logo.png");
+        sendEmailWithImage("removal/approval.html", variables, "Your account has been DELETED", removalRequest.getUser().getUsername(), new String[]{"logo.png"});
     }
 
     @Async
@@ -103,41 +100,39 @@ public class EmailService {
         variables.put("reason", removalRequest.getRejectionReason());
         variables.put("image_data", "cid:logo.png");
 
-        sendEmailWithImage("removal/rejection.html", variables, "Your request for account removal has been REJECTED", removalRequest.getUser().getUsername(), "logo.png");
+        sendEmailWithImage("removal/rejection.html", variables, "Your request for account removal has been REJECTED", removalRequest.getUser().getUsername(), new String[]{"logo.png"});
     }
 
     @Async
-    public void sendReportApprovalEmail(ReservationReport report) {
-        Customer customer = report.getReservation().getCustomer();
-        Advertisement advertisement = report.getReservation().getAdvertisement();
-        Advertiser advertiser = report.getReservation().getAdvertisement().getAdvertiser();
-
+    public void sendReportApprovalEmail(ReservationReport report, Advertisement advertisement, Advertiser advertiser, Customer customer) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("customer_name", customer.getFirstName());
         variables.put("ad_title", advertisement.getTitle());
         variables.put("advertiser_name", advertiser.getFirstName());
+        variables.put("advertiser_surname", advertiser.getLastName());
         variables.put("comment", report.getComment());
         variables.put("penalties", customer.getPenalties().toString());
+        variables.put("image_data", "cid:" + advertiser.getAvatar().getStoredFilename());
+        variables.put("logo_image_data", "cid:logo.png");
 
-        sendEmail("report/approval-customer.html", variables, "You got a penalty!", customer.getUsername());
-        sendEmail("report/approval-advertiser.html", variables, "Your customer got a penalty!", advertiser.getUsername());
+        sendEmailWithImage("report/approval-customer.html", variables, "You got a penalty!", customer.getUsername(), new String[]{"logo.png", advertiser.getAvatar().getStoredFilename()});
+        sendEmailWithImage("report/approval-advertiser.html", variables, "Your customer got a penalty!", advertiser.getUsername(), new String[]{"logo.png", advertiser.getAvatar().getStoredFilename()});
     }
 
     @Async
-    public void sendReportRejectionEmail(ReservationReport report) {
-        Customer customer = report.getReservation().getCustomer();
-        Advertisement advertisement = report.getReservation().getAdvertisement();
-        Advertiser advertiser = report.getReservation().getAdvertisement().getAdvertiser();
-
+    public void sendReportRejectionEmail(ReservationReport report, Advertisement advertisement, Advertiser advertiser, Customer customer) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("customer_name", customer.getFirstName());
         variables.put("ad_title", advertisement.getTitle());
         variables.put("advertiser_name", advertiser.getFirstName());
+        variables.put("advertiser_surname", advertiser.getLastName());
         variables.put("comment", report.getComment());
         variables.put("penalties", customer.getPenalties().toString());
+        variables.put("image_data", "cid:" + advertiser.getAvatar().getStoredFilename());
+        variables.put("logo_image_data", "cid:logo.png");
 
-        sendEmail("report/rejection-customer.html", variables, "You did not get a penalty", customer.getUsername());
-        sendEmail("report/rejection-advertiser.html", variables, "Your customer did not get a penalty", advertiser.getUsername());
+        sendEmailWithImage("report/rejection-customer.html", variables, "You did not get a penalty", customer.getUsername(), new String[]{"logo.png", advertiser.getAvatar().getStoredFilename()});
+        sendEmailWithImage("report/rejection-advertiser.html", variables, "Your customer did not get a penalty", advertiser.getUsername(), new String[]{"logo.png", advertiser.getAvatar().getStoredFilename()});
     }
 
     @Async
@@ -151,43 +146,43 @@ public class EmailService {
 
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", advertiser.getFirstName());
-        variables.put("customer_name", customer.getFirstName() + customer.getLastName());
+        variables.put("customer_name", customer.getFirstName());
+        variables.put("customer_surname", customer.getLastName());
         variables.put("ad_title", advertisement.getTitle());
         variables.put("complaint", complaint.getComment());
         variables.put("response", dto.getMessageToAdvertiser());
         variables.put("image_data", "cid:" + storedFilename);
 
-        sendEmailWithImage("complaint/advertiser.html", variables, "You got a complaint", advertiser.getUsername(), customer.getAvatar().getStoredFilename());
+        sendEmailWithImage("complaint/advertiser.html", variables, "You got a complaint", advertiser.getUsername(), new String[]{customer.getAvatar().getStoredFilename()});
     }
 
     @Async
     public void sendComplaintResponseToCustomer(Complaint complaint, ComplaintResponseDTO dto, Advertisement advertisement, Customer customer, String storedFilename) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", customer.getFirstName());
-        variables.put("customer_name", customer.getFirstName() + customer.getLastName());
+        variables.put("customer_name", customer.getFirstName());
+        variables.put("customer_surname", customer.getLastName());
         variables.put("ad_title", advertisement.getTitle());
         variables.put("complaint", complaint.getComment());
         variables.put("response", dto.getMessageToCustomer());
         variables.put("image_data", "cid:" + storedFilename);
 
-        sendEmailWithImage("complaint/customer.html", variables, "Admin response to your complaint", customer.getUsername(), customer.getAvatar().getStoredFilename());
+        sendEmailWithImage("complaint/customer.html", variables, "Admin response to your complaint", customer.getUsername(), new String[]{customer.getAvatar().getStoredFilename()});
     }
 
     @Async
-    public void sendNewReviewEmail(Review review, Integer totalRating) {
-        Advertisement advertisement = review.getAdvertisement();
-        Advertiser advertiser = advertisement.getAdvertiser();
-        Customer customer = review.getCustomer();
-
+    public void sendNewReviewEmail(Review review, Advertisement advertisement, Advertiser advertiser, Customer customer, Integer totalRating) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", advertiser.getFirstName());
-        variables.put("customer_name", customer.getFirstName());
+        variables.put("customer_name", customer.getFirstName() + " " + customer.getLastName());
         variables.put("ad_title", advertisement.getTitle());
         variables.put("rating", review.getRating().toString());
         variables.put("comment", review.getComment());
         variables.put("total_rating", totalRating.toString());
+        variables.put("image_data", "cid:" + customer.getAvatar().getStoredFilename());
+        variables.put("logo_image_data", "cid:logo.png");
 
-        sendEmail("review/new.html", variables, "You got a review!", advertiser.getUsername());
+        sendEmailWithImage("review/new.html", variables, "You got a review!", advertiser.getUsername(), new String[]{"logo.png", customer.getAvatar().getStoredFilename()});
     }
 
     @Async
@@ -212,7 +207,7 @@ public class EmailService {
 
         sendEmailWithImage("reservation/confirmation.html", variables,
                 "Reservation successful", reservation.getCustomer().getUsername(),
-                photo.getStoredFilename());
+                new String[]{photo.getStoredFilename()});
 
     }
 
@@ -240,33 +235,19 @@ public class EmailService {
 
         subscribers.forEach(subscriber -> sendEmailWithImage("subscription/newDiscount.html",
                 variables, quickReservation.getAdvertisement().getTitle() + " is on discount now!",
-                subscriber.getUsername(), photo.getStoredFilename()));
+                subscriber.getUsername(), new String[]{ photo.getStoredFilename() }));
     }
 
-    public void sendEmailWithImage(String templateFilename, Map<String, String> variables, String subject, String sendTo, String fileName) {
+    public void sendEmailWithImage(String templateFilename, Map<String, String> variables, String subject, String sendTo, String[] fileNames) {
         try {
-            Resource resource = photoService.getResource(fileName);
             MimeMessage mimeMessage = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
             helper.setText(buildEmailFromTemplate(templateFilename, variables), true);
-            helper.addInline(fileName, resource);
-            helper.setTo(sendTo);
-            helper.setSubject(subject);
-            helper.setFrom("gajba.na.vodi@gmail.com");
-            emailSender.send(mimeMessage);
-
-        } catch (MessagingException | IOException e) {
-            LOGGER.error("Failed to send email", e);
-        }
-    }
-
-    public void sendEmail(String templateFilename, Map<String, String> variables, String subject, String sendTo) {
-        try {
-            MimeMessage mimeMessage = emailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
-
-            helper.setText(buildEmailFromTemplate(templateFilename, variables), true);
+            for (String fileName:fileNames) {
+                Resource resource = photoService.getResource(fileName);
+                helper.addInline(fileName, resource);
+            }
             helper.setTo(sendTo);
             helper.setSubject(subject);
             helper.setFrom("gajba.na.vodi@gmail.com");

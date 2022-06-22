@@ -70,7 +70,7 @@ public class ReviewService {
 
         if (dto.getApprove()) {
             review.setApprovalStatus(ApprovalStatus.APPROVED);
-            emailService.sendNewReviewEmail(review, review.getRating());
+            emailService.sendNewReviewEmail(review, review.getAdvertisement(), review.getAdvertisement().getAdvertiser(), review.getCustomer(), review.getRating());
         } else {
             review.setApprovalStatus(ApprovalStatus.REJECTED);
         }

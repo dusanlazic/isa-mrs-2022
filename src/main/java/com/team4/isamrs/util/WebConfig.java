@@ -9,10 +9,18 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins(
-                "http://127.0.0.1:3000",
-                "http://localhost:3000",
-                "http://www.pecaj.ga",
-                "https://pecaj-ga-frontend.herokuapp.com");
+        registry.addMapping("/**")
+                .allowedOrigins(
+                        "http://127.0.0.1:3000",
+                        "http://localhost:3000",
+                        "http://www.pecaj.ga",
+                        "https://pecaj-ga-frontend.herokuapp.com")
+                .allowedMethods(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "PATCH",
+                        "DELETE",
+                        "OPTIONS");
     }
 }

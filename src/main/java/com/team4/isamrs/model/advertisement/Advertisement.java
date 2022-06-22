@@ -66,7 +66,7 @@ public abstract class Advertisement {
     /*
     e.g. WIFI, Pet friendly, TV
      */
-    @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Tag> tags = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY)

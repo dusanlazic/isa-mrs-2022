@@ -30,7 +30,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "(:startDate < r.startDateTime AND :endDate > r.startDateTime) OR " +
             "(:startDate <= r.endDateTime AND :endDate > r.endDateTime) OR " +
             "(:startDate >= r.startDateTime AND :endDate <= r.endDateTime)")
-    List<Reservation> getResortReservationsForRange(
+    Set<Reservation> getResortReservationsForRange(
             @Param("adId") Long adId,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);

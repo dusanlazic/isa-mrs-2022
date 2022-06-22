@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { get, patch } from "../adapters/xhr";
+import { get, patch } from "../../adapters/xhr";
 import { Icon } from '@iconify/react';
-import RespondToComplaintModal from "../components/modals/complaint/RespondToComplaintModal";
+import RespondToComplaintModal from "../modals/complaint/RespondToComplaintModal";
 import Moment from 'moment';
 
 const ReservationComplaintsPage = () => {
@@ -40,7 +40,7 @@ const ReservationComplaintsPage = () => {
     return null
 
   return ( 
-    <div className="block min-h-screen p-32 px-8 sm:px-20 md:px-52 lg:px-60 xl:px-96 w-full font-display">
+    <div>
       <h1 className="text-2xl text-left text-gray-400 mb-6 font-sans">
         Pending complaints:
         <span className="text-gray-800"> {complaints.length}</span>

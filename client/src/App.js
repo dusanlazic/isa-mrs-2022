@@ -7,15 +7,7 @@ import RegistrationPage from './pages/RegistrationPage';
 import LoginPage from './pages/LoginPage';
 import RegistrationConfirmation from './pages/RegistrationConfirmationPage';
 import UpdateAdvertisementPage from './pages/UpdateAdvertisementPage';
-import RegistrationRequestsPage from './pages/RegistrationRequestsPage';
-import RemovalRequestsPage from './pages/RemovalRequestsPage';
-import ReportsPage from './pages/ReportsPage';
-import ReviewsPage from './pages/ReviewsPage';
-import ComplaintsPage from './pages/ComplaintsPage';
 import AdminPasswordPage from './pages/AdminPasswordPage';
-import RegisterAdminPage from './pages/RegisterAdminPage';
-import ManageLoyaltyProgramPage from './pages/ManageLoyaltyProgramPage';
-import SetCommissionRatePage from './pages/SetCommissionRatePage';
 import ControlPanel from './pages/ControlPanelPage';
 import Navbar from './components/util/Navbar';
 
@@ -47,15 +39,7 @@ function App() {
               <Route path="/register" exact element={<RegistrationPage/>}/>
               <Route path="/login" exact element={<LoginPage/>}/>
               <Route path="/confirm-registration/:token" exact element={<RegistrationConfirmation/>}/>
-              <Route path="/admin/registration-requests" exact element={<RegistrationRequestsPage/>}/>
-              <Route path="/admin/removal-requests" exact element={<RemovalRequestsPage/>}/>
-              <Route path="/admin/register" exact element={<RegisterAdminPage/>}/>
-              <Route path="/admin/system/loyalty" exact element={<ManageLoyaltyProgramPage/>}/>
-              <Route path="/admin/system/commission-rate" exact element={<SetCommissionRatePage/>}/>
               <Route path="/admin/setup" exact element={<AdminPasswordPage/>}/>
-              <Route path="/admin/reports" exact element={<ReportsPage/>}/>
-              <Route path="/admin/reviews" exact element={<ReviewsPage/>}/>
-              <Route path="/admin/complaints" exact element={<ComplaintsPage/>}/>
               <Route path="/control-panel" exact element={<ControlPanel/>}/>
               <Route path="*" element={<NotFound/>}/>
             </Routes>

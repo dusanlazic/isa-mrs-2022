@@ -6,6 +6,7 @@ import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.enumeration.ResponseStatus;
 import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.reservation.ReservationReport;
+import com.team4.isamrs.model.review.Review;
 import com.team4.isamrs.model.user.Administrator;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.model.user.Customer;
@@ -52,6 +53,9 @@ public class TestDataSupplierService {
     TagRepository tagRepository;
 
     @Autowired
+    ReviewRepository reviewRepository;
+
+    @Autowired
     ReservationRepository reservationRepository;
 
     @Autowired
@@ -82,6 +86,7 @@ public class TestDataSupplierService {
         addBoats();
         addAdventures();
         addComplaints();
+        addReviews();
     }
 
     private void createTestAccounts() {
@@ -205,7 +210,7 @@ public class TestDataSupplierService {
         customer.setLastName("Dejan");
         customer.setPassword(passwordEncoder.encode("cascaded"));
         customer.getAuthorities().add(roleRepository.findByName("ROLE_CUSTOMER").get());
-        customer.setPhoneNumber("4369911628747");
+        customer.setPhoneNumber("4369916287");
         customer.setPenalties(0);
         customer.setPoints(110);
         userRepository.save(customer);
@@ -507,6 +512,28 @@ public class TestDataSupplierService {
 
         reservationRepository.saveAll(reservations);
         reservationReportRepository.saveAll(reports);
+    }
+
+    private void addReviews() {
+        List<Reservation> reservations = reservationRepository.findAll();
+        List<Review> reviews = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            Reservation reservation = reservations.get(random.nextInt(reservations.size()));
+
+            if (reservation.getCancelled()) continue;
+            Review review = new Review();
+            review.setCreatedAt(LocalDateTime.now());
+            review.setAdvertisement(reservation.getAdvertisement());
+            review.setCustomer(reservation.getCustomer());
+            review.setApprovalStatus(ApprovalStatus.APPROVED);
+            review.setComment("you've got mail");
+            review.setRating(5);
+
+            reviews.add(review);
+            break;
+        }
+        reviewRepository.saveAll(reviews);
     }
 
     private void addComplaints() {

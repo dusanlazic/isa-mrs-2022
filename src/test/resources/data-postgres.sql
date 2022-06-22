@@ -28,9 +28,8 @@ INSERT INTO public.resort_ad(
 VALUES (1001, now(), now(), '$', 'example description', 'no discounts',
 'example rules', 'Resort 1001', 1001, 1002, now(), now(), 3, 10, 100);
 
-
 INSERT INTO public.review(
     id, createdAt, advertisement, customer, rating, comment, approvalStatus)
-VALUES (1001, now(), 1001, 5, "example comment", 0);
+VALUES (10001, now(), 15, 5, 5 "example comment", 1);
 )
 */

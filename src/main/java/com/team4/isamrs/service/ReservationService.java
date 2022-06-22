@@ -244,9 +244,9 @@ public class ReservationService {
             return newSo;
         }).collect(Collectors.toSet()));
 
-        emailService.sendReservationConfirmationEmail(reservation, reservation.getAdvertisement().getPhotos().get(0));
         reservationRepository.save(reservation);
         quickReservationRepository.save(quickReservation);
+        emailService.sendReservationConfirmationEmail(reservation, reservation.getAdvertisement().getPhotos().get(0));
     }
 
     @Transactional
@@ -309,8 +309,8 @@ public class ReservationService {
         reservation.setCalculatedPrice(calculateReservationPrice(dto, advertisement, customer));
         reservation.setAttendees(dto.getAttendees());
 
-        emailService.sendReservationConfirmationEmail(reservation, reservation.getAdvertisement().getPhotos().get(0));
         reservationRepository.save(reservation);
+        emailService.sendReservationConfirmationEmail(reservation, reservation.getAdvertisement().getPhotos().get(0));
     }
 
     private Set<SelectedOption> generateSelectedOptions(ReservationCreationDTO dto, Advertisement advertisement) {
@@ -458,10 +458,12 @@ public class ReservationService {
                 return !date.isEqual(availableAfter);
         }
     }
+
     @Transactional
     public void createQuickReservation(QuickReservationCreationDTO dto, Authentication auth) {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
-        Advertisement advertisement = advertisementRepository.findAdvertisementByIdAndAdvertiser(dto.getAdvertisementId(), advertiser).orElseThrow();
+        Advertisement advertisement = advertisementRepository
+                .findAdvertisementByIdAndAdvertiser(dto.getAdvertisementId(), advertiser).orElseThrow();
 
         try {
             if (advertisement instanceof ResortAd) {
@@ -582,7 +584,7 @@ public class ReservationService {
         reservation.setSelectedOptions(generateSelectedOptions(modelMapper.map(dto, ReservationCreationDTO.class), advertisement));
         newReservation.setCalculatedPrice(calculateReservationPrice(modelMapper.map(dto, ReservationCreationDTO.class), advertisement, reservation.getCustomer()));
 
-        emailService.sendReservationConfirmationEmail(newReservation, newReservation.getAdvertisement().getPhotos().get(0));
         reservationRepository.save(newReservation);
+        emailService.sendReservationConfirmationEmail(newReservation, newReservation.getAdvertisement().getPhotos().get(0));
     }
 }

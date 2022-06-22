@@ -25,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -241,6 +242,8 @@ public class ResortAdService {
         resortAdRepository.delete(resortAd);
     }
 
+
+    @Transactional
     public void update(Long id, ResortAdUpdationDTO dto, Authentication auth) {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
         ResortAd resortAd = resortAdRepository.findResortAdByIdAndAdvertiser(id, advertiser).orElseThrow();
@@ -248,8 +251,8 @@ public class ResortAdService {
             resortAd = resortAdRepository.lockFindResortAdByIdAndAdvertiser(id, advertiser).orElseThrow();
         }
         catch (PessimisticLockingFailureException e) {
-            throw new ReservationConflictException("Another user is currently attempting to make a reservation" +
-                    " for the same entity. Please try again in a few seconds.");
+            throw new ReservationConflictException("Customer is currently attempting to make a reservation" +
+                    " for this entity. Please try again in a few seconds.");
         }
         modelMapper.map(dto, resortAd);
 

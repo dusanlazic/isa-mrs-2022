@@ -10,7 +10,11 @@ import com.team4.isamrs.model.user.Customer;
 import com.team4.isamrs.repository.*;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +47,9 @@ public class CustomerService {
     @Autowired
     private ModelMapper modelMapper;
 
+    private final Logger LOG = LoggerFactory.getLogger(AdvertiserService.class);
+
+    @Cacheable(value="customer", key="#id", unless="#result == null")
     public <T extends DisplayDTO> T findById(Long id, Class<T> returnType) {
         Customer customer = customerRepository.findById(id).orElseThrow();
         return modelMapper.map(customer, returnType);
@@ -165,5 +172,10 @@ public class CustomerService {
                 .stream()
                 .map(subscription -> modelMapper.map(subscription, AdvertisementSimpleDisplayDTO.class))
                 .collect(Collectors.toSet());
+    }
+
+    @CacheEvict(cacheNames = {"customer"}, allEntries = true)
+    public void removeFromCache() {
+        LOG.info("Customers removed from cache.");
     }
 }

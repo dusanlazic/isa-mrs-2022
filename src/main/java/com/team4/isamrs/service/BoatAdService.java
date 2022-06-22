@@ -9,7 +9,11 @@ import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.*;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -50,13 +54,15 @@ public class BoatAdService {
     @Autowired
     private ModelMapper modelMapper;
 
+    private final Logger LOG = LoggerFactory.getLogger(BoatAdService.class);
+
     public <T extends DisplayDTO> Collection<T> findAll(Class<T> returnType) {
         return boatAdRepository.findAll().stream()
                 .map(e -> modelMapper.map(e, returnType))
                 .collect(Collectors.toSet());
     }
 
-
+    @Cacheable(value="boat", key="#id", unless="#result == null")
     public <T extends DisplayDTO> T findById(Long id, Class<T> returnType) {
         BoatAd boatAd = boatAdRepository.findById(id).orElseThrow();
         return modelMapper.map(boatAd, returnType);
@@ -252,5 +258,10 @@ public class BoatAdService {
         fishingEquipmentRepository.saveAll(boatAd.getFishingEquipment());
         tagRepository.saveAll(boatAd.getTags());
         boatAdRepository.save(boatAd);
+    }
+
+    @CacheEvict(cacheNames = {"boat"}, allEntries = true)
+    public void removeFromCache() {
+        LOG.info("Boat ads removed from cache.");
     }
 }

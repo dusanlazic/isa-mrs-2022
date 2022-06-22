@@ -13,7 +13,11 @@ import com.team4.isamrs.repository.ReservationRepository;
 import com.team4.isamrs.repository.ResortAdRepository;
 import com.team4.isamrs.repository.TagRepository;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -49,12 +53,15 @@ public class ResortAdService {
     @Autowired
     private ModelMapper modelMapper;
 
+    private final Logger LOG = LoggerFactory.getLogger(ResortAdService.class);
+
     public Collection<ResortAdDisplayDTO> findAll() {
         return resortAdRepository.findAll().stream()
                 .map(e -> modelMapper.map(e, ResortAdDisplayDTO.class))
                 .collect(Collectors.toSet());
     }
 
+    @Cacheable(value="resort", key="#id", unless="#result == null")
     public ResortAdDisplayDTO findById(Long id) {
         ResortAd resortAd = resortAdRepository.findById(id).orElseThrow();
         return modelMapper.map(resortAd, ResortAdDisplayDTO.class);
@@ -250,5 +257,10 @@ public class ResortAdService {
 
         tagRepository.saveAll(resortAd.getTags());
         resortAdRepository.save(resortAd);
+    }
+
+    @CacheEvict(cacheNames = {"resort"}, allEntries = true)
+    public void removeFromCache() {
+        LOG.info("Resort ads removed from cache.");
     }
 }

@@ -11,7 +11,11 @@ import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.*;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +47,9 @@ public class AdvertiserService {
     @Autowired
     private ModelMapper modelMapper;
 
+    private final Logger LOG = LoggerFactory.getLogger(AdvertiserService.class);
+
+    @Cacheable(value="advertiser", key="#id", unless="#result == null")
     public AccountDisplayDTO findById(Long id) {
         return modelMapper.map(advertiserRepository.findById(id).orElseThrow(), AccountDisplayDTO.class);
     }
@@ -120,5 +127,10 @@ public class AdvertiserService {
     public Page<AdvertisementSimpleDisplayDTO> getPaginatedAdvertisements(Authentication auth, Pageable pageable) {
         Advertiser advertiser = (Advertiser) auth.getPrincipal();
         return advertisementRepository.findAdvertisementsByAdvertiser(advertiser, pageable).map( advertisement -> modelMapper.map(advertisement, AdvertisementSimpleDisplayDTO.class));
+    }
+
+    @CacheEvict(cacheNames = {"advertiser"}, allEntries = true)
+    public void removeFromCache() {
+        LOG.info("Advertisers removed from cache.");
     }
 }

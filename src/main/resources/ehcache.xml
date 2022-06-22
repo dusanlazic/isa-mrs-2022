@@ -1,0 +1,69 @@
+<config
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xsi:schemaLocation="http://www.ehcache.org/v3
+            http://www.ehcache.org/schema/ehcache-core-3.7.xsd">
+    <persistence directory="ehcache/cache" />
+    <cache-template name="default">
+        <expiry>
+            <ttl unit="seconds">15</ttl>
+        </expiry>
+        <listeners>
+            <listener>
+                <class>com.team4.isamrs.logger.CacheLogger</class>
+                <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
+                <event-ordering-mode>UNORDERED</event-ordering-mode>
+                <events-to-fire-on>CREATED</events-to-fire-on>
+                <events-to-fire-on>EXPIRED</events-to-fire-on>
+                <events-to-fire-on>EVICTED</events-to-fire-on>
+                <events-to-fire-on>REMOVED</events-to-fire-on>
+            </listener>
+        </listeners>
+        <resources>
+            <heap>1000</heap>
+            <offheap unit="MB">10</offheap>
+            <disk persistent="true" unit="MB">20</disk>
+        </resources>
+    </cache-template>
+
+    <cache alias="adventure" uses-template="default">
+        <key-type>java.lang.Long</key-type>
+        <value-type>com.team4.isamrs.dto.display.AdventureAdDisplayDTO</value-type>
+        <resources>
+            <heap>2</heap>
+        </resources>
+    </cache>
+
+    <cache alias="advertiser" uses-template="default">
+        <key-type>java.lang.Long</key-type>
+        <value-type>com.team4.isamrs.dto.display.AccountDisplayDTO</value-type>
+        <resources>
+            <heap>2</heap>
+        </resources>
+    </cache>
+
+    <cache alias="boat" uses-template="default">
+        <key-type>java.lang.Long</key-type>
+        <value-type>com.team4.isamrs.dto.display.BoatAdDisplayDTO</value-type>
+        <resources>
+            <heap>2</heap>
+        </resources>
+    </cache>
+
+    <cache alias="customer" uses-template="default">
+        <key-type>java.lang.Long</key-type>
+        <value-type>com.team4.isamrs.dto.display.CustomerDisplayDTO</value-type>
+        <resources>
+            <heap>2</heap>
+        </resources>
+    </cache>
+
+    <cache alias="resort" uses-template="default">
+        <key-type>java.lang.Long</key-type>
+        <value-type>com.team4.isamrs.dto.display.ResortAdDisplayDTO</value-type>
+        <resources>
+            <heap>2</heap>
+        </resources>
+    </cache>
+
+</config>

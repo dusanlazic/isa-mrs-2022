@@ -9,7 +9,11 @@ import com.team4.isamrs.model.reservation.Reservation;
 import com.team4.isamrs.model.user.Advertiser;
 import com.team4.isamrs.repository.*;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -47,13 +51,15 @@ public class AdventureAdService {
     @Autowired
     private ModelMapper modelMapper;
 
+    private final Logger LOG = LoggerFactory.getLogger(AdventureAdService.class);
+
     public <T extends DisplayDTO> Collection<T> findAll(Class<T> returnType) {
         return adventureAdRepository.findAll().stream()
                 .map(e -> modelMapper.map(e, returnType))
                 .collect(Collectors.toSet());
     }
 
-
+    @Cacheable(value="adventure", key="#id", unless="#result == null")
     public <T extends DisplayDTO> T findById(Long id, Class<T> returnType) {
         AdventureAd adventureAd = adventureAdRepository.findById(id).orElseThrow();
 
@@ -246,5 +252,10 @@ public class AdventureAdService {
         adventureAd.getTags().forEach(e -> e.getAdvertisements().remove(adventureAd));
 
         adventureAdRepository.delete(adventureAd);
+    }
+
+    @CacheEvict(cacheNames = {"adventure"}, allEntries = true)
+    public void removeFromCache() {
+        LOG.info("Adventure ads removed from cache.");
     }
 }

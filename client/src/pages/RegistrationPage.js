@@ -49,7 +49,7 @@ const RegistrationPage = () => {
   });
 
   const nextTwo = (data) => {
-    if (reason.length >= 20 && reason.length <= 500)
+    if (selectedRole !== 'client' && reason.length >= 20 && reason.length <= 500)
       handleNextAnimation();
     else
       setError("Reason must be between 20 and 500 characters in length.")

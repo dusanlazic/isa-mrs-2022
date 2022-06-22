@@ -47,7 +47,7 @@ public class RemovalRequestService {
     public void respondToRequest(Long id, RemovalRequestResponseDTO dto) {
         RemovalRequest request;
         try {
-            request = removalRequestRepository.findById(id).orElseThrow();
+            request = removalRequestRepository.lockGetById(id).orElseThrow();
         }
         catch (PessimisticLockingFailureException e) {
             throw new RegistrationRequestResponseConflictException(

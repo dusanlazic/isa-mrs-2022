@@ -3,6 +3,7 @@ package com.team4.isamrs.service;
 import com.team4.isamrs.dto.creation.ReservationReportCreationDTO;
 import com.team4.isamrs.dto.display.ReservationReportDisplayDTO;
 import com.team4.isamrs.dto.updation.ReservationReportResponseDTO;
+import com.team4.isamrs.exception.RegistrationRequestResponseConflictException;
 import com.team4.isamrs.exception.ReservationIsNotCompletedException;
 import com.team4.isamrs.exception.ReservationReportAlreadyExistsException;
 import com.team4.isamrs.exception.ReservationReportAlreadyResolvedException;
@@ -17,8 +18,10 @@ import com.team4.isamrs.repository.ReservationRepository;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -89,8 +92,16 @@ public class ReservationReportService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void respondToReport(Long id, ReservationReportResponseDTO dto) {
-        ReservationReport report = reservationReportRepository.findById(id).orElseThrow();
+        ReservationReport report;
+        try {
+            report = reservationReportRepository.lockGetById(id).orElseThrow();
+        }
+        catch (PessimisticLockingFailureException e) {
+            throw new RegistrationRequestResponseConflictException(
+                    "Another admin is currently attempting to respond to this report. Try again in a few seconds.");
+        }
         if (!report.getApprovalStatus().equals(ApprovalStatus.PENDING))
             throw new ReservationReportAlreadyResolvedException();
 

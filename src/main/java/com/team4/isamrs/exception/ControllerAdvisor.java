@@ -3,8 +3,6 @@ package com.team4.isamrs.exception;
 import com.team4.isamrs.exception.error.ExceptionResponseBody;
 import com.team4.isamrs.exception.error.ValidationErrorResponseBody;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -138,6 +136,14 @@ public class ControllerAdvisor {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(QuickReservationAlreadyBookedException.class)
     public ExceptionResponseBody handleQuickReservationAlreadyBookedException(QuickReservationAlreadyBookedException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(AdminConflictException.class)
+    public ExceptionResponseBody handleAdminConflictException(AdminConflictException ex) {
         return new ExceptionResponseBody(
                 HttpStatus.CONFLICT.value(),
                 ex.getMessage());

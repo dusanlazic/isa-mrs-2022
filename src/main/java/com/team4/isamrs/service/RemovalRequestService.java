@@ -3,6 +3,7 @@ package com.team4.isamrs.service;
 import com.team4.isamrs.dto.display.DisplayDTO;
 import com.team4.isamrs.dto.updation.RemovalRequestResponseDTO;
 import com.team4.isamrs.exception.RegistrationRequestAlreadyResolvedException;
+import com.team4.isamrs.exception.RegistrationRequestResponseConflictException;
 import com.team4.isamrs.model.enumeration.ApprovalStatus;
 import com.team4.isamrs.model.user.RemovalRequest;
 import com.team4.isamrs.model.user.User;
@@ -11,7 +12,9 @@ import com.team4.isamrs.repository.RoleRepository;
 import com.team4.isamrs.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -40,8 +43,17 @@ public class RemovalRequestService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void respondToRequest(Long id, RemovalRequestResponseDTO dto) {
-        RemovalRequest request = removalRequestRepository.findById(id).orElseThrow();
+        RemovalRequest request;
+        try {
+            request = removalRequestRepository.findById(id).orElseThrow();
+        }
+        catch (PessimisticLockingFailureException e) {
+            throw new RegistrationRequestResponseConflictException(
+                    "Another admin is currently attempting to respond to this removal request." +
+                            "Try again in a few seconds.");
+        }
         if (!request.getApprovalStatus().equals(ApprovalStatus.PENDING))
             throw new RegistrationRequestAlreadyResolvedException();
 

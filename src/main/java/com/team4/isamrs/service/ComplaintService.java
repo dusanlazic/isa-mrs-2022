@@ -4,6 +4,7 @@ import com.team4.isamrs.dto.creation.ComplaintCreationDTO;
 import com.team4.isamrs.dto.display.ComplaintDisplayDTO;
 import com.team4.isamrs.dto.updation.ComplaintResponseDTO;
 import com.team4.isamrs.exception.ActionNotAllowedException;
+import com.team4.isamrs.exception.AdminConflictException;
 import com.team4.isamrs.exception.ComplaintAlreadyResolvedException;
 import com.team4.isamrs.model.advertisement.Advertisement;
 import com.team4.isamrs.model.complaint.Complaint;
@@ -14,8 +15,10 @@ import com.team4.isamrs.repository.ComplaintRepository;
 import com.team4.isamrs.repository.ReservationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -62,8 +65,18 @@ public class ComplaintService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void respondToComplaint(Long id, ComplaintResponseDTO dto) {
-        Complaint complaint = complaintRepository.findById(id).orElseThrow();
+        Complaint complaint;
+        try {
+            complaint = complaintRepository.lockGetById(id).orElseThrow();
+        }
+        catch (PessimisticLockingFailureException e) {
+            throw new AdminConflictException(
+                    "Another admin is currently attempting to respond to this complaint. " +
+                            "Try again in a few seconds.");
+        }
+
         if (!complaint.getResponseStatus().equals(ResponseStatus.PENDING))
             throw new ComplaintAlreadyResolvedException();
 

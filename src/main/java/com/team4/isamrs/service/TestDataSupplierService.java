@@ -70,10 +70,10 @@ public class TestDataSupplierService {
     Random random = new Random();
 
     String adminEmail = "admin@pecaj.ga";
-    String resortOwnerEmail = "sinisa@gmail.com";
-    String fishingInstructorEmail = "lazard@test.rs";
-    String boatOwnerEmail = "draganb@test.rs";
-    String customerEmail = "stevade@test.rs";
+    String resortOwnerEmail = "sinisa@pecaj.ga";
+    String fishingInstructorEmail = "lazard@pecaj.ga";
+    String boatOwnerEmail = "draganb@pecaj.ga";
+    String customerEmail = "stevade@pecaj.ga";
 
 //    String resortOwnerEmail = "lqhlapvekltucfsyiq@nthrw.com";
 //    String customerEmail = "unwrhnjzxusichfqip@bvhrk.com";

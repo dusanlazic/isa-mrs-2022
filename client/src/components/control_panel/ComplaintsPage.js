@@ -70,14 +70,14 @@ const ReservationComplaintsPage = () => {
                 <span className="mr-4">{Moment(complaint.createdAt).format('D MMM YYYY HH:mm')}</span>
               </div>
             </div>
-            <div className="block col-span-3">
+            <div className="block col-span-3 gap-x-2">
               <button className="bg-gray-300 hover:bg-gray-400 active:bg-gray-500 drop-shadow-md
               text-gray-700 rounded-lg py-2.5 lg:py-2 text-sm lg:text-base w-1/3 mb-1.5 mt-3 md:mt-0"
               onClick={() => ignoreComplaint(index, complaint.id)}>
                 Ignore
               </button>
               <button className="bg-teal-600 hover:bg-teal-700 active:bg-teal-800 drop-shadow-md
-              text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base w-1/3 ml-2 mb-1.5 mt-3 md:mt-0"
+              text-white rounded-lg py-2.5 lg:py-2 text-sm lg:text-base w-1/3 mb-1.5 mt-3 md:mt-0"
               onClick={() => respondToComplaint(index, complaint.id)}>
                 Respond
               </button>

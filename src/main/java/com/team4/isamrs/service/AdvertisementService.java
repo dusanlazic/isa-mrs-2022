@@ -217,19 +217,21 @@ public class AdvertisementService {
         LocalDateTime firstDate = LocalDateTime.now().withDayOfMonth(1);
         LocalDateTime lastDate = LocalDateTime.now();
 
-        List<Reservation> reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate);
+        List<Reservation> reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate).stream().toList();
         ReportItemDisplayDTO item = new ReportItemDisplayDTO();
         item.setName(lastDate.getMonth().getDisplayName(TextStyle.FULL, Locale.UK));
         item.setValue(reservations.size());
+        res.add(item);
 
         for (int i = 0; i < 6; i++) {
             lastDate = firstDate;
             firstDate = firstDate.minusMonths(1);
 
-            reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate);
+            reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate).stream().toList();
             item = new ReportItemDisplayDTO();
             item.setName(lastDate.getMonth().getDisplayName(TextStyle.FULL, Locale.UK));
             item.setValue(reservations.size());
+            res.add(item);
         }
         return res;
     }
@@ -240,19 +242,21 @@ public class AdvertisementService {
         LocalDateTime firstDate = LocalDateTime.now().withDayOfYear(1);
         LocalDateTime lastDate = LocalDateTime.now();
 
-        List<Reservation> reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate);
+        List<Reservation> reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate).stream().toList();
         ReportItemDisplayDTO item = new ReportItemDisplayDTO();
-        item.setName(lastDate.getMonth().getDisplayName(TextStyle.FULL, Locale.UK));
+        item.setName(String.valueOf(lastDate.getYear()));
         item.setValue(reservations.size());
+        res.add(item);
 
         for (int i = 0; i < 6; i++) {
             lastDate = firstDate;
             firstDate = firstDate.minusYears(1);
 
-            reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate);
+            reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate).stream().toList();
             item = new ReportItemDisplayDTO();
-            item.setName(lastDate.getMonth().getDisplayName(TextStyle.FULL, Locale.UK));
+            item.setName(String.valueOf(lastDate.getYear()));
             item.setValue(reservations.size());
+            res.add(item);
         }
         return res;
     }
@@ -270,10 +274,11 @@ public class AdvertisementService {
             lastDate = firstDate;
             firstDate = firstDate.minusWeeks(1);
 
-            reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate);
+            reservations = reservationRepository.getResortReservationsForRange(id, firstDate, lastDate).stream().toList();
             item = new ReportItemDisplayDTO();
             item.setName(lastDate.getMonth().getDisplayName(TextStyle.FULL, Locale.UK));
             item.setValue(reservations.size());
+            res.add(item);
         }
         return res;
     }

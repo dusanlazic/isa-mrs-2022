@@ -2,6 +2,8 @@ import { useState } from "react";
 import { CSSTransition } from 'react-transition-group';
 import ReactFlagsSelect from "react-flags-select";
 
+import { Icon } from "@iconify/react";
+
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { pageTwoSchema, pageThreeSchema, pageFourSchema } from '../validators/registrationSchema' 
@@ -47,7 +49,10 @@ const RegistrationPage = () => {
   });
 
   const nextTwo = (data) => {
-    handleNextAnimation();
+    if (reason.length >= 20 && reason.length <= 500)
+      handleNextAnimation();
+    else
+      setError("Reason must be between 20 and 500 characters in length.")
   }
 
   const nextThree = (data) => {
@@ -84,6 +89,7 @@ const RegistrationPage = () => {
   }
 
   const handleBack = () => {
+    setError("");
     const c = currentSlide - 1 < 0 ? 0 : currentSlide - 1;
     setPreviousSlide(c + 1);
     setNextSlide(c);
@@ -107,6 +113,7 @@ const RegistrationPage = () => {
   }
 
   const handleNextAnimation = () => {
+    setError("");
     const c = currentSlide + 1 > 3 ? 3 : currentSlide + 1;
     setPreviousSlide(c - 1);
     setNextSlide(c);
@@ -237,13 +244,17 @@ const RegistrationPage = () => {
                 
                 {/* reason for advertiser account */}
                 { selectedRole === 'advertiser' &&
-                <div>
+                <div className="relative">
                   <label className="text-xs text-slate-500">reason:</label>
                   <textarea placeholder="I am a good candidate for receiving an advertiser account because..."
                   rows={3} required onChange={event => {setReason(event.target.value); setError('');}} value={reason}
                   className="block rounded-lg px-3 border text-gray-700 border-gray-300 text-base py-1
                   focus:outline-none focus:border-gray-500 w-full caret-gray-700 resize-none
                   hidden-scrollbar"/>
+                  <div className={`absolute select-none right-2 bottom-0 flex justify-end -mt-1 ${reason.length > 500 || 
+                    reason.length < 20 ? 'text-slate-500' : 'text-green-700'}`}>
+                    {reason.length}/500
+                  </div>
                 </div>
                 }
 
@@ -346,11 +357,12 @@ const RegistrationPage = () => {
 
               {nextSlide !== 0 &&
               <button type="button" onClick={() => handleBack()}
-              className="rounded-md px-6
+              className="rounded-md px-6 flex gap-x-1
               py-2 bg-white text-base font-medium text-slate-500 hover:text-slate-700
               hover:bg-slate-200 active:bg-slate-300
               focus:outline-none w-28 sm:text-sm">
-              {"<+ back"}
+              <Icon icon="tabler:chevron-left" inline={true} className="my-auto"/>
+              {"back"}
               </button>
               }
 

@@ -144,6 +144,14 @@ public class ControllerAdvisor {
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(RegistrationRequestResponseConflictException.class)
+    public ExceptionResponseBody handleRegistrationRequestResponseConflictException(RegistrationRequestResponseConflictException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ExceptionResponseBody handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
         return new ExceptionResponseBody(

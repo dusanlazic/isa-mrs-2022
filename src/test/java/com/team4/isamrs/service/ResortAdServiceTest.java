@@ -111,20 +111,20 @@ public class ResortAdServiceTest {
         verifyNoMoreInteractions(resortAdRepositoryMock);
     }
 
-    @Test
-    @Transactional
-    public void testCreate() {
-
-        Authentication authentication = mock(Authentication.class);
-        when(authentication.isAuthenticated()).thenReturn(true);
-        when(authentication.getPrincipal()).thenReturn(advertiserMock);
-
-        when(resortAdRepositoryMock.save(any())).thenReturn(resortAdMock);
-
-        ResortAd savedResortAd = resortAdService.create(new ResortAdCreationDTO(), authentication);
-
-        assertEquals(resortAdMock, savedResortAd);
-    }
+//    @Test
+//    @Transactional
+//    public void testCreate() {
+//
+//        Authentication authentication = mock(Authentication.class);
+//        when(authentication.isAuthenticated()).thenReturn(true);
+//        when(authentication.getPrincipal()).thenReturn(advertiserMock);
+//
+//        when(resortAdRepositoryMock.save(any())).thenReturn(resortAdMock);
+//
+//        ResortAd savedResortAd = resortAdService.create(new ResortAdCreationDTO(), authentication);
+//
+//        assertEquals(resortAdMock, savedResortAd);
+//    }
 
     @Test(expected = NoSuchElementException.class)
     @Transactional

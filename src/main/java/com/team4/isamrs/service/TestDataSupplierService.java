@@ -53,6 +53,9 @@ public class TestDataSupplierService {
     TagRepository tagRepository;
 
     @Autowired
+    ReviewRepository reviewRepository;
+
+    @Autowired
     ReservationRepository reservationRepository;
 
     @Autowired
@@ -60,9 +63,6 @@ public class TestDataSupplierService {
 
     @Autowired
     ComplaintRepository complaintRepository;
-
-    @Autowired
-    ReviewRepository reviewRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -210,7 +210,7 @@ public class TestDataSupplierService {
         customer.setLastName("Dejan");
         customer.setPassword(passwordEncoder.encode("cascaded"));
         customer.getAuthorities().add(roleRepository.findByName("ROLE_CUSTOMER").get());
-        customer.setPhoneNumber("4369911628747");
+        customer.setPhoneNumber("4369916287");
         customer.setPenalties(0);
         customer.setPoints(110);
         userRepository.save(customer);
@@ -514,6 +514,28 @@ public class TestDataSupplierService {
         reservationReportRepository.saveAll(reports);
     }
 
+    private void addReviews() {
+        List<Reservation> reservations = reservationRepository.findAll();
+        List<Review> reviews = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            Reservation reservation = reservations.get(random.nextInt(reservations.size()));
+
+            if (reservation.getCancelled()) continue;
+            Review review = new Review();
+            review.setCreatedAt(LocalDateTime.now());
+            review.setAdvertisement(reservation.getAdvertisement());
+            review.setCustomer(reservation.getCustomer());
+            review.setApprovalStatus(ApprovalStatus.APPROVED);
+            review.setComment("you've got mail");
+            review.setRating(5);
+
+            reviews.add(review);
+            break;
+        }
+        reviewRepository.saveAll(reviews);
+    }
+
     private void addComplaints() {
         List<String> complaintComments = new ArrayList<>();
         complaintComments.add("bad experience");
@@ -543,23 +565,23 @@ public class TestDataSupplierService {
         complaintRepository.saveAll(complaints);
     }
 
-    private void addReviews() {
-        List<Reservation> reservations = reservationRepository.findAll();
-        List<Review> reviews = new ArrayList<>();
-
-        for (int i = 0; i < 100; i++) {
-            Reservation reservation = reservations.get(random.nextInt(reservations.size()));
-            Review review = new Review();
-            review.setCreatedAt(LocalDateTime.now());
-            review.setAdvertisement(reservation.getAdvertisement());
-            review.setCustomer(reservation.getCustomer());
-            review.setRating(random.nextInt(1, 6));
-            review.setComment("example review" + i);
-            review.setApprovalStatus(i < 80 ? ApprovalStatus.APPROVED : ApprovalStatus.PENDING);
-
-            reviews.add(review);
-        }
-
-        reviewRepository.saveAll(reviews);
-    }
+//    private void addReviews() {
+//        List<Reservation> reservations = reservationRepository.findAll();
+//        List<Review> reviews = new ArrayList<>();
+//
+//        for (int i = 0; i < 100; i++) {
+//            Reservation reservation = reservations.get(random.nextInt(reservations.size()));
+//            Review review = new Review();
+//            review.setCreatedAt(LocalDateTime.now());
+//            review.setAdvertisement(reservation.getAdvertisement());
+//            review.setCustomer(reservation.getCustomer());
+//            review.setRating(random.nextInt(1, 6));
+//            review.setComment("example review" + i);
+//            review.setApprovalStatus(i < 80 ? ApprovalStatus.APPROVED : ApprovalStatus.PENDING);
+//
+//            reviews.add(review);
+//        }
+//
+//        reviewRepository.saveAll(reviews);
+//    }
 }

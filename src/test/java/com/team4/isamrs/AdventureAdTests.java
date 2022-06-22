@@ -84,7 +84,7 @@ public class AdventureAdTests {
 				.andReturn()
 				.getResponse()
 				.getContentAsString()
-				.contains("\"address.countryCode\":\"Field must be equal to ISO 3116 country code\""));
+				.contains("\"address.countryCode\":"));
 	}
 
 }
